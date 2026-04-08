@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saraswati Bal Vidhya Mandir High School Runaha</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#f4f4f4}
+
+/* HEADER */
+header{background:#002366;color:white;padding:10px 20px}
+
+.topbar{
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-bottom:5px;
+}
+
+button{
+background:white;
+color:#002366;
+padding:6px 12px;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+border:none;
+}
+
+/* LOGO */
+.main-header{
+display:flex;
+flex-direction:column;   /* 👈 menu niche */
+align-items:flex-start;  /* 👈 left side */
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+}
+.logo img{
+width:80px;height:80px;border-radius:50%;
+}
+.logo span{
+font-size:30px;font-weight:bold;
+}
+
+/* MENU */
+nav{
+width:100%;
+margin-top:10px;        /* 👈 thoda niche */
+text-align:Right;      /* 👈 Right */
+}
+nav a{
+color:white;
+margin:15px;
+text-decoration:none;
+font-weight:600;
+}
+nav a:hover{color:yellow}
+
+/* NEWS */
+.news{
+background:Red;
+color:white;
+padding:8px;
+text-align:center;
+font-weight:bold;
+}
+
+/* SLIDER */
+.slider{
+position:relative;   /* 👈 update box ke liye */
+height:350px;
+background-size:cover;
+background-position:center;
+animation:slide 15s infinite;
+}
+
+/* HINDI UPDATE BOX */
+.update-box{
+position:absolute;
+top:80px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,0.1);  /* 👈 transparent */
+color:white;
+padding:10px 20px;
+border-radius:20px;
+font-weight:bold;
+}
+
+@keyframes slide{
+0%{background-image:url('https://images.unsplash.com/photo-1588072432836-e10032774350')}
+33%{background-image:url('https://images.unsplash.com/photo-1577896851231-70ef18881754')}
+66%{background-image:url('https://images.unsplash.com/photo-1509062522246-3755977927d7')}
+}
+
+/* ===== LATEST NEWS FINAL ===== */
+
+.marquee{
+position:relative;
+overflow:hidden;
+background:red;
+color:white;
+display:flex;
+align-items:center;
+height:40px;
+}
+
+/* LABEL */
+.news-label{
+background:#0d47a1;
+color:white;
+padding:8px 20px;
+font-weight:bold;
+z-index:2;
+}
+
+/* TEXT */
+.marquee-content{
+position:absolute;
+white-space:nowrap;
+left:100%;
+animation:move 10s linear infinite;
+font-family:'Poppins', sans-serif;
+font-size:16px;
+font-weight:600;
+}
+
+/* ANIMATION */
+@keyframes move{
+0%{left:100%;}
+100%{left:-100%;}
+}
+
+/* BOXES */
+.box-section{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+gap:10px;
+padding:10px;
+}
+
+.box{
+background:#f5f5f5;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+font-family:Calibri, Arial, sans-serif;
+}
+
+.box h3{
+color:#0b3c5d;
+margin-bottom:10px;
+border-bottom:3px solid #e91e63;
+display:inline-block;
+padding-bottom:5px;
+}
+
+.box ul{
+list-style:none;
+padding:0;
+margin-top:10px;
+}
+
+.box ul li{
+margin:10px 0;
+}
+
+.box ul li a{
+text-decoration:none;
+color:#333;
+font-size:15px;
+transition:0.3s;
+display:block;
+}
+
+.box ul li a:hover{
+color:#e91e63;
+padding-left:5px;
+}
+
+/* GALLERY */
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
+padding:20px;
+}
+.gallery img{
+width:100%;
+height:150px;
+border-radius:10px;
+}
+
+/* CONTACT */
+.contact{
+padding:20px;
+background:Pink;
+text-align:Right;
+margin:20px;
+border-left:6px solid #002366;
+}
+
+/* MAP */
+.map{padding:20px}
+iframe{width:100%;height:250px;border:0}
+
+/* LOGIN POPUP */
+.popup{
+display:none;
+position:fixed;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+}
+
+.popup-box{
+background:white;
+padding:20px;
+border-radius:10px;
+width:300px;
+}
+
+/* FOOTER */
+footer{
+background:#002366;
+color:white;
+text-align:center;
+padding:15px;
+}
+
+/* MENU SUBMENU */
+.dropdown{
+display:inline-block;
+position:relative;
+}
+
+.dropdown-content{
+display:none;
+position:absolute;
+background: #f2f2f2;   /* 👈 green ki jagah white */
+min-width:200px;
+border-radius:6px;
+text-align:left;
+font-family:Calibri, Arial, sans-serif;
+top:27px;
+z-index:999;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a{
+display:block;
+color:black;   /* 👈 text black */
+padding:10px 12px;   /* 👈 spacing bhi thodi kam */
+text-decoration:none;
+line-height:0.1;   /* 👈 text gap kam */
+}
+
+.dropdown-content a:hover{
+background:Red;   /* 👈 halka grey hover */
+}
+
+.dropdown:hover .dropdown-content{
+display:block;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="topbar">
+<button onclick="setEnglish()">EN</button>
+<button onclick="setHindi()">HI</button>
+<button onclick="openLogin()">Login</button>
+</div>
+
+<div class="main-header">
+<div class="logo">
+<img src="https://i.ibb.co/YF1dc4CH/Logo-page-0001.jpg">
+<span id="schoolName">Saraswati Bal Vidhya Mandir High School Runaha</span>
+</div>
+
+<nav>
+
+<nav>
+
+<a href="#" id="home">Home</a>
+
+<!-- Admission -->
+<div class="dropdown">
+<a href="#" id="admission">Admission</a>
+<div class="dropdown-content">
+<a href="#">New Admission</a>
+<a href="#">Admission Form</a>
+<a href="#">Fee Structure</a>
+</div>
+</div>
+
+<!-- Admit Card -->
+<a href="#">Admit Card</a>
+
+<!-- Result -->
+<div class="dropdown">
+<a href="#">Result</a>
+<div class="dropdown-content">
+<a href="#">Annual Result</a>
+<a href="#">Half Yearly</a>
+</div>
+</div>
+
+<a href="#">T.C.</a>
+<a href="#">Fees</a>
+<a href="#">Certificate</a>
+<a href="#gallery">Gallery</a>
+<a href="#contact">Contact</a>
+
+</nav>
+</div>
+
+</header>
+
+<!-- SLIDER WITH UPDATE -->
+<div class="slider">
+<div class="update-box" id="updateText">
+<div style="width:80%;margin:auto;
+background:rgba(255,255,255,0.7);
+padding:20px;
+border-radius:10px;
+backdrop-filter: blur(5px);">
+
+  <h2 style="text-align:center;color:#000;"> New Update 
+</h2>
+  
+  <p style="font-size:18px;text-align:center;color:#000;">
+    वार्षिक परीक्षा परिणाम 2026–27 देखने के लिए  नीचे दी गई लिंक पर क्लिक करें।
+  </p>
+  
+  <a href="https://script.google.com/macros/s/AKfycbyydO4h3DaquVqmtbVAqDWqH4cycqG6DziXzFuix9oBqfKV0wydTAiFonwXUPG5h1RQcg/exec"
+     target="_blank"
+     style="display:block;width:100%;text-align:center;
+     background:rgba(40,167,69,0.8);
+     color:white;padding:15px;
+     text-decoration:none;border-radius:6px;font-size:18px;">
+     👉 परिणाम देखने के लिए यहाँ क्लिक करें
+  </a>
+
+</div>
+</div>
+</a>
+</div>
+</div>
+
+<div class="marquee">
+<div class="news-label">
+Latest Update
+</div>
+<div class="marquee-content">
+👉 1. वार्षिक परीक्षा परिणाम 2026–27 दिनांक 13 अप्रैल को जारी किया जाएगा |
+👉 2. Admission Open Session 2026-27
+</div>
+</div>
+
+
+
+<!-- BOXES -->
+<div class="box-section">
+
+<div class="box">
+<h3>Admission</h3>
+<ul>
+<li><a href="#">➤ New Admission</a></li>
+<li><a href="#">➤ Admission Form</a></li>
+<li><a href="#">➤ Fee Structure</a></li>
+</ul>
+</div>
+
+<div class="box">
+<h3>Result</h3>
+<ul>
+<li><a href="#">➤ Annual Result</a></li>
+li><a href="#">➤ Half Yearly</a></li>
+<li><a href="#">➤ Class Wise Result</a></li>
+</ul>
+</div>
+
+<div class="box">
+<h3>T.C.</h3>
+<ul>
+<li><a href="#">➤ Apply T.C.</a></li>
+<li><a href="#">➤ Download T.C.</a></li>
+<li><a href="#">➤ Status Check</a></li>
+</ul>
+</div>
+
+<div class="box">
+<h3>Fees</h3>
+<ul>
+<li><a href="#">➤ Pay Fees Online</a></li>
+<li><a href="#">➤ Fee Details</a></li>
+<li><a href="#">➤ Receipt Download</a></li>
+</ul>
+</div>
+
+<div class="box">
+<h3>Certificate</h3>
+<ul>
+<li><a href="#">➤ Character Certificate</a></li>
+<li><a href="#">➤ Bonafide Certificate</a></li>
+<li><a href="#">➤ Download Certificate</a></li>
+</ul>
+</div>
+
+<div class="box">
+<h3>More</h3>
+<ul>
+<li><a href="#">➤ Notice Board</a></li>
+<li><a href="#">➤ Latest Updates</a></li>
+<li><a href="#">➤ Events</a></li>
+</ul>
+</div>
+
+</div>
+</div>
+
+<div class="news" id="newsText">
+Gallary
+</div>
+
+<!-- GALLERY -->
+<div class="gallery" id="gallery">
+<img src="https://images.unsplash.com/photo-1588072432836-e10032774350">
+<img src="https://images.unsplash.com/photo-1577896851231-70ef18881754">
+<img src="https://images.unsplash.com/photo-1509062522246-3755977927d7">
+<img src="https://images.unsplash.com/photo-1581090700227-1e8a3b8a2f7c">
+<img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178">
+<img src="https://images.unsplash.com/photo-1606326608690-4e0281b1e588">
+</div>
+
+<!-- CONTACT -->
+<div class="contact" id="contact">
+<h2 id="contactTitle">Contact Us</h2>
+<p>📍 Runaha, Madhya Pradesh</p>
+<p>📞 9977424171,9589792185</p>
+<p>📧 saraswatischoolrunaha2023@gmail.com</p>
+</div>
+
+<div class="map">
+<iframe src="https://maps.google.com/maps?q=bhopal&output=embed"></iframe>
+</div>
+
+<!-- LOGIN -->
+<div class="popup" id="loginPopup">
+<div class="popup-box">
+<h3>Login</h3>
+<select>
+<option>Student Login</option>
+<option>Teacher Login</option>
+<option>Principal Login</option>
+</select><br><br>
+<input type="text" placeholder="User ID"><br><br>
+<input type="password" placeholder="Password"><br><br>
+<button onclick="closeLogin()">Submit</button>
+</div>
+</div>
+
+<footer>
+© 2026 Saraswati Bal Vidhya Mandir High School Runaha
+</footer>
+
+<script>
+function setHindi(){
+document.getElementById("schoolName").innerText="सरस्वती  बाल विद्या मंदिर स्कूल रुनाहा";
+document.getElementById("home").innerText="होम";
+document.getElementById("admission").innerText="प्रवेश";
+document.getElementById("newsText").innerText="📢 नया प्रवेश शुरू 2026";
+document.getElementById("contactTitle").innerText="संपर्क करें";
+<h3 id="box1">Admission</h3>
+<h3 id="box2">Result</h3>
+<h3 id="box3">T.C.</h3>
+<h3 id="box4">Fees</h3>
+<h3 id="box5">Certificate</h3>
+document.getElementById("marqueeText").innerText="सरस्वती बाल विद्या मंदिर स्कूल रुनाहा में आपका स्वागत है | प्रवेश शुरू 2026"  
+document.getElementById("updateText").innerText="📢 नया प्रवेश प्रारंभ 2026";
+}
+
+function setEnglish(){
+location.reload();
+}
+
+function openLogin(){
+document.getElementById("loginPopup").style.display="flex";
+}
+
+function closeLogin(){
+document.getElementById("loginPopup").style.display="none";
+}
+</script>
+
+</body>
+</html>
