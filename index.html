@@ -499,7 +499,22 @@ document.getElementById("contactTitle").innerText="संपर्क करे�
 <h3 id="box5">Certificate</h3>
 document.getElementById("marqueeText").innerText="सरस्वती बाल विद्या मंदिर स्कूल रुनाहा में आपका स्वागत है | प्रवेश शुरू 2026"  
 document.getElementById("updateText").innerText="📢 नया प्रवेश प्रारंभ 2026";
-}
+} 
+ const resultLink = document.getElementById("resultLink");
+
+resultLink.addEventListener("click", function(e){
+
+  const now = new Date();
+  const resultDate = new Date(2026, 3, 13, 11, 0); 
+
+  if(now < resultDate){
+    e.preventDefault();
+    alert("Result 13 April 2026 ko subah 11 baje ke baad hi available hoga.");
+  }
+
+});
+
+  
 
 function setEnglish(){
 location.reload();
@@ -513,19 +528,6 @@ function closeLogin(){
 document.getElementById("loginPopup").style.display="none";
 } 
 
-  const resultLink = document.getElementById("resultLink");
-
-resultLink.addEventListener("click", function(e){
-
-  const now = new Date();
-  const resultDate = new Date(2026, 3, 13, 11, 0); 
-
-  if(now < resultDate){
-    e.preventDefault();
-    alert("Result 13 April 2026 ko subah 11 baje ke baad hi available hoga.");
-  }
-
-});
 </script>
 
 </body>
