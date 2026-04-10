@@ -487,23 +487,25 @@ Gallary
 
 <script>
 function setHindi(){
-document.getElementById("schoolName").innerText="सरस्वती  बाल विद्या मंदिर स्कूल रुनाहा";
-document.getElementById("home").innerText="होम";
-document.getElementById("admission").innerText="प्रवेश";
-document.getElementById("newsText").innerText="📢 नया प्रवेश शुरू 2026";
-document.getElementById("contactTitle").innerText="संपर्क करें";
-<h3 id="box1">Admission</h3>
-<h3 id="box2">Result</h3>
-<h3 id="box3">T.C.</h3>
-<h3 id="box4">Fees</h3>
-<h3 id="box5">Certificate</h3>
-document.getElementById("marqueeText").innerText="सरस्वती बाल विद्या मंदिर स्कूल रुनाहा में आपका स्वागत है | प्रवेश शुरू 2026"  
-document.getElementById("updateText").innerText="📢 नया प्रवेश प्रारंभ 2026";
-} 
- const resultLink = document.getElementById("resultLink");
+...
+}
+
+function setEnglish(){
+...
+}
+
+function openLogin(){
+...
+}
+
+function closeLogin(){
+...
+}
+
+/* 👇 यह code सबसे नीचे डालना है */
+const resultLink = document.getElementById("resultLink");
 
 resultLink.addEventListener("click", function(e){
-
   const now = new Date();
   const resultDate = new Date(2026, 3, 13, 11, 0); 
 
@@ -511,23 +513,7 @@ resultLink.addEventListener("click", function(e){
     e.preventDefault();
     alert("Result 13 April 2026 ko subah 11 baje ke baad hi available hoga.");
   }
-
 });
-
-  
-
-function setEnglish(){
-location.reload();
-}
-
-function openLogin(){
-document.getElementById("loginPopup").style.display="flex";
-}
-
-function closeLogin(){
-document.getElementById("loginPopup").style.display="none";
-} 
-
 </script>
 
 </body>
