@@ -489,26 +489,20 @@ Gallary
 function setHindi(){
 ...
 }
-
 function setEnglish(){
 ...
 }
-
 function openLogin(){
 ...
 }
-
 function closeLogin(){
 ...
 }
-
 /* 👇 यह code सबसे नीचे डालना है */
 const resultLink = document.getElementById("resultLink");
-
 resultLink.addEventListener("click", function(e){
   const now = new Date();
   const resultDate = new Date(2026, 4, 13, 11, 0); 
-
   if(now < resultDate){
     e.preventDefault();
     alert("Result 13 April 2026 ko subah 11 baje ke baad hi available hoga.");
