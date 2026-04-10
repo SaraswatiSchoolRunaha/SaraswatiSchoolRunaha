@@ -483,24 +483,15 @@ Gallary
 </footer>
 <script>
 function checkResult(){
-  fetch("https://worldtimeapi.org/api/timezone/Asia/Kolkata")
-  .then(res => res.json())
-  .then(data => {
+  const now = new Date();
+  const resultDate = new Date(2026, 3, 13, 11, 0);
 
-    const now = new Date(data.datetime);
-    const resultDate = new Date(2026, 3, 13, 11, 0);
-
-    if(now < resultDate){
-      alert("Result 13 April 2026 ko subah 11 baje ke baad hi available hoga.");
-    } else {
-      window.open("https://script.google.com/macros/s/AKfycbw5TpK4L4fQre9Zf8UMehoTHolEq_dD4k7G_LvxfK-HJn-SpzwahAc1N6qBpGZY72psRg/exec", "_blank");
-    }
-
-  })
-  .catch(() => {
-    alert("Internet connection check karein.");
-  });
+  if(now < resultDate){
+    alert("Result abhi available nahi hai.\n13 April 2026, 11 baje ke baad dekhein.");
+  } else {
+    window.open("https://script.google.com/macros/s/AKfycbw5TpK4L4fQre9Zf8UMehoTHolEq_dD4k7G_LvxfK-HJn-SpzwahAc1N6qBpGZY72psRg/exec", "_blank");
+  }
 }
-<script>
+</script>
 </body>
 </html>
