@@ -248,19 +248,13 @@ document.getElementById('admissionForm').addEventListener('submit', function(e){
     return;
   }
 
- let form = document.getElementById("admissionForm");
-
-let formData = {
+ let formData = {
   appNo: generateAppNo(),
 
-  <label>Student Name</label>
-<input type="text" name="studentName" required>
+  studentName: form.querySelector('input[name="studentName"]').value,
+  fatherName: form.querySelector('input[name="fatherName"]').value,
+  motherName: form.querySelector('input[name="motherName"]').value,
 
-<label>Father Name</label>
-<input type="text" name="fatherName" required>
-
-<label>Mother Name</label>
-<input type="text" name="motherName" required>
   dob: form.querySelector('input[type="date"]').value,
   session: form.querySelectorAll("select")[0].value,
   category: form.querySelectorAll("select")[1].value,
