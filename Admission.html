@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admission Form with Photo Preview & Captcha</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #e6f0ff;
+  margin:0;
+  padding:20px;
+}
+.form-container {
+  max-width:900px;
+  margin:20px auto;
+  background:#fff;
+  border-radius:15px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.2);
+  padding:30px;
+  border:2px solid #002366;
+}
+
+h2 {
+  text-align: center;                       /* text center */
+  font-family: 'Luckiest Guy', cursive;    /* fun font */
+  font-size: 36px;                          /* बड़ा heading */
+  color: #ff0066;                           /* fallback color */
+  background: linear-gradient(45deg, #ffcc00, #ff0066, #00ccff); /* gradient */
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  padding: 20px 0;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  transition: transform 0.3s, text-shadow 0.3s;
+
+  /* underline */
+  border-bottom: 4px solid #004080;  /* नीला underline */
+  display: inline-block;              /* underline text width तक ही */
+  margin: 0 auto;                     /* block को center में लाने के लिए */
+}
+
+
+h3{background:#002366;color:#fff;padding:10px;border-radius:8px;margin-top:20px;font-weight:600;}
+label{font-weight:500;margin-top:10px;display:block;}
+input, select, textarea{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid #ccc;font-family:'Poppins',Arial,sans-serif;transition:border 0.3s,box-shadow 0.3s;}
+input:focus,select:focus,textarea:focus{border-color:#004080;box-shadow:0 0 8px rgba(0,64,128,0.3);outline:none;}
+textarea{resize:vertical; min-height:60px;}
+.row{display:flex; gap:15px; flex-wrap:wrap;}
+.row>div{flex:1;}
+
+/* Submit button center */
+button[type="submit"] {
+  width: 200px;          /* fixed width */
+  display: block;        /* margin auto काम करने के लिए */
+  margin: 20px auto;     /* ऊपर-नीचे 20px, horizontally center */
+  padding: 18px;
+  background: Green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+button[type="submit"]:hover {
+  background: #004080;
+  transform: scale(1.02);
+}
+
+/* Captcha Styles */
+.captcha-box { display:flex; align-items:center; gap:10px; margin-top:5px; }
+.captcha-code { 
+  font-weight:700; 
+  font-size:16px;        /* छोटा font */
+  background:#e0e0e0; 
+  padding:3px 8px;       /* छोटा padding */
+  border-radius:5px; 
+  letter-spacing:1.5px;  /* थोड़ा spacing घटाया */
+  user-select:none; 
+}
+.refresh-btn {
+  width: 80px;
+  padding: 6px;
+  cursor:pointer; 
+  background:#004080; 
+  color:white; 
+  border:none; 
+  border-radius:5px; 
+  font-weight:600; 
+  font-size:13px; 
+}
+
+/* Photo Preview */
+.photo-preview {
+  margin-top:10px;
+  width:150px;
+  height:150px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  object-fit:cover;
+  display:block;
+}
+</style>
+</head>
+<body>
+
+<div class="form-container">
+<h2> Admission Form</h2>
+<form id="admissionForm">
+
+<h3>Student Details</h3>
+<label>Session (Year)</label>
+<select required>
+  <option value="">Select Session</option>
+  <option>2024-25</option>
+  <option>2025-26</option>
+  <option>2026-27</option>
+  <option>2027-28</option>
+</select>
+<label>Student Name</label>
+<input type="text" required>
+<div class="row">
+  <div>
+    <label>Father Name</label>
+    <input type="text" required>
+  </div>
+  <div>
+    <label>Mother Name</label>
+    <input type="text" required>
+  </div>
+</div>
+<label>Date of Birth</label>
+<input type="date" required>
+<div class="row">
+  <div>
+    <label>Medium</label>
+    <select required>
+      <option value="">Select</option>
+      <option>Hindi</option>
+      <option>English</option>
+    </select>
+  </div>
+  <div>
+    <label>Category</label>
+    <select required>
+      <option value="">Select</option>
+      <option>General</option>
+      <option>OBC</option>
+      <option>SC</option>
+      <option>ST</option>
+    </select>
+  </div>
+</div>
+
+<h3>Address Details</h3>
+<div class="row">
+  <div><label>State</label><input type="text" required></div>
+  <div><label>District</label><input type="text" required></div>
+</div>
+<div class="row">
+  <div><label>Tehsil</label><input type="text" required></div>
+  <div><label>Village</label><input type="text" required></div>
+</div>
+<label>Full Address</label>
+<textarea placeholder="Enter full address"></textarea>
+
+<h3>ID Details</h3>
+<div class="row">
+  <div><label>Aadhaar Number</label><input type="text" maxlength="12" pattern="\d{12}" title="Enter 12 digit Aadhaar number" required></div>
+  <div><label>Samagra ID</label><input type="text" required></div>
+</div>
+
+<h3>Bank Details</h3>
+<label>Bank Name</label>
+<input type="text" required>
+<div class="row">
+  <div><label>Account Number</label><input type="text" required></div>
+  <div><label>IFSC Code</label><input type="text" required></div>
+</div>
+
+<h3>Contact Details</h3>
+
+<label>Mobile Number</label>
+<input type="text" name="mobile" pattern="[0-9]{10}" maxlength="10" required>
+
+<h3>Upload Photo & Captcha</h3>
+<label>Upload Photo</label>
+<input type="file" accept="image/*" id="photoUpload" required>
+<img id="photoPreview" class="photo-preview" src="" alt="Photo Preview">
+
+<label>Captcha Code</label>
+<div class="captcha-box">
+  <div class="captcha-code" id="captchaCode">XXXXXX</div>
+  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Referrec</button>
+</div>
+<input type="text" id="captchaInput" placeholder="Enter Captcha" required>
+
+<button type="submit">Submit Admission</button>
+</form>
+</div>
+
+<script>
+// Captcha Generator
+function generateCaptcha() {
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let code = '';
+  for(let i=0; i<6; i++){
+    code += chars.charAt(Math.floor(Math.random()*chars.length));
+  }
+  document.getElementById('captchaCode').textContent = code;
+}
+// Generate captcha on page load
+generateCaptcha();
+
+// Photo preview
+document.getElementById('photoUpload').addEventListener('change', function(){
+  const file = this.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      document.getElementById('photoPreview').src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+  } else {
+    document.getElementById('photoPreview').src = "";
+  }
+});
+
+// Validate captcha
+document.getElementById('admissionForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  let userCaptcha = document.getElementById('captchaInput').value;
+  let actualCaptcha = document.getElementById('captchaCode').textContent;
+  if(userCaptcha === actualCaptcha){
+    alert("Form submitted successfully!");
+    this.reset();
+    document.getElementById('photoPreview').src = "";
+    generateCaptcha();
+  } else {
+    alert("Captcha is incorrect. Try again.");
+    generateCaptcha();
+    document.getElementById('captchaInput').value = '';
+  }
+});
+</script>
+
+</body>
+</html>
