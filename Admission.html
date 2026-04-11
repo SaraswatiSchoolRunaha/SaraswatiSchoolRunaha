@@ -216,7 +216,7 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbzZTFXJ7TVbbpOUNiXj89
 
 // Captcha
 function generateCaptcha() {
-  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy0123456789';
   let code = '';
   for(let i=0; i<6; i++){
     code += chars.charAt(Math.floor(Math.random()*chars.length));
