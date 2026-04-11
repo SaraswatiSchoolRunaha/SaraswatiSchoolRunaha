@@ -109,34 +109,11 @@ button[type="submit"]:hover {
 </head>
 <body>
 
-
+<div class="form-container">
+function submitForm(){
   fetch("https://script.google.com/macros/s/AKfycbwHjRoJnuo-MGYh5SpI5ShbHKwziOJLOFlEn75_G1Nkt80NTuQyLT1w3L5wPEsUNJyNqw/exec", {
     method:"POST",
-    body: JSON.stringify({
-      name: document.getElementById("name").value,
-      father: document.getElementById("father").value,
-      mother: document.getElementById("mother").value,
-      dob: document.getElementById("dob").value,
-      session: document.getElementById("session").value,
-      category: document.getElementById("category").value,
-      state: document.getElementById("state").value,
-      district: document.getElementById("district").value,
-      tehsil: document.getElementById("tehsil").value,
-      village: document.getElementById("village").value,
-      mobile: document.getElementById("mobile").value,
-      address: document.getElementById("address").value,
-      aadhaar: document.getElementById("aadhaar").value,
-      samagra: document.getElementById("samagra").value,
-      bank: document.getElementById("bank").value,
-      account: document.getElementById("account").value,
-      ifsc: document.getElementById("ifsc").value
-    })
-  })
-  .then(res=>res.text())
-  .then(data=>{
-    alert("Form Submitted Successfully!");
-  });
-}
+   
 </script>
   
 <h2> Admission Form</h2>
