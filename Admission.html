@@ -205,15 +205,14 @@ button[type="submit"]:hover {
 </div>
 <script>
 
+// Application No
 function generateAppNo(){
   return "APP-" + Date.now();
 }
 
-const scriptURL = "....";
-  
-<script>
-// Captcha Generator
-  const scriptURL = "https://script.google.com/macros/s/AKfycbyEdmxa4AQP5xcLBiWHuKdaY_j9zWf92UotRls2hLzwSLi-T9-V3MjX0EC_8XRGdAFg1A/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbyEdmxa4AQP5xcLBiWHuKdaY_j9zWf92UotRls2hLzwSLi-T9-V3MjX0EC_8XRGdAFg1A/exec";
+
+// Captcha
 function generateCaptcha() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
@@ -222,7 +221,6 @@ function generateCaptcha() {
   }
   document.getElementById('captchaCode').textContent = code;
 }
-// Generate captcha on page load
 generateCaptcha();
 
 // Photo preview
@@ -234,80 +232,70 @@ document.getElementById('photoUpload').addEventListener('change', function(){
       document.getElementById('photoPreview').src = e.target.result;
     }
     reader.readAsDataURL(file);
-  } else {
-    document.getElementById('photoPreview').src = "";
   }
 });
 
-// Validate captcha
+// Submit
 document.getElementById('admissionForm').addEventListener('submit', function(e){
   e.preventDefault();
 
   let userCaptcha = document.getElementById('captchaInput').value;
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
-  if(userCaptcha === actualCaptcha){
-
-    let formData = {
-  appNo: generateAppNo(),
-
-  studentName: document.querySelectorAll("input")[0].value,
-  fatherName: document.querySelectorAll("input")[1].value,
-  motherName: document.querySelectorAll("input")[2].value,
-
-  dob: document.querySelector('input[type="date"]').value,
-  session: document.querySelector("select").value,
-  category: document.querySelectorAll("select")[1].value,
-
-  state: document.querySelectorAll("input")[3].value,
-  district: document.querySelectorAll("input")[4].value,
-  tehsil: document.querySelectorAll("input")[5].value,
-  village: document.querySelectorAll("input")[6].value,
-
-  mobile: document.querySelector('input[name="mobile"]').value,
-  address: document.querySelector("textarea").value,
-
-  aadhaar: document.querySelectorAll("input")[7].value,
-  samagra: document.querySelectorAll("input")[8].value,
-
-  bank: document.querySelectorAll("input")[9].value,
-  account: document.querySelectorAll("input")[10].value,
-  ifsc: document.querySelectorAll("input")[11].value
-};
-
-  fetch(scriptURL, {
-  method: "POST",
-  body: JSON.stringify(formData)
-})
-.then(res => res.text())
-.then(response => {
-
-  let appNo = formData.appNo;
-
-  alert("Form Submitted Successfully!\nApplication No: " + appNo);
-
-  document.getElementById("admissionForm").reset();
-  document.getElementById("photoPreview").src = "";
-  generateCaptcha();
-
-})
-.catch(error => {
-  alert("Error: " + error);
-});
-      document.getElementById('admissionForm').reset();
-      document.getElementById('photoPreview').src = "";
-      generateCaptcha();
-    })
-    .catch(error => alert(error));
-
-  } else {
+  if(userCaptcha !== actualCaptcha){
     alert("Captcha incorrect");
     generateCaptcha();
-    document.getElementById('captchaInput').value = '';
+    return;
   }
+
+  let formData = {
+    appNo: generateAppNo(),
+
+    studentName: document.querySelectorAll("input")[0].value,
+    fatherName: document.querySelectorAll("input")[1].value,
+    motherName: document.querySelectorAll("input")[2].value,
+
+    dob: document.querySelector('input[type="date"]').value,
+    session: document.querySelector("select").value,
+    category: document.querySelectorAll("select")[1].value,
+
+    state: document.querySelectorAll("input")[3].value,
+    district: document.querySelectorAll("input")[4].value,
+    tehsil: document.querySelectorAll("input")[5].value,
+    village: document.querySelectorAll("input")[6].value,
+
+    mobile: document.querySelector('input[name="mobile"]').value,
+    address: document.querySelector("textarea").value,
+
+    aadhaar: document.querySelectorAll("input")[7].value,
+    samagra: document.querySelectorAll("input")[8].value,
+
+    bank: document.querySelectorAll("input")[9].value,
+    account: document.querySelectorAll("input")[10].value,
+    ifsc: document.querySelectorAll("input")[11].value
+  };
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(formData)
+  })
+  .then(res => res.text())
+  .then(response => {
+
+    alert("Form Submitted Successfully!\nApplication No: " + formData.appNo);
+
+    document.getElementById("admissionForm").reset();
+    document.getElementById("photoPreview").src = "";
+    generateCaptcha();
+
+  })
+  .catch(error => {
+    alert("Error: " + error);
+  });
+
 });
 
-</script>   <!-- ✅ YE ADD KARO -->
+</script>
 
 </body>
 </html>
