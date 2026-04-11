@@ -274,10 +274,17 @@ document.getElementById('admissionForm').addEventListener('submit', function(e){
 
   fetch(scriptURL, {
     method: "POST",
-    body: JSON.stringify(formData)
+    body: JSON.stringify(formData),
+    headers: {
+      "Content-Type": "application/json"
+    }
   })
   .then(res => res.text())
-  .then(response => {
+  .then(data => {
+
+    console.log("Response:", data); // debugging
+
+    // ✅ ALERT WILL SHOW HERE
     alert("Form Submitted Successfully!\nApplication No: " + formData.appNo);
 
     document.getElementById("admissionForm").reset();
@@ -285,6 +292,7 @@ document.getElementById('admissionForm').addEventListener('submit', function(e){
     generateCaptcha();
   })
   .catch(error => {
+    console.log(error);
     alert("Error: " + error);
   });
 
