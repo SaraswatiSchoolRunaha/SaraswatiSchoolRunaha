@@ -110,6 +110,59 @@ button[type="submit"]:hover {
 <body>
 
 <div class="form-container">
+<h2>Admission Form</h2>
+
+<input id="name" placeholder="Student Name"><br><br>
+<input id="father" placeholder="Father Name"><br><br>
+<input id="mother" placeholder="Mother Name"><br><br>
+<input id="dob" placeholder="DOB"><br><br>
+<input id="session" placeholder="Session"><br><br>
+<input id="category" placeholder="Category"><br><br>
+<input id="state" placeholder="State"><br><br>
+<input id="district" placeholder="District"><br><br>
+<input id="tehsil" placeholder="Tehsil"><br><br>
+<input id="village" placeholder="Village"><br><br>
+<input id="mobile" placeholder="Mobile Number"><br><br>
+<input id="address" placeholder="Address"><br><br>
+<input id="aadhaar" placeholder="Aadhaar"><br><br>
+<input id="samagra" placeholder="Samagra ID"><br><br>
+<input id="bank" placeholder="Bank Name"><br><br>
+<input id="account" placeholder="Account No"><br><br>
+<input id="ifsc" placeholder="IFSC"><br><br>
+
+<button onclick="submitForm()">Submit</button>
+
+<script>
+function submitForm(){
+  fetch("YOUR_SCRIPT_URL", {
+    method:"POST",
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      father: document.getElementById("father").value,
+      mother: document.getElementById("mother").value,
+      dob: document.getElementById("dob").value,
+      session: document.getElementById("session").value,
+      category: document.getElementById("category").value,
+      state: document.getElementById("state").value,
+      district: document.getElementById("district").value,
+      tehsil: document.getElementById("tehsil").value,
+      village: document.getElementById("village").value,
+      mobile: document.getElementById("mobile").value,
+      address: document.getElementById("address").value,
+      aadhaar: document.getElementById("aadhaar").value,
+      samagra: document.getElementById("samagra").value,
+      bank: document.getElementById("bank").value,
+      account: document.getElementById("account").value,
+      ifsc: document.getElementById("ifsc").value
+    })
+  })
+  .then(res=>res.text())
+  .then(data=>{
+    alert("Form Submitted Successfully!");
+  });
+}
+</script>
+  
 <h2> Admission Form</h2>
 <form id="admissionForm">
 
