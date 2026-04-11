@@ -242,10 +242,54 @@ font-weight:500;
 letter-spacing:0.5px;
 }
 
-/* MAP */
-.map{padding:20px}
-iframe{width:100%;height:250px;border:0}
+/* Important Website  */
+.links-section{
+padding:20px;
+background:#f0f8ff;
 
+border:3px solid #002366;
+border-radius:12px;
+margin:20px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+.links-section h2{
+text-align:center;
+margin-bottom:15px;
+
+background:#002366;
+color:white;
+padding:10px;
+border-radius:8px;
+}
+
+.links-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+
+background:white;
+padding:15px;
+border-radius:10px;
+}
+
+.link-box{
+display:block;
+background:#002366;
+color:white;
+text-align:center;
+padding:15px;
+border-radius:10px;
+text-decoration:none;
+font-weight:bold;
+transition:0.3s;
+}
+
+.link-box:hover{
+background:#ff5722;
+color:white;
+transform:scale(1.05);
+}
 /* LOGIN POPUP */
 .popup{
 display:none;
@@ -489,8 +533,30 @@ Gallary
 <p>📧 saraswatischoolrunaha2023@gmail.com</p>
 </div>
 
-<div class="map">
-<iframe src="https://maps.google.com/maps?q=bhopal&output=embed"></iframe>
+<!-- IMPORTANT WEBSITES -->
+<div class="links-section">
+
+<h2>Important Websites</h2>
+
+<div class="links-grid">
+
+<a href="https://example1.com" target="_blank" class="link-box">Website 1</a>
+<a href="https://example2.com" target="_blank" class="link-box">Website 2</a>
+<a href="https://example3.com" target="_blank" class="link-box">Website 3</a>
+
+<a href="https://example4.com" target="_blank" class="link-box">Website 4</a>
+<a href="https://example5.com" target="_blank" class="link-box">Website 5</a>
+<a href="https://example6.com" target="_blank" class="link-box">Website 6</a>
+
+<a href="https://example7.com" target="_blank" class="link-box">Website 7</a>
+<a href="https://example8.com" target="_blank" class="link-box">Website 8</a>
+<a href="https://example9.com" target="_blank" class="link-box">Website 9</a>
+
+<a href="https://example10.com" target="_blank" class="link-box">Website 10</a>
+<a href="https://example11.com" target="_blank" class="link-box">Website 11</a>
+<a href="https://example12.com" target="_blank" class="link-box">Website 12</a>
+
+</div>
 </div>
 
 <!-- LOGIN -->
