@@ -3,67 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admission Form with Photo Preview & Captcha</title>
+<title>Admission Form</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 
 <style>
-body {
-  font-family: 'Poppins', Arial, sans-serif;
-  background: #e6f0ff;
-  margin:0;
+body{
+  font-family:'Poppins',Arial;
+  background:#e6f0ff;
   padding:20px;
 }
 
-.form-container {
+.form-container{
   max-width:900px;
-  margin:20px auto;
+  margin:auto;
   background:#fff;
-  border-radius:15px;
+  padding:20px;
+  border-radius:10px;
   box-shadow:0 8px 25px rgba(0,0,0,0.2);
-  padding:30px;
-  border:2px solid #002366;
 }
 
-h2 {
-  text-align:center;
-  font-family:'Luckiest Guy', cursive;
-  font-size:36px;
-  background:linear-gradient(45deg,#ffcc00,#ff0066,#00ccff);
-  -webkit-background-clip:text;
-  color:transparent;
-  border-bottom:4px solid #004080;
-  display:inline-block;
-}
-
-h3{background:#002366;color:#fff;padding:10px;border-radius:8px;margin-top:20px;}
-label{font-weight:500;margin-top:10px;display:block;}
-input,select,textarea{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid #ccc;}
-.row{display:flex;gap:15px;}
-.row>div{flex:1;}
-
-button[type="submit"]{
-  width:200px;
-  display:block;
-  margin:20px auto;
-  padding:18px;
-  background:green;
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  font-weight:900;
-}
-
-.captcha-box{display:flex;gap:10px;align-items:center;}
-.captcha-code{background:#e0e0e0;padding:3px 8px;border-radius:5px;}
-
-.photo-preview{
-  width:150px;
-  height:150px;
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
   border:1px solid #ccc;
-  object-fit:cover;
-  margin-top:10px;
+  border-radius:6px;
+}
+
+.row{display:flex;gap:10px}
+.row>div{flex:1}
+
+button{
+  width:200px;
+  padding:12px;
+  background:green;
+  color:white;
+  border:0;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -76,103 +55,80 @@ button[type="submit"]{
 
 <form id="admissionForm">
 
-<h3>Student Details</h3>
-
-<label>Session</label>
-<select id="session" required>
-  <option value="">Select Session</option>
-  <option>2024-25</option>
-  <option>2025-26</option>
-</select>
-
-<label>Student Name</label>
-<input id="studentName" required>
-
-<div class="row">
-  <div><label>Father Name</label><input id="fatherName" required></div>
-  <div><label>Mother Name</label><input id="motherName" required></div>
-</div>
-
-<label>DOB</label>
+<input id="studentName" placeholder="Student Name" required>
+<input id="fatherName" placeholder="Father Name" required>
+<input id="motherName" placeholder="Mother Name" required>
 <input id="dob" type="date" required>
 
-<h3>Photo</h3>
-<input type="file" id="photoUpload" accept="image/*">
-<img id="photoPreview" class="photo-preview">
+<input id="session" placeholder="Session">
+<input id="category" placeholder="Category">
 
-<h3>Captcha</h3>
-<div class="captcha-box">
-  <div id="captchaCode" class="captcha-code">XXXXXX</div>
-  <button type="button" onclick="generateCaptcha()">Refresh</button>
+<div class="row">
+  <div><input id="state" placeholder="State"></div>
+  <div><input id="district" placeholder="District"></div>
 </div>
 
-<input id="captchaInput" required>
+<div class="row">
+  <div><input id="tehsil" placeholder="Tehsil"></div>
+  <div><input id="village" placeholder="Village"></div>
+</div>
 
-<button type="submit">Submit Admission</button>
+<input id="mobile" placeholder="Mobile Number">
+<textarea id="address" placeholder="Address"></textarea>
+
+<input id="aadhaar" placeholder="Aadhaar">
+<input id="samagra" placeholder="Samagra">
+
+<input id="bank" placeholder="Bank Name">
+<input id="account" placeholder="Account No">
+<input id="ifsc" placeholder="IFSC">
+
+<button type="submit">Submit</button>
 
 </form>
-
 </div>
 
 <script>
-const scriptURL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
 
-// captcha
-function generateCaptcha(){
-  let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let code="";
-  for(let i=0;i<6;i++){
-    code += chars.charAt(Math.floor(Math.random()*chars.length));
-  }
-  document.getElementById("captchaCode").innerText = code;
-}
-generateCaptcha();
+// 🔴 1. यहाँ अपना Google Script link डालना है
+const scriptURL = "PASTE_YOUR_GOOGLE_SCRIPT_LINK_HERE";
 
-// photo
-document.getElementById("photoUpload").addEventListener("change",function(){
-  let file=this.files[0];
-  let reader=new FileReader();
-  reader.onload=e=>{
-    document.getElementById("photoPreview").src=e.target.result;
-  }
-  reader.readAsDataURL(file);
-});
-
-// submit (ONLY FIX ADDED HERE)
-document.getElementById("admissionForm").addEventListener("submit",function(e){
+// 🔴 2. submit form
+document.getElementById("admissionForm").addEventListener("submit", function(e){
   e.preventDefault();
 
-  let cap1=document.getElementById("captchaInput").value;
-  let cap2=document.getElementById("captchaCode").innerText;
+  const data = {
+    studentName: document.getElementById("studentName").value,
+    fatherName: document.getElementById("fatherName").value,
+    motherName: document.getElementById("motherName").value,
+    dob: document.getElementById("dob").value,
+    session: document.getElementById("session").value,
+    category: document.getElementById("category").value,
+    state: document.getElementById("state").value,
+    district: document.getElementById("district").value,
+    tehsil: document.getElementById("tehsil").value,
+    village: document.getElementById("village").value,
+    mobile: document.getElementById("mobile").value,
+    address: document.getElementById("address").value,
+    aadhaar: document.getElementById("aadhaar").value,
+    samagra: document.getElementById("samagra").value,
+    bank: document.getElementById("bank").value,
+    account: document.getElementById("account").value,
+    ifsc: document.getElementById("ifsc").value
+  };
 
-  if(cap1!==cap2){
-    alert("Captcha wrong");
-    generateCaptcha();
-    return;
-  }
-
-  fetch(scriptURL,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      session:document.getElementById("session").value,
-      studentName:document.getElementById("studentName").value,
-      fatherName:document.getElementById("fatherName").value,
-      motherName:document.getElementById("motherName").value,
-      dob:document.getElementById("dob").value
-    })
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(data)
   })
-  .then(res=>res.text())
-  .then(()=>{
-    alert("Submitted Successfully!");
+  .then(res => res.text())
+  .then(res => {
+    alert("Data Google Sheet me save ho gaya!");
     document.getElementById("admissionForm").reset();
-    generateCaptcha();
-    document.getElementById("photoPreview").src="";
-  });
-
+  })
+  .catch(err => alert("Error aa gaya"));
 });
+
 </script>
 
 </body>
