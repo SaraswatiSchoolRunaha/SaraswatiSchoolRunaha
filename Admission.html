@@ -248,32 +248,33 @@ document.getElementById('admissionForm').addEventListener('submit', function(e){
     return;
   }
 
-  let formData = {
-    appNo: generateAppNo(),
+  let form = document.getElementById("admissionForm");
 
-    studentName: document.querySelectorAll("input")[0].value,
-    fatherName: document.querySelectorAll("input")[1].value,
-    motherName: document.querySelectorAll("input")[2].value,
+let formData = {
+  appNo: generateAppNo(),
 
-    dob: document.querySelector('input[type="date"]').value,
-    session: document.querySelector("select").value,
-    category: document.querySelectorAll("select")[1].value,
+  studentName: form.querySelector('input[name="studentName"]').value,
+  fatherName: form.querySelector('input[name="fatherName"]').value,
+  motherName: form.querySelector('input[name="motherName"]').value,
 
-    state: document.querySelectorAll("input")[3].value,
-    district: document.querySelectorAll("input")[4].value,
-    tehsil: document.querySelectorAll("input")[5].value,
-    village: document.querySelectorAll("input")[6].value,
+  dob: form.querySelector('input[type="date"]').value,
+  session: form.querySelectorAll("select")[0].value,
+  category: form.querySelectorAll("select")[1].value,
 
-    mobile: document.querySelector('input[name="mobile"]').value,
-    address: document.querySelector("textarea").value,
+  state: form.querySelectorAll("input")[3].value,
+  district: form.querySelectorAll("input")[4].value,
+  tehsil: form.querySelectorAll("input")[5].value,
+  village: form.querySelectorAll("input")[6].value,
 
-    aadhaar: document.querySelectorAll("input")[7].value,
-    samagra: document.querySelectorAll("input")[8].value,
+  mobile: form.querySelector('input[name="mobile"]').value,
+  address: form.querySelector("textarea").value,
 
-    bank: document.querySelectorAll("input")[9].value,
-    account: document.querySelectorAll("input")[10].value,
-    ifsc: document.querySelectorAll("input")[11].value
-  };
+  aadhaar: form.querySelectorAll("input")[7].value,
+  samagra: form.querySelectorAll("input")[8].value,
+
+  account: form.querySelectorAll("input")[9].value,
+  ifsc: form.querySelectorAll("input")[10].value
+};
 
   fetch(scriptURL, {
     method: "POST",
