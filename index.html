@@ -28,23 +28,44 @@ font-weight:bold;
 border:none;
 }
 
-/* LOGO */
+/* ===== HEADER DESIGN FINAL ===== */
+
 .main-header{
 display:flex;
-flex-direction:column;   /* 👈 menu niche */
-align-items:flex-start;  /* 👈 left side */
+flex-direction:column;
+align-items:flex-start;
+
+background:linear-gradient(90deg,#002366,#0059b3);
+padding:10px;
+border-radius:10px;
 }
 
+/* LOGO + NAME */
 .logo{
 display:flex;
 align-items:center;
 gap:10px;
 }
+
+/* LOGO SIZE FIX */
 .logo img{
-width:80px;height:80px;border-radius:50%;
+width:55px;      /* 👈 perfect size */
+height:55px;
+border-radius:50%;
 }
+
+/* SCHOOL NAME TEXT */
 .logo span{
-font-size:30px;font-weight:bold;
+font-size:26px;   /* 👈 balanced size */
+font-weight:bold;
+color:#ffffff;
+
+/* shadow for visibility */
+text-shadow:
+2px 2px 5px rgba(0,0,0,0.5),
+0 0 8px rgba(255,255,255,0.3);
+
+letter-spacing:1px;
 }
 
 /* MENU */
