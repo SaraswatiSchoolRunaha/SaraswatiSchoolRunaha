@@ -275,13 +275,25 @@ document.getElementById('admissionForm').addEventListener('submit', function(e){
   ifsc: document.querySelectorAll("input")[11].value
 };
 
-    fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify(formData)
-    })
-    .then(res => res.text())
-    .then(response => {
-      alert("Form submitted successfully!");
+  fetch(scriptURL, {
+  method: "POST",
+  body: JSON.stringify(formData)
+})
+.then(res => res.text())
+.then(response => {
+
+  let appNo = formData.appNo;
+
+  alert("Form Submitted Successfully!\nApplication No: " + appNo);
+
+  document.getElementById("admissionForm").reset();
+  document.getElementById("photoPreview").src = "";
+  generateCaptcha();
+
+})
+.catch(error => {
+  alert("Error: " + error);
+});
       document.getElementById('admissionForm').reset();
       document.getElementById('photoPreview').src = "";
       generateCaptcha();
