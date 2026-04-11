@@ -40,7 +40,6 @@ h2 {
 h3{background:#002366;color:#fff;padding:10px;border-radius:8px;margin-top:20px;}
 label{font-weight:500;margin-top:10px;display:block;}
 input,select,textarea{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid #ccc;}
-
 .row{display:flex;gap:15px;}
 .row>div{flex:1;}
 
@@ -97,9 +96,6 @@ button[type="submit"]{
 <label>DOB</label>
 <input id="dob" type="date" required>
 
-<label>Mobile</label>
-<input id="mobile" required>
-
 <h3>Photo</h3>
 <input type="file" id="photoUpload" accept="image/*">
 <img id="photoPreview" class="photo-preview">
@@ -110,7 +106,7 @@ button[type="submit"]{
   <button type="button" onclick="generateCaptcha()">Refresh</button>
 </div>
 
-<input id="captchaInput" placeholder="Enter Captcha" required>
+<input id="captchaInput" required>
 
 <button type="submit">Submit Admission</button>
 
@@ -142,7 +138,7 @@ document.getElementById("photoUpload").addEventListener("change",function(){
   reader.readAsDataURL(file);
 });
 
-// submit (ONLY ADD GOOGLE SHEET HERE)
+// submit (ONLY FIX ADDED HERE)
 document.getElementById("admissionForm").addEventListener("submit",function(e){
   e.preventDefault();
 
@@ -165,14 +161,13 @@ document.getElementById("admissionForm").addEventListener("submit",function(e){
       studentName:document.getElementById("studentName").value,
       fatherName:document.getElementById("fatherName").value,
       motherName:document.getElementById("motherName").value,
-      dob:document.getElementById("dob").value,
-      mobile:document.getElementById("mobile").value
+      dob:document.getElementById("dob").value
     })
   })
-  .then(r=>r.text())
-  .then(d=>{
-    alert("Form Submitted Successfully!");
-    this.reset();
+  .then(res=>res.text())
+  .then(()=>{
+    alert("Submitted Successfully!");
+    document.getElementById("admissionForm").reset();
     generateCaptcha();
     document.getElementById("photoPreview").src="";
   });
