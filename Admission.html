@@ -249,24 +249,31 @@ document.getElementById('admissionForm').addEventListener('submit', function(e){
   if(userCaptcha === actualCaptcha){
 
     let formData = {
-      studentName: document.querySelectorAll("input")[0].value,
-      fatherName: document.querySelectorAll("input")[1].value,
-      motherName: document.querySelectorAll("input")[2].value,
-      dob: document.querySelector('input[type="date"]').value,
-      session: document.querySelector("select").value,
-      category: document.querySelectorAll("select")[1].value,
-      state: document.querySelectorAll("input")[3].value,
-      district: document.querySelectorAll("input")[4].value,
-      tehsil: document.querySelectorAll("input")[5].value,
-      village: document.querySelectorAll("input")[6].value,
-      mobile: document.querySelector('input[name="mobile"]').value,
-      address: document.querySelector("textarea").value,
-      aadhaar: document.querySelectorAll("input")[7].value,
-      samagra: document.querySelectorAll("input")[8].value,
-      bank: document.querySelectorAll("input")[9].value,
-      account: document.querySelectorAll("input")[10].value,
-      ifsc: document.querySelectorAll("input")[11].value
-    };
+  appNo: generateAppNo(),
+
+  studentName: document.querySelectorAll("input")[0].value,
+  fatherName: document.querySelectorAll("input")[1].value,
+  motherName: document.querySelectorAll("input")[2].value,
+
+  dob: document.querySelector('input[type="date"]').value,
+  session: document.querySelector("select").value,
+  category: document.querySelectorAll("select")[1].value,
+
+  state: document.querySelectorAll("input")[3].value,
+  district: document.querySelectorAll("input")[4].value,
+  tehsil: document.querySelectorAll("input")[5].value,
+  village: document.querySelectorAll("input")[6].value,
+
+  mobile: document.querySelector('input[name="mobile"]').value,
+  address: document.querySelector("textarea").value,
+
+  aadhaar: document.querySelectorAll("input")[7].value,
+  samagra: document.querySelectorAll("input")[8].value,
+
+  bank: document.querySelectorAll("input")[9].value,
+  account: document.querySelectorAll("input")[10].value,
+  ifsc: document.querySelectorAll("input")[11].value
+};
 
     fetch(scriptURL, {
       method: "POST",
