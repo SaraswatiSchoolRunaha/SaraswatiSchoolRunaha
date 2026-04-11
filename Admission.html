@@ -212,14 +212,13 @@ function generateAppNo(){
   return "APP-" + Date.now();
 }
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbyp_FVSp0vnj2QQXO_BgVLrKxoEYB-IKVRstQ1cFmUEQOhTm_cappXSYSrYjdrV-CCeeg/exec";
 
 // Captcha
 const scriptURL = "https://script.google.com/macros/s/AKfycbyp_FVSp0vnj2QQXO_BgVLrKxoEYB-IKVRstQ1cFmUEQOhTm_cappXSYSrYjdrV-CCeeg/exec";
 
 // Captcha
 function generateCaptcha() {
-  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
   for (let i = 0; i < 6; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
