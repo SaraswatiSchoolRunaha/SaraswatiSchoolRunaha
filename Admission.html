@@ -310,7 +310,10 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
 
     console.log("Response:", data);
 
-    alert("Form Submitted Successfully!");
+    alert(
+  "🎉 Form Submitted Successfully!\n\n" +
+  "📌 Application No: " + formData.appNo
+);
 
     form.reset();
     document.getElementById("photoPreview").src = "";
