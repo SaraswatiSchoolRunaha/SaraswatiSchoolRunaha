@@ -2,15 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admission Form</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admission Form with Photo Preview & Captcha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 
 <style>
-body{font-family:Arial;background:#e6f0ff;padding:20px;}
-.form-container{max-width:900px;margin:auto;background:#fff;padding:20px;border-radius:10px;}
-input,select,textarea{width:100%;padding:8px;margin:5px 0;}
-button{padding:12px 20px;background:green;color:#fff;border:0;cursor:pointer;}
-.row{display:flex;gap:10px;}
+body {
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #e6f0ff;
+  margin:0;
+  padding:20px;
+}
+
+.form-container {
+  max-width:900px;
+  margin:20px auto;
+  background:#fff;
+  border-radius:15px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.2);
+  padding:30px;
+  border:2px solid #002366;
+}
+
+h2 {
+  text-align:center;
+  font-family:'Luckiest Guy', cursive;
+  font-size:36px;
+  background:linear-gradient(45deg,#ffcc00,#ff0066,#00ccff);
+  -webkit-background-clip:text;
+  color:transparent;
+  border-bottom:4px solid #004080;
+  display:inline-block;
+}
+
+h3{background:#002366;color:#fff;padding:10px;border-radius:8px;margin-top:20px;}
+label{font-weight:500;margin-top:10px;display:block;}
+input,select,textarea{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid #ccc;}
+
+.row{display:flex;gap:15px;}
 .row>div{flex:1;}
+
+button[type="submit"]{
+  width:200px;
+  display:block;
+  margin:20px auto;
+  padding:18px;
+  background:green;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-weight:900;
+}
+
+.captcha-box{display:flex;gap:10px;align-items:center;}
+.captcha-code{background:#e0e0e0;padding:3px 8px;border-radius:5px;}
+
+.photo-preview{
+  width:150px;
+  height:150px;
+  border:1px solid #ccc;
+  object-fit:cover;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -22,67 +77,104 @@ button{padding:12px 20px;background:green;color:#fff;border:0;cursor:pointer;}
 
 <form id="admissionForm">
 
-<input id="studentName" placeholder="Student Name" required>
-<input id="fatherName" placeholder="Father Name" required>
-<input id="motherName" placeholder="Mother Name" required>
+<h3>Student Details</h3>
+
+<label>Session</label>
+<select id="session" required>
+  <option value="">Select Session</option>
+  <option>2024-25</option>
+  <option>2025-26</option>
+</select>
+
+<label>Student Name</label>
+<input id="studentName" required>
+
+<div class="row">
+  <div><label>Father Name</label><input id="fatherName" required></div>
+  <div><label>Mother Name</label><input id="motherName" required></div>
+</div>
+
+<label>DOB</label>
 <input id="dob" type="date" required>
 
-<input id="session" placeholder="Session">
-<input id="category" placeholder="Category">
+<label>Mobile</label>
+<input id="mobile" required>
 
-<input id="state" placeholder="State">
-<input id="district" placeholder="District">
-<input id="tehsil" placeholder="Tehsil">
-<input id="village" placeholder="Village">
+<h3>Photo</h3>
+<input type="file" id="photoUpload" accept="image/*">
+<img id="photoPreview" class="photo-preview">
 
-<input id="mobile" placeholder="Mobile">
-<textarea id="address" placeholder="Address"></textarea>
+<h3>Captcha</h3>
+<div class="captcha-box">
+  <div id="captchaCode" class="captcha-code">XXXXXX</div>
+  <button type="button" onclick="generateCaptcha()">Refresh</button>
+</div>
 
-<input id="aadhaar" placeholder="Aadhaar">
-<input id="samagra" placeholder="Samagra">
+<input id="captchaInput" placeholder="Enter Captcha" required>
 
-<input id="bank" placeholder="Bank Name">
-<input id="account" placeholder="Account No">
-<input id="ifsc" placeholder="IFSC">
-
-<button type="submit">Submit</button>
+<button type="submit">Submit Admission</button>
 
 </form>
 
 </div>
 
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbwsso0r4jMBufOwzhhDA-UNJXcAzuHDqlkHHOn_i8KAiakB1PRRj4X8X7kZp5BSSRzFdQ/exec";
+const scriptURL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
 
-document.getElementById("admissionForm").addEventListener("submit", function(e){
+// captcha
+function generateCaptcha(){
+  let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code="";
+  for(let i=0;i<6;i++){
+    code += chars.charAt(Math.floor(Math.random()*chars.length));
+  }
+  document.getElementById("captchaCode").innerText = code;
+}
+generateCaptcha();
+
+// photo
+document.getElementById("photoUpload").addEventListener("change",function(){
+  let file=this.files[0];
+  let reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById("photoPreview").src=e.target.result;
+  }
+  reader.readAsDataURL(file);
+});
+
+// submit (ONLY ADD GOOGLE SHEET HERE)
+document.getElementById("admissionForm").addEventListener("submit",function(e){
   e.preventDefault();
 
-  fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify({
-      studentName: document.getElementById("studentName").value,
-      fatherName: document.getElementById("fatherName").value,
-      motherName: document.getElementById("motherName").value,
-      dob: document.getElementById("dob").value,
-      session: document.getElementById("session").value,
-      category: document.getElementById("category").value,
-      state: document.getElementById("state").value,
-      district: document.getElementById("district").value,
-      tehsil: document.getElementById("tehsil").value,
-      village: document.getElementById("village").value,
-      mobile: document.getElementById("mobile").value,
-      address: document.getElementById("address").value,
-      aadhaar: document.getElementById("aadhaar").value,
-      samagra: document.getElementById("samagra").value,
-      bank: document.getElementById("bank").value,
-      account: document.getElementById("account").value,
-      ifsc: document.getElementById("ifsc").value
+  let cap1=document.getElementById("captchaInput").value;
+  let cap2=document.getElementById("captchaCode").innerText;
+
+  if(cap1!==cap2){
+    alert("Captcha wrong");
+    generateCaptcha();
+    return;
+  }
+
+  fetch(scriptURL,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      session:document.getElementById("session").value,
+      studentName:document.getElementById("studentName").value,
+      fatherName:document.getElementById("fatherName").value,
+      motherName:document.getElementById("motherName").value,
+      dob:document.getElementById("dob").value,
+      mobile:document.getElementById("mobile").value
     })
   })
-  .then(res => res.text())
-  .then(data => {
-    alert("Data Saved Successfully!");
-    document.getElementById("admissionForm").reset();
+  .then(r=>r.text())
+  .then(d=>{
+    alert("Form Submitted Successfully!");
+    this.reset();
+    generateCaptcha();
+    document.getElementById("photoPreview").src="";
   });
 
 });
