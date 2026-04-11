@@ -215,34 +215,11 @@ function generateAppNo(){
 const scriptURL = "https://script.google.com/macros/s/AKfycbyp_FVSp0vnj2QQXO_BgVLrKxoEYB-IKVRstQ1cFmUEQOhTm_cappXSYSrYjdrV-CCeeg/exec";
 
 // Captcha
-function generateCaptcha() {
-  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy0123456789';
-  let code = '';
-  for(let i=0; i<6; i++){
-    code += chars.charAt(Math.floor(Math.random()*chars.length));
-  }
-  document.getElementById('captchaCode').textContent = code;
-}
-generateCaptcha();
-
-// Photo preview
-document.getElementById('photoUpload').addEventListener('change', function(){
-  const file = this.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      document.getElementById('photoPreview').src = e.target.result;
-    }
-    reader.readAsDataURL(file);
-  }
-});
-
-// Submit
 const scriptURL = "https://script.google.com/macros/s/AKfycbyp_FVSp0vnj2QQXO_BgVLrKxoEYB-IKVRstQ1cFmUEQOhTm_cappXSYSrYjdrV-CCeeg/exec";
 
 // Captcha
 function generateCaptcha() {
-  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
   for (let i = 0; i < 6; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -258,7 +235,7 @@ document.getElementById('photoUpload').addEventListener('change', function () {
     const reader = new FileReader();
     reader.onload = function (e) {
       document.getElementById('photoPreview').src = e.target.result;
-    }
+    };
     reader.readAsDataURL(file);
   }
 });
@@ -300,20 +277,13 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
 
   fetch(scriptURL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData)
   })
   .then(res => res.text())
   .then(data => {
 
-    console.log("Response:", data);
-
-    alert(
-  "🎉 Form Submitted Successfully!\n\n" +
-  "📌 Application No: " + formData.appNo
-);
+    alert("🎉 Form Submitted Successfully!\n📌 Application No: " + formData.appNo);
 
     form.reset();
     document.getElementById("photoPreview").src = "";
@@ -321,7 +291,6 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
 
   })
   .catch(error => {
-    console.log(error);
     alert("Error: " + error);
   });
 
