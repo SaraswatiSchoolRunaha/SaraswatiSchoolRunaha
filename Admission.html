@@ -306,6 +306,7 @@ fetch(scriptURL, {
   headers: {
     "Content-Type": "application/json"
   }
+   mode: "no-cors"   // ✅ ye add karo
 })
 .then(res => res.text())
 .then(data => {
