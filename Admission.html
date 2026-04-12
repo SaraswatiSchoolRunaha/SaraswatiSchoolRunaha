@@ -283,9 +283,12 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     ifsc: form.querySelectorAll("input")[10].value
   };
 
- fetch(scriptURL, {
+fetch(scriptURL, {
   method: "POST",
-  body: new URLSearchParams(formData)
+  body: JSON.stringify(formData),
+  headers: {
+    "Content-Type": "application/json"
+  }
 })
   .then(res => res.text())
   .then(data => {
