@@ -141,7 +141,7 @@ button[type="submit"]:hover {
 <div class="row">
   <div>
     <label>Medium</label>
-    <select required>
+  <select name="medium" required>
       <option value="">Select</option>
       <option>Hindi</option>
       <option>English</option>
@@ -189,16 +189,28 @@ button[type="submit"]:hover {
 <textarea name="address" placeholder="Enter full address"></textarea>
   <h3>ID Details</h3>
 <div class="row">
-  <div><label>Aadhaar Number</label><input type="text" maxlength="12" pattern="\d{12}" title="Enter 12 digit Aadhaar number" required></div>
-  <div><label>Samagra ID</label><input type="text" required></div>
+ <div>
+  <label>Aadhaar Number</label>
+  <input type="text" name="aadhaar" maxlength="12" pattern="\d{12}" title="Enter 12 digit Aadhaar number" required>
+</div>
+  <div>
+  <label>Samagra ID</label>
+  <input type="text" name="samagra" required>
+</div>
 </div>
 
 <h3>Bank Details</h3>
 <label>Bank Name</label>
 <input type="text" name="bankName" required>
 <div class="row">
-  <div><label>Account Number</label><input type="text" required></div>
-  <div><label>IFSC Code</label><input type="text" required></div>
+  <div>
+  <label>Account Number</label>
+  <input type="text" name="account" required>
+</div>
+
+<div>
+  <label>IFSC Code</label>
+  <input type="text" name="ifsc" required>
 </div>
 
 <h3>Contact Details</h3>
@@ -278,26 +290,27 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   }
 
   let form = document.getElementById("admissionForm");
-  let formData = {
-   appNo: generateAppNo(),
-    studentName: form.querySelector('input[name="studentName"]').value,
-    fatherName: form.querySelector('input[name="fatherName"]').value,
-    motherName: form.querySelector('input[name="motherName"]').value,
-    dob: form.querySelector('input[type="date"]').value,
-    session: form.querySelector('select[name="session"]').value,
-    category: form.querySelector('select[name="category"]').value,
-    state: form.querySelector('input[name="state"]').value,
-    district: form.querySelector('input[name="district"]').value,
-    tehsil: form.querySelector('input[name="tehsil"]').value,
-    village: form.querySelector('input[name="village"]').value,
-    mobile: form.querySelector('input[name="mobile"]').value,
-    address: form.querySelector("textarea").value,
-    aadhaar: form.querySelectorAll("input")[7].value,
-    samagra: form.querySelectorAll("input")[8].value,
-    bankName: form.querySelector('input[name="bankName"]').value,
-    account: form.querySelectorAll("input")[9].value,
-    ifsc: form.querySelectorAll("input")[10].value
-  };
+ let formData = {
+  appNo: generateAppNo(),
+  studentName: form.querySelector('input[name="studentName"]').value,
+  fatherName: form.querySelector('input[name="fatherName"]').value,
+  motherName: form.querySelector('input[name="motherName"]').value,
+  dob: form.querySelector('input[type="date"]').value,
+  session: form.querySelector('select[name="session"]').value,
+  medium: form.querySelector('select[name="medium"]').value,
+  category: form.querySelector('select[name="category"]').value,
+  state: form.querySelector('input[name="state"]').value,
+  district: form.querySelector('input[name="district"]').value,
+  tehsil: form.querySelector('input[name="tehsil"]').value,
+  village: form.querySelector('input[name="village"]').value,
+  mobile: form.querySelector('input[name="mobile"]').value,
+  address: form.querySelector("textarea").value,
+  aadhaar: form.querySelector('input[name="aadhaar"]').value,
+  samagra: form.querySelector('input[name="samagra"]').value,
+  bankName: form.querySelector('input[name="bankName"]').value,
+  account: form.querySelector('input[name="account"]').value,
+  ifsc: form.querySelector('input[name="ifsc"]').value
+};
 
 fetch(scriptURL, {
   method: "POST",
