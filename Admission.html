@@ -115,7 +115,7 @@ button[type="submit"]:hover {
 
 <h3>Student Details</h3>
 <label>Session (Year)</label>
-<select required>
+<select name="session" required>
   <option value="">Select Session</option>
   <option>2025-26</option>
   <option>2026-27</option>
@@ -149,7 +149,7 @@ button[type="submit"]:hover {
   </div>
   <div>
     <label>Category</label>
-    <select required>
+<select name="category" required>
       <option value="">Select</option>
       <option>General</option>
       <option>OBC</option>
@@ -269,8 +269,8 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     fatherName: form.querySelector('input[name="fatherName"]').value,
     motherName: form.querySelector('input[name="motherName"]').value,
     dob: form.querySelector('input[type="date"]').value,
-    session: form.querySelectorAll("select")[0].value,
-    category: form.querySelectorAll("select")[1].value,
+    session: form.querySelector('select[name="session"]').value,
+    category: form.querySelector('select[name="category"]').value,
     state: form.querySelectorAll("input")[3].value,
     district: form.querySelectorAll("input")[4].value,
     tehsil: form.querySelectorAll("input")[5].value,
