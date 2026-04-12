@@ -290,50 +290,52 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   }
 
   let form = document.getElementById("admissionForm");
- let formData = {
-  appNo: generateAppNo(),
-  studentName: form.querySelector('input[name="studentName"]').value,
-  fatherName: form.querySelector('input[name="fatherName"]').value,
-  motherName: form.querySelector('input[name="motherName"]').value,
-  dob: form.querySelector('input[type="date"]').value,
-  session: form.querySelector('select[name="session"]').value,
-  medium: form.querySelector('select[name="medium"]').value,
-  category: form.querySelector('select[name="category"]').value,
-  state: form.querySelector('input[name="state"]').value,
-  district: form.querySelector('input[name="district"]').value,
-  tehsil: form.querySelector('input[name="tehsil"]').value,
-  village: form.querySelector('input[name="village"]').value,
-  mobile: form.querySelector('input[name="mobile"]').value,
-  address: form.querySelector("textarea").value,
-  aadhaar: form.querySelector('input[name="aadhaar"]').value,
-  samagra: form.querySelector('input[name="samagra"]').value,
-  bankName: form.querySelector('input[name="bankName"]').value,
-  account: form.querySelector('input[name="account"]').value,
-  ifsc: form.querySelector('input[name="ifsc"]').value
-};
 
-fetch(scriptURL, {
-  method: "POST",
-  body: JSON.stringify(formData),
-  headers: {
-    "Content-Type": "application/json"
-  },   // ✅ yaha comma lagana hai
-  mode: "no-cors"
-})
-  
-.then(res => res.text())
-.then(data => {
+  let file = document.getElementById("photoUpload").files[0];
+  let reader = new FileReader();
 
-  alert("🎉 Form Submitted Successfully!\n📌 Application No: " + formData.appNo);
+  reader.onload = function () {
 
-  form.reset();
-  document.getElementById("photoPreview").src = "";
-  generateCaptcha();
+    let formData = {
+      appNo: generateAppNo(),
+      studentName: form.querySelector('input[name="studentName"]').value,
+      fatherName: form.querySelector('input[name="fatherName"]').value,
+      motherName: form.querySelector('input[name="motherName"]').value,
+      dob: form.querySelector('input[type="date"]').value,
+      session: form.querySelector('select[name="session"]').value,
+      medium: form.querySelector('select[name="medium"]').value,
+      category: form.querySelector('select[name="category"]').value,
+      state: form.querySelector('input[name="state"]').value,
+      district: form.querySelector('input[name="district"]').value,
+      tehsil: form.querySelector('input[name="tehsil"]').value,
+      village: form.querySelector('input[name="village"]').value,
+      mobile: form.querySelector('input[name="mobile"]').value,
+      address: form.querySelector("textarea").value,
+      aadhaar: form.querySelector('input[name="aadhaar"]').value,
+      samagra: form.querySelector('input[name="samagra"]').value,
+      bankName: form.querySelector('input[name="bankName"]').value,
+      account: form.querySelector('input[name="account"]').value,
+      ifsc: form.querySelector('input[name="ifsc"]').value,
+      photo: reader.result   // ⭐ यही main है
+    };
 
-})
-.catch(error => {
-  alert("Error: " + error);
-});
+    fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      mode: "no-cors"
+    });
+
+    alert("🎉 Form Submitted!\nApp No: " + formData.appNo);
+
+    form.reset();
+    document.getElementById("photoPreview").src = "";
+    generateCaptcha();
+  };
+
+  reader.readAsDataURL(file);
 
 });
 
