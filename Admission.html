@@ -207,9 +207,18 @@ button[type="submit"]:hover {
 </div>
 <script>
 
-// Application No
 function generateAppNo(){
-  return "APP-" + Date.now();
+  let count = localStorage.getItem("appCount");
+
+  if (!count) {
+    count = 63254201;   // ⭐ starting number
+  } else {
+    count = parseInt(count) + 1;
+  }
+
+  localStorage.setItem("appCount", count);
+
+  return "APP" + count;
 }
 
 
@@ -255,7 +264,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let form = document.getElementById("admissionForm");
 
   let formData = {
-    appNo: "APP-" + Date.now(),
+   appNo: generateAppNo(),
     studentName: form.querySelector('input[name="studentName"]').value,
     fatherName: form.querySelector('input[name="fatherName"]').value,
     motherName: form.querySelector('input[name="motherName"]').value,
