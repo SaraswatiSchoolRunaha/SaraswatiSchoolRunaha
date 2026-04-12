@@ -279,6 +279,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     address: form.querySelector("textarea").value,
     aadhaar: form.querySelectorAll("input")[7].value,
     samagra: form.querySelectorAll("input")[8].value,
+    bankName: form.querySelector('input[name="bankName"]').value,
     account: form.querySelectorAll("input")[9].value,
     ifsc: form.querySelectorAll("input")[10].value
   };
