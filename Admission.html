@@ -305,9 +305,10 @@ fetch(scriptURL, {
   body: JSON.stringify(formData),
   headers: {
     "Content-Type": "application/json"
-  }
-   mode: "no-cors"   // ✅ ye add karo
+  },   // ✅ yaha comma lagana hai
+  mode: "no-cors"
 })
+  
 .then(res => res.text())
 .then(data => {
 
