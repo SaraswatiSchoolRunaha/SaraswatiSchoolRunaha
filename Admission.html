@@ -160,7 +160,7 @@ button[type="submit"]:hover {
 </div>
 
 <h3>Address Details</h3>
-<div class="row">
+
 <div class="row">
   <div>
     <label>State</label>
@@ -187,7 +187,7 @@ button[type="submit"]:hover {
 
 <label>Full Address</label>
 <textarea name="address" placeholder="Enter full address"></textarea>
-<h3>ID Details</h3>
+  <h3>ID Details</h3>
 <div class="row">
   <div><label>Aadhaar Number</label><input type="text" maxlength="12" pattern="\d{12}" title="Enter 12 digit Aadhaar number" required></div>
   <div><label>Samagra ID</label><input type="text" required></div>
@@ -302,7 +302,10 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
 
 fetch(scriptURL, {
   method: "POST",
-  body: JSON.stringify(formData)
+  body: JSON.stringify(formData),
+  headers: {
+    "Content-Type": "application/json"
+  }
 })
 .then(res => res.text())
 .then(data => {
