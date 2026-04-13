@@ -287,12 +287,11 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let userCaptcha = document.getElementById('captchaInput').value;
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
-if (userCaptcha.toLowerCase() !== actualCaptcha.toLowerCase())
-    alert("Captcha incorrect");
-    generateCaptcha();
-    return;
-  }
-
+if (userCaptcha.toLowerCase() !== actualCaptcha.toLowerCase()) {
+  alert("Captcha incorrect");
+  generateCaptcha();
+  return;
+}
 let form = document.getElementById("admissionForm");
 
 // 🔥 Auto collect all form data
