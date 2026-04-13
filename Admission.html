@@ -141,22 +141,23 @@ button[type="submit"]:hover {
 <div class="row">
   <div>
     <label>Medium</label>
-    <select required>
-      <option value="">Select</option>
-      <option>Hindi</option>
-      <option>English</option>
-    </select>
-  </div>
-  <div>
-    <label>Category</label>
-    <select required>
-      <option value="">Select</option>
-      <option>General</option>
-      <option>OBC</option>
-      <option>SC</option>
-      <option>ST</option>
-    </select>
-  </div>
+<select name="medium" required>
+  <option value="">Select</option>
+  <option value="Hindi">Hindi</option>
+  <option value="English">English</option>
+</select>
+</div>
+
+<div>
+<label>Category</label>
+<select name="category" required>
+  <option value="">Select</option>
+  <option value="General">General</option>
+  <option value="OBC">OBC</option>
+  <option value="SC">SC</option>
+  <option value="ST">ST</option>
+</select>
+</div>
 </div>
 
 <h3>Address Details</h3>
@@ -210,14 +211,6 @@ button[type="submit"]:hover {
     <label>IFSC Code</label>
     <input type="text" name="ifsc" required>
   </div>
-</div>
-
-<h3>Bank Details</h3>
-<label>Bank Name</label>
-<input type="text" required>
-<div class="row">
-  <div><label>Account Number</label><input type="text" required></div>
-  <div><label>IFSC Code</label><input type="text" required></div>
 </div>
 
 <h3>Contact Details</h3>
