@@ -126,14 +126,17 @@ button[type="submit"]:hover {
       
 </select>
 <label>Student Name</label>
+oninput="this.value = this.value.toUpperCase()"
 <input type="text" name="studentName" required>
 <div class="row">
   <div>
    <label>Father Name</label>
+    oninput="this.value = this.value.toUpperCase()"
 <input type="text" name="fatherName" required>
   </div>
   <div>
  <label>Mother Name</label>
+    oninput="this.value = this.value.toUpperCase()"
 <input type="text" name="motherName" required>
   </div>
 </div>
@@ -162,13 +165,16 @@ button[type="submit"]:hover {
 </div>
 
 <h3>Address Details</h3>
+oninput="this.value = this.value.toUpperCase()"
 <div class="row">
   <div>
     <label>State</label>
+    <input type="text" name="state" oninput="this.value = this.value.toUpperCase()" required>
     <input type="text" name="state" required>
   </div>
   <div>
     <label>District</label>
+    <input type="text" name="district" oninput="this.value = this.value.toUpperCase()" required>
     <input type="text" name="district" required>
   </div>
 </div>
@@ -176,15 +182,18 @@ button[type="submit"]:hover {
 <div class="row">
   <div>
     <label>Tehsil</label>
+    <input type="text" name="tehsil" oninput="this.value = this.value.toUpperCase()" required>
     <input type="text" name="tehsil" required>
   </div>
   <div>
     <label>Village</label>
+    <input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required>
     <input type="text" name="village" required>
   </div>
 </div>
 
 <label>Full Address</label>
+  <input type="text" name="full Address" oninput="this.value = this.value.toUpperCase()" required>
 <textarea name="address" placeholder="Enter full address" required></textarea>
 
 <h3>ID Details</h3>
@@ -206,6 +215,7 @@ button[type="submit"]:hover {
 <div class="row">
   <div>
     <label>Account Number</label>
+    <input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required>
     <input type="text" name="account" required>
   </div>
   <div>
