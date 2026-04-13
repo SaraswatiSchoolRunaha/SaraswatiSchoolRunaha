@@ -276,13 +276,14 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   const submitBtn = form.querySelector('button[type="submit"]');
 
   // CAPTCHA check
-      let userCaptcha = document.getElementById('captchaInput').value.trim();
-      let actualCaptcha = document.getElementById('captchaCode').textContent.trim();
-      if (userCaptcha.trim() !== actualCaptcha.trim()) {
-           alert("Captcha galat hai! Kripya sahi code bharein.");
-      generateCaptcha();
-      return;
-  }
+     let userCaptcha = document.getElementById('captchaInput').value.trim();
+let actualCaptcha = document.getElementById('captchaCode').textContent.trim();
+
+if (userCaptcha !== actualCaptcha) {
+  alert("Captcha galat hai! Kripya sahi code bharein.");
+  generateCaptcha();
+  return;
+}
 
   // Photo check
   const file = document.getElementById("photoUpload").files[0];
