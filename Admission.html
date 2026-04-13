@@ -235,26 +235,21 @@ button[type="submit"]:hover {
 </form>
 </div>
 <script>
+// 1. Yahan apna Web App URL paste karein jo Deployment ke baad mila tha
+const scriptURL = "YAHAN_APNA_WEB_APP_URL_PASTE_KAREIN";
 
 function generateAppNo(){
   let count = localStorage.getItem("appCount");
-
   if (!count) {
-    count = 63254201;   // ⭐ starting number
+    count = 63254201; 
   } else {
     count = parseInt(count) + 1;
   }
-
   localStorage.setItem("appCount", count);
-
   return "APP" + count;
 }
 
-
-// Captcha
-const scriptURL = "https://script.google.com/macros/s/AKfycby_Wk-WveRM8RlbLizzue97_vEo3ebXfLNvNqPHr2tllRCEWQMGJcqR01NLVKIA6wl9SQ/exec";
-
-// Captcha
+// Captcha generate karne ka function
 function generateCaptcha() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
@@ -263,9 +258,8 @@ function generateCaptcha() {
   }
   document.getElementById('captchaCode').textContent = code;
 }
-generateCaptcha();
 
-// Photo preview
+// Photo preview dikhane ke liye
 document.getElementById('photoUpload').addEventListener('change', function () {
   const file = this.files[0];
   if (file) {
@@ -277,7 +271,7 @@ document.getElementById('photoUpload').addEventListener('change', function () {
   }
 });
 
-// Submit
+// Form Submit karne ka logic
 document.getElementById('admissionForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
@@ -285,18 +279,23 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
   if (userCaptcha !== actualCaptcha) {
-    alert("Captcha incorrect");
+    alert("Captcha incorrect! Please try again.");
     generateCaptcha();
     return;
   }
 
-  let form = document.getElementById("admissionForm");
-  let file = document.getElementById("photoUpload").files[0];
+  const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const file = document.getElementById("photoUpload").files[0];
+
+  // Button ko disable karein taaki user baar-baar click na kare
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Submitting... Please wait";
 
   let reader = new FileReader();
 
-  reader.onload = function () {
-
+  reader.onload = function (event) {
+    // Saara data object mein pack karna
     let formData = {
       appNo: generateAppNo(),
       studentName: form.studentName.value,
@@ -317,35 +316,42 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
       bankName: form.bankName.value,
       account: form.account.value,
       ifsc: form.ifsc.value,
-      photo: reader.result
+      photo: event.target.result // Yeh photo ko text format mein bhej raha hai
     };
 
+    // Data ko Google Script par bhejna
     fetch(scriptURL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      mode: "no-cors", // Google Script ke liye zaroori
       body: JSON.stringify(formData)
     })
-    .then(res => res.text())
-    .then(data => {
+    .then(() => {
       alert("🎉 Form Submitted Successfully!\nApplication No: " + formData.appNo);
       form.reset();
+      document.getElementById('photoPreview').src = "";
       generateCaptcha();
     })
     .catch(err => {
-      console.log(err);
-      alert("❌ Error: " + err);
+      console.error(err);
+      alert("❌ Error: Something went wrong!");
+    })
+    .finally(() => {
+      // Button wapas normal karna
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Submit Admission";
     });
   };
 
   if (file) {
     reader.readAsDataURL(file);
+  } else {
+    alert("Please upload a photo first!");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit Admission";
   }
 });
-  window.onload = function () {
-  generateCaptcha();
-};
+
+window.onload = generateCaptcha;
 </script>
 
 </body>
