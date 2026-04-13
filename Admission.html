@@ -270,15 +270,14 @@ generateCaptcha();
   document.getElementById('admissionForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    let userCaptcha = document.getElementById('captchaInput').value;
-    let actualCaptcha = document.getElementById('captchaCode').textContent;
+   let userCaptcha = document.getElementById('captchaInput').value;
+  let actualCaptcha = document.getElementById('captchaCode').textContent;
 
-    if (userCaptcha.toLowerCase() !== actualCaptcha.toLowerCase()) {
-      alert("Captcha incorrect");
-      generateCaptcha();
-      return;
-    }
-
+  if (userCaptcha !== actualCaptcha) {
+    alert("Captcha incorrect");
+    generateCaptcha();
+    return;
+  }
     let form = document.getElementById("admissionForm");
     let formData = new FormData(form);
 
