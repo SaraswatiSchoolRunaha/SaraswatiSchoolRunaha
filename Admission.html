@@ -105,9 +105,6 @@ button[type="submit"]:hover {
   object-fit:cover;
   display:block;
 }
-  h2, h3 {
-  text-transform: uppercase;
-}
 </style>
 </head>
 <body>
@@ -118,16 +115,15 @@ button[type="submit"]:hover {
 
 <h3>Student Details</h3>
 <label>Session (Year)</label>
-<select name="session" required>
+<select required>
   <option value="">Select Session</option>
+  <option>2025-26</option>
   <option>2026-27</option>
   <option>2027-28</option>
   <option>2028-29</option>
-  <option>2029-2030</option>
-  <option>2030-2031</option>
+  <option>2029-30</option>
       
 </select>
- 
 <label>Student Name</label>
 <input type="text" name="studentName" required>
 <div class="row">
@@ -145,7 +141,7 @@ button[type="submit"]:hover {
 <div class="row">
   <div>
     <label>Medium</label>
-  <select name="medium" required>
+    <select required>
       <option value="">Select</option>
       <option>Hindi</option>
       <option>English</option>
@@ -153,7 +149,7 @@ button[type="submit"]:hover {
   </div>
   <div>
     <label>Category</label>
-<select name="category" required>
+    <select required>
       <option value="">Select</option>
       <option>General</option>
       <option>OBC</option>
@@ -164,58 +160,29 @@ button[type="submit"]:hover {
 </div>
 
 <h3>Address Details</h3>
-
 <div class="row">
-  <div>
-    <label>State</label>
-    <input type="text" name="state" required>
-  </div>
-
-  <div>
-    <label>District</label>
-    <input type="text" name="district" required>
-  </div>
+  <div><label>State</label><input type="text" required></div>
+  <div><label>District</label><input type="text" required></div>
 </div>
-
 <div class="row">
-  <div>
-    <label>Tehsil</label>
-    <input type="text" name="tehsil" required>
-  </div>
-
-  <div>
-    <label>Village</label>
-    <input type="text" name="village" required>
-  </div>
+  <div><label>Tehsil</label><input type="text" required></div>
+  <div><label>Village</label><input type="text" required></div>
 </div>
-
 <label>Full Address</label>
-<textarea name="address" placeholder="Enter full address"></textarea>
-  <h3>ID Details</h3>
+<textarea placeholder="Enter full address"></textarea>
+
+<h3>ID Details</h3>
 <div class="row">
- <div>
-  <label>Aadhaar Number</label>
-  <input type="text" name="aadhaar" maxlength="12" pattern="\d{12}" title="Enter 12 digit Aadhaar number" required>
-</div>
-  <div>
-  <label>Samagra ID</label>
-  <input type="text" name="samagra" required>
-</div>
+  <div><label>Aadhaar Number</label><input type="text" maxlength="12" pattern="\d{12}" title="Enter 12 digit Aadhaar number" required></div>
+  <div><label>Samagra ID</label><input type="text" required></div>
 </div>
 
 <h3>Bank Details</h3>
 <label>Bank Name</label>
-<input type="text" name="bankName" required>
+<input type="text" required>
 <div class="row">
-  <div>
-  <label>Account Number</label>
-  <input type="text" name="account" required>
-</div>
-
-<div>
-  <label>IFSC Code</label>
-  <input type="text" name="ifsc" required>
-</div>
+  <div><label>Account Number</label><input type="text" required></div>
+  <div><label>IFSC Code</label><input type="text" required></div>
 </div>
 
 <h3>Contact Details</h3>
@@ -225,13 +192,13 @@ button[type="submit"]:hover {
 
 <h3>Upload Photo & Captcha</h3>
 <label>Upload Photo</label>
-<input type="file" name="photo" id="photoUpload" accept="image/*" required>
+<input type="file" accept="image/*" id="photoUpload" required>
 <img id="photoPreview" class="photo-preview" src="" alt="Photo Preview">
 
 <label>Captcha Code</label>
 <div class="captcha-box">
- <div class="captcha-code" id="captchaCode">XXXXXX</div>
-<button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
+  <div class="captcha-code" id="captchaCode">XXXXXX</div>
+  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Referrec</button>
 </div>
 <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
 
@@ -239,151 +206,95 @@ button[type="submit"]:hover {
 </form>
 </div>
 <script>
-// Web App URL
-const scriptURL = "https://script.google.com/macros/s/AKfycbzFQMMAvtDtCHJ5Tk2BMFYpYUHDFGRrFjex36WhGxaywa58A5Z-Idrb_YSS2Qfvn0jG/exec";
 
-// Application number
-function generateAppNo() {
-  let count = localStorage.getItem("appCount");
-
-  if (!count) {
-    count = 63254201;
-  } else {
-    count = parseInt(count) + 1;
-  }
-
-  localStorage.setItem("appCount", count);
-  return "APP" + count;
+// Application No
+function generateAppNo(){
+  return "APP-" + Date.now();
 }
 
-// CAPTCHA generate
- function generateCaptcha() {
+
+// Captcha
+const scriptURL = "https://script.google.com/macros/s/AKfycbwRRXz-19Myq0FZ-fqZLbQOaTt2sI6HjrFvLCGT2IcYEYOCL4vL-t3fejFQrUy8oIj-Ow/exec";
+
+// Captcha
+function generateCaptcha() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
-
   for (let i = 0; i < 6; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-
   document.getElementById('captchaCode').textContent = code;
-  document.getElementById('captchaInput').value = "";
 }
+generateCaptcha();
 
-  if (captchaBox) {
-    captchaBox.textContent = code;
+// Photo preview
+document.getElementById('photoUpload').addEventListener('change', function () {
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById('photoPreview').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
+});
 
-  if (inputBox) {
-    inputBox.value = "";
-  }
-}
-// Form submit
+// Submit
 document.getElementById('admissionForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
-  const form = e.target;
-  const submitBtn = form.querySelector('button[type="submit"]');
+  let userCaptcha = document.getElementById('captchaInput').value;
+  let actualCaptcha = document.getElementById('captchaCode').textContent;
 
-  // CAPTCHA check
-    let userCaptcha = document.getElementById('captchaInput').value.trim().toLowerCase();
-let actualCaptcha = document.getElementById('captchaCode').textContent.trim().toLowerCase();
-
-if (userCaptcha !== actualCaptcha) {
-  alert("Captcha galat hai! Kripya sahi code bharein.");
-  generateCaptcha();
-  return;
-}
-  // Photo check
-  const file = document.getElementById("photoUpload").files[0];
-
-  if (!file) {
-    alert("Kripya student ki photo upload karein.");
+  if (userCaptcha !== actualCaptcha) {
+    alert("Captcha incorrect");
+    generateCaptcha();
     return;
   }
 
-  // Button disable
-  submitBtn.disabled = true;
-  submitBtn.innerText = "Submitting...";
+  let form = document.getElementById("admissionForm");
 
-  let reader = new FileReader();
+  let formData = {
+    appNo: "APP-" + Date.now(),
+    studentName: form.querySelector('input[name="studentName"]').value,
+    fatherName: form.querySelector('input[name="fatherName"]').value,
+    motherName: form.querySelector('input[name="motherName"]').value,
+    dob: form.querySelector('input[type="date"]').value,
+    session: form.querySelectorAll("select")[0].value,
+    category: form.querySelectorAll("select")[1].value,
+    state: form.querySelectorAll("input")[3].value,
+    district: form.querySelectorAll("input")[4].value,
+    tehsil: form.querySelectorAll("input")[5].value,
+    village: form.querySelectorAll("input")[6].value,
+    mobile: form.querySelector('input[name="mobile"]').value,
+    address: form.querySelector("textarea").value,
+    aadhaar: form.querySelectorAll("input")[7].value,
+    samagra: form.querySelectorAll("input")[8].value,
+    account: form.querySelectorAll("input")[9].value,
+    ifsc: form.querySelectorAll("input")[10].value
+  };
 
-  reader.onload = function (event) {
-
-    let formData = {
-      appNo: generateAppNo(),
-      studentName: form.studentName.value,
-      fatherName: form.fatherName.value,
-      motherName: form.motherName.value,
-      dob: form.dob.value,
-      session: form.session.value,
-      medium: form.medium.value,
-      category: form.category.value,
-      state: form.state.value,
-      district: form.district.value,
-      tehsil: form.tehsil.value,
-      village: form.village.value,
-      mobile: form.mobile.value,
-      address: form.address.value,
-      aadhaar: form.aadhaar.value,
-      samagra: form.samagra.value,
-      bankName: form.bankName.value,
-      account: form.account.value,
-      ifsc: form.ifsc.value,
-      photo: event.target.result
-    };
-
-    // SEND DATA
  fetch(scriptURL, {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(formData)
+  body: new URLSearchParams(formData)
 })
-.then(res => res.text())
-.then(data => {
+  .then(res => res.text())
+  .then(data => {
 
-  if (data === "Success") {
-
-    alert(
-      "🎉 Form Submitted Successfully!\n\nApplication Number: " + formData.appNo
-    );
+    alert("🎉 Form Submitted Successfully!\n📌 Application No: " + formData.appNo);
 
     form.reset();
-    document.getElementById('photoPreview').src = "";
+    document.getElementById("photoPreview").src = "";
     generateCaptcha();
 
-  } else {
-    alert("❌ Server Error: " + data);
-  }
-
-})
-.catch(err => {
-  console.error(err);
-  alert("❌ Connection Error: Server not reachable");
-})
-.finally(() => {
-  submitBtn.disabled = false;
-  submitBtn.innerText = "Submit Admission";
-});
-    
-  const photoInput = document.getElementById("photoUpload");
-
-  window.addEventListener("load", function () {
-  generateCaptcha();
-
-  document.getElementById("photoUpload").addEventListener("change", function (e) {
-    const file = e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        document.getElementById("photoPreview").src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+  })
+  .catch(error => {
+    alert("Error: " + error);
   });
+
 });
+
 </script>
+
 </body>
 </html>
