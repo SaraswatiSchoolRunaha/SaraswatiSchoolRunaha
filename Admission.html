@@ -279,7 +279,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let userCaptcha = document.getElementById('captchaInput').value;
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
-  if (userCaptcha !== actualCaptcha) {
+ if (userCaptcha.trim() !== actualCaptcha.trim())
     alert("Captcha galat hai! Kripya sahi code bharein.");
     generateCaptcha();
     return;
