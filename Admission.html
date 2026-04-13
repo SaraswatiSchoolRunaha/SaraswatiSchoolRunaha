@@ -251,24 +251,28 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbzW-oU8n5AaM2Kuqnig3F
 function generateCaptcha() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
+
   for (let i = 0; i < 6; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
+
   document.getElementById('captchaCode').textContent = code;
 }
 
-// Page load पर captcha
+// Page load के बाद सब चलाओ
 window.onload = function () {
-  generateCaptcha();
-};
 
-// Refresh button click
-document.getElementById("refreshCaptcha").addEventListener("click", function () {
+  // पहला captcha
   generateCaptcha();
-  document.getElementById("captchaInput").value = "";
-});
-  
-// Photo preview
+
+  // Refresh button click
+  document.getElementById("refreshCaptcha").addEventListener("click", function () {
+    generateCaptcha();
+    document.getElementById("captchaInput").value = "";
+  });
+
+};
+  // Photo preview
 document.getElementById('photoUpload').addEventListener('change', function () {
   const file = this.files[0];
   if (file) {
