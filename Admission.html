@@ -205,12 +205,11 @@ button[type="submit"]:hover {
 
 <h3>Bank Details</h3>
 <label>Bank Name</label>
-<input type="text" name="bank" required>
+<input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required>
 
 <div class="row">
   <div>
     <label>Account Number</label>
-    <input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required>
     <input type="text" name="account" required>
   </div>
   <div>
@@ -220,24 +219,24 @@ button[type="submit"]:hover {
 </div>
 
 <h3>Contact Details</h3>
-
 <label>Mobile Number</label>
 <input type="text" name="mobile" pattern="[0-9]{10}" maxlength="10" required>
 
 <h3>Upload Photo & Captcha</h3>
+
 <label>Upload Photo</label>
-<input type="file" accept="image/*" id="photoUpload" required>
+<input type="file" name="photo" id="photoUpload" accept="image/*" required>
 <img id="photoPreview" class="photo-preview" src="" alt="Photo Preview">
 
 <label>Captcha Code</label>
 <div class="captcha-box">
   <div class="captcha-code" id="captchaCode">XXXXXX</div>
-  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Referrec</button>
+  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
 </div>
+
 <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
 
-<button type="submit">Submit Admission</button>
-</form>
+<button type="submit">Submit Admission</button></form>
 </div>
 <script>
 
