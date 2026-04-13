@@ -291,42 +291,44 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     return;
   }
 
- let form = document.getElementById("admissionForm");
+let form = document.getElementById("admissionForm");
 
-let formData = {
-  appNo: "",
-  studentName: form.querySelector('input[name="studentName"]').value,
-  fatherName: form.querySelector('input[name="fatherName"]').value,
-  motherName: form.querySelector('input[name="motherName"]').value,
-  dob: form.querySelector('input[type="date"]').value,
-  session: form.querySelectorAll("select")[0].value,
-  category: form.querySelectorAll("select")[1].value,
-  state: form.querySelectorAll("input")[3].value,
-  district: form.querySelectorAll("input")[4].value,
-  tehsil: form.querySelectorAll("input")[5].value,
-  village: form.querySelectorAll("input")[6].value,
-  mobile: form.querySelector('input[name="mobile"]').value,
-  address: form.querySelector("textarea").value,
-  aadhaar: form.querySelectorAll("input")[7].value,
-  samagra: form.querySelectorAll("input")[8].value,
-  account: form.querySelectorAll("input")[9].value,
-  ifsc: form.querySelectorAll("input")[10].value
-};
+// 🔥 Auto collect all form data
+let formData = new FormData(form);
 
-fetch(scriptURL, {
-  method: "POST",
-  body: new URLSearchParams(formData)
-})
-.then(res => res.text())
-.then(data => {
-  alert("🎉 Form Submitted Successfully!\n📌 Application No: " + data);
-  form.reset();
-  document.getElementById("photoPreview").src = "";
-  generateCaptcha();
-})
-.catch(error => {
-  alert("Error: " + error);
-});
+// 🔥 Photo handle
+let file = document.getElementById("photoUpload").files[0];
+
+if (file) {
+  let reader = new FileReader();
+
+  reader.onload = function () {
+    formData.append("photo", reader.result);
+    sendData(formData);
+  };
+
+  reader.readAsDataURL(file);
+} else {
+  sendData(formData);
+}
+
+// 🔥 Send function
+function sendData(formData) {
+  fetch(scriptURL, {
+    method: "POST",
+    body: new URLSearchParams(formData)
+  })
+  .then(res => res.text())
+  .then(data => {
+    alert("🎉 Form Submitted Successfully!\n📌 Application No: " + data);
+    form.reset();
+    document.getElementById("photoPreview").src = "";
+    generateCaptcha();
+  })
+  .catch(error => {
+    alert("Error: " + error);
+  });
+}
 </script>
 
 </body>
