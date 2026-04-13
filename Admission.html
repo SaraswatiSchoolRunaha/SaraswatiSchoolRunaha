@@ -319,27 +319,32 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
       photo: event.target.result // Yeh photo ko text format mein bhej raha hai
     };
 
-    // Data ko Google Script par bhejna
-    fetch(scriptURL, {
-      method: "POST",
-      mode: "no-cors", // Google Script ke liye zaroori
-      body: JSON.stringify(formData)
-    })
-    .then(() => {
-      alert("🎉 Form Submitted Successfully!\nApplication No: " + formData.appNo);
-      form.reset();
-      document.getElementById('photoPreview').src = "";
-      generateCaptcha();
-    })
-    .catch(err => {
-      console.error(err);
-      alert("❌ Error: Something went wrong!");
-    })
-    .finally(() => {
-      // Button wapas normal karna
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit Admission";
-    });
+   // Data ko Google Script par bhejna
+fetch(scriptURL, {
+  method: "POST",
+  // mode: "no-cors" ko hata diya gaya hai taaki hume asli error dikh sake
+  body: JSON.stringify(formData) 
+})
+.then(res => res.text()) // Script se text response mangwana
+.then(data => {
+  if (data === "Success") {
+    alert("🎉 Form Submitted Successfully!\nApplication No: " + formData.appNo);
+    form.reset();
+    document.getElementById('photoPreview').src = "";
+    generateCaptcha();
+  } else {
+    // Agar script mein koi galti hogi toh yahan dikhegi
+    alert("❌ Server Error: " + data);
+  }
+})
+.catch(err => {
+  console.error(err);
+  alert("❌ Connection Error: Data sheet tak nahi pahuncha.");
+})
+.finally(() => {
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Submit Admission";
+});
   };
 
   if (file) {
