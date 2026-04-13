@@ -277,7 +277,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let userCaptcha = document.getElementById('captchaInput').value;
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
-  if (userCaptcha !== actualCaptcha) {
+if (userCaptcha.toLowerCase() !== actualCaptcha.toLowerCase())
     alert("Captcha incorrect");
     generateCaptcha();
     return;
