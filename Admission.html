@@ -265,9 +265,17 @@ function generateCaptcha() {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
 
-  document.getElementById('captchaCode').textContent = code;
-}
+  const captchaBox = document.getElementById('captchaCode');
+  const inputBox = document.getElementById('captchaInput');
 
+  if (captchaBox) {
+    captchaBox.textContent = code;
+  }
+
+  if (inputBox) {
+    inputBox.value = ""; // input clear every refresh
+  }
+}
 // Form submit
 document.getElementById('admissionForm').addEventListener('submit', function (e) {
   e.preventDefault();
