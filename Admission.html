@@ -244,11 +244,8 @@ function generateAppNo(){
   return "APP-" + Date.now();
 }
 
-// Captcha
 const scriptURL = "https://script.google.com/macros/s/AKfycbzW-oU8n5AaM2Kuqnig3FXv9JKnSYR5QVC-yG7yaXm-tKrfiawotthQvgHwNkCePZ1e/exec";
 
-
-// Captcha generate
 function generateCaptcha() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
@@ -260,77 +257,72 @@ function generateCaptcha() {
   document.getElementById('captchaCode').textContent = code;
 }
 
-// SAFE LOAD (DOM ready guaranteed)
-document.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("load", function () {
+
   generateCaptcha();
 
   document.getElementById("refreshCaptcha").addEventListener("click", function () {
     generateCaptcha();
     document.getElementById("captchaInput").value = "";
   });
-});  // ONLY ONE EVENT (IMPORTANT)
-  document.getElementById("refreshCaptcha").onclick = function () {
-    generateCaptcha();
-    document.getElementById("captchaInput").value = "";
-  };
-};
 
-  // refresh button event yahin lagao (SAFE)
-  document.getElementById("refreshCaptcha").onclick = function () {
-    generateCaptcha();
-    document.getElementById("captchaInput").value = "";
-  };
-};
-  
-// RUN IMMEDIATELY
-generateCaptcha();
+  document.getElementById('photoUpload').addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById('photoPreview').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-// Refresh button
-document.getElementById("refreshCaptcha").addEventListener("click", function () {
-  generateCaptcha();
-  document.getElementById("captchaInput").value = "";
+  document.getElementById('admissionForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    let userCaptcha = document.getElementById('captchaInput').value;
+    let actualCaptcha = document.getElementById('captchaCode').textContent;
+
+    if (userCaptcha.toLowerCase() !== actualCaptcha.toLowerCase()) {
+      alert("Captcha incorrect");
+      generateCaptcha();
+      return;
+    }
+
+    let form = document.getElementById("admissionForm");
+    let formData = new FormData(form);
+
+    let file = document.getElementById("photoUpload").files[0];
+
+    function sendData(data) {
+      fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams(data)
+      })
+      .then(res => res.text())
+      .then(data => {
+        alert("🎉 Form Submitted!\n📌 Application No: " + data);
+        form.reset();
+        document.getElementById("photoPreview").src = "";
+        generateCaptcha();
+      })
+      .catch(err => alert("Error: " + err));
+    }
+
+    if (file) {
+      let reader = new FileReader();
+      reader.onload = function () {
+        formData.append("photo", reader.result);
+        sendData(formData);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      sendData(formData);
+    }
+
+  });
+
 });
-  
-  // Photo preview
-document.getElementById('photoUpload').addEventListener('change', function () {
-  const file = this.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      document.getElementById('photoPreview').src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-// Submit
-document.getElementById('admissionForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  let userCaptcha = document.getElementById('captchaInput').value;
-  let actualCaptcha = document.getElementById('captchaCode').textContent;
-
-if (userCaptcha.toLowerCase() !== actualCaptcha.toLowerCase()) {
-  alert("Captcha incorrect");
-  generateCaptcha();
-  return;
-}
-let form = document.getElementById("admissionForm");
-
-// 🔥 Auto collect all form data
-let formData = new FormData(form);
-
-// 🔥 Photo handle
-let file = document.getElementById("photoUpload").files[0];
-
-if (file) {
-  let reader = new FileReader();
-
-  reader.onload = function () {
-    formData.append("photo", reader.result);
-    sendData(formData);
-  };
-
   reader.readAsDataURL(file);
 } else {
   sendData(formData);
