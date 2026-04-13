@@ -117,11 +117,11 @@ button[type="submit"]:hover {
 <label>Session (Year)</label>
 <select required>
   <option value="">Select Session</option>
-  <option>2025-26</option>
   <option>2026-27</option>
   <option>2027-28</option>
   <option>2028-29</option>
   <option>2029-30</option>
+  <option>2030-31</option>
       
 </select>
 <label>Student Name</label>
@@ -161,20 +161,55 @@ button[type="submit"]:hover {
 
 <h3>Address Details</h3>
 <div class="row">
-  <div><label>State</label><input type="text" required></div>
-  <div><label>District</label><input type="text" required></div>
+  <div>
+    <label>State</label>
+    <input type="text" name="state" required>
+  </div>
+  <div>
+    <label>District</label>
+    <input type="text" name="district" required>
+  </div>
 </div>
+
 <div class="row">
-  <div><label>Tehsil</label><input type="text" required></div>
-  <div><label>Village</label><input type="text" required></div>
+  <div>
+    <label>Tehsil</label>
+    <input type="text" name="tehsil" required>
+  </div>
+  <div>
+    <label>Village</label>
+    <input type="text" name="village" required>
+  </div>
 </div>
+
 <label>Full Address</label>
-<textarea placeholder="Enter full address"></textarea>
+<textarea name="address" placeholder="Enter full address" required></textarea>
 
 <h3>ID Details</h3>
 <div class="row">
-  <div><label>Aadhaar Number</label><input type="text" maxlength="12" pattern="\d{12}" title="Enter 12 digit Aadhaar number" required></div>
-  <div><label>Samagra ID</label><input type="text" required></div>
+  <div>
+    <label>Aadhaar Number</label>
+    <input type="text" name="aadhaar" maxlength="12" pattern="\d{12}" required>
+  </div>
+  <div>
+    <label>Samagra ID</label>
+    <input type="text" name="samagra" required>
+  </div>
+</div>
+
+<h3>Bank Details</h3>
+<label>Bank Name</label>
+<input type="text" name="bank" required>
+
+<div class="row">
+  <div>
+    <label>Account Number</label>
+    <input type="text" name="account" required>
+  </div>
+  <div>
+    <label>IFSC Code</label>
+    <input type="text" name="ifsc" required>
+  </div>
 </div>
 
 <h3>Bank Details</h3>
@@ -214,7 +249,7 @@ function generateAppNo(){
 
 
 // Captcha
-const scriptURL = "https://script.google.com/macros/s/AKfycbwRRXz-19Myq0FZ-fqZLbQOaTt2sI6HjrFvLCGT2IcYEYOCL4vL-t3fejFQrUy8oIj-Ow/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbwukQh-SXRMvEMvNf8HlVS-sKJr247VWbi87Vylv4Pa0C4jzz1O5qwYVK9yiDHrynAb/exec";
 
 // Captcha
 function generateCaptcha() {
@@ -255,7 +290,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let form = document.getElementById("admissionForm");
 
   let formData = {
-    appNo: "APP-" + Date.now(),
+    appNo: "",
     studentName: form.querySelector('input[name="studentName"]').value,
     fatherName: form.querySelector('input[name="fatherName"]').value,
     motherName: form.querySelector('input[name="motherName"]').value,
@@ -281,7 +316,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   .then(res => res.text())
   .then(data => {
 
-    alert("🎉 Form Submitted Successfully!\n📌 Application No: " + formData.appNo);
+   alert("🎉 Form Submitted Successfully!\n📌 Application No: " + data);
 
     form.reset();
     document.getElementById("photoPreview").src = "";
