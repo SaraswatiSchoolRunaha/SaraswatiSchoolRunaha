@@ -255,6 +255,7 @@ function generateCaptcha() {
   document.getElementById('captchaCode').textContent = code;
 }
 generateCaptcha();
+  
   document.getElementById('photoUpload').addEventListener('change', function () {
     const file = this.files[0];
     if (file) {
