@@ -230,7 +230,7 @@ button[type="submit"]:hover {
 
 <label>Captcha Code</label>
 <div class="captcha-box">
-  <div class="captcha-code" id="captchaCode">XXXXXX</div>
+<div class="captcha-code" id="captchaCode"></div>
 <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
 </div>
 <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
@@ -258,6 +258,7 @@ function generateAppNo() {
 
 // CAPTCHA generate
 function generateCaptcha() {
+ function generateCaptcha() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
 
@@ -265,8 +266,9 @@ function generateCaptcha() {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
 
-  const captchaBox = document.getElementById('captchaCode');
-  const inputBox = document.getElementById('captchaInput');
+  document.getElementById('captchaCode').textContent = code;
+  document.getElementById('captchaInput').value = "";
+}
 
   if (captchaBox) {
     captchaBox.textContent = code;
