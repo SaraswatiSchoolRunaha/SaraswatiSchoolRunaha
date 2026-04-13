@@ -325,17 +325,14 @@ if (userCaptcha !== actualCaptcha) {
     };
 
     // SEND DATA
-    fetch(scriptURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(res => res.text())
-    .then(data => {
-
-     .then(res => res.text())
+  fetch(scriptURL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(formData)
+})
+.then(res => res.text())
 .then(data => {
 
   if (data === "Success") {
@@ -361,7 +358,6 @@ if (userCaptcha !== actualCaptcha) {
   submitBtn.disabled = false;
   submitBtn.innerText = "Submit Admission";
 });
-
 window.addEventListener("load", function () {
   generateCaptcha();
 
