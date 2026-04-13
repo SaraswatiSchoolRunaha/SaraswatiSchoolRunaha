@@ -335,25 +335,32 @@ if (userCaptcha !== actualCaptcha) {
     .then(res => res.text())
     .then(data => {
 
-      if (data === "Success") {
-        alert("🎉 Form Submitted Successfully!\nApp No: " + formData.appNo);
-        form.reset();
-        document.getElementById('photoPreview').src = "";
-        generateCaptcha();
-      } else {
-        alert("❌ Server Error: " + data);
-      }
+     .then(res => res.text())
+.then(data => {
 
-    })
-    .catch(err => {
-      console.error(err);
-      alert("❌ Connection Error: Server not reachable");
-    })
-    .finally(() => {
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit Admission";
-    });
-  };
+  if (data === "Success") {
+
+    alert(
+      "🎉 Form Submitted Successfully!\n\nApplication Number: " + formData.appNo
+    );
+
+    form.reset();
+    document.getElementById('photoPreview').src = "";
+    generateCaptcha();
+
+  } else {
+    alert("❌ Server Error: " + data);
+  }
+
+})
+.catch(err => {
+  console.error(err);
+  alert("❌ Connection Error: Server not reachable");
+})
+.finally(() => {
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Submit Admission";
+});
 
 window.addEventListener("load", function () {
   generateCaptcha();
