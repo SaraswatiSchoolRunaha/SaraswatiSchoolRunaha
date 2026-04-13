@@ -248,6 +248,7 @@ function generateAppNo(){
 const scriptURL = "https://script.google.com/macros/s/AKfycbzW-oU8n5AaM2Kuqnig3FXv9JKnSYR5QVC-yG7yaXm-tKrfiawotthQvgHwNkCePZ1e/exec";
 
   // Captcha generate
+// Captcha generate
 function generateCaptcha() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
@@ -259,9 +260,16 @@ function generateCaptcha() {
   document.getElementById('captchaCode').textContent = code;
 }
 
-// page load par captcha
+// page load
 window.onload = function () {
   generateCaptcha();
+
+  // ONLY ONE EVENT (IMPORTANT)
+  document.getElementById("refreshCaptcha").onclick = function () {
+    generateCaptcha();
+    document.getElementById("captchaInput").value = "";
+  };
+};
 
   // refresh button event yahin lagao (SAFE)
   document.getElementById("refreshCaptcha").onclick = function () {
