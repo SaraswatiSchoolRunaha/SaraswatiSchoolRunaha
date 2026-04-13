@@ -259,18 +259,13 @@ function generateCaptcha() {
   document.getElementById('captchaCode').textContent = code;
 }
 
-// Page load के बाद सब चलाओ
 window.onload = function () {
-
-  // पहला captcha
   generateCaptcha();
 
-  // Refresh button click
   document.getElementById("refreshCaptcha").addEventListener("click", function () {
     generateCaptcha();
     document.getElementById("captchaInput").value = "";
   });
-
 };
   // Photo preview
 document.getElementById('photoUpload').addEventListener('change', function () {
