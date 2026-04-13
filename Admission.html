@@ -117,11 +117,11 @@ button[type="submit"]:hover {
 <label>Session (Year)</label>
 <select name="session" required>
   <option value="">Select Session</option>
-  <option>2025-26</option>
   <option>2026-27</option>
   <option>2027-28</option>
   <option>2028-29</option>
-  <option>2029-30</option>
+  <option>2029-2030</option>
+  <option>2030-2031</option>
       
 </select>
 <label>Student Name</label>
@@ -319,10 +319,12 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
       ifsc: form.ifsc.value,
       photo: reader.result
     };
-
- fetch(scriptURL, {
+fetch(scriptURL, {
   method: "POST",
-  body: new URLSearchParams(formData)
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(formData)
 })
 .then(res => res.text())
 .then(data => {
@@ -331,11 +333,11 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   generateCaptcha();
 })
 .catch(err => {
+  console.log(err);
   alert("❌ Error: " + err);
 });
 
-  };
-
+    
   if (file) {
     reader.readAsDataURL(file);
   }
