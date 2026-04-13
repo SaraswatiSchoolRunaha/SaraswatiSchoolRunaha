@@ -320,20 +320,19 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
       photo: reader.result
     };
 
-   fetch(scriptURL, {
+ fetch(scriptURL, {
   method: "POST",
   body: new URLSearchParams(formData)
 })
-    })
-    .then(res => res.text())
-    .then(data => {
-      alert("🎉 Form Submitted Successfully!\nApplication No: " + formData.appNo);
-      form.reset();
-      generateCaptcha();
-    })
-    .catch(err => {
-      alert("❌ Error: " + err);
-    });
+.then(res => res.text())
+.then(data => {
+  alert("🎉 Form Submitted Successfully!\nApplication No: " + formData.appNo);
+  form.reset();
+  generateCaptcha();
+})
+.catch(err => {
+  alert("❌ Error: " + err);
+});
 
   };
 
