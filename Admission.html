@@ -126,49 +126,47 @@ button[type="submit"]:hover {
       
 </select>
 <label>Student Name</label>
-oninput="this.value = this.value.toUpperCase()"
-<input type="text" name="studentName" required>
+<input type="text" name="studentName" oninput="this.value = this.value.toUpperCase()" required>
+
 <div class="row">
   <div>
-   <label>Father Name</label>
-    oninput="this.value = this.value.toUpperCase()"
-<input type="text" name="fatherName" required>
+    <label>Father Name</label>
+    <input type="text" name="fatherName" oninput="this.value = this.value.toUpperCase()" required>
   </div>
   <div>
- <label>Mother Name</label>
-    oninput="this.value = this.value.toUpperCase()"
-<input type="text" name="motherName" required>
+    <label>Mother Name</label>
+    <input type="text" name="motherName" oninput="this.value = this.value.toUpperCase()" required>
   </div>
 </div>
+
 <label>Date of Birth</label>
 <input type="date" name="dob" required>
+
 <div class="row">
   <div>
     <label>Medium</label>
-<select name="medium" required>
-  <option value="">Select</option>
-  <option value="Hindi">Hindi</option>
-  <option value="English">English</option>
-</select>
-</div>
+    <select name="medium" required>
+      <option value="">Select</option>
+      <option value="Hindi">Hindi</option>
+      <option value="English">English</option>
+    </select>
+  </div>
 
-<div>
-<label>Category</label>
-<select name="category" required>
-  <option value="">Select</option>
-  <option value="General">General</option>
-  <option value="OBC">OBC</option>
-  <option value="SC">SC</option>
-  <option value="ST">ST</option>
-</select>
-</div>
+  <div>
+    <label>Category</label>
+    <select name="category" required>
+      <option value="">Select</option>
+      <option value="General">General</option>
+      <option value="OBC">OBC</option>
+      <option value="SC">SC</option>
+      <option value="ST">ST</option>
+    </select>
+  </div>
 </div>
 
 <h3>Address Details</h3>
-oninput="this.value = this.value.toUpperCase()"
+
 <div class="row">
-  <div>
-   <div class="row">
   <div>
     <label>State</label>
     <input type="text" name="state" oninput="this.value = this.value.toUpperCase()" required>
