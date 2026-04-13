@@ -303,10 +303,13 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     };
 
     // Data ko Google Script par bhejna
-    fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify(formData) 
-    })
+  fetch(scriptURL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(formData)
+})
     .then(res => res.text())
     .then(data => {
       if (data === "Success") {
