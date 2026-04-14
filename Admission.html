@@ -262,9 +262,13 @@ document.getElementById('photoUpload').addEventListener('change', function () {
   }
 });
 
-// Submit form
+// Form submit
 document.getElementById('admissionForm').addEventListener('submit', function (e) {
   e.preventDefault();
+
+  let form = document.getElementById("admissionForm");
+  let formData = new FormData(form);
+  let file = document.getElementById("photoUpload").files[0];
 
   let userCaptcha = document.getElementById('captchaInput').value;
   let actualCaptcha = document.getElementById('captchaCode').textContent;
@@ -275,34 +279,33 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     return;
   }
 
- function sendData(fd) {
+  function sendData(fd) {
+    let obj = {};
+    fd.forEach((value, key) => {
+      obj[key] = value;
+    });
 
-  let obj = {};
+    fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(obj),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.text())
+    .then(appNo => {
+      alert("🎉 Form Submitted!\n📌 Application No: " + appNo);
+      form.reset();
+      document.getElementById("photoPreview").src = "";
+      generateCaptcha();
+    })
+    .catch(err => alert("Error: " + err));
+  }
 
-  fd.forEach((value, key) => {
-    obj[key] = value;
-  });
-
-  fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify(obj),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
-  .then(res => res.text())
-  .then(appNo => {
-    alert("🎉 Form Submitted!\n📌 Application No: " + appNo);
-    form.reset();
-    document.getElementById("photoPreview").src = "";
-    generateCaptcha();
-  })
-  .catch(err => alert("Error: " + err));
-}
   if (file) {
     let reader = new FileReader();
     reader.onload = function () {
-      formData.set("photo", reader.result); // ✅ replace correctly
+      formData.set("photo", reader.result);
       sendData(formData);
     };
     reader.readAsDataURL(file);
