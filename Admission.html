@@ -277,17 +277,16 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
 
   let form = document.getElementById("admissionForm");
   let formData = new FormData(form);
-
   let file = document.getElementById("photoUpload").files[0];
 
-  function sendData(data) {
+  function sendData(fd) {
     fetch(scriptURL, {
       method: "POST",
-    body: formData
+      body: fd
     })
     .then(res => res.text())
-    .then(data => {
-      alert("🎉 Form Submitted!\n📌 Application No: " + data);
+    .then(appNo => {
+      alert("🎉 Form Submitted!\n📌 Application No: " + appNo);
       form.reset();
       document.getElementById("photoPreview").src = "";
       generateCaptcha();
@@ -298,7 +297,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   if (file) {
     let reader = new FileReader();
     reader.onload = function () {
-      formData.append("photo", reader.result);
+      formData.set("photo", reader.result); // ✅ replace correctly
       sendData(formData);
     };
     reader.readAsDataURL(file);
