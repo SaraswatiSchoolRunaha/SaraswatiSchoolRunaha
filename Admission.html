@@ -285,16 +285,21 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
       obj[key] = value;
     });
 
-    fetch(scriptURL, {
+   fetch(scriptURL, {
   method: "POST",
   body: JSON.stringify(obj)
 })
 .then(res => res.text())
 .then(appNo => {
   alert("🎉 Submitted!\n📌 " + appNo);
+
+  document.getElementById("admissionForm").reset();
+  document.getElementById("photoPreview").src = "";
+
+  generateCaptcha();   // ✅ THIS IS REQUIRED
 })
 .catch(err => alert("Error: " + err));
-
+    
   if (file) {
     let reader = new FileReader();
     reader.onload = function () {
