@@ -237,12 +237,6 @@ button[type="submit"]:hover {
 <button type="submit">Submit Admission</button></form>
 </div>
 <script>
-
-// Application No
-function generateAppNo(){
-  return "APP-" + Date.now();
-}
-
 const scriptURL = "https://script.google.com/macros/s/AKfycbzW-oU8n5AaM2Kuqnig3FXv9JKnSYR5QVC-yG7yaXm-tKrfiawotthQvgHwNkCePZ1e/exec";
 
 // Captcha
@@ -255,86 +249,63 @@ function generateCaptcha() {
   document.getElementById('captchaCode').textContent = code;
 }
 generateCaptcha();
-  
-  document.getElementById('photoUpload').addEventListener('change', function () {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        document.getElementById('photoPreview').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
 
-  document.getElementById('admissionForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+// Photo preview
+document.getElementById('photoUpload').addEventListener('change', function () {
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById('photoPreview').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
-   let userCaptcha = document.getElementById('captchaInput').value;
+// Submit form
+document.getElementById('admissionForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  let userCaptcha = document.getElementById('captchaInput').value;
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
   if (userCaptcha !== actualCaptcha) {
-    alert("Captcha incorrect");
+    alert("❌ Captcha incorrect");
     generateCaptcha();
     return;
   }
-    let form = document.getElementById("admissionForm");
-    let formData = new FormData(form);
 
-    let file = document.getElementById("photoUpload").files[0];
+  let form = document.getElementById("admissionForm");
+  let formData = new FormData(form);
 
-    function sendData(data) {
-      fetch(scriptURL, {
-        method: "POST",
-        body: new URLSearchParams(data)
-      })
-      .then(res => res.text())
-      .then(data => {
-        alert("🎉 Form Submitted!\n📌 Application No: " + data);
-        form.reset();
-        document.getElementById("photoPreview").src = "";
-        generateCaptcha();
-      })
-      .catch(err => alert("Error: " + err));
-    }
+  let file = document.getElementById("photoUpload").files[0];
 
-    if (file) {
-      let reader = new FileReader();
-      reader.onload = function () {
-        formData.append("photo", reader.result);
-        sendData(formData);
-      };
-      reader.readAsDataURL(file);
-    } else {
+  function sendData(data) {
+    fetch(scriptURL, {
+      method: "POST",
+      body: new URLSearchParams(data)
+    })
+    .then(res => res.text())
+    .then(data => {
+      alert("🎉 Form Submitted!\n📌 Application No: " + data);
+      form.reset();
+      document.getElementById("photoPreview").src = "";
+      generateCaptcha();
+    })
+    .catch(err => alert("Error: " + err));
+  }
+
+  if (file) {
+    let reader = new FileReader();
+    reader.onload = function () {
+      formData.append("photo", reader.result);
       sendData(formData);
-    }
-
-  });
-
+    };
+    reader.readAsDataURL(file);
+  } else {
+    sendData(formData);
+  }
 });
-  reader.readAsDataURL(file);
-} else {
-  sendData(formData);
-}
-
-// 🔥 Send function
-function sendData(formData) {
-  fetch(scriptURL, {
-    method: "POST",
-    body: new URLSearchParams(formData)
-  })
-  .then(res => res.text())
-  .then(data => {
-    alert("🎉 Form Submitted Successfully!\n📌 Application No: " + data);
-    form.reset();
-    document.getElementById("photoPreview").src = "";
-    generateCaptcha();
-  })
-  .catch(error => {
-    alert("Error: " + error);
-  });
-}
 </script>
-
 </body>
 </html>
