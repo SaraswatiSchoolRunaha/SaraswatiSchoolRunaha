@@ -283,7 +283,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   function sendData(data) {
     fetch(scriptURL, {
       method: "POST",
-      body: new URLSearchParams(data)
+    body: formData
     })
     .then(res => res.text())
     .then(data => {
