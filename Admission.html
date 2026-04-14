@@ -273,42 +273,46 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let userCaptcha = document.getElementById('captchaInput').value;
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
-  if (userCaptcha !== actualCaptcha) {
+  if (userCaptcha.trim().toLowerCase() !== actualCaptcha.trim().toLowerCase()) {
     alert("❌ Captcha incorrect");
     generateCaptcha();
     return;
   }
 
-  function sendData(fd) {
-    let obj = {};
-    fd.forEach((value, key) => {
-      obj[key] = value;
-    });
+  function sendToServer(obj) {
+    fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(obj)
+    })
+    .then(res => res.text())
+    .then(appNo => {
+      alert("🎉 Submitted!\n📌 " + appNo);
 
-   fetch(scriptURL, {
-  method: "POST",
-  body: JSON.stringify(obj)
-})
-.then(res => res.text())
-.then(appNo => {
-  alert("🎉 Submitted!\n📌 " + appNo);
+      form.reset();
+      document.getElementById("photoPreview").src = "";
 
-  document.getElementById("admissionForm").reset();
-  document.getElementById("photoPreview").src = "";
+      generateCaptcha(); // ✅ FIXED
+    })
+    .catch(err => alert("Error: " + err));
+  }
 
-  generateCaptcha();   // ✅ THIS IS REQUIRED
-})
-.catch(err => alert("Error: " + err));
-    
+  // PHOTO handling
   if (file) {
     let reader = new FileReader();
     reader.onload = function () {
       formData.set("photo", reader.result);
-      sendData(formData);
+
+      let obj = {};
+      formData.forEach((v, k) => obj[k] = v);
+
+      sendToServer(obj);
     };
     reader.readAsDataURL(file);
   } else {
-    sendData(formData);
+    let obj = {};
+    formData.forEach((v, k) => obj[k] = v);
+
+    sendToServer(obj);
   }
 });
  
