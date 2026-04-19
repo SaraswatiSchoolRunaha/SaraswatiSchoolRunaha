@@ -237,7 +237,7 @@ button[type="submit"]:hover {
 <button type="submit">Submit Admission</button></form>
 </div>
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbz7HuvQccDhHkzdaXtmSXeG-IIotGmj5vH8kShxy5W3e99ubPvHtbzseh1cxjyjuZ_d/exec";
+ const scriptURL = "https://script.google.com/macros/s/AKfycbz7HuvQccDhHkzdaXtmSXeG-IIotGmj5vH8kShxy5W3e99ubPvHtbzseh1cxjyjuZ_d/exec";
 
 // Captcha
 function generateCaptcha() {
@@ -262,7 +262,28 @@ document.getElementById('photoUpload').addEventListener('change', function () {
   }
 });
 
-// Form submit
+// 🔥 NEW FUNCTION
+function sendToServer(obj) {
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(obj),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => res.text())
+  .then(appNo => {
+    alert("🎉 Submitted!\n📌 Application No: " + appNo);
+
+    document.getElementById("admissionForm").reset();
+    document.getElementById("photoPreview").src = "";
+
+    generateCaptcha();
+  })
+  .catch(err => alert("Error: " + err));
+}
+
+// ✅ FINAL SUBMIT
 document.getElementById('admissionForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
@@ -279,26 +300,6 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     return;
   }
 
-fetch(scriptURL, {
-  method: "POST",
-  body: JSON.stringify(obj),
-  headers: {
-    "Content-Type": "application/json"
-  }
-})
-    .then(res => res.text())
-    .then(appNo => {
-      alert("🎉 Submitted!\n📌 " + appNo);
-
-      form.reset();
-      document.getElementById("photoPreview").src = "";
-
-      generateCaptcha(); // ✅ FIXED
-    })
-    .catch(err => alert("Error: " + err));
-  }
-
-  // PHOTO handling
   if (file) {
     let reader = new FileReader();
     reader.onload = function () {
@@ -317,7 +318,6 @@ fetch(scriptURL, {
     sendToServer(obj);
   }
 });
- 
 </script>
 </body>
 </html>
