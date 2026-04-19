@@ -276,15 +276,13 @@ document.getElementById('photoUpload').addEventListener('change', function () {
   .then(res => res.text())
   .then(data => {
     alert("Application No: " + data);
-
-    // ✅ captcha reset
     generateCaptcha();
   })
   .catch(err => {
     alert("Error: " + err);
   });
 }
-// ✅ FINAL SUBMIT
+  // ✅ FINAL SUBMIT
 document.getElementById('admissionForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
