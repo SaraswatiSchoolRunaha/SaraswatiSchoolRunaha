@@ -248,10 +248,9 @@ function generateCaptcha() {
     captcha += chars.charAt(Math.floor(Math.random() * chars.length));
   }
 
-  document.getElementById("captchaText").innerText = captcha;
+  document.getElementById("captchaCode").innerText = captcha;
   window.currentCaptcha = captcha;
 }
-
 // Photo preview
 document.getElementById('photoUpload').addEventListener('change', function () {
   const file = this.files[0];
