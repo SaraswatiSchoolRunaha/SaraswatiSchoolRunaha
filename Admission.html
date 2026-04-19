@@ -264,27 +264,25 @@ document.getElementById('photoUpload').addEventListener('change', function () {
 
 // 🔥 NEW FUNCTION
 function sendToServer(obj) {
+ function sendToServer(obj) {
   fetch(scriptURL, {
     method: "POST",
     body: JSON.stringify(obj),
     headers: {
       "Content-Type": "text/plain;charset=utf-8"
-    },
-    mode: "no-cors"
+    }
   })
-}
   .then(res => res.text())
-  .then(appNo => {
-    alert("🎉 Submitted!\n📌 Application No: " + appNo);
+  .then(data => {
+    alert("Application No: " + data);
 
-    document.getElementById("admissionForm").reset();
-    document.getElementById("photoPreview").src = "";
-
+    // ✅ captcha reset
     generateCaptcha();
   })
-  .catch(err => alert("Error: " + err));
+  .catch(err => {
+    alert("Error: " + err);
+  });
 }
-
 // ✅ FINAL SUBMIT
 document.getElementById('admissionForm').addEventListener('submit', function (e) {
   e.preventDefault();
