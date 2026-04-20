@@ -352,17 +352,16 @@ button[type="submit"]:hover {
 <div class="row">
   <div>
     <label>Account Number</label>
-     <input type="text" name="Account Number" maxlength="12" pattern="\d{18}" required>
+     <input type="text" name="accountnumber" maxlength="12" pattern="\d{18}" required>
   </div>
   <div>
     <label>IFSC Code</label>
-   <input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required>
+   <input type="text" name="ifsc" oninput="this.value = this.value.toUpperCase()" required>
   </div>
 </div>
 
 <h3>Contact Details</h3>
-<div style="display:flex; gap:10px;">
-
+    
   <!-- Mobile 1 -->
   <div style="flex:1; display:flex; flex-direction:column;">
     <label>Mobile Number 1</label>
@@ -524,7 +523,8 @@ function districtChange() {
     t.innerHTML += `<option>Rajgarh</option><option>Biaora</option><option>Narsinghgarh</option>`;
   }
   if (d === "Guna") {
-    t.innerHTML += `<option>Guna</option><option>Raghogarh</option><option>Aron</option>`;
+  t.innerHTML += `<option>Guna</option><option>Raghogarh</option><option>Aron</option>`;
+}
 }
 </script>
   
