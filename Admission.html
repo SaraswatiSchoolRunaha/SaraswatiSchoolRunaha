@@ -210,7 +210,6 @@ button[type="submit"]:hover {
     <label>State</label>
 <select name="state" id="state" onchange="stateChange()" required>
   <option value="">Select State</option>
-  <option value="">Select State</option>
   <option value="Andhra Pradesh">Andhra Pradesh</option>
   <option value="Arunachal Pradesh">Arunachal Pradesh</option>
   <option value="Assam">Assam</option>
@@ -324,11 +323,8 @@ button[type="submit"]:hover {
   </div>
   <div>
       
-   <label>Village</label>
-<input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required>
-</select>
-  </div>
-</div>
+  <label>Village</label>
+<input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required>
 
 <label>Full Address</label>
 <textarea name="address" oninput="this.value = this.value.toUpperCase()" placeholder="Enter full address" required></textarea>
@@ -529,27 +525,6 @@ function districtChange() {
 
   document.getElementById("panchayat").innerHTML = '<option>Select Panchayat</option>';
   document.getElementById("village").innerHTML = '<option>Select Village</option>';
-}
-
-// TEHSIL → PANCHAYAT
-function tehsilChange() {
-  let t = document.getElementById("tehsil").value;
-  let p = document.getElementById("panchayat");
-
-  p.innerHTML = '<option value="">Select Panchayat</option>';
-
-  if (t === "Huzur") {
-    p.innerHTML += `<option>Bairagarh</option>`;
-  }
-  if (t === "Sehore") {
-    p.innerHTML += `<option>Sehore Panchayat</option>`;
-  }
-  if (t === "Rajgarh") {
-    p.innerHTML += `<option>Rajgarh Panchayat</option>`;
-  }
-  if (t === "Guna") {
-    p.innerHTML += `<option>Guna Panchayat</option>`;
-  }
 }
 
 </script>
