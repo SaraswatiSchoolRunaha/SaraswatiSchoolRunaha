@@ -327,13 +327,25 @@ button[type="submit"]:hover {
 </div>
 </div>  
   
-  <!-- tehsil row close -->
  <div class="row">
+  <div>
+    <label>Tehsil</label>
+    <select name="tehsil" id="tehsil" required>
+      <option value="">Select Tehsil</option>
+      <option>Berasia</option>
+      <option>Huzur</option>
+    </select>
+  </div>
+
   <div>
     <label>Village</label>
     <input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required>
   </div>
-  <div>
+</div>
+
+<!-- Full Address alag line me -->
+<div class="row">
+  <div style="flex:1;">
     <label>Full Address</label>
     <textarea name="address" oninput="this.value = this.value.toUpperCase()" required></textarea>
   </div>
