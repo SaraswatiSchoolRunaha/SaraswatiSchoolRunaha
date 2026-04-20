@@ -52,26 +52,28 @@ textarea{resize:vertical; min-height:60px;}
 .row{display:flex; gap:15px; flex-wrap:wrap;}
 .row>div{flex:1;}
 
-/* Submit button center */
+/* Submit button sticky bottom */
 button[type="submit"] {
-  width: 200px;          /* fixed width */
-  display: block;        /* margin auto काम करने के लिए */
-  margin: 20px auto;     /* ऊपर-नीचे 20px, horizontally center */
-  padding: 18px;
-  background: Green;
+  width: 100%;              /* full width */
+  padding: 15px;
+  background: green;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 900;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-}
-button[type="submit"]:hover {
-  background: #004080;
-  transform: scale(1.02);
+
+  position: sticky;         /* 👈 main change */
+  bottom: 0;                /* 👈 niche chipka rahega */
+  left: 0;
+
+  border-radius: 0;         /* full bar look */
+  z-index: 1000;
 }
 
+button[type="submit"]:hover {
+  background: #004080;
+}
 /* Captcha Styles */
 .captcha-box { display:flex; align-items:center; gap:10px; margin-top:5px; }
 .captcha-code { 
