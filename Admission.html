@@ -66,8 +66,6 @@ button[type="submit"] {
   display: block;
   margin: 20px auto;   /* center me */
   border-radius: 8px;
-}
-  /* Photo Preview */
 .photo-preview {
   margin-top:10px;
   width:150px;
@@ -75,12 +73,16 @@ button[type="submit"] {
   border:1px solid #ccc;
   border-radius:8px;
   object-fit:cover;
-  display:block;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#888;
+  font-size:14px;
+  text-align:center;
 }
-  .error {
-  border: 2px solid red !important;
-  background-color: #ffe6e6;
-}
+  
 /* 👇 ये code बस नीचे add करो */
 .declaration-label {
   display: flex;
