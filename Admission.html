@@ -332,7 +332,9 @@ button[type="submit"]:hover {
 
 <label>Full Address</label>
 <textarea name="address" oninput="this.value = this.value.toUpperCase()" placeholder="Enter full address" required></textarea>
-
+</div>  <!-- Village + Address column close -->
+</div>  <!-- row close -->
+  
 <h3>ID Details</h3>
 <div class="row">
   <div>
@@ -361,21 +363,17 @@ button[type="submit"]:hover {
 </div>
 
 <h3>Contact Details</h3>
-    
-  <!-- Mobile 1 -->
-  <div style="flex:1; display:flex; flex-direction:column;">
+
+<div class="row">
+  <div>
     <label>Mobile Number 1</label>
-    <input type="tel" name="mobile1" maxlength="10" pattern="[0-9]{10}" 
-           placeholder="Enter Mobile Number" required>
+    <input type="tel" name="mobile1" maxlength="10" pattern="[0-9]{10}" required>
   </div>
 
-  <!-- Mobile 2 (Optional) -->
-  <div style="flex:1; display:flex; flex-direction:column;">
+  <div>
     <label>Mobile Number 2</label>
-    <input type="tel" name="mobile2" maxlength="10" pattern="[0-9]{10}" 
-           placeholder="Enter Mobile Number">
+    <input type="tel" name="mobile2" maxlength="10" pattern="[0-9]{10}">
   </div>
-
 </div>
 
 <h3>Upload Photo & Captcha</h3>
