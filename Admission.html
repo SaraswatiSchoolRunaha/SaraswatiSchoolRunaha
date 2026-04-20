@@ -208,7 +208,8 @@ button[type="submit"]:hover {
 <div class="row">
   <div>
     <label>State</label>
-  <select name="state" required>
+<select name="state" id="state" onchange="stateChange()" required>
+  <option value="">Select State</option>
   <option value="">Select State</option>
   <option value="Andhra Pradesh">Andhra Pradesh</option>
   <option value="Arunachal Pradesh">Arunachal Pradesh</option>
