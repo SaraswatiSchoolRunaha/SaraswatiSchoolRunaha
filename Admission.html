@@ -159,7 +159,6 @@ button[type="submit"]:hover {
       <option value="12">12th</option>
     </select>
   </div>
-  
 <div id="subjectSection" style="display:none;">
   <label>Select Subject (For 11th & 12th)</label>
   <select name="subject" id="subject">
@@ -280,6 +279,17 @@ button[type="submit"]:hover {
 <script>
  const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
+function toggleSubjects() {
+  let cls = document.getElementById("classSelect").value;
+  let subjectBox = document.getElementById("subjectSection");
+
+  if (cls === "11" || cls === "12") {
+    subjectBox.style.display = "block";
+  } else {
+    subjectBox.style.display = "none";
+  }
+}
+  
 // Captcha
 function generateCaptcha() {
   let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
