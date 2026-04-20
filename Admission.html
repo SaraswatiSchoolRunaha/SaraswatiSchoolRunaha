@@ -392,9 +392,19 @@ button[type="submit"]:hover {
   <button type="button" class="refresh-btn" onclick="generateCaptcha()">Referrec</button>
 </div>
 <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
-  
-<button type="submit">Submit Admission</button></form>
+
+<!-- ✅ Declaration Box -->
+<div class="declaration-box">
+  <label>
+    <input type="checkbox" id="declaration" required>
+    <span>
+      मैं यह घोषणा करता/करती हूँ कि मेरे द्वारा दी गई समस्त जानकारी मेरे ज्ञान के अनुसार पूर्णतः सत्य है। 
+      यदि भविष्य में कोई भी जानकारी गलत पाई जाती है, तो मेरे बालक/बालिका का प्रवेश निरस्त किया जा सकता है, 
+      जिसकी पूर्ण जिम्मेदारी मेरी होगी।
+    </span>
+  </label>
 </div>
+  
 <script>
  const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
