@@ -538,17 +538,6 @@ function tehsilChange() {
   }
 }
 
-// PANCHAYAT → VILLAGE
-function panchayatChange() {
-  let p = document.getElementById("panchayat").value;
-  let v = document.getElementById("village");
-
-  v.innerHTML = '<option value="">Select Village</option>';
-
-  if (p === "Bairagarh") {
-    v.innerHTML += `<option>Village 1</option><option>Village 2</option>`;
-  }
-}
 </script>
   
 </body>
