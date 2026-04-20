@@ -229,8 +229,8 @@ button[type="submit"]:hover {
 </select>
   </div>
   <div>
-    <label>District</label>
-   <select name="district" required>
+  <label>District</label>
+<select name="district" id="district" onchange="districtChange()" required>
   <option value="">Select District</option>
   <option>Alirajpur</option>
   <option>Anuppur</option>
@@ -288,10 +288,10 @@ button[type="submit"]:hover {
 
 <div class="row">
   <div>
-    <label>Tehsil</label>
-<select name="tehsil" required>
+   <label>Tehsil</label>
+<select name="tehsil" id="tehsil" onchange="tehsilChange()" required>
   <option value="">Select Tehsil</option>
-
+  
   <!-- Bhopal -->
   <option>Berasia</option>
   <option>Huzur</option>
@@ -320,12 +320,19 @@ button[type="submit"]:hover {
   <option>Bamori</option>
   <option>Raghogarh</option>
   <option>Chachaura</option>
-
 </select>
   </div>
   <div>
+    
+    <label>Panchayat</label>
+<select name="panchayat" id="panchayat" onchange="panchayatChange()" required>
+  <option value="">Select Panchayat</option>
+</select>
+    
     <label>Village</label>
-    <input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required>
+<select name="village" id="village" required>
+  <option value="">Select Village</option>
+</select>
   </div>
 </div>
 
@@ -473,5 +480,81 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
     generateCaptcha();
   };
 </script>
+<script>
+// STATE → DISTRICT
+function stateChange() {
+  let s = document.getElementById("state").value;
+  let d = document.getElementById("district");
+
+  d.innerHTML = '<option value="">Select District</option>';
+
+  if (s === "Madhya Pradesh") {
+    d.innerHTML += `
+      <option>Bhopal</option>
+      <option>Sehore</option>
+      <option>Rajgarh</option>
+      <option>Guna</option>
+    `;
+  }
+}
+
+// DISTRICT → TEHSIL
+function districtChange() {
+  let d = document.getElementById("district").value;
+  let t = document.getElementById("tehsil");
+
+  t.innerHTML = '<option value="">Select Tehsil</option>';
+
+  if (d === "Bhopal") {
+    t.innerHTML += `<option>Huzur</option><option>Berasia</option>`;
+  }
+  if (d === "Sehore") {
+    t.innerHTML += `<option>Sehore</option><option>Ashta</option><option>Ichhawar</option>`;
+  }
+  if (d === "Rajgarh") {
+    t.innerHTML += `<option>Rajgarh</option><option>Biaora</option><option>Narsinghgarh</option>`;
+  }
+  if (d === "Guna") {
+    t.innerHTML += `<option>Guna</option><option>Raghogarh</option><option>Aron</option>`;
+  }
+
+  document.getElementById("panchayat").innerHTML = '<option>Select Panchayat</option>';
+  document.getElementById("village").innerHTML = '<option>Select Village</option>';
+}
+
+// TEHSIL → PANCHAYAT
+function tehsilChange() {
+  let t = document.getElementById("tehsil").value;
+  let p = document.getElementById("panchayat");
+
+  p.innerHTML = '<option value="">Select Panchayat</option>';
+
+  if (t === "Huzur") {
+    p.innerHTML += `<option>Bairagarh</option>`;
+  }
+  if (t === "Sehore") {
+    p.innerHTML += `<option>Sehore Panchayat</option>`;
+  }
+  if (t === "Rajgarh") {
+    p.innerHTML += `<option>Rajgarh Panchayat</option>`;
+  }
+  if (t === "Guna") {
+    p.innerHTML += `<option>Guna Panchayat</option>`;
+  }
+}
+
+// PANCHAYAT → VILLAGE
+function panchayatChange() {
+  let p = document.getElementById("panchayat").value;
+  let v = document.getElementById("village");
+
+  v.innerHTML = '<option value="">Select Village</option>';
+
+  if (p === "Bairagarh") {
+    v.innerHTML += `<option>Village 1</option><option>Village 2</option>`;
+  }
+}
+</script>
+  
 </body>
 </html>
