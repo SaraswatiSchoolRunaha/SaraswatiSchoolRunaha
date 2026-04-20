@@ -71,33 +71,23 @@ button[type="submit"] {
   z-index: 1000;
 }
 
-button[type="submit"]:hover {
-  background: #004080;
-}
-/* Captcha Styles */
-.captcha-box { display:flex; align-items:center; gap:10px; margin-top:5px; }
-.captcha-code { 
-  font-weight:700; 
-  font-size:16px;        /* छोटा font */
-  background:#e0e0e0; 
-  padding:3px 8px;       /* छोटा padding */
-  border-radius:5px; 
-  letter-spacing:1.5px;  /* थोड़ा spacing घटाया */
-  user-select:none; 
-}
-.refresh-btn {
-  width: 80px;
-  padding: 6px;
-  cursor:pointer; 
-  background:#004080; 
-  color:white; 
-  border:none; 
-  border-radius:5px; 
-  font-weight:600; 
-  font-size:13px; 
-}
+button[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background: green;
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
 
-/* Photo Preview */
+  position: sticky;
+  bottom: 0;
+
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.2); /* ऊपर shadow */
+}
+  /* Photo Preview */
 .photo-preview {
   margin-top:10px;
   width:150px;
