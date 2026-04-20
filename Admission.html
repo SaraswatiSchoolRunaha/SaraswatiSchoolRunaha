@@ -394,14 +394,6 @@ button[type="submit"] {
 <input type="file" name="photo" id="photoUpload" accept="image/*" required>
 <img id="photoPreview" class="photo-preview" src="" alt="Photo Preview">
 
-<label>Captcha Code</label>
-<div class="captcha-box">
-  <div class="captcha-code" id="captchaCode">XXXXXX</div>
-  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Referrec</button>
-</div>
-
-<input type="text" id="captchaInput" placeholder="Enter Captcha" required>
-
 <div class="declaration-box">
   <label class="declaration-label">
     <input type="checkbox" id="declaration" required>
@@ -411,7 +403,19 @@ button[type="submit"] {
     </span>
   </label>
 </div>
+  
+<label>Captcha Code</label>
+<div class="captcha-box">
+  <div class="captcha-code" id="captchaCode">XXXXXX</div>
+  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Referrec</button>
+</div>
 
+<input type="text" id="captchaInput" placeholder="Enter Captcha" required>
+
+
+
+
+  
 <button type="submit">Submit Admission</button>
 
 </form>
@@ -487,7 +491,7 @@ document.getElementById('admissionForm').addEventListener('submit', function (e)
   let actualCaptcha = document.getElementById('captchaCode').textContent;
 
   if (userCaptcha.trim().toLowerCase() !== actualCaptcha.trim().toLowerCase()) {
-    alert("❌ Captcha incorrect");
+   alert("❌ कैप्चा गलत है, कृपया पुनः प्रयास करें");
     generateCaptcha();
     return;
   }
