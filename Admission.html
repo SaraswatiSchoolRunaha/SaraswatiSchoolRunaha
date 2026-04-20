@@ -105,6 +105,10 @@ button[type="submit"]:hover {
   object-fit:cover;
   display:block;
 }
+  .error {
+  border: 2px solid red !important;
+  background-color: #ffe6e6;
+}
 </style>
 </head>
 <body>
@@ -521,9 +525,34 @@ function districtChange() {
   }
   if (d === "Guna") {
     t.innerHTML += `<option>Guna</option><option>Raghogarh</option><option>Aron</option>`;
-  }
-
+}
 </script>
   
+<script>
+function validateForm() {
+  let isValid = true;
+
+  let inputs = document.querySelectorAll("#admissionForm input, #admissionForm select, #admissionForm textarea");
+
+  inputs.forEach(function(field) {
+
+    // पहले remove करो (reset)
+    field.classList.remove("error");
+
+    // अगर required है और empty है
+    if (field.hasAttribute("required") && field.value.trim() === "") {
+      field.classList.add("error"); // 🔴 highlight
+      isValid = false;
+    }
+  });
+
+  if (!isValid) {
+    alert("⚠️ कृपया सभी जरूरी जानकारी भरें");
+  }
+
+  return isValid; // false = submit बंद
+}
+</script>
+
 </body>
 </html>
