@@ -361,8 +361,23 @@ button[type="submit"]:hover {
 </div>
 
 <h3>Contact Details</h3>
-<label>Mobile Number</label>
-<input type="text" name="mobile" pattern="[0-9]{10}" maxlength="10" required>
+<div style="display:flex; gap:10px;">
+
+  <!-- Mobile 1 -->
+  <div style="flex:1; display:flex; flex-direction:column;">
+    <label>Mobile Number 1</label>
+    <input type="tel" name="mobile1" maxlength="10" pattern="[0-9]{10}" 
+           placeholder="Enter Mobile Number" required>
+  </div>
+
+  <!-- Mobile 2 -->
+  <div style="flex:1; display:flex; flex-direction:column;">
+    <label>Mobile Number 2</label>
+    <input type="tel" name="mobile2" maxlength="10" pattern="[0-9]{10}" 
+           placeholder="Enter Mobile Number">
+  </div>
+
+</div>
 
 <h3>Upload Photo & Captcha</h3>
 
