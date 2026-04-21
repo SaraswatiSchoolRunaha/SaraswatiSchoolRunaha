@@ -37,11 +37,12 @@
       border:1px solid #ccc;
     }
 
-  #captchaBox{
+#captchaBox{
   display:flex;
+  justify-content:center;  /* 👈 center कर देगा */
   align-items:center;
-  gap:10px;   /* पहले 10px था, अब कम कर दिया */
-  margin:8px 0;
+  gap:8px;
+  margin:10px 0;
   flex-wrap:wrap;
 }
 
@@ -67,17 +68,19 @@
   border-radius:8px;
 }
 
-/* Submit button */
 #submitBtn{
   display:block;
-  margin:20px auto;  /* पहले 15px था */
-  padding:10px 25px;
-  background:#1e88e5;
+  margin:15px auto;
+  padding:14px 40px;   /* 👈 बड़ा button */
+  background:#43a047;  /* 👈 green */
   color:#fff;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   cursor:pointer;
+  font-size:18px;
+  font-weight:bold;
 }
+    
   </style>
 </head>
 
@@ -99,7 +102,7 @@
   <input type="text" id="captchaInput" placeholder="Enter Code">
 </div>
 
-<button onclick="verify()">Submit</button>
+<button id="submitBtn" onclick="verify()">Submit</button>
 
 </div>
 
