@@ -151,110 +151,170 @@ function verify(){
 
     if(data.status == "found"){
 
-      let receiptWindow = window.open("", "_blank");
+   receiptWindow.document.write(`
+<html>
+<head>
+<title>Admission Form Print</title>
 
-      receiptWindow.document.write(`
-      <html>
-      <head>
-      <title>Admission Receipt</title>
-
-      <style>
-        body{
-          font-family: Arial;
-          background:#f2f6ff;
-          padding:20px;
-        }
-
-        .card{
-          max-width:700px;
-          margin:auto;
-          background:white;
-          border:3px solid #1565c0;
-          border-radius:15px;
-          padding:20px;
-        }
-
-        .header{
-          text-align:center;
-          border-bottom:2px solid #1565c0;
-          margin-bottom:15px;
-        }
-
-        .row{
-          margin:8px 0;
-        }
-
-        .label{
-          font-weight:bold;
-        }
-
-        .footer{
-          text-align:center;
-          margin-top:20px;
-        }
-
-        img{
-          width:120px;
-          border:2px solid #1565c0;
-          border-radius:10px;
-        }
-
-        button{
-          padding:10px 20px;
-          background:#43a047;
-          color:white;
-          border:none;
-          border-radius:6px;
-        }
-
-        @media print{
-          button{display:none;}
-        }
-      </style>
-
-      </head>
-
-      <body>
-
-      <div class="card">
-
-        <div class="header">
-          <h2>🏫 Saraswati School Runaha</h2>
-          <p>Admission Receipt</p>
-        </div>
-
-        <div class="row"><span class="label">Application No:</span> ${data.appNo}</div>
-        <div class="row"><span class="label">Name:</span> ${data.name}</div>
-        <div class="row"><span class="label">Father:</span> ${data.father}</div>
-        <div class="row"><span class="label">Class:</span> ${data.class}</div>
-        <div class="row"><span class="label">Mobile:</span> ${data.mobile}</div>
-        <div class="row"><span class="label">Address:</span> ${data.address}</div>
-
-        <div style="text-align:center;margin-top:10px;">
-          <img src="${data.photo}">
-        </div>
-
-        <div class="footer">
-          <button onclick="window.print()">Print</button>
-        </div>
-
-      </div>
-
-      </body>
-      </html>
-      `);
-
-    } else {
-      alert("Application not found");
-    }
-
-  })
-  .catch(()=>{
-    alert("Server error");
-  });
-
+<style>
+body{
+  font-family: Arial;
+  background:white;
+  padding:20px;
 }
 
+.a4{
+  width:210mm;
+  min-height:297mm;
+  margin:auto;
+  border:2px solid #1565c0;
+  padding:15px;
+  box-sizing:border-box;
+}
+
+.header{
+  text-align:center;
+  border-bottom:2px solid #1565c0;
+  padding-bottom:10px;
+}
+
+.header h2{
+  margin:0;
+  color:#1565c0;
+}
+
+.section{
+  margin-top:12px;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+
+.title{
+  font-weight:bold;
+  color:#1565c0;
+  margin-bottom:8px;
+  font-size:16px;
+}
+
+.row{
+  margin:4px 0;
+  font-size:14px;
+}
+
+.label{
+  font-weight:bold;
+}
+
+.flex{
+  display:flex;
+  justify-content:space-between;
+}
+
+.photo{
+  text-align:center;
+}
+
+.photo img{
+  width:120px;
+  height:140px;
+  border:2px solid #1565c0;
+  border-radius:8px;
+}
+
+button{
+  margin-top:10px;
+  padding:10px 20px;
+  background:#43a047;
+  color:white;
+  border:none;
+  border-radius:6px;
+}
+
+@media print{
+  button{display:none;}
+  body{margin:0;}
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="a4">
+
+  <!-- 1. SCHOOL INFO -->
+  <div class="header">
+    <h2>🏫 Saraswati School Runaha</h2>
+    <p>Admission Form / Print Copy</p>
+    <p><b>Application No:</b> ${data.appNo} | 
+       <b>Date:</b> ${new Date().toLocaleDateString()} | 
+       <b>Time:</b> ${new Date().toLocaleTimeString()}</p>
+  </div>
+
+  <!-- 2. STUDENT DETAILS -->
+  <div class="section">
+    <div class="title">1. छात्र की जानकारी</div>
+
+    <div class="row"><span class="label">नाम:</span> ${data.name}</div>
+    <div class="row"><span class="label">पिता का नाम:</span> ${data.father}</div>
+    <div class="row"><span class="label">माता का नाम:</span> ${data.mother || ""}</div>
+    <div class="row"><span class="label">जन्म तिथि:</span> ${data.dob || ""}</div>
+    <div class="row"><span class="label">माध्यम:</span> ${data.medium || ""}</div>
+    <div class="row"><span class="label">कक्षा:</span> ${data.class}</div>
+    <div class="row"><span class="label">विषय:</span> ${data.subject || ""}</div>
+    <div class="row"><span class="label">जाति:</span> ${data.cast || ""}</div>
+  </div>
+
+  <!-- 3. ADDRESS -->
+  <div class="section">
+    <div class="title">2. पता विवरण</div>
+    <div class="row">${data.address}</div>
+  </div>
+
+  <!-- 4. ID DETAILS -->
+  <div class="section">
+    <div class="title">3. पहचान विवरण</div>
+    <div class="row"><span class="label">आधार नंबर:</span> ${data.adhar || ""}</div>
+    <div class="row"><span class="label">समग्र ID:</span> ${data.samgra || ""}</div>
+  </div>
+
+  <!-- 5. BANK DETAILS -->
+  <div class="section">
+    <div class="title">4. बैंक विवरण</div>
+    <div class="row"><span class="label">बैंक नाम:</span> ${data.bank || ""}</div>
+    <div class="row"><span class="label">खाता नंबर:</span> ${data.account || ""}</div>
+    <div class="row"><span class="label">IFSC:</span> ${data.ifsc || ""}</div>
+  </div>
+
+  <!-- 6. MOBILE -->
+  <div class="section">
+    <div class="title">5. संपर्क विवरण</div>
+    <div class="row"><span class="label">मोबाइल नंबर:</span> ${data.mobile}</div>
+  </div>
+
+  <!-- 7. PHOTO -->
+  <div class="section flex">
+    <div>
+      <div class="title">6. प्रमाण पत्र</div>
+      <p>सभी जानकारी सही पाई गई है।</p>
+    </div>
+
+    <div class="photo">
+      <img src="${data.photo}">
+      <p><b>छात्र फोटो</b></p>
+    </div>
+  </div>
+
+  <!-- PRINT BUTTON -->
+  <div style="text-align:center;">
+    <button onclick="window.print()">🖨 Print Form</button>
+  </div>
+
+</div>
+
+
+`);
 </script>
 
 </body>
