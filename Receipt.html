@@ -70,14 +70,20 @@
       cursor:pointer;
     }
 
-   #captchaInput{
-  width:250px;
-  height:70px;
-  font-size:24px;
+  #captchaInput{
+  width:280px;      /* length badh gayi */
+  height:50px;      /* motai badh gayi */
+  font-size:18px;
   padding:10px;
   text-align:center;
   border:3px solid #1e88e5;
   border-radius:10px;
+  outline:none;
+}
+    
+    #captchaInput:focus{
+  border-color:#43a047;
+  box-shadow:0 0 10px rgba(67,160,71,0.4);
 }
 
    button{
