@@ -227,29 +227,71 @@ function verify(){
   document.getElementById("receipt").innerHTML += "<p>Loading...</p>";
 
   fetch("https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec?appNo=" + appNo + "&mobile=" + mobile)
-  .then(res=>res.json())
-  .then(data=>{
+ .then(res => res.json())
+.then(data => {
 
-    if(data.status=="found"){
+  if(data.status == "found"){
 
-      document.getElementById("photo").src=data.photo;
-      document.getElementById("name").innerText=data.name;
-      document.getElementById("app").innerText=data.appNo;
-      document.getElementById("mob").innerText=data.mobile;
-      document.getElementById("class").innerText=data.class;
-      document.getElementById("address").innerText=data.address;
-      document.getElementById("father").innerText=data.father;
+    let receiptWindow = window.open("", "_blank");
 
-    }else{
-      alert("Application not found");
-    }
+    receiptWindow.document.write(`
+      <html>
+      <head>
+        <title>Application Receipt</title>
+        <style>
+          body{
+            font-family: Arial;
+            padding:20px;
+          }
+          h2{
+            text-align:center;
+            color:#1565c0;
+          }
+          img{
+            width:120px;
+            border-radius:8px;
+            border:2px solid #ccc;
+          }
+          .box{
+            max-width:600px;
+            margin:auto;
+          }
+        </style>
+      </head>
 
-  })
-  .catch(()=>{
-    alert("Server error");
-  });
+      <body>
 
-}
+        <div class="box">
+
+        <h2>🏫 Saraswati School Runaha</h2>
+        <h3 style="text-align:center;">Application Receipt</h3>
+
+        <p><b>Application No:</b> ${data.appNo}</p>
+        <p><b>Name:</b> ${data.name}</p>
+        <p><b>Father:</b> ${data.father}</p>
+        <p><b>Class:</b> ${data.class}</p>
+        <p><b>Mobile:</b> ${data.mobile}</p>
+        <p><b>Address:</b> ${data.address}</p>
+
+        <img src="${data.photo}">
+
+        <br><br>
+        <button onclick="window.print()">Print</button>
+
+        </div>
+
+      </body>
+      </html>
+    `);
+
+  } else {
+    alert("Application not found");
+  }
+
+})
+.catch(()=>{
+  alert("Server error");
+});
 
 </script>
 
