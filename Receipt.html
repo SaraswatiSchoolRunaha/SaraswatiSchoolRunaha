@@ -109,7 +109,7 @@
 <script>
 
 let captcha = "";
-
+  
 function generateCaptcha(){
   let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   captcha = "";
@@ -123,6 +123,7 @@ function generateCaptcha(){
 
 window.onload = generateCaptcha;
 
+  
 function verify(){
 
   let appNo = document.getElementById("appNo").value;
@@ -151,7 +152,9 @@ function verify(){
 
     if(data.status == "found"){
 
-   receiptWindow.document.write(`
+      let receiptWindow = window.open("", "_blank");  // ✅ FIXED
+
+      receiptWindow.document.write(`
 <html>
 <head>
 <title>Admission Form Print</title>
@@ -233,7 +236,6 @@ button{
 
 @media print{
   button{display:none;}
-  body{margin:0;}
 }
 </style>
 
@@ -243,19 +245,18 @@ button{
 
 <div class="a4">
 
-  <!-- 1. SCHOOL INFO -->
   <div class="header">
     <h2>🏫 Saraswati School Runaha</h2>
     <p>Admission Form / Print Copy</p>
-    <p><b>Application No:</b> ${data.appNo} | 
-       <b>Date:</b> ${new Date().toLocaleDateString()} | 
-       <b>Time:</b> ${new Date().toLocaleTimeString()}</p>
+    <p>
+      <b>Application No:</b> ${data.appNo} |
+      <b>Date:</b> ${new Date().toLocaleDateString()} |
+      <b>Time:</b> ${new Date().toLocaleTimeString()}
+    </p>
   </div>
 
-  <!-- 2. STUDENT DETAILS -->
   <div class="section">
     <div class="title">1. छात्र की जानकारी</div>
-
     <div class="row"><span class="label">नाम:</span> ${data.name}</div>
     <div class="row"><span class="label">पिता का नाम:</span> ${data.father}</div>
     <div class="row"><span class="label">माता का नाम:</span> ${data.mother || ""}</div>
@@ -266,55 +267,52 @@ button{
     <div class="row"><span class="label">जाति:</span> ${data.cast || ""}</div>
   </div>
 
-  <!-- 3. ADDRESS -->
   <div class="section">
     <div class="title">2. पता विवरण</div>
-    <div class="row">${data.address}</div>
+    <div>${data.address}</div>
   </div>
 
-  <!-- 4. ID DETAILS -->
   <div class="section">
-    <div class="title">3. पहचान विवरण</div>
-    <div class="row"><span class="label">आधार नंबर:</span> ${data.adhar || ""}</div>
-    <div class="row"><span class="label">समग्र ID:</span> ${data.samgra || ""}</div>
+    <div class="title">3. बैंक / ID</div>
+    <div class="row">आधार: ${data.adhar || ""}</div>
+    <div class="row">समग्र: ${data.samgra || ""}</div>
+    <div class="row">बैंक: ${data.bank || ""}</div>
+    <div class="row">खाता: ${data.account || ""}</div>
+    <div class="row">IFSC: ${data.ifsc || ""}</div>
   </div>
 
-  <!-- 5. BANK DETAILS -->
-  <div class="section">
-    <div class="title">4. बैंक विवरण</div>
-    <div class="row"><span class="label">बैंक नाम:</span> ${data.bank || ""}</div>
-    <div class="row"><span class="label">खाता नंबर:</span> ${data.account || ""}</div>
-    <div class="row"><span class="label">IFSC:</span> ${data.ifsc || ""}</div>
-  </div>
-
-  <!-- 6. MOBILE -->
-  <div class="section">
-    <div class="title">5. संपर्क विवरण</div>
-    <div class="row"><span class="label">मोबाइल नंबर:</span> ${data.mobile}</div>
-  </div>
-
-  <!-- 7. PHOTO -->
   <div class="section flex">
     <div>
-      <div class="title">6. प्रमाण पत्र</div>
-      <p>सभी जानकारी सही पाई गई है।</p>
+      <div class="title">4. संपर्क</div>
+      <div>${data.mobile}</div>
     </div>
 
     <div class="photo">
       <img src="${data.photo}">
-      <p><b>छात्र फोटो</b></p>
+      <p>Photo</p>
     </div>
   </div>
 
-  <!-- PRINT BUTTON -->
   <div style="text-align:center;">
-    <button onclick="window.print()">🖨 Print Form</button>
+    <button onclick="window.print()">Print</button>
   </div>
 
 </div>
 
-
+</body>
+</html>
 `);
+
+    } else {
+      alert("Application not found");
+    }
+
+  })
+  .catch(()=>{
+    alert("Server error");
+  });
+
+}
 </script>
 
 </body>
