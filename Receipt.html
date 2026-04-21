@@ -37,46 +37,42 @@
       border:1px solid #ccc;
     }
 
-    #captchaBox{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin:10px 0;
-      flex-wrap:wrap;
-    }
+   #captchaBox{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:10px 0;
+  flex-wrap:nowrap;   /* ❌ wrap hata diya */
+}
 
-    #captchaText{
-      width:140px;
-      height:45px;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      border:1px solid #000;
-      background:#f5f5f5;
-      font-weight:bold;
-      letter-spacing:3px;
-      border-radius:8px;
-    }
+#captchaText{
+  width:140px;
+  height:45px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border:1px solid #000;
+  background:#f5f5f5;
+  font-weight:bold;
+  letter-spacing:3px;
+  border-radius:8px;
+}
 
-    #captchaInput{
-      width:140px;
-      height:45px;
-      font-size:18px;
-      text-align:center;
-      border:1px solid #1e88e5;
-      border-radius:8px;
-    }
+#captchaInput{
+  width:140px;
+  height:45px;
+  font-size:18px;
+  text-align:center;
+  border:1px solid #1e88e5;
+  border-radius:8px;
+}
 
-    button{
-      display:block;
-      margin:15px auto;
-      padding:10px 25px;
-      background:#43a047;
-      color:#fff;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-    }
+.refresh-btn{
+  height:45px;
+  padding:0 10px;
+  border-radius:6px;
+}
   </style>
 </head>
 
