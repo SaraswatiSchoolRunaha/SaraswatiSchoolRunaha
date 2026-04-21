@@ -38,73 +38,65 @@
     }
 
     #captchaBox{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  margin:10px 0;
-  flex-wrap:wrap;
-}
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      margin:10px 0;
+      flex-wrap:wrap;
+    }
 
-.captcha-display{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+    .captcha-display{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
 
-/* CAPTCHA CODE BOX */
-#captchaText{
-  width:140px;
-  height:45px;
+    #captchaText{
+      width:140px;
+      height:45px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      border:1px solid #000;
+      background:#f5f5f5;
+      letter-spacing:3px;
+      font-weight:bold;
+      font-size:18px;
+      border-radius:8px;
+      color:#000; /* FIX: text visible */
+    }
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
+    #captchaInput{
+      width:140px;
+      height:45px;
+      font-size:18px;
+      text-align:center;
+      border:1px solid #1e88e5;
+      border-radius:8px;
+      outline:none;
+    }
 
-  border:1px solid #000;
-  background:#f5f5f5;
+    .refresh-btn{
+      background:#1e88e5;
+      color:white;
+      border:none;
+      padding:6px 10px;
+      font-size:12px;
+      cursor:pointer;
+      border-radius:5px;
+    }
 
-  letter-spacing:3px;
-  font-weight:bold;
-  font-size:18px;
-
-  border-radius:8px;
-}
-
-/* INPUT BOX SAME SIZE */
-#captchaInput{
-  width:140px;
-  height:45px;
-
-  font-size:18px;
-  text-align:center;
-
-  border:1px solid #1e88e5;
-  border-radius:8px;
-  outline:none;
-}
-
-/* Refresh button (optional) */
-.refresh-btn{
-  background:#1e88e5;
-  color:white;
-  border:none;
-  padding:6px 10px;
-  font-size:12px;
-  cursor:pointer;
-  border-radius:5px;
-}
-      
-  button{
-   display:block;
-   margin:15px auto;
-   padding:10px 25px;
-   background:#43a047;
-   color:#fff;
-   border:none;
-   border-radius:6px;
-   cursor:pointer;
-   }
+    button{
+      display:block;
+      margin:15px auto;
+      padding:10px 25px;
+      background:#43a047;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+    }
 
     #receipt{
       display:none;
@@ -119,24 +111,6 @@
       border-radius:8px;
       border:2px solid #ccc;
     }
-
-    .page-break{
-      page-break-before: always;
-    }
-
-    @media print {
-      body *{ visibility:hidden; }
-      #receipt, #receipt *{ visibility:visible; }
-      #receipt{
-        position:absolute;
-        top:0;
-        left:0;
-        width:100%;
-        border:none;
-      }
-      button{ display:none; }
-    }
-
   </style>
 </head>
 
@@ -213,16 +187,14 @@ function generateCaptcha(){
   document.getElementById("captchaText").innerText = captcha;
 }
 
-// auto run on page load
 window.addEventListener("load", generateCaptcha);
-  
+
 function verify(){
 
   let appNo=document.getElementById("appNo").value;
   let mobile=document.getElementById("mobile").value;
   let userCap=document.getElementById("captchaInput").value;
 
-  // Validation
   if(!appNo || !mobile){
     alert("Fill all fields");
     return;
@@ -239,78 +211,49 @@ function verify(){
     return;
   }
 
-  document.getElementById("receipt").style.display="block";
-  document.getElementById("date").innerText=new Date().toLocaleDateString();
-
-  document.getElementById("receipt").innerHTML += "<p>Loading...</p>";
-
   fetch("https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec?appNo=" + appNo + "&mobile=" + mobile)
- .then(res => res.json())
-.then(data => {
+  .then(res => res.json())
+  .then(data => {
 
-  if(data.status == "found"){
+    if(data.status == "found"){
 
-    let receiptWindow = window.open("", "_blank");
+      let receiptWindow = window.open("", "_blank");
 
-    receiptWindow.document.write(`
-      <html>
-      <head>
-        <title>Application Receipt</title>
-        <style>
-          body{
-            font-family: Arial;
-            padding:20px;
-          }
-          h2{
-            text-align:center;
-            color:#1565c0;
-          }
-          img{
-            width:120px;
-            border-radius:8px;
-            border:2px solid #ccc;
-          }
-          .box{
-            max-width:600px;
-            margin:auto;
-          }
-        </style>
-      </head>
+      receiptWindow.document.write(`
+        <html>
+        <head>
+          <title>Receipt</title>
+        </head>
+        <body>
+          <h2>🏫 Saraswati School Runaha</h2>
 
-      <body>
+          <p><b>Application No:</b> ${data.appNo}</p>
+          <p><b>Name:</b> ${data.name}</p>
+          <p><b>Father:</b> ${data.father}</p>
+          <p><b>Class:</b> ${data.class}</p>
+          <p><b>Mobile:</b> ${data.mobile}</p>
+          <p><b>Address:</b> ${data.address}</p>
 
-        <div class="box">
+          <img src="${data.photo}" width="120">
 
-        <h2>🏫 Saraswati School Runaha</h2>
-        <h3 style="text-align:center;">Application Receipt</h3>
+          <br><br>
+          <button onclick="window.print()">Print</button>
 
-        <p><b>Application No:</b> ${data.appNo}</p>
-        <p><b>Name:</b> ${data.name}</p>
-        <p><b>Father:</b> ${data.father}</p>
-        <p><b>Class:</b> ${data.class}</p>
-        <p><b>Mobile:</b> ${data.mobile}</p>
-        <p><b>Address:</b> ${data.address}</p>
+        </body>
+        </html>
+      `);
 
-        <img src="${data.photo}">
+    } else {
+      alert("Application not found");
+    }
 
-        <br><br>
-        <button onclick="window.print()">Print</button>
+  })
+  .catch(()=>{
+    alert("Server error");
+  });
 
-        </div>
+}
 
-      </body>
-      </html>
-    `);
-
-  } else {
-    alert("Application not found");
-  }
-
-})
-.catch(()=>{
-  alert("Server error");
-});
-window.onload = generateCaptcha;
 </script>
 
 </body>
