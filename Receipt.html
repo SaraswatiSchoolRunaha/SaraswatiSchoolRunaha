@@ -203,14 +203,19 @@
 let captcha;
 
 function generateCaptcha(){
-  let chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  captcha="";
-  for(let i=0;i<6;i++){
-    captcha+=chars[Math.floor(Math.random()*chars.length)];
+  let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  captcha = "";
+
+  for(let i = 0; i < 6; i++){
+    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  document.getElementById("captchaText").innerText=captcha;
+
+  document.getElementById("captchaText").innerText = captcha;
 }
 
+// auto run on page load
+window.addEventListener("load", generateCaptcha);
+  
 function verify(){
 
   let appNo=document.getElementById("appNo").value;
@@ -305,7 +310,7 @@ function verify(){
 .catch(()=>{
   alert("Server error");
 });
-
+window.onload = generateCaptcha;
 </script>
 
 </body>
