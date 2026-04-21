@@ -37,13 +37,12 @@
       border:1px solid #ccc;
     }
 
-   #captchaBox{
+  #captchaBox{
   display:flex;
   align-items:center;
-  justify-content:center;
-  gap:8px;
-  margin:10px 0;
-  flex-wrap:nowrap;   /* ❌ wrap hata diya */
+  gap:6px;   /* पहले 10px था, अब कम कर दिया */
+  margin:8px 0;
+  flex-wrap:wrap;
 }
 
 #captchaText{
@@ -68,24 +67,16 @@
   border-radius:8px;
 }
 
-.refresh-btn{
-  height:45px;
-  padding:0 10px;
-  border-radius:6px;
-}
-
- button{
+/* Submit button */
+#submitBtn{
   display:block;
-  margin:20px auto;
-  padding:12px 35px;
-  background:linear-gradient(135deg,#1e88e5,#1565c0); /* नया color */
+  margin:10px auto;  /* पहले 15px था */
+  padding:10px 25px;
+  background:#1e88e5;
   color:#fff;
   border:none;
-  border-radius:25px;
+  border-radius:6px;
   cursor:pointer;
-  font-size:16px;
-  font-weight:bold;
-  box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
   </style>
 </head>
