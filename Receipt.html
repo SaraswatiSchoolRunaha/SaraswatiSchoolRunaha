@@ -42,15 +42,16 @@
       display:flex;
       justify-content:center;
       align-items:center;
-      gap:8px;
+      gap:10px;
       margin:10px 0;
+      flex-wrap:wrap;
     }
 
-.captcha-display{
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
+    .captcha-display{
+      display:flex;
+      align-items:center;
+      gap:5px;
+    }
 
     #captchaText{
       padding:6px 12px;
@@ -60,32 +61,30 @@
       font-weight:bold;
     }
 
-  .refresh-btn{
-  padding:4px 8px;
-  font-size:12px;
-  width:80px;        /* 🔥 yaha se lambai control hogi */
-  text-align:center;
-}
-
-    #captchaInput{
-      display:block;
-      margin:14px auto;
-      padding:10px;
-      width:30%;
-      text-align:center;
+    .refresh-btn{
+      padding:6px 10px;
+      font-size:12px;
+      cursor:pointer;
     }
 
-   button{
-  display:block;
-  margin:15px auto;
-  padding:10px 25px;
-  width:auto;
-  background:#1e88e5;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
+    #captchaInput{
+      padding:8px;
+      width:120px;
+      text-align:center;
+      border-radius:6px;
+      border:1px solid #ccc;
+    }
+
+    button{
+      display:block;
+      margin:15px auto;
+      padding:10px 25px;
+      background:#1e88e5;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+    }
 
     #receipt{
       display:none;
@@ -101,7 +100,6 @@
       border:2px solid #ccc;
     }
 
-    /* PAGE BREAK */
     .page-break{
       page-break-before: always;
     }
@@ -126,7 +124,7 @@
 
 <div class="box">
 
-<h2>Application Receipt Print </h2>
+<h2>Application Receipt Print</h2>
 
 <div class="row">
   <input type="text" id="appNo" placeholder="Application No">
@@ -135,24 +133,23 @@
 
 <!-- CAPTCHA -->
 <div id="captchaBox">
-  <span id="captchaLabel">Captcha:</span>
+  <span>Captcha:</span>
 
   <div class="captcha-display">
     <span id="captchaText"></span>
-    <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
+    <button type="button" class="refresh-btn" onclick="generateCaptcha()">↻</button>
   </div>
-</div>
 
-<input type="text" id="captchaInput" placeholder="Enter Captcha">
+  <input type="text" id="captchaInput" placeholder="Enter">
+</div>
 
 <button onclick="verify()">Submit</button>
 
 <!-- RECEIPT -->
 <div id="receipt">
 
-  <!-- PAGE 1 -->
   <h2>🏫 Saraswati School Runaha</h2>
-  <h3 style="text-align:center;">🎓 Application Receipt</h3>
+  <h3 style="text-align:center;">Application Receipt</h3>
 
   <p style="text-align:right;"><b>Date:</b> <span id="date"></span></p>
   <hr>
@@ -160,25 +157,12 @@
   <div style="display:flex; justify-content:space-between;">
 
     <div style="width:70%;">
-
       <p><b>Application No:</b> <span id="app"></span></p>
       <p><b>Name:</b> <span id="name"></span></p>
-      <p><b>Father Name:</b> <span id="father"></span></p>
-      <p><b>Mother Name:</b> <span id="mother"></span></p>
-
+      <p><b>Father:</b> <span id="father"></span></p>
       <p><b>Class:</b> <span id="class"></span></p>
-      <p><b>Gender:</b> <span id="gender"></span></p>
-      <p><b>DOB:</b> <span id="dob"></span></p>
-
       <p><b>Mobile:</b> <span id="mob"></span></p>
-      <p><b>Email:</b> <span id="email"></span></p>
-
       <p><b>Address:</b> <span id="address"></span></p>
-      <p><b>Village:</b> <span id="village"></span></p>
-      <p><b>Tehsil:</b> <span id="tehsil"></span></p>
-      <p><b>District:</b> <span id="district"></span></p>
-      <p><b>State:</b> <span id="state"></span></p>
-
     </div>
 
     <div style="width:25%; text-align:center;">
@@ -188,44 +172,7 @@
 
   </div>
 
-  <hr>
-
-  <p><b>Previous School:</b> <span id="school"></span></p>
-  <p><b>Last Class:</b> <span id="lastclass"></span></p>
-
-  <br><br>
-
-  <div style="display:flex; justify-content:space-between;">
-    <p>_________________<br>Student Sign</p>
-    <p>_________________<br>Office Sign</p>
-  </div>
-
-  <!-- PAGE 2 -->
-  <div class="page-break"></div>
-
-  <h2 style="text-align:center;">शपथ पत्र (Declaration)</h2>
-
-  <p>
-    मैं <b><span id="name2"></span></b> यह घोषित करता/करती हूँ कि 
-    आवेदन में दी गई सभी जानकारी सही है।
-  </p>
-
-  <p>
-    यदि कोई जानकारी गलत पाई जाती है तो विद्यालय मेरा प्रवेश निरस्त कर सकता है।
-  </p>
-
-  <p>
-    मैं विद्यालय के सभी नियमों का पालन करूंगा/करूंगी।
-  </p>
-
-  <br><br><br>
-
-  <div style="display:flex; justify-content:space-between;">
-    <p>_____________________<br>Student Signature</p>
-    <p>_____________________<br>Parent Signature</p>
-  </div>
-
-  <button onclick="window.print()">🖨️ Print</button>
+  <button onclick="window.print()">Print</button>
 
 </div>
 
@@ -251,8 +198,19 @@ function verify(){
   let mobile=document.getElementById("mobile").value;
   let userCap=document.getElementById("captchaInput").value;
 
+  // Validation
+  if(!appNo || !mobile){
+    alert("Fill all fields");
+    return;
+  }
+
+  if(mobile.length!=10){
+    alert("Enter valid mobile");
+    return;
+  }
+
   if(userCap.toUpperCase()!=captcha.toUpperCase()){
-    alert("Captcha galat hai");
+    alert("Wrong Captcha");
     generateCaptcha();
     return;
   }
@@ -260,7 +218,9 @@ function verify(){
   document.getElementById("receipt").style.display="block";
   document.getElementById("date").innerText=new Date().toLocaleDateString();
 
-  fetch("https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec="+appNo)
+  document.getElementById("receipt").innerHTML += "<p>Loading...</p>";
+
+  fetch("https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec?appNo=" + appNo + "&mobile=" + mobile)
   .then(res=>res.json())
   .then(data=>{
 
@@ -268,28 +228,19 @@ function verify(){
 
       document.getElementById("photo").src=data.photo;
       document.getElementById("name").innerText=data.name;
-      document.getElementById("name2").innerText=data.name;
       document.getElementById("app").innerText=data.appNo;
       document.getElementById("mob").innerText=data.mobile;
       document.getElementById("class").innerText=data.class;
       document.getElementById("address").innerText=data.address;
-
       document.getElementById("father").innerText=data.father;
-      document.getElementById("mother").innerText=data.mother;
-      document.getElementById("gender").innerText=data.gender;
-      document.getElementById("dob").innerText=data.dob;
-      document.getElementById("email").innerText=data.email;
-      document.getElementById("village").innerText=data.village;
-      document.getElementById("tehsil").innerText=data.tehsil;
-      document.getElementById("district").innerText=data.district;
-      document.getElementById("state").innerText=data.state;
-      document.getElementById("school").innerText=data.school;
-      document.getElementById("lastclass").innerText=data.lastclass;
 
     }else{
       alert("Application not found");
     }
 
+  })
+  .catch(()=>{
+    alert("Server error");
   });
 
 }
