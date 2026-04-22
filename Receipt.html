@@ -152,9 +152,9 @@ function verify(){
 
     if(data.status == "found"){
 
-      let receiptWindow = window.open("", "_blank");  // ✅ FIXED
+    let receiptWindow = window.open("", "_blank");
 
-      receiptWindow.document.write(`
+receiptWindow.document.write(`
 <html>
 <head>
 <title>Admission Form Print</title>
@@ -171,14 +171,15 @@ body{
   min-height:297mm;
   margin:auto;
   border:2px solid #1565c0;
-  padding:15px;
+  padding:20px;
   box-sizing:border-box;
 }
 
+/* HEADER */
 .header{
   text-align:center;
   border-bottom:2px solid #1565c0;
-  padding-bottom:10px;
+  padding-bottom:12px;
 }
 
 .header h2{
@@ -186,34 +187,52 @@ body{
   color:#1565c0;
 }
 
-.section{
-  margin-top:12px;
-  padding:10px;
-  border:1px solid #ccc;
-  border-radius:8px;
-}
-
-.title{
-  font-weight:bold;
-  color:#1565c0;
-  margin-bottom:8px;
-  font-size:16px;
-}
-
-.row{
+.header p{
   margin:4px 0;
   font-size:14px;
 }
 
+/* SECTION */
+.section{
+  margin-top:12px;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  background:#fafafa;
+}
+
+/* TITLE */
+.title{
+  font-weight:bold;
+  color:#1565c0;
+  margin-bottom:10px;
+  font-size:16px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:8px 20px;
+  font-size:14px;
+}
+
+.row{
+  display:flex;
+  gap:5px;
+}
+
 .label{
   font-weight:bold;
+  min-width:120px;
+  color:#333;
 }
 
-.flex{
-  display:flex;
-  justify-content:space-between;
+.full{
+  grid-column:1 / -1;
 }
 
+/* PHOTO */
 .photo{
   text-align:center;
 }
@@ -225,6 +244,26 @@ body{
   border-radius:8px;
 }
 
+/* FLEX */
+.flex{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* SIGNATURE */
+.signature{
+  display:flex;
+  justify-content:space-between;
+  margin-top:25px;
+}
+
+.sig-box{
+  text-align:center;
+  width:30%;
+}
+
+/* BUTTON */
 button{
   margin-top:10px;
   padding:10px 20px;
@@ -245,14 +284,14 @@ button{
 
 <div class="a4">
 
+  <!-- HEADER -->
   <div class="header">
     <h2>Saraswati Bal Vidhya Mandir School Runaha</h2>
     <p>Admission Form / Print Copy</p>
-
-    <p style="margin-top:8px; font-size:14px;">
-      <b>Application No:</b> ${data.appNo} &nbsp; | &nbsp;
-      <b>Session:</b> ${data.session} &nbsp; | &nbsp;
-      <b>Date:</b> ${new Date().toLocaleDateString()} &nbsp; | &nbsp;
+    <p>
+      <b>Application No:</b> ${data.appNo} |
+      <b>Session:</b> ${data.session} |
+      <b>Date:</b> ${new Date().toLocaleDateString()} |
       <b>Time:</b> ${new Date().toLocaleTimeString()}
     </p>
   </div>
@@ -260,42 +299,57 @@ button{
   <!-- STUDENT INFO -->
   <div class="section">
     <div class="title">📘 छात्र की जानकारी</div>
-    <div class="row"><span class="label">नाम:</span> ${data.name}</div>
-    <div class="row"><span class="label">पिता का नाम:</span> ${data.father}</div>
-    <div class="row"><span class="label">माता का नाम:</span> ${data.mother || ""}</div>
-    <div class="row"><span class="label">जन्म तिथि:</span> ${data.dob || ""}</div>
-    <div class="row"><span class="label">कक्षा:</span> ${data.class}</div>
-    <div class="row"><span class="label">विषय:</span> ${data.subject || ""}</div>
-    <div class="row"><span class="label">जाति:</span> ${data.cast || ""}</div>
+
+    <div class="grid">
+
+      <div class="row"><span class="label">नाम:</span> ${data.name}</div>
+      <div class="row"><span class="label">पिता:</span> ${data.father}</div>
+
+      <div class="row"><span class="label">माता:</span> ${data.mother || ""}</div>
+      <div class="row"><span class="label">जन्म तिथि:</span> ${data.dob || ""}</div>
+
+      <div class="row"><span class="label">कक्षा:</span> ${data.class}</div>
+      <div class="row"><span class="label">विषय:</span> ${data.subject || ""}</div>
+
+      <div class="row full"><span class="label">जाति:</span> ${data.cast || ""}</div>
+
+    </div>
   </div>
 
   <!-- ADDRESS -->
   <div class="section">
     <div class="title">🏠 पता विवरण</div>
-    <div>${data.address}</div>
+    ${data.address}
   </div>
 
   <!-- BANK -->
   <div class="section">
     <div class="title">🏦 बैंक / पहचान विवरण</div>
-    <div class="row">आधार: ${data.adhar || ""}</div>
-    <div class="row">समग्र: ${data.samgra || ""}</div>
-    <div class="row">बैंक: ${data.bank || ""}</div>
-    <div class="row">खाता: ${data.account || ""}</div>
-    <div class="row">IFSC: ${data.ifsc || ""}</div>
+
+    <div class="grid">
+      <div class="row"><span class="label">आधार:</span> ${data.adhar || ""}</div>
+      <div class="row"><span class="label">समग्र:</span> ${data.samgra || ""}</div>
+
+      <div class="row"><span class="label">बैंक:</span> ${data.bank || ""}</div>
+      <div class="row"><span class="label">खाता:</span> ${data.account || ""}</div>
+
+      <div class="row full"><span class="label">IFSC:</span> ${data.ifsc || ""}</div>
+    </div>
   </div>
 
   <!-- CONTACT + PHOTO -->
   <div class="section flex">
+
     <div>
       <div class="title">📞 संपर्क विवरण</div>
-      <div>${data.mobile}</div>
+      ${data.mobile}
     </div>
 
     <div class="photo">
       <img src="${data.photo}">
       <p>Student Photo</p>
     </div>
+
   </div>
 
   <!-- SHAPATH PATRA -->
@@ -308,26 +362,27 @@ button{
   </div>
 
   <!-- SIGNATURE -->
-  <div class="section flex" style="margin-top:20px;">
+  <div class="section signature">
 
-    <div style="text-align:center; width:33%;">
-      <p>____________________</p>
+    <div class="sig-box">
+      <p>__________________</p>
       <b>Student Signature</b>
     </div>
 
-    <div style="text-align:center; width:33%;">
-      <p>____________________</p>
+    <div class="sig-box">
+      <p>__________________</p>
       <b>Father Signature</b>
     </div>
 
-    <div style="text-align:center; width:33%;">
-      <p>____________________</p>
+    <div class="sig-box">
+      <p>__________________</p>
       <b>Principal Signature</b>
     </div>
 
   </div>
 
-  <div style="text-align:center; margin-top:15px;">
+  <!-- PRINT BUTTON -->
+  <div style="text-align:center;">
     <button onclick="window.print()">🖨 Print</button>
   </div>
 
@@ -337,6 +392,7 @@ button{
 </html>
 `);
 
+receiptWindow.document.close();
     } else {
       alert("Application not found");
     }
