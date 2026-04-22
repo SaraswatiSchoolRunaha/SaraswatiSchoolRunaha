@@ -151,7 +151,19 @@ function verify(){
   .then(data => {
 
     if(data.status == "found"){
+      
+let photoUrl = data.photo || "";
 
+if(photoUrl.includes("drive.google.com")){
+  let id = photoUrl.split("/d/")[1]?.split("/")[0];
+  photoUrl = "https://drive.google.com/uc?export=view&id=" + id;
+}
+
+if(!photoUrl){
+  photoUrl = "https://via.placeholder.com/120x140?text=No+Photo";
+}
+
+      
     let receiptWindow = window.open("", "_blank");
 
 receiptWindow.document.write(`
@@ -331,8 +343,8 @@ button{
       <div class="row"><span class="label">ज़िला का नाम:</span> ${data.district}</div>
 
       <div class="row"><span class="label">तहसील का नाम:</span> ${data.tehsil || ""}</div>
-      <div class="row"><span class="label">गाँव का नाम :</span> ${data. village || ""}</div>
-      <div class="row"><span class="label"> पूरा पता" (Full Address) :</span> ${data.address || ""}</div>
+      <div class="row"><span class="label">गाँव का नाम :</span> ${data.village || ""}</div>
+      <div class="row full"><span class="label">पूरा पता:</span> ${data.address}</div>
   </div>
 
   <!-- BANK -->
@@ -359,7 +371,7 @@ button{
     </div>
 
     <div class="photo">
-      <img src="${data.photo}">
+     <img src="${photoUrl}">
       <p>Student Photo</p>
     </div>
 
