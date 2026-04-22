@@ -287,7 +287,7 @@ window.onload = function() {
     document.getElementById("currentDate").innerText = "दिनांक (Date): " + new Date().toLocaleDateString('hi-IN');
 
     // Google Apps Script से डाटा लाएं
-    fetch("YOUR_GOOGLE_SCRIPT_URL?appNo=" + appNo + "&mobile=" + mobile)
+   fetch("https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec?appNo=" + appNo + "&mobile=" + mobile)
     .then(res => res.json())
     .then(data => {
         for (let key in data) {
