@@ -109,7 +109,7 @@
 <script>
 
 let captcha = "";
-  
+
 function generateCaptcha(){
   let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   captcha = "";
@@ -121,6 +121,8 @@ function generateCaptcha(){
   document.getElementById("captchaText").innerText = captcha;
 }
 
+// 🔥 BEST FIX (DONO USE KARO)
+generateCaptcha();  
 window.addEventListener("load", generateCaptcha);
 
   
