@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>प्रवेश फॉर्म - SBVM Runaha</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #0d47a1;
+            --text-color: #2c3e50;
+        }
+
+        body {
+            margin: 0;
+            background: #e9ecef;
+            font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+            color: var(--text-color);
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background: white;
+            padding: 12mm;
+            box-sizing: border-box;
+            position: relative;
+            border: 6px double var(--primary-color);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 70px;
+            color: rgba(0, 0, 0, 0.04);
+            font-weight: 800;
+            z-index: 0;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+
+        .header h2 {
+            margin: 5px 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* INFO STRIP */
+        .info-strip {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            border: 1px solid #ccc;
+            padding: 8px 15px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* SECTIONS */
+        .section-box {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 15px;
+            border: 1px solid #999;
+        }
+
+        .section-title {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 8px 12px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .label-cell {
+            background: #fdfdfd;
+            font-weight: bold;
+            width: 40%;
+            color: #555;
+        }
+
+        .label-hindi {
+            display: block;
+            font-size: 12px;
+            color: #0d47a1;
+        }
+
+        /* PHOTO & FOOTER */
+        .photo-frame {
+            width: 120px;
+            height: 150px;
+            border: 2px solid #000;
+            display: block;
+            margin: 10px auto;
+        }
+
+        .stamp-box {
+            border: 2px solid red;
+            color: red;
+            padding: 10px;
+            font-weight: bold;
+            display: inline-block;
+            transform: rotate(-10deg);
+            margin: 10px;
+        }
+
+        @media print {
+            body { background: white; }
+            .page { margin: 0; border: 4px solid var(--primary-color); }
+            button { display: none; }
+        }
+
+        button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 25px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="window.print()">Print (प्रिंट करें)</button>
+
+<div class="page">
+    <div class="watermark">SBVM RUNAHA</div>
+
+    <div class="header">
+        <h1>सरस्वती बाल विद्या मंदिर</h1>
+        <h2>Saraswati Bal Vidya Mandir High School</h2>
+        <p>रुनहा, भोपाल (म.प्र.) | Runaha, Bhopal (M.P.)</p>
+    </div>
+
+    <div class="info-strip">
+        <span>आवेदन क्र. (App No): <span id="appNo1">--</span></span>
+        <span>सत्र (Session): 2024-25</span>
+        <span id="currentDate"></span>
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">छात्र/छात्रा का विवरण (Student Information)</div>
+        <table>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">विद्यार्थी का नाम</span> Student Name</td>
+                <td><b id="name">Loading...</b></td>
+            </tr>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">पिता का नाम</span> Father's Name</td>
+                <td id="father">--</td>
+            </tr>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">माता का नाम</span> Mother's Name</td>
+                <td id="mother">--</td>
+            </tr>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">कक्षा</span> Class</td>
+                <td id="class">--</td>
+            </tr>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">मोबाइल नंबर</span> Mobile Number</td>
+                <td id="mobile">--</td>
+            </tr>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">स्थायी पता</span> Residential Address</td>
+                <td id="address">--</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">बैंक विवरण (Bank Details)</div>
+        <table>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">बैंक का नाम</span> Bank Name</td>
+                <td id="bank">--</td>
+            </tr>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">खाता संख्या</span> Account Number</td>
+                <td id="accountnumber">--</td>
+            </tr>
+            <tr>
+                <td class="label-cell"><span class="label-hindi">आईएफएससी कोड</span> IFSC Code</td>
+                <td id="ifsc">--</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+        <div id="qr" style="text-align: center;"></div>
+        <div class="stamp-box">सत्यापित (VERIFIED)</div>
+        <div style="text-align: center; font-size: 13px;">
+            <br><br>
+            _______________________<br>
+            <b>प्राचार्य के हस्ताक्षर (Principal Sign)</b>
+        </div>
+    </div>
+</div>
+
+<div class="page" style="page-break-before: always;">
+    <div class="watermark">SBVM RUNAHA</div>
+
+    <div class="header">
+        <h2>दस्तावेज प्रति (Document Copy)</h2>
+        <p>App ID: <span id="appNo2">--</span></p>
+    </div>
+
+    <div class="section-box" style="text-align: center; padding: 15px;">
+        <div class="section-title">छात्र का फोटो (Student Photo)</div>
+        <img id="photo" class="photo-frame" src="https://via.placeholder.com/120x150?text=Photo">
+        <p style="font-size: 11px;">(पासपोर्ट साइज फोटो यहाँ चिपकाएं)</p>
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">घोषणा पत्र (Declaration)</div>
+        <div style="padding: 15px; font-size: 14px; line-height: 1.6; text-align: justify;">
+            मैं यह घोषणा करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त सभी जानकारी पूर्णतः सत्य है। यदि इसमें कोई भी तथ्य गलत पाया जाता है, तो विद्यालय मेरा प्रवेश निरस्त करने के लिए स्वतंत्र होगा। मैं विद्यालय के सभी नियमों और अनुशासन का पालन करने का वचन देता हूँ।
+        </div>
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">नियम एवं शर्तें (Rules)</div>
+        <div style="padding: 15px; font-size: 13px;">
+            1. समय पर फीस जमा करना अनिवार्य है।<br>
+            2. विद्यालय में अनुशासन बनाए रखना होगा।<br>
+            3. परीक्षा में बैठने के लिए 75% उपस्थिति अनिवार्य है।
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-top: 80px;">
+        <div style="text-align: center;">
+            _______________________<br>
+            <b>अभिभावक के हस्ताक्षर</b>
+        </div>
+        <div style="text-align: center;">
+            _______________________<br>
+            <b>विद्यार्थी के हस्ताक्षर</b>
+        </div>
+    </div>
+</div>
+
+<script>
+window.onload = function() {
+    let params = new URLSearchParams(window.location.search);
+    let appNo = params.get("appNo") || "N/A";
+    let mobile = params.get("mobile") || "N/A";
+
+    document.getElementById("appNo1").innerText = appNo;
+    document.getElementById("appNo2").innerText = appNo;
+    document.getElementById("currentDate").innerText = "दिनांक (Date): " + new Date().toLocaleDateString('hi-IN');
+
+    // Google Apps Script से डाटा लाएं
+    fetch("YOUR_GOOGLE_SCRIPT_URL?appNo=" + appNo + "&mobile=" + mobile)
+    .then(res => res.json())
+    .then(data => {
+        for (let key in data) {
+            let el = document.getElementById(key);
+            if (el) el.innerText = data[key];
+        }
+
+        if (data.photo) {
+            document.getElementById("photo").src = data.photo;
+        }
+
+        // QR Code जनरेट करें
+        setTimeout(() => {
+            document.getElementById("qr").innerHTML = "";
+            new QRCode(document.getElementById("qr"), {
+                text: "AppNo:" + appNo + " Mobile:" + mobile,
+                width: 100,
+                height: 100
+            });
+        }, 500);
+    });
+};
+</script>
+
+</body>
+</html>
