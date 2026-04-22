@@ -291,7 +291,7 @@ button{
     <p>Admission Form / Print Copy</p>
     <p>
       <b>Application No:</b> ${data.appNo} |
-      <b>Session:</b> ${data.Session} |
+      <b>Session:</b> ${data.session} |
       <b>Date:</b> ${new Date().toLocaleDateString()} |
       <b>Time:</b> ${new Date().toLocaleTimeString()}
     </p>
@@ -310,13 +310,13 @@ button{
       <div class="row"><span class="label">जन्म तिथि:</span> ${data.dob || ""}</div>
       
       <div class="row"><span class="label">कक्षा:</span> ${data.class}</div>
-      <div class="row"><span class="label">माध्यम:</span> ${data.Medium}</div>
+      <div class="row"><span class="label">माध्यम:</span> ${data.medium}</div>
       
       <div class="row"><span class="label">विषय:</span> ${data.subject || ""}</div>
       
-      <div class="row"><span class="label">लिंग Gender:</span> ${data.Gender}</div>
+      <div class="row"><span class="label">लिंग Gender:</span> ${data.gender}</div>
 
-      <div class="row full"><span class="label">जाति:</span> ${data.cast || ""}</div>
+      <div class="row full"><span class="label">जाति:</span> ${data.category || ""}</div>
 
     </div>
   </div>
@@ -327,12 +327,12 @@ button{
 
     <div class="grid">
     
-      <div class="row"><span class="label"> राज्य का नाम:</span> ${data.name}</div>
-      <div class="row"><span class="label">ज़िला का नाम:</span> ${data.father}</div>
+      <div class="row"><span class="label"> राज्य का नाम:</span> ${data.state}</div>
+      <div class="row"><span class="label">ज़िला का नाम:</span> ${data.district}</div>
 
-      <div class="row"><span class="label">तहसील का नाम:</span> ${data.mother || ""}</div>
-      <div class="row"><span class="label">गाँव का नाम :</span> ${data.dob || ""}</div>
-      <div class="row"><span class="label"> पूरा पता" (Full Address) :</span> ${data.dob || ""}</div>
+      <div class="row"><span class="label">तहसील का नाम:</span> ${data.tehsil || ""}</div>
+      <div class="row"><span class="label">गाँव का नाम :</span> ${data. village || ""}</div>
+      <div class="row"><span class="label"> पूरा पता" (Full Address) :</span> ${data.address || ""}</div>
   </div>
 
   <!-- BANK -->
@@ -344,7 +344,7 @@ button{
       <div class="row"><span class="label">समग्र:</span> ${data.samgra || ""}</div>
 
       <div class="row"><span class="label">बैंक:</span> ${data.bank || ""}</div>
-      <div class="row"><span class="label">खाता:</span> ${data.account || ""}</div>
+      <div class="row"><span class="label">खाता:</span> ${data.accountnumber || ""}</div>
 
       <div class="row full"><span class="label">IFSC:</span> ${data.ifsc || ""}</div>
     </div>
