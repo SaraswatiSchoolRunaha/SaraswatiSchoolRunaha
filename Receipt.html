@@ -151,32 +151,8 @@ function verify(){
   .then(data => {
 
     if(data.status == "found"){
-let photoUrl = data.photo || "";
+let photoUrl = data.photo || "https://via.placeholder.com/120x140?text=No+Photo";
 
-// 🔥 GOOGLE DRIVE LINK FIX (ALL FORMAT)
-if(photoUrl.includes("drive.google.com")){
-
-  let fileId = "";
-
-  if(photoUrl.includes("/d/")){
-    fileId = photoUrl.split("/d/")[1].split("/")[0];
-  }
-  else if(photoUrl.includes("id=")){
-    fileId = photoUrl.split("id=")[1].split("&")[0];
-  }
-
-  if(fileId){
-    // 🔥 BEST & FAST LINK
-    photoUrl = "https://lh3.googleusercontent.com/d/" + fileId;
-  }
-}
-
-// 🔥 fallback (agar photo nahi hai)
-if(!photoUrl || photoUrl.trim() === ""){
-  photoUrl = "https://via.placeholder.com/120x140?text=No+Photo";
-}
-      
-      
     let receiptWindow = window.open("", "_blank");
 
 receiptWindow.document.write(`
