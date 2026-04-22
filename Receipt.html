@@ -154,15 +154,28 @@ function verify(){
       
 let photoUrl = data.photo || "";
 
+// 🔥 ALL DRIVE LINK FORMAT FIX
 if(photoUrl.includes("drive.google.com")){
-  let id = photoUrl.split("/d/")[1]?.split("/")[0];
-  photoUrl = "https://drive.google.com/uc?export=view&id=" + id;
+
+  let fileId = "";
+
+  if(photoUrl.includes("/d/")){
+    fileId = photoUrl.split("/d/")[1].split("/")[0];
+  }
+  else if(photoUrl.includes("id=")){
+    fileId = photoUrl.split("id=")[1].split("&")[0];
+  }
+
+  if(fileId){
+    photoUrl = "https://drive.google.com/uc?export=view&id=" + fileId;
+  }
 }
 
-if(!photoUrl){
+// 🔥 fallback image
+if(!photoUrl || photoUrl.trim() === ""){
   photoUrl = "https://via.placeholder.com/120x140?text=No+Photo";
 }
-
+      
       
     let receiptWindow = window.open("", "_blank");
 
