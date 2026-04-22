@@ -286,11 +286,12 @@ button{
 
   <!-- HEADER -->
   <div class="header">
-    <h2>Saraswati Bal Vidhya Mandir School Runaha</h2>
+    <h2>Saraswati Bal Vidhya Mandir High School </h2>
+    <p> Runaha, Berasia Dist. Bhopal (M.P.)</P>
     <p>Admission Form / Print Copy</p>
     <p>
       <b>Application No:</b> ${data.appNo} |
-      <b>Session:</b> ${data.session} |
+      <b>Session:</b> ${data.Session} |
       <b>Date:</b> ${new Date().toLocaleDateString()} |
       <b>Time:</b> ${new Date().toLocaleTimeString()}
     </p>
@@ -298,18 +299,22 @@ button{
 
   <!-- STUDENT INFO -->
   <div class="section">
-    <div class="title">📘 छात्र की जानकारी</div>
+    <div class="title">📘 छात्र की सामान्य जानकारी</div>
 
     <div class="grid">
 
-      <div class="row"><span class="label">नाम:</span> ${data.name}</div>
-      <div class="row"><span class="label">पिता:</span> ${data.father}</div>
+      <div class="row"><span class="label"> छात्र का नाम:</span> ${data.name}</div>
+      <div class="row"><span class="label">पिता का नाम:</span> ${data.father}</div>
 
-      <div class="row"><span class="label">माता:</span> ${data.mother || ""}</div>
+      <div class="row"><span class="label">माता का नाम:</span> ${data.mother || ""}</div>
       <div class="row"><span class="label">जन्म तिथि:</span> ${data.dob || ""}</div>
-
+      
       <div class="row"><span class="label">कक्षा:</span> ${data.class}</div>
+      <div class="row"><span class="label">माध्यम:</span> ${data.Medium}</div>
+      
       <div class="row"><span class="label">विषय:</span> ${data.subject || ""}</div>
+      
+      <div class="row"><span class="label">लिंग Gender:</span> ${data.Gender}</div>
 
       <div class="row full"><span class="label">जाति:</span> ${data.cast || ""}</div>
 
