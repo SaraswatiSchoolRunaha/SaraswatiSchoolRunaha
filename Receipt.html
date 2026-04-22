@@ -324,7 +324,11 @@ button{
   <!-- ADDRESS -->
   <div class="section">
     <div class="title">🏠 पता विवरण</div>
-    ${data.address}
+      <div class="row"><span class="label"> छात्र का नाम:</span> ${data.name}</div>
+      <div class="row"><span class="label">पिता का नाम:</span> ${data.father}</div>
+
+      <div class="row"><span class="label">माता का नाम:</span> ${data.mother || ""}</div>
+      <div class="row"><span class="label">जन्म तिथि:</span> ${data.dob || ""}</div>
   </div>
 
   <!-- BANK -->
