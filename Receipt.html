@@ -151,10 +151,9 @@ function verify(){
   .then(data => {
 
     if(data.status == "found"){
-      
 let photoUrl = data.photo || "";
 
-// 🔥 ALL DRIVE LINK FORMAT FIX
+// 🔥 GOOGLE DRIVE LINK FIX (ALL FORMAT)
 if(photoUrl.includes("drive.google.com")){
 
   let fileId = "";
@@ -167,11 +166,12 @@ if(photoUrl.includes("drive.google.com")){
   }
 
   if(fileId){
-    photoUrl = "https://drive.google.com/uc?export=view&id=" + fileId;
+    // 🔥 BEST & FAST LINK
+    photoUrl = "https://lh3.googleusercontent.com/d/" + fileId;
   }
 }
 
-// 🔥 fallback image
+// 🔥 fallback (agar photo nahi hai)
 if(!photoUrl || photoUrl.trim() === ""){
   photoUrl = "https://via.placeholder.com/120x140?text=No+Photo";
 }
@@ -384,7 +384,7 @@ button{
     </div>
 
     <div class="photo">
-     <img src="${photoUrl}">
+     <img src="${data.photo}">
       <p>Student Photo</p>
     </div>
 
