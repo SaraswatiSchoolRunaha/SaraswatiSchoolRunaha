@@ -121,7 +121,7 @@ function generateCaptcha(){
   document.getElementById("captchaText").innerText = captcha;
 }
 
-window.onload = generateCaptcha;
+window.addEventListener("load", generateCaptcha);
 
   
 function verify(){
