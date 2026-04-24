@@ -392,13 +392,36 @@ window.onload = function() {
             document.getElementById('class2').innerText = data.class;
         }
 
-        // फोटो दिखाना
-        if (data.photo && data.photo !== "") {
-            const photoImg = document.getElementById("photo");
-            photoImg.src = data.photo;
-            photoImg.style.display = "block";
-            document.getElementById("photoPlaceholder").style.display = "none";
-        }
+       // --- NAYA PHOTO LOGIC (REPLACEMENT) ---
+if (data.photo && data.photo !== "") {
+    const photoImg = document.getElementById("photo");
+    const placeholder = document.getElementById("photoPlaceholder");
+    
+    let fileId = "";
+    // Link se File ID nikalna
+    if (data.photo.includes("id=")) {
+        fileId = data.photo.split("id=")[1].split("&")[0];
+    }
+
+    if (fileId) {
+        // Method 1: Sabse fast loading format (lh3 proxy)
+        photoImg.src = "https://lh3.googleusercontent.com/d/" + fileId;
+        photoImg.style.display = "block";
+        if (placeholder) placeholder.style.display = "none";
+
+        // Agar Method 1 fail ho jaye toh Method 2 (Thumbnail) try karein
+        photoImg.onerror = function() {
+            console.log("Method 1 fail, trying Thumbnail...");
+            this.src = "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w500";
+        };
+    } else {
+        // Agar link bina ID ke hai toh direct use karein
+        photoImg.src = data.photo;
+        photoImg.style.display = "block";
+        if (placeholder) placeholder.style.display = "none";
+    }
+}
+// --- END ---
 
         // QR कोड बनाना (यही हिस्सा काम नहीं कर रहा था)
         setTimeout(() => {
