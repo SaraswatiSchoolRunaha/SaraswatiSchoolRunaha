@@ -378,9 +378,30 @@ window.onload = function() {
     .then(data => {
         // सभी डेटा को टेबल में भरना
         for (let key in data) {
-            let el = document.getElementById(key);
-            if (el) el.innerText = data[key];
+    let el = document.getElementById(key);
+
+    if (el) {
+        if (key === "dob") {
+            let v = data[key];
+
+            if (v && v.includes("-")) {
+                let parts = v.split("-");
+
+                // अगर YYYY-MM-DD है
+                if (parts[0].length === 4) {
+                    el.innerText = parts[2] + "-" + parts[1] + "-" + parts[0];
+                } else {
+                    el.innerText = v;
+                }
+            } else {
+                el.innerText = v;
+            }
+
+        } else {
+            el.innerText = data[key];
         }
+    }
+}
 
         // रसीद (Slip) के लिए डेटा अपडेट करना
         if(data.name) {
