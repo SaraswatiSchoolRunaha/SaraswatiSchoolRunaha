@@ -69,23 +69,20 @@ button{
 
 <script>
 
-// 🔹 URL से mobile लेना
 let params = new URLSearchParams(window.location.search);
-let mobile = params.get("mobile1");
 
-if(mobile){
-  mobile = mobile.trim();
-}
+// ✅ BEST: appNo use करो (mobile छोड़ दिया)
+let appno = params.get("appNo");
 
-// 🔹 LocalStorage से data लेना
+// 🔹 LocalStorage data
 let students = JSON.parse(localStorage.getItem("students")) || [];
 
 console.log("All Students:", students);
-console.log("Search Mobile:", mobile);
+console.log("Search AppNo:", appno);
 
-// 🔹 Filter (FINAL FIX)
-let filtered = students.filter(s => 
-  s.mobile1 && s.mobile1.toString().trim() === mobile
+// 🔥 FILTER FIXED (SAFE + ACCURATE)
+let filtered = students.filter(s =>
+  appno ? s.appno == appno : true   // अगर appNo नहीं है तो सब दिखाओ
 );
 
 let html = "";
@@ -112,7 +109,7 @@ if(filtered.length > 0){
   html = "<tr><td colspan='8'>No Record Found</td></tr>";
 }
 
-// 🔹 Table में डालना
+// 🔹 Table render
 document.getElementById("data").innerHTML = html;
 
 // 🔹 Print function
