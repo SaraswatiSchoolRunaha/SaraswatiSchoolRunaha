@@ -144,7 +144,18 @@
 <!-- 🔥 PAGE BORDER END -->
 
 <script>
+<script>
+let captcha = "";
 
+// --- ये नया हिस्सा है ---
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const appNoFromURL = urlParams.get('appNo');
+    const mobileFromURL = urlParams.get('mobile');
+
+    if (appNoFromURL) { document.getElementById("appNo").value = appNoFromURL; }
+    if (mobileFromURL) { document.getElementById("mobile").value = mobileFromURL; }
+  
 let captcha="";
 
 function generateCaptcha(){
