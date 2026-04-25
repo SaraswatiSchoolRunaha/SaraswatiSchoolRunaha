@@ -2,9 +2,7 @@
 <html>
 <head>
   <title>Application Receipt</title>
-
   <style>
-
     /* 🔥 PAGE BACKGROUND */
     body{
       font-family: Arial;
@@ -17,7 +15,7 @@
     .page{
       max-width:800px;
       margin:auto;
-      border:4px solid #1565c0;   /* PAGE BORDER */
+      border:4px solid #1565c0;
       background:white;
       padding:20px;
       border-radius:0px;
@@ -46,7 +44,6 @@
       border:1px solid #ccc;
     }
 
-    /* CAPTCHA */
     .captcha-box{
       display:flex;
       justify-content:center;
@@ -62,9 +59,11 @@
       font-weight:bold;
       letter-spacing:3px;
       border-radius:6px;
+      min-width: 100px;
+      display: inline-block;
+      text-align: center;
     }
 
-    /* Refresh button */
     .refresh-btn{
       padding:8px 12px;
       border:none;
@@ -90,7 +89,6 @@
       border:1px solid #1e88e5;
     }
 
-    /* Submit button */
     .submit{
       display:block;
       margin:15px auto;
@@ -107,93 +105,86 @@
     .submit:hover{
       background:#2e7d32;
     }
-
   </style>
 </head>
 
 <body>
 
-<!-- 🔥 PAGE BORDER START -->
 <div class="page">
+  <div class="box">
+    <h2>🎓 Application Receipt System</h2>
 
-<div class="box">
+    <div class="row">
+      <input type="text" id="appNo" placeholder="Application Number">
+      <input type="text" id="mobile" placeholder="Mobile Number">
+    </div>
 
-<h2>🎓 Application Receipt System</h2>
+    <div class="captcha-box">
+      <span id="captchaText"></span>
+      <button type="button" class="refresh-btn" onclick="generateCaptcha()">
+        🔄 Refresh
+      </button>
+    </div>
 
-<div class="row">
-  <input type="text" id="appNo" placeholder="Application Number">
-  <input type="text" id="mobile" placeholder="Mobile Number">
+    <input type="text" id="captchaInput" placeholder="Enter Captcha">
+    <button class="submit" onclick="openReceipt()">Submit</button>
+  </div>
 </div>
 
-<!-- CAPTCHA -->
-<div class="captcha-box">
-  <span id="captchaText"></span>
-
-  <button type="button" class="refresh-btn" onclick="generateCaptcha()">
-    🔄 Refresh
-  </button>
-</div>
-
-<input type="text" id="captchaInput" placeholder="Enter Captcha">
-
-<button class="submit" onclick="openReceipt()">Submit</button>
-
-</div>
-
-</div>
-<!-- 🔥 PAGE BORDER END -->
-
-<script>
 <script>
 let captcha = "";
 
-// --- ये नया हिस्सा है ---
+// 1. पेज लोड होते ही डेटा भरना और कैप्चा बनाना
 window.onload = function() {
     const urlParams = new URLSearchParams(window.location.search);
     const appNoFromURL = urlParams.get('appNo');
     const mobileFromURL = urlParams.get('mobile');
 
-    if (appNoFromURL) { document.getElementById("appNo").value = appNoFromURL; }
-    if (mobileFromURL) { document.getElementById("mobile").value = mobileFromURL; }
-  
-let captcha="";
+    if (appNoFromURL) { 
+        document.getElementById("appNo").value = appNoFromURL; 
+    }
+    if (mobileFromURL) { 
+        document.getElementById("mobile").value = mobileFromURL; 
+    }
+    
+    generateCaptcha(); // कैप्चा लोड करें
+};
 
+// 2. कैप्चा जनरेट करने का फंक्शन
 function generateCaptcha(){
-  let chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  captcha="";
-  for(let i=0;i<6;i++){
-    captcha+=chars[Math.floor(Math.random()*chars.length)];
-  }
-  document.getElementById("captchaText").innerText=captcha;
+    let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    captcha = "";
+    for(let i=0; i<6; i++){
+        captcha += chars[Math.floor(Math.random() * chars.length)];
+    }
+    document.getElementById("captchaText").innerText = captcha;
 }
 
-generateCaptcha();
-
+// 3. सबमिट बटन का फंक्शन
 function openReceipt(){
+    let appNo = document.getElementById("appNo").value.trim();
+    let mobile = document.getElementById("mobile").value.trim();
+    let cap = document.getElementById("captchaInput").value.trim();
 
-  let appNo=document.getElementById("appNo").value.trim();
-  let mobile=document.getElementById("mobile").value.trim();
-  let cap=document.getElementById("captchaInput").value.trim();
+    if(!appNo || !mobile){
+        alert("Application No और Mobile भरें");
+        return;
+    }
 
-  if(!appNo || !mobile){
-    alert("Application No और Mobile भरें");
-    return;
-  }
+    if(!/^[0-9]{10}$/.test(mobile)){ // मोबाइल नंबर चेक
+        alert("Valid 10 digit Mobile Number डालें");
+        return;
+    }
 
-  if(!/^[6-9]\d{9}$/.test(mobile)){
-    alert("Valid Mobile Number डालें");
-    return;
-  }
+    if(cap.toUpperCase() !== captcha){
+        alert("Captcha गलत है");
+        generateCaptcha();
+        return;
+    }
 
-  if(cap.toUpperCase()!=captcha){
-    alert("Captcha गलत है");
-    generateCaptcha();
-    return;
-  }
-
-window.open("./Reciptprint.html?appNo="+appNo+"&mobile="+mobile, "_blank");
+    // प्रिंट पेज खोलें
+    window.open("./Reciptprint.html?appNo=" + appNo + "&mobile=" + mobile, "_blank");
 }
-
 </script>
 
 </body>
