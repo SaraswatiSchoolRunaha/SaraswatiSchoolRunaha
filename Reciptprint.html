@@ -358,78 +358,91 @@
 </div>
 
 <script>
-window.onload = function() {
+window.onload = function () {
 
     let params = new URLSearchParams(window.location.search);
 
     let appNo = params.get("appNo");
     let mobile = params.get("mobile");
 
-    if(!appNo){
+    if (!appNo) {
         alert("App No नहीं मिला!");
         return;
     }
 
+    // ✅ DATE & TIME FIX
+    let now = new Date().toLocaleString('hi-IN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    // ✅ HEADER DATA SET
+    document.getElementById("appNo1").innerText = appNo;
+    document.getElementById("currentDate").innerText = "दिनांक: " + now;
+
     const apiUrl = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
     fetch(apiUrl + "?appNo=" + appNo + "&mobile=" + mobile)
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        console.log(data);
+            console.log(data);
 
-        // MAIN DATA
-        for (let key in data) {
-            let el = document.getElementById(key);
-            if (el) el.innerText = data[key];
-        }
-
-        // SLIP DATA
-        document.getElementById("nameSlip").innerText = data.name || "";
-        document.getElementById("name2").innerText = data.name || "";
-
-        document.getElementById("classSlip").innerText =
-            (data.class || "") + " / " + (data.medium || "");
-
-        document.getElementById("class2").innerText = data.class || "";
-
-        // SESSION
-        if(data.session){
-            document.getElementById("session").innerText = data.session;
-        }
-
-        // PHOTO
-        if (data.photo) {
-            const img = document.getElementById("photo");
-            const ph = document.getElementById("photoPlaceholder");
-
-            let fileId = data.photo.includes("id=")
-                ? data.photo.split("id=")[1].split("&")[0]
-                : "";
-
-            if (fileId) {
-                img.src = "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w500";
-                img.style.display = "block";
-                ph.style.display = "none";
+            // MAIN DATA FILL
+            for (let key in data) {
+                let el = document.getElementById(key);
+                if (el) el.innerText = data[key];
             }
-        }
 
-        // QR
-        setTimeout(() => {
-            document.getElementById("qr").innerHTML = "";
-            new QRCode(document.getElementById("qr"), {
-                text: "ID:" + appNo + " Name:" + (data.name || ""),
-                width: 75,
-                height: 75
-            });
-        }, 500);
+            // SLIP DATA
+            document.getElementById("nameSlip").innerText = data.name || "";
+            document.getElementById("name2").innerText = data.name || "";
 
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Data load नहीं हो रहा है");
-    });
+            document.getElementById("classSlip").innerText =
+                (data.class || "") + " / " + (data.medium || "");
 
+            document.getElementById("class2").innerText = data.class || "";
+
+            // SESSION
+            if (data.session) {
+                document.getElementById("session").innerText = data.session;
+            }
+
+            // PHOTO
+            if (data.photo) {
+                const img = document.getElementById("photo");
+                const ph = document.getElementById("photoPlaceholder");
+
+                let fileId = data.photo.includes("id=")
+                    ? data.photo.split("id=")[1].split("&")[0]
+                    : "";
+
+                if (fileId) {
+                    img.src = "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w500";
+                    img.style.display = "block";
+                    ph.style.display = "none";
+                }
+            }
+
+            // QR CODE
+            setTimeout(() => {
+                document.getElementById("qr").innerHTML = "";
+                new QRCode(document.getElementById("qr"), {
+                    text: "ID:" + appNo + " Name:" + (data.name || ""),
+                    width: 75,
+                    height: 75
+                });
+            }, 500);
+
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Data load नहीं हो रहा है");
+        });
 };
 </script>
 </body>
