@@ -473,6 +473,12 @@ document.getElementById('photoUpload').addEventListener('change', function () {
     "\n\n✅ आपका आवेदन पत्र सफलतापूर्वक जमा हो चुका है।" + 
     "\nकृपया भविष्य के लिए इस क्रमांक को सुरक्षित रखें।");
 
+// --- ये 2 लाइनें जोड़ें ---
+  let mobileValue = document.getElementsByName("mobile1")[0].value;
+  window.location.href = "Receipt.html?appNo=" + data + "&mobile=" + mobileValue;
+  // -----------------------
+})
+
   // 🔥 FORM RESET (IMPORTANT)
   document.getElementById("admissionForm").reset();
 
