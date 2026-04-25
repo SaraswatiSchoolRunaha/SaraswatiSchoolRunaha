@@ -361,7 +361,7 @@
 window.onload = function() {
     let params = new URLSearchParams(window.location.search);
     let appNo = params.get("appNo") || "SBVM24001";
-    let mobile = params.get("mobile") || "";
+    let mobile = params.get("mobile1") || "";
 
     // 1. डेट और टाइम का सही फॉर्मेट (LocaleString)
     let now = new Date().toLocaleString('hi-IN', {
