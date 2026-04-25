@@ -499,10 +499,12 @@ button[type="submit"] {
   // 🔥 mobile1 same नाम से भेजो
   window.location.href = "Receipt.html?appNo=" + data + "&mobile1=" + mobileValue;
 
-})
-.catch(err => {
-  alert("Error: " + err);
-});
+ })
+  .catch(err => {
+    alert("Error: " + err);
+  });
+}
+    
     
     // 6. फॉर्म सबमिट इवेंट
   document.getElementById('admissionForm').addEventListener('submit', function(e) {
