@@ -463,6 +463,22 @@ button[type="submit"] {
 
   // 5. सर्वर पर डेटा भेजना और रिडायरेक्ट करना
   function sendToServer(obj) {
+   // 🔥 localStorage में save (ADD THIS ONLY)
+let students = JSON.parse(localStorage.getItem("students")) || [];
+
+students.push({
+  appno: Date.now(), // temporary number
+  name: obj.studentName,
+  father: obj.fatherName,
+  mother: obj.motherName,
+  dob: obj.dob,
+  class: obj.class,
+  medium: obj.medium,
+  mobile1: obj.mobile1
+});
+
+localStorage.setItem("students", JSON.stringify(students)); 
+    
     fetch(scriptURL, {
         method: "POST",
         body: JSON.stringify(obj),
