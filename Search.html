@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search & Print Receipt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --border-color: #002366; /* गहरा नीला बॉर्डर */
+            --bg-gradient: linear-gradient(135deg, #e6f0ff 0%, #ffffff 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #e6f0ff;
+            margin: 0; padding: 20px;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* मुख्य कंटेनर जिसमें बॉर्डर जोड़ा गया है */
+        .search-card {
+            background: white;
+            width: 100%; max-width: 550px;
+            padding: 40px;
+            border-radius: 20px;
+            
+            /* --- BORDER STYLING --- */
+            border: 4px double var(--border-color); /* Double Line वाला मजबूत बॉर्डर */
+            box-shadow: 0 15px 35px rgba(0, 35, 102, 0.2); /* हलका नीला ग्लो */
+            /* ---------------------- */
+            
+            position: relative;
+        }
+
+        h2 { 
+            text-align: center; 
+            color: var(--border-color); 
+            font-size: 2rem; 
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .input-group { margin-bottom: 18px; }
+        label { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 6px; }
+        
+        input {
+            width: 100%; padding: 12px; 
+            border: 1px solid #ccc;
+            border-radius: 8px; 
+            font-size: 1rem; 
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus { 
+            border-color: var(--primary); 
+            outline: none; 
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.2); 
+        }
+
+        /* Captcha Box */
+        .captcha-container {
+            display: flex; align-items: center; gap: 10px;
+            background: #f1f5f9; padding: 12px; border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        #captchaBox {
+            background: #002366; color: #fff; padding: 10px 20px;
+            border-radius: 6px; font-weight: bold; letter-spacing: 5px;
+            font-size: 1.2rem;
+        }
+
+        .btn-submit {
+            width: 100%; 
+            background: #008000; /* Green Button जैसा आपने पहले चाहा था */
+            color: white; border: none; padding: 16px; border-radius: 10px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-submit:hover { background: #006400; box-shadow: 0 5px 15px rgba(0,128,0,0.3); }
+
+        /* Modal / List Box Styles */
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0, 35, 102, 0.7); display: none; 
+            align-items: center; justify-content: center; z-index: 9999;
+        }
+        .modal-box {
+            background: white; width: 90%; max-width: 600px;
+            padding: 30px; border-radius: 15px; border: 3px solid var(--border-color);
+            position: relative; animation: popIn 0.3s ease;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .result-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; border-bottom: 1px solid #eee;
+        }
+        .print-btn {
+            background: #002366; color: white; text-decoration: none;
+            padding: 10px 18px; border-radius: 6px; font-size: 0.9rem;
+        }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; }
+
+        .loader { text-align: center; display: none; color: var(--border-color); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="search-card">
+    <h2>Search Receipt</h2>
+    
+    <div class="input-group">
+        <label>Student Name</label>
+        <input type="text" id="sName" placeholder="Full Name (AS PER FORM)" oninput="this.value = this.value.toUpperCase()">
+    </div>
+    
+    <div class="input-group">
+        <label>Father's Name</label>
+        <input type="text" id="fName" placeholder="Father's Name" oninput="this.value = this.value.toUpperCase()">
+    </div>
+
+    <div class="input-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" maxlength="10" placeholder="Registered Mobile No.">
+    </div>
+
+    <div class="input-group">
+        <label>Security Check</label>
+        <div class="captcha-container">
+            <div id="captchaBox">XXXXX</div>
+            <button type="button" onclick="generateCaptcha()" style="border:none; background:none; color:blue; cursor:pointer;">Refresh</button>
+        </div>
+        <input type="text" id="captchaInput" placeholder="Enter Captcha Code">
+    </div>
+
+    <button class="btn-submit" onclick="handleSearch()">FIND RECORD</button>
+    <div class="loader" id="loader">Searching Database...</div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3 style="border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Found Records</h3>
+        <div id="resultsList">
+            </div>
+    </div>
+</div>
+
+<script>
+    const scriptURL = "YOUR_APPS_SCRIPT_URL_HERE";
+
+    function generateCaptcha() {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let captcha = "";
+        for (let i = 0; i < 5; i++) captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+        document.getElementById("captchaBox").innerText = captcha;
+        window.currentCaptcha = captcha;
+    }
+
+    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+
+    async function handleSearch() {
+        const name = document.getElementById('sName').value.trim();
+        const father = document.getElementById('fName').value.trim();
+        const mobile = document.getElementById('mobile').value.trim();
+        const capInput = document.getElementById('captchaInput').value.trim().toUpperCase();
+
+        if(!name || !father || !mobile) { alert("सभी जानकारी भरें!"); return; }
+        if(capInput !== window.currentCaptcha) { alert("कैप्चा गलत है!"); generateCaptcha(); return; }
+
+        document.getElementById('loader').style.display = 'block';
+
+        try {
+            const res = await fetch(`${scriptURL}?action=search&name=${name}&father=${father}&mobile=${mobile}`);
+            const data = await res.json();
+
+            const list = document.getElementById('resultsList');
+            list.innerHTML = "";
+
+            if (data.length > 0) {
+                data.forEach(row => {
+                    list.innerHTML += `
+                        <div class="result-item">
+                            <div>
+                                <strong>${row.studentName}</strong><br>
+                                <small>App ID: ${row.id} | Class: ${row.class}</small>
+                            </div>
+                            <a href="reciptprint.html?id=${row.id}" class="print-btn">Print Receipt</a>
+                        </div>
+                    `;
+                });
+                document.getElementById('modalOverlay').style.display = 'flex';
+            } else {
+                alert("कोई रिकॉर्ड नहीं मिला। कृपया जानकारी जांचें।");
+            }
+        } catch (e) {
+            alert("सर्वर से कनेक्ट करने में त्रुटि!");
+        } finally {
+            document.getElementById('loader').style.display = 'none';
+        }
+    }
+
+    window.onload = generateCaptcha;
+</script>
+
+</body>
+</html>
