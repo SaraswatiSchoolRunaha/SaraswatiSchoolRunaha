@@ -54,44 +54,52 @@ button{
   <input type="text" id="mobile1" placeholder="Mobile Number">
 
   <div id="captcha"></div>
-  <button onclick="generateCaptcha()">Refresh</button>
+  <button type="button" onclick="generateCaptcha()">Refresh</button>
 
   <input type="text" id="captchaInput" placeholder="Enter Captcha">
 
-  <button onclick="searchData()">Search</button>
+  <button type="button" onclick="searchData()">Search</button>
 </div>
 
 <script>
-let currentCaptcha="";
 
+let currentCaptcha = "";
+
+// ✅ captcha generate
 function generateCaptcha(){
-  let chars="ABCDEFG123456789";
-  currentCaptcha="";
+  let chars = "ABCDEFG123456789";
+  currentCaptcha = "";
+
   for(let i=0;i<5;i++){
-    currentCaptcha+=chars[Math.floor(Math.random()*chars.length)];
+    currentCaptcha += chars[Math.floor(Math.random()*chars.length)];
   }
-  document.getElementById("captcha").innerText=currentCaptcha;
+
+  document.getElementById("captcha").innerText = currentCaptcha;
 }
 
+// ✅ search function
 function searchData(){
-  let mobile = document.getElementById("mobile1").value.trim();
-  let captchaInput = document.getElementById("captchaInput").value;
 
-  if(mobile.length != 10){
-    alert("Enter valid mobile");
+  let mobile = document.getElementById("mobile1").value.trim();
+  let captchaInput = document.getElementById("captchaInput").value.trim();
+
+  if(mobile.length !== 10){
+    alert("Enter valid 10 digit mobile number");
     return;
   }
 
-  if(captchaInput != currentCaptcha){
+  if(captchaInput !== currentCaptcha){
     alert("Wrong captcha");
     generateCaptcha();
     return;
   }
 
-  window.location.href = "Listbox.html?mobile1=" + mobile;
+  // 👉 redirect with mobile
+  window.location.href = "Listbox.html?mobile1=" + encodeURIComponent(mobile);
 }
 
 generateCaptcha();
+
 </script>
 
 </body>
