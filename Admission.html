@@ -420,127 +420,115 @@ button[type="submit"] {
 <!-- इसके बाद ही script आएगा -->
   
 <script>
- const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
-function toggleSubjects() {
-  let cls = document.getElementById("classSelect").value;
-  let subjectBox = document.getElementById("subjectSection");
-
-  if (cls === "11" || cls === "12") {
-    subjectBox.style.display = "block";
-  } else {
-    subjectBox.style.display = "none";
-  }
-}
-  
-// Captcha
-function generateCaptcha() {
-  let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let captcha = "";
-
-  for (let i = 0; i < 6; i++) {
-    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-
-  document.getElementById("captchaCode").innerText = captcha;
-  window.currentCaptcha = captcha;
-}
-// Photo preview
-document.getElementById('photoUpload').addEventListener('change', function () {
-  const file = this.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      document.getElementById('photoPreview').src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-// 🔥 NEW FUNCTION
- function sendToServer(obj) {
-  fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify(obj),
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    }
-  })
-  .then(res => res.text())
-.then(data => {
-
-  alert("📄 छात्र का आवेदन क्रमांक: " + data + 
-    "\n\n✅ आपका आवेदन पत्र सफलतापूर्वक जमा हो चुका है।" + 
-    "\nकृपया भविष्य के लिए इस क्रमांक को सुरक्षित रखें।");
-
-// --- ये 2 लाइनें जोड़ें ---
-  let mobileValue = document.getElementsByName("mobile1")[0].value;
-  window.location.href = "Receipt.html?appNo=" + data + "&mobile=" + mobileValue;
-  // -----------------------
-})
-
-  // 🔥 FORM RESET (IMPORTANT)
-  document.getElementById("admissionForm").reset();
-
-  // extra cleanup
-  document.getElementById("photoPreview").src = "";
-  document.getElementById("captchaInput").value = "";
-
-  generateCaptcha(); // new captcha
-
-})
-.catch(err => {
-  alert("Error: " + err);
-});
-
-} 
-  
-  // ✅ ये line add करो (function close करने के लिए)
-   
-  // ✅ FINAL SUBMIT
-document.getElementById('admissionForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  let form = document.getElementById("admissionForm");
-  let formData = new FormData(form);
-  let file = document.getElementById("photoUpload").files[0];
-
-  let userCaptcha = document.getElementById('captchaInput').value;
-  let actualCaptcha = document.getElementById('captchaCode').textContent;
-
-  if (userCaptcha.trim().toLowerCase() !== actualCaptcha.trim().toLowerCase()) {
-   alert("❌ कैप्चा गलत है, कृपया पुनः प्रयास करें");
-    generateCaptcha();
-    return;
-  }
-
-  if (file) {
-    let reader = new FileReader();
-    reader.onload = function () {
-      formData.set("photo", reader.result);
-
-     let obj = {};
-formData.forEach((v, k) => {
-  if (k === "dob") {
-    let [year, month, day] = v.split("-");
-    obj[k] = `${day}-${month}-${year}`;
-  } else {
-    obj[k] = v;
-  }
-});
-      sendToServer(obj);
-    };
-    reader.readAsDataURL(file);
-  } else {
-    let obj = {};
-    formData.forEach((v, k) => obj[k] = v);
-
-    sendToServer(obj);
-  }
-});
- window.onload = function () {
+  // 1. पेज लोड होने पर कैप्चा लोड करना
+  window.onload = function() {
     generateCaptcha();
   };
+
+  // 2. कैप्चा जनरेट फंक्शन
+  function generateCaptcha() {
+    let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let captcha = "";
+    for (let i = 0; i < 6; i++) {
+      captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById("captchaCode").innerText = captcha;
+    window.currentCaptcha = captcha;
+  }
+
+  // 3. क्लास के हिसाब से सब्जेक्ट दिखाना
+  function toggleSubjects() {
+    let cls = document.getElementById("classSelect").value;
+    let subjectBox = document.getElementById("subjectSection");
+    if (cls === "11" || cls === "12") {
+      subjectBox.style.display = "block";
+    } else {
+      subjectBox.style.display = "none";
+    }
+  }
+
+  // 4. फोटो प्रिव्यू
+  document.getElementById('photoUpload').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('photoPreview').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // 5. सर्वर पर डेटा भेजना और रिडायरेक्ट करना
+  function sendToServer(obj) {
+    fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        }
+      })
+      .then(res => res.text())
+      .then(data => {
+        alert("📄 छात्र का आवेदन क्रमांक: " + data +
+          "\n\n✅ आपका आवेदन पत्र सफलतापूर्वक जमा हो चुका है।" +
+          "\nकृपया भविष्य के लिए इस क्रमांक को सुरक्षित रखें।");
+
+        // मोबाइल नंबर लेना
+        let mobileValue = document.getElementsByName("mobile1")[0].value;
+        
+        // अगले पेज पर भेजना (स्पेलिंग चेक करें: Receipt.html)
+        window.location.href = "Receipt.html?appNo=" + data + "&mobile=" + mobileValue;
+      })
+      .catch(err => {
+        alert("Error: " + err);
+      });
+  }
+
+  // 6. फॉर्म सबमिट इवेंट
+  document.getElementById('admissionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // कैप्चा चेक
+    let userCaptcha = document.getElementById('captchaInput').value;
+    let actualCaptcha = document.getElementById('captchaCode').textContent;
+
+    if (userCaptcha.trim().toLowerCase() !== actualCaptcha.trim().toLowerCase()) {
+      alert("❌ कैप्चा गलत है, कृपया पुनः प्रयास करें");
+      generateCaptcha();
+      return;
+    }
+
+    let form = document.getElementById("admissionForm");
+    let formData = new FormData(form);
+    let file = document.getElementById("photoUpload").files[0];
+
+    if (file) {
+      let reader = new FileReader();
+      reader.onload = function() {
+        formData.set("photo", reader.result);
+        let obj = {};
+        formData.forEach((v, k) => {
+          if (k === "dob") {
+            let [year, month, day] = v.split("-");
+            obj[k] = `${day}-${month}-${year}`;
+          } else {
+            obj[k] = v;
+          }
+        });
+        sendToServer(obj);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      let obj = {};
+      formData.forEach((v, k) => obj[k] = v);
+      sendToServer(obj);
+    }
+  });
+
+  // राज्य और जिले वाला पुराना कोड इसके नीचे रहेगा...
 </script>
 <script>
 // STATE → DISTRICT
