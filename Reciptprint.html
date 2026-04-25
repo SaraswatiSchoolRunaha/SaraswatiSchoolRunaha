@@ -359,11 +359,22 @@
 
 <script>
 window.onload = function() {
-    let params = new URLSearchParams(window.location.search);
-    let appNo = params.get("appNo") || "SBVM24001";
-    let mobile = params.get("mobile1") || "";
 
-    // 1. डेट और टाइम का सही फॉर्मेट (LocaleString)
+    let params = new URLSearchParams(window.location.search);
+
+    // ✅ सही parameter name (IMPORTANT FIX)
+    let appNo = params.get("appNo");
+    let mobile = params.get("mobile");
+
+    console.log("AppNo:", appNo);
+    console.log("Mobile:", mobile);
+
+    if(!appNo){
+        alert("App No नहीं मिला!");
+        return;
+    }
+
+    // Date & Time
     let now = new Date().toLocaleString('hi-IN', {
         day: '2-digit',
         month: '2-digit',
@@ -373,7 +384,7 @@ window.onload = function() {
         hour12: true
     });
 
-    // बेसिक आईडी सेट करना
+    // Header values
     document.getElementById("appNo1").innerText = appNo;
     document.getElementById("appNo2").innerText = appNo;
     document.getElementById("appNoSlip").innerText = appNo;
@@ -381,30 +392,50 @@ window.onload = function() {
     document.getElementById("slipDate").innerText = now;
 
     const apiUrl = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
-    
+
     fetch(apiUrl + "?appNo=" + appNo + "&mobile=" + mobile)
     .then(res => res.json())
     .then(data => {
+
+        console.log("DATA:", data);
+
         for (let key in data) {
             let el = document.getElementById(key);
             if (el) {
-                // 2. DOB (Date of Birth) में 'T' और कचरा हटाने का लॉजिक
+
+                // DOB fix
                 if (key === "dob") {
                     let v = data[key];
                     if (v) {
                         let pureDate = v.includes("T") ? v.split("T")[0] : v;
-                        let parts = pureDate.split("-");
-                        if (parts.length === 3 && parts[0].length === 4) {
-                            el.innerText = parts[2] + "-" + parts[1] + "-" + parts[0]; // DD-MM-YYYY
-                        } else {
-                            el.innerText = pureDate;
-                        }
+                        el.innerText = pureDate;
                     }
-                } else {
+                } 
+                else {
                     el.innerText = data[key];
                 }
             }
         }
+
+        // extra mapping (important fix)
+        if(data.name){
+            document.getElementById("nameSlip").innerText = data.name;
+            document.getElementById("name2").innerText = data.name;
+        }
+
+        if(data.class){
+            document.getElementById("classSlip").innerText = data.class + " / " + (data.medium || "");
+            document.getElementById("class2").innerText = data.class;
+        }
+
+    })
+    .catch(err => {
+        console.error("Error:", err);
+        alert("Data load नहीं हो रहा है");
+    });
+
+};
+</script>
 
         // 3. रसीद (Slip) और ऑफिस कॉपी के लिए डेटा अपडेट
         if(data.name) {
