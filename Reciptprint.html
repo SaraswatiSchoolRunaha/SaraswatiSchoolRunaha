@@ -379,16 +379,20 @@ window.onload = function () {
         minute: '2-digit',
         hour12: true
     });
-
-
-
-
-
     
     // ✅ HEADER DATA SET
     document.getElementById("appNo").innerText = appNo;
     document.getElementById("currentDate").innerText = "दिनांक: " + now;
 
+    // PAGE 1
+    document.getElementById("appNo1").innerText = appNo;
+    document.getElementById("currentDate").innerText = "दिनांक: " + now;
+
+    // PAGE 2 (OFFICE COPY)
+    document.getElementById("appNo2").innerText = appNo;
+    document.getElementById("appNoSlip").innerText = appNo;
+    document.getElementById("slipDate").innerText = now;
+    
     const apiUrl = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
     fetch(apiUrl + "?appNo=" + appNo + "&mobile=" + mobile)
