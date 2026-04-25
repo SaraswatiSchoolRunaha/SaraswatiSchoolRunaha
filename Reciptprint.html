@@ -194,7 +194,7 @@
 
     <div class="info-strip">
         <span>आवेदन क्र. (App No): <span id="appNo1">--</span></span>
-        <span>सत्र: 2024-25</span>
+      <span>सत्र: <span id="session">--</span></span>
         <span id="currentDate"></span>
     </div>
 
@@ -363,47 +363,50 @@ window.onload = function() {
     let appNo = params.get("appNo") || "SBVM24001";
     let mobile = params.get("mobile") || "";
 
+    // 1. डेट और टाइम का सही फॉर्मेट (LocaleString)
+    let now = new Date().toLocaleString('hi-IN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+
     // बेसिक आईडी सेट करना
     document.getElementById("appNo1").innerText = appNo;
     document.getElementById("appNo2").innerText = appNo;
     document.getElementById("appNoSlip").innerText = appNo;
-    document.getElementById("currentDate").innerHTML = "दिनांक: " + new Date().toLocaleDateString('hi-IN');
-    document.getElementById("slipDate").innerText = new Date().toLocaleDateString('hi-IN');
+    document.getElementById("currentDate").innerHTML = "दिनांक: " + now;
+    document.getElementById("slipDate").innerText = now;
 
-    // गूगल शीट का लिंक (URL को साफ़ किया गया है)
     const apiUrl = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
     
     fetch(apiUrl + "?appNo=" + appNo + "&mobile=" + mobile)
     .then(res => res.json())
     .then(data => {
-        // सभी डेटा को टेबल में भरना
         for (let key in data) {
-    let el = document.getElementById(key);
-
-    if (el) {
-        if (key === "dob") {
-            let v = data[key];
-
-            if (v && v.includes("-")) {
-                let parts = v.split("-");
-
-                // अगर YYYY-MM-DD है
-                if (parts[0].length === 4) {
-                    el.innerText = parts[2] + "-" + parts[1] + "-" + parts[0];
+            let el = document.getElementById(key);
+            if (el) {
+                // 2. DOB (Date of Birth) में 'T' और कचरा हटाने का लॉजिक
+                if (key === "dob") {
+                    let v = data[key];
+                    if (v) {
+                        let pureDate = v.includes("T") ? v.split("T")[0] : v;
+                        let parts = pureDate.split("-");
+                        if (parts.length === 3 && parts[0].length === 4) {
+                            el.innerText = parts[2] + "-" + parts[1] + "-" + parts[0]; // DD-MM-YYYY
+                        } else {
+                            el.innerText = pureDate;
+                        }
+                    }
                 } else {
-                    el.innerText = v;
+                    el.innerText = data[key];
                 }
-            } else {
-                el.innerText = v;
             }
-
-        } else {
-            el.innerText = data[key];
         }
-    }
-}
 
-        // रसीद (Slip) के लिए डेटा अपडेट करना
+        // 3. रसीद (Slip) और ऑफिस कॉपी के लिए डेटा अपडेट
         if(data.name) {
             document.getElementById("nameSlip").innerText = data.name;
             document.getElementById('name2').innerText = data.name;
@@ -412,43 +415,31 @@ window.onload = function() {
             document.getElementById("classSlip").innerText = data.class + " / " + (data.medium || "");
             document.getElementById('class2').innerText = data.class;
         }
+        // 4. सेशन अपडेट (अगर शीट में 'session' कॉलम है)
+        if(data.session && document.getElementById("session")) {
+            document.getElementById("session").innerText = data.session;
+        }
 
-       // --- NAYA PHOTO LOGIC (REPLACEMENT) ---
-if (data.photo && data.photo !== "") {
-    const photoImg = document.getElementById("photo");
-    const placeholder = document.getElementById("photoPlaceholder");
-    
-    let fileId = "";
-    // Link se File ID nikalna
-    if (data.photo.includes("id=")) {
-        fileId = data.photo.split("id=")[1].split("&")[0];
-    }
+        // --- PHOTO LOGIC ---
+        if (data.photo && data.photo !== "") {
+            const photoImg = document.getElementById("photo");
+            const placeholder = document.getElementById("photoPlaceholder");
+            let fileId = "";
+            if (data.photo.includes("id=")) {
+                fileId = data.photo.split("id=")[1].split("&")[0];
+            }
+            if (fileId) {
+                photoImg.src = "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w500";
+                photoImg.style.display = "block";
+                if (placeholder) placeholder.style.display = "none";
+            }
+        }
 
-    if (fileId) {
-        // Method 1: Sabse fast loading format (lh3 proxy)
-        photoImg.src = "https://lh3.googleusercontent.com/d/" + fileId;
-        photoImg.style.display = "block";
-        if (placeholder) placeholder.style.display = "none";
-
-        // Agar Method 1 fail ho jaye toh Method 2 (Thumbnail) try karein
-        photoImg.onerror = function() {
-            console.log("Method 1 fail, trying Thumbnail...");
-            this.src = "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w500";
-        };
-    } else {
-        // Agar link bina ID ke hai toh direct use karein
-        photoImg.src = data.photo;
-        photoImg.style.display = "block";
-        if (placeholder) placeholder.style.display = "none";
-    }
-}
-// --- END ---
-
-        // QR कोड बनाना (यही हिस्सा काम नहीं कर रहा था)
+        // QR कोड
         setTimeout(() => {
             const qrDiv = document.getElementById("qr");
             if (qrDiv) {
-                qrDiv.innerHTML = ""; // पुराना साफ़ करें
+                qrDiv.innerHTML = "";
                 new QRCode(qrDiv, {
                     text: "ID:" + appNo + " Name:" + (data.name || "Student"),
                     width: 75,
@@ -459,11 +450,8 @@ if (data.photo && data.photo !== "") {
             }
         }, 800);
     })
-    .catch(err => {
-        console.error("Data Fetch Error:", err);
-    });
+    .catch(err => console.error("Data Fetch Error:", err));
 };
 </script>
-
 </body>
 </html>
