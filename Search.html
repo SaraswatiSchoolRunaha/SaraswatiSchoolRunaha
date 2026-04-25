@@ -74,22 +74,21 @@ function generateCaptcha(){
 }
 
 function searchData(){
-  let mobile=document.getElementById("mobile1").value;
-  let captchaInput=document.getElementById("captchaInput").value;
+  let mobile = document.getElementById("mobile1").value.trim();
+  let captchaInput = document.getElementById("captchaInput").value;
 
-  if(mobile.length!=10){
+  if(mobile.length != 10){
     alert("Enter valid mobile");
     return;
   }
 
-  if(captchaInput!=currentCaptcha){
+  if(captchaInput != currentCaptcha){
     alert("Wrong captcha");
     generateCaptcha();
     return;
   }
 
-  // Redirect
-  window.location.href="Listbox.html?mobile1="+mobile1;
+  window.location.href = "Listbox.html?mobile1=" + mobile;
 }
 
 generateCaptcha();
