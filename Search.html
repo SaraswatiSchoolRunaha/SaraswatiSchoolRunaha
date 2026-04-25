@@ -51,7 +51,7 @@ button{
 <div class="box">
   <h3>Find Application No</h3>
 
-  <input type="text" id="mobile" placeholder="Mobile Number">
+  <input type="text" id="mobile1" placeholder="Mobile Number">
 
   <div id="captcha"></div>
   <button onclick="generateCaptcha()">Refresh</button>
@@ -74,7 +74,7 @@ function generateCaptcha(){
 }
 
 function searchData(){
-  let mobile=document.getElementById("mobile").value;
+  let mobile=document.getElementById("mobile1").value;
   let captchaInput=document.getElementById("captchaInput").value;
 
   if(mobile.length!=10){
@@ -89,7 +89,7 @@ function searchData(){
   }
 
   // Redirect
-  window.location.href="Listbox.html?mobile="+mobile;
+  window.location.href="Listbox.html?mobile1="+mobile1;
 }
 
 generateCaptcha();
