@@ -380,19 +380,11 @@ window.onload = function () {
         hour12: true
     });
     
-    // ✅ HEADER DATA SET
-    document.getElementById("appNo").innerText = appNo;
-    document.getElementById("currentDate").innerText = "दिनांक: " + now;
- 
-    // PAGE 1
-    document.getElementById("appNo1").innerText = appNo;
-    document.getElementById("currentDate").innerText = "दिनांक: " + now;
+   // ✅ HEADER DATA SET - Check if element exists before setting
+    let appNoEl = document.getElementById("appNo");
+    if (appNoEl) appNoEl.innerText = appNo;
 
-    // PAGE 2
-    document.getElementById("appNo2").innerText = appNo;
-    document.getElementById("appNoSlip").innerText = appNo;
-    document.getElementById("slipDate").innerText = now;
-
+document.getElementById("currentDate").innerText = "दिनांक: " + now;
     
     
     const apiUrl = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
