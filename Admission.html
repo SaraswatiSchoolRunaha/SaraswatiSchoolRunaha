@@ -478,13 +478,15 @@ button[type="submit"] {
 
   students.push({
     appno: data, // ✅ FIX (Date.now हटाया)
+    mobile1: obj.mobile1
     name: obj.studentName,
     father: obj.fatherName,
     mother: obj.motherName,
     dob: obj.dob,
     class: obj.class,
     medium: obj.medium,
-    mobile1: obj.mobile1
+    gender: obj.medium,
+    catogry: obj.medium,
   });
 
   localStorage.setItem("students", JSON.stringify(students));
