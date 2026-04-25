@@ -463,47 +463,48 @@ button[type="submit"] {
 
   // 5. सर्वर पर डेटा भेजना और रिडायरेक्ट करना
   function sendToServer(obj) {
-   // 🔥 localStorage में save (ADD THIS ONLY)
-let students = JSON.parse(localStorage.getItem("students")) || [];
-
-students.push({
-  appno: Date.now(), // temporary number
-  name: obj.studentName,
-  father: obj.fatherName,
-  mother: obj.motherName,
-  dob: obj.dob,
-  class: obj.class,
-  medium: obj.medium,
-  mobile1: obj.mobile1
-});
-
-localStorage.setItem("students", JSON.stringify(students)); 
-    
-    fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(obj),
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        }
-      })
-      .then(res => res.text())
-      .then(data => {
-        alert("📄 छात्र का आवेदन क्रमांक: " + data +
-          "\n\n✅ आपका आवेदन पत्र सफलतापूर्वक जमा हो चुका है।" +
-          "\nकृपया भविष्य के लिए इस क्रमांक को सुरक्षित रखें।");
-
-        // मोबाइल नंबर लेना
-        let mobileValue = document.getElementsByName("mobile1")[0].value;
-        
-        // अगले पेज पर भेजना (स्पेलिंग चेक करें: Receipt.html)
-        window.location.href = "Receipt.html?appNo=" + data + "&mobile=" + mobileValue;
-      })
-      .catch(err => {
-        alert("Error: " + err);
-      });
+  fetch(scriptURL, {
+  method: "POST",
+  body: JSON.stringify(obj),
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
   }
+})
+.then(res => res.text())
+.then(data => {
 
-  // 6. फॉर्म सबमिट इवेंट
+  // 🔥 server से मिला हुआ REAL appNo save करो
+  let students = JSON.parse(localStorage.getItem("students")) || [];
+
+  students.push({
+    appno: data, // ✅ FIX (Date.now हटाया)
+    name: obj.studentName,
+    father: obj.fatherName,
+    mother: obj.motherName,
+    dob: obj.dob,
+    class: obj.class,
+    medium: obj.medium,
+    mobile1: obj.mobile1
+  });
+
+  localStorage.setItem("students", JSON.stringify(students));
+
+  alert("📄 छात्र का आवेदन क्रमांक: " + data +
+    "\n\n✅ आपका आवेदन पत्र सफलतापूर्वक जमा हो चुका है।" +
+    "\nकृपया भविष्य के लिए इस क्रमांक को सुरक्षित रखें।");
+
+  // 🔥 direct object से mobile लो (safe)
+  let mobileValue = obj.mobile1;
+
+  // 🔥 mobile1 same नाम से भेजो
+  window.location.href = "Receipt.html?appNo=" + data + "&mobile1=" + mobileValue;
+
+})
+.catch(err => {
+  alert("Error: " + err);
+});
+    
+    // 6. फॉर्म सबमिट इवेंट
   document.getElementById('admissionForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
