@@ -477,7 +477,7 @@ button[type="submit"] {
   let students = JSON.parse(localStorage.getItem("students")) || [];
 
   students.push({
-    appno: data, // ✅ Real Application Number
+   appno: "APP" + Math.floor(100000 + Math.random() * 900000),
     mobile1: obj.mobile1
     name: obj.studentName,
     father: obj.fatherName,
