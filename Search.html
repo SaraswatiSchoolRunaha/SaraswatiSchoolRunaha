@@ -2,104 +2,217 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Search Application</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Admission Portal | Search</title>
 
 <style>
-body{
-  font-family:Arial;
-  background:#e3f2fd;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f0f2f5;
+    background-image: url("https://www.transparenttextures.com/patterns/cubes.png"); /* Subtle pattern */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
 
-.box{
-  background:#fff;
-  padding:25px;
-  border-radius:10px;
-  width:350px;
-  box-shadow:0 0 10px rgba(0,0,0,0.2);
-}
+  /* Main Portal Box */
+  .portal-card {
+    background: #ffffff;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    border-top: 6px solid #1565c0; /* School Theme Blue */
+  }
 
-input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-}
+  /* Header Section */
+  .portal-header {
+    background: #1565c0;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
 
-button{
-  width:100%;
-  padding:10px;
-  background:#1565c0;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
+  .portal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-#captcha{
-  background:#eee;
-  padding:8px;
-  display:inline-block;
-  margin-bottom:5px;
-}
+  .portal-header p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  /* Form Body */
+  .portal-body {
+    padding: 30px;
+  }
+
+  .input-label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .input-label span {
+    color: #1565c0;
+    font-size: 12px;
+    display: block;
+    font-weight: normal;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: 0.3s;
+  }
+
+  input[type="text"]:focus {
+    border-color: #1565c0;
+    outline: none;
+    background-color: #f9fbff;
+  }
+
+  /* Captcha Area */
+  .captcha-section {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  #captcha {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 28px;
+    font-weight: bold;
+    color: #d32f2f;
+    letter-spacing: 6px;
+    display: block;
+    margin-bottom: 10px;
+    user-select: none;
+    background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px);
+  }
+
+  .btn-refresh {
+    background: none;
+    border: none;
+    color: #1565c0;
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: underline;
+  }
+
+  /* Action Button */
+  .btn-search {
+    width: 100%;
+    padding: 14px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);
+  }
+
+  .btn-search:hover {
+    background: #0d47a1;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  }
+
+  /* Footer Info */
+  .portal-footer {
+    text-align: center;
+    padding-bottom: 20px;
+    font-size: 12px;
+    color: #777;
+  }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <h3>Find Application No</h3>
+<div class="portal-card">
+  <div class="portal-header">
+    <h2>Student Database</h2>
+    <p>School Admission Management System</p>
+  </div>
 
-  <input type="text" id="mobile1" placeholder="Mobile Number">
+  <div class="portal-body">
+    <label class="input-label">
+      Mobile Number / मोबाइल नंबर
+      <span>Enter registered 10 digit number</span>
+    </label>
+    <input type="text" id="mobile1" placeholder="98XXXXXXXX" maxlength="10">
 
-  <div id="captcha"></div>
-  <button type="button" onclick="generateCaptcha()">Refresh</button>
+    <div class="captcha-section">
+      <span id="captcha"></span>
+      <button type="button" class="btn-refresh" onclick="generateCaptcha()">🔄 Refresh Code (कोड बदलें)</button>
+    </div>
 
-  <input type="text" id="captchaInput" placeholder="Enter Captcha">
+    <label class="input-label">
+      Enter Captcha / कैप्चा कोड डालें
+    </label>
+    <input type="text" id="captchaInput" placeholder="Type the code above">
 
-  <button type="button" onclick="searchData()">Search</button>
+    <button type="button" class="btn-search" onclick="searchData()">SEARCH APPLICATION</button>
+  </div>
+
+  <div class="portal-footer">
+    © 2026 School Management System | Secure Access
+  </div>
 </div>
 
 <script>
-
 let currentCaptcha = "";
 
-// ✅ captcha generate
 function generateCaptcha(){
-  let chars = "ABCDEFG123456789";
+  let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   currentCaptcha = "";
-
-  for(let i=0;i<5;i++){
+  for(let i=0; i<5; i++){
     currentCaptcha += chars[Math.floor(Math.random()*chars.length)];
   }
-
   document.getElementById("captcha").innerText = currentCaptcha;
 }
 
-// ✅ search function
 function searchData(){
-
   let mobile = document.getElementById("mobile1").value.trim();
   let captchaInput = document.getElementById("captchaInput").value.trim();
 
-  if(mobile.length !== 10){
-    alert("Enter valid 10 digit mobile number");
+  if(mobile.length !== 10 || isNaN(mobile)){
+    alert("कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें।\n(Please enter a valid 10-digit mobile number)");
     return;
   }
 
-  if(captchaInput !== currentCaptcha){
-    alert("Wrong captcha");
+  if(captchaInput.toUpperCase() !== currentCaptcha.toUpperCase()){
+    alert("कैप्चा कोड गलत है। कृपया पुनः प्रयास करें।\n(Incorrect Captcha. Please try again.)");
     generateCaptcha();
+    document.getElementById("captchaInput").value = "";
     return;
   }
 
-  // 👉 redirect with mobile
+  // Same logic as your original code
   window.location.href = "Listbox.html?mobile1=" + encodeURIComponent(mobile);
 }
 
+// Start with a fresh captcha
 generateCaptcha();
-
 </script>
 
 </body>
