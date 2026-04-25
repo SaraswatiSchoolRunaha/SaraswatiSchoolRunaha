@@ -113,8 +113,8 @@ if(filtered.length > 0){
 document.getElementById("data").innerHTML = html;
 
 // 🔹 Print function
-function printRec(appno){
-  window.location.href = "Reciptprint.html?appno=" + encodeURIComponent(appno);
+function printRec(appno, mobile){
+  window.location.href = "Reciptprint.html?appNo=" + appno + "&mobile=" + mobile;
 }
 
 </script>
