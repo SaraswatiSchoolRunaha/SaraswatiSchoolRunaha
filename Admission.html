@@ -477,7 +477,7 @@ button[type="submit"] {
   let students = JSON.parse(localStorage.getItem("students")) || [];
 
   students.push({
-    appno: data, // ✅ FIX (Date.now हटाया)
+    appno: data, // ✅ Real Application Number
     mobile1: obj.mobile1
     name: obj.studentName,
     father: obj.fatherName,
