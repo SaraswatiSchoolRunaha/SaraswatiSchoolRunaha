@@ -68,18 +68,32 @@ button{
 </div>
 
 <script>
-let params=new URLSearchParams(window.location.search);
-let mobile=params.get("mobile1");
 
-let students=JSON.parse(localStorage.getItem("students"))||[];
+// 🔹 URL से mobile लेना
+let params = new URLSearchParams(window.location.search);
+let mobile = params.get("mobile1");
 
-let filtered=students.filter(s=>s.mobile1==mobile);
+if(mobile){
+  mobile = mobile.trim();
+}
 
-let html="";
+// 🔹 LocalStorage से data लेना
+let students = JSON.parse(localStorage.getItem("students")) || [];
 
-if(filtered.length>0){
+console.log("All Students:", students);
+console.log("Search Mobile:", mobile);
+
+// 🔹 Filter (FINAL FIX)
+let filtered = students.filter(s => 
+  s.mobile1 && s.mobile1.toString().trim() === mobile
+);
+
+let html = "";
+
+// 🔹 Data show
+if(filtered.length > 0){
   filtered.forEach(s=>{
-    html+=`
+    html += `
     <tr>
       <td>${s.appno}</td>
       <td>${s.name}</td>
@@ -95,14 +109,17 @@ if(filtered.length>0){
     `;
   });
 }else{
-  html="<tr><td colspan='8'>No Record Found</td></tr>";
+  html = "<tr><td colspan='8'>No Record Found</td></tr>";
 }
 
-document.getElementById("data").innerHTML=html;
+// 🔹 Table में डालना
+document.getElementById("data").innerHTML = html;
 
+// 🔹 Print function
 function printRec(appno){
-  window.location.href="reciptprint.html?appno="+appno;
+  window.location.href = "reciptprint.html?appno=" + appno;
 }
+
 </script>
 
 </body>
