@@ -178,12 +178,15 @@
       html += `
       <tr>
         <td style="font-weight:bold; color:#1565c0;">${s.appno}</td>
+        <td style="text-align:left;">${s.mobile1}</td>
         <td style="text-align:left;">${s.name}</td>
         <td style="text-align:left;">${s.father}</td>
         <td>${s.mother}</td>
         <td>${s.dob}</td>
         <td><span style="background:#e3f2fd; padding:3px 8px; border-radius:4px; font-weight:bold;">${s.class}</span></td>
         <td>${s.medium}</td>
+        <td>${s.gender}</td>
+        <td>${s.category}</td>
         <td>
           <button class="btn-print" onclick="printRec('${s.appno}','${s.mobile1}')">
             🖨️ PRINT
