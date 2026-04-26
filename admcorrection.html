@@ -57,7 +57,7 @@
       <input type="text" id="appNo" placeholder="Enter Application Number">
       
       <label>Mobile Number:</label>
-      <input type="text" id="mobile" placeholder="Enter Mobile Number">
+      <input type="text" id="mobile1" placeholder="Enter Mobile Number">
       
       <div style="margin: 10px 0; text-align: center;">
         <span id="captchaDisplay"></span> 
@@ -101,7 +101,7 @@
 
     function searchData() {
       var app = document.getElementById('appNo').value;
-      var mob = document.getElementById('mobile').value;
+      var mob = document.getElementById('mobile1').value;
       var cap = document.getElementById('captchaInput').value;
       
       if(!app || !mob) { alert("Please fill both fields!"); return; }
