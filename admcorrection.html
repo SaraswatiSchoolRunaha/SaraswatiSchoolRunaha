@@ -4,46 +4,17 @@
     <base target="_top">
     <style>
       body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f2f5; }
-      
-      /* Container mein solid border aur shadow jodi gayi hai */
-      .container { 
-        max-width: 500px; 
-        margin: auto; 
-        background: white; 
-        padding: 25px; 
-        border-radius: 12px; 
-        border: 2px solid #007bff; /* Blue Border */
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-      }
-      
+      .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 12px; border: 2px solid #007bff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
       .search-box { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
-      
       h3 { text-align: center; color: #333; }
-      
       label { font-weight: bold; font-size: 14px; color: #555; }
-      
-      input { 
-        width: 100%; 
-        padding: 10px; 
-        margin: 8px 0 15px 0; 
-        border: 1px solid #ccc; 
-        border-radius: 5px; 
-        box-sizing: border-box; 
-      }
-      
-      /* Input select hone par border color badlega */
+      input { width: 100%; padding: 10px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
       input:focus { border-color: #007bff; outline: none; box-shadow: 0 0 5px rgba(0,123,255,0.2); }
-      
-      #captchaDisplay { 
-        font-weight: bold; background: #333; color: #fff; padding: 8px 15px; 
-        letter-spacing: 4px; border-radius: 4px; display: inline-block; user-select: none;
-      }
-      
+      #captchaDisplay { font-weight: bold; background: #333; color: #fff; padding: 8px 15px; letter-spacing: 4px; border-radius: 4px; display: inline-block; user-select: none; }
       button { width: 100%; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
       .btn-search { background-color: #007bff; color: white; }
       .btn-update { background-color: #28a745; color: white; margin-top: 15px; }
       button:hover { opacity: 0.8; }
-      
       .hidden { display: none; }
       .loading { color: #007bff; font-weight: bold; text-align: center; margin-top: 10px; }
     </style>
@@ -57,9 +28,7 @@
       <input type="text" id="appNo" placeholder="Enter Application Number">
       
       <label>Mobile Number:</label>
-      <input type="text" id="mobile1" placeholder="Enter Mobile Number">
-      
-      <div style="margin: 10px 0; text-align: center;">
+      <input type="text" id="mobile" placeholder="Enter Mobile Number"> <div style="margin: 10px 0; text-align: center;">
         <span id="captchaDisplay"></span> 
         <button onclick="generateCaptcha()" style="width:auto; padding:5px 10px; font-size:12px; background:#ddd; color:#333;">Refresh</button>
       </div>
@@ -71,16 +40,12 @@
 
     <div id="editForm" class="hidden">
       <h3 style="color: #28a745;">Record Found! Edit Below:</h3>
-      
       <label>Student Name:</label>
       <input type="text" id="stuName">
-
       <label>Father's Name:</label>
       <input type="text" id="fName">
-      
       <label>Address:</label>
       <input type="text" id="stuAddress">
-      
       <button class="btn-update" id="updateBtn" onclick="updateRecord()">Update & Save to Sheet</button>
       <div id="updateLoader" class="hidden loading">Updating sheet...</div>
     </div>
@@ -101,7 +66,7 @@
 
     function searchData() {
       var app = document.getElementById('appNo').value;
-      var mob = document.getElementById('mobile1').value;
+      var mob = document.getElementById('mobile').value; // Matching ID
       var cap = document.getElementById('captchaInput').value;
       
       if(!app || !mob) { alert("Please fill both fields!"); return; }
@@ -114,23 +79,29 @@
       document.getElementById('loader').classList.remove('hidden');
       document.getElementById('searchBtn').disabled = true;
 
-      // Code.gs ke fetchRecordForEdit function ko call karna
-      google.script.run.withSuccessHandler(fillForm).fetchRecordForEdit(app, mob);
+      // Global error handling for script failure
+      google.script.run
+        .withSuccessHandler(fillForm)
+        .withFailureHandler(function(err) {
+           alert("Script Error: " + err.message);
+           document.getElementById('loader').classList.add('hidden');
+           document.getElementById('searchBtn').disabled = false;
+        })
+        .fetchRecordForEdit(app, mob);
     }
 
     function fillForm(data) {
       document.getElementById('loader').classList.add('hidden');
       document.getElementById('searchBtn').disabled = false;
 
-      if(data) {
+      if(data && typeof data === 'object') {
         document.getElementById('editForm').classList.remove('hidden');
         document.getElementById('searchBox').style.opacity = "0.5";
-        
         document.getElementById('stuName').value = data.name;
         document.getElementById('fName').value = data.father;
         document.getElementById('stuAddress').value = data.address;
       } else {
-        alert("Data nahi mila! Check App No and Mobile.");
+        alert("Data nahi mila! Application Number ya Mobile check karein.");
         generateCaptcha();
       }
     }
@@ -147,10 +118,17 @@
       document.getElementById('updateLoader').classList.remove('hidden');
       document.getElementById('updateBtn').disabled = true;
 
-      google.script.run.withSuccessHandler(function(msg) {
-        alert(msg);
-        location.reload();
-      }).updateStudentData(updateObj);
+      google.script.run
+        .withSuccessHandler(function(msg) {
+          alert(msg);
+          location.reload();
+        })
+        .withFailureHandler(function(err) {
+          alert("Update Failed: " + err.message);
+          document.getElementById('updateLoader').classList.add('hidden');
+          document.getElementById('updateBtn').disabled = false;
+        })
+        .updateStudentData(updateObj);
     }
   </script>
   </body>
