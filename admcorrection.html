@@ -90,21 +90,24 @@
         .fetchRecordForEdit(app, mob);
     }
 
-    function fillForm(data) {
-      document.getElementById('loader').classList.add('hidden');
-      document.getElementById('searchBtn').disabled = false;
+   function fillForm(data) {
+  document.getElementById('loader').classList.add('hidden');
+  document.getElementById('searchBtn').disabled = false;
 
-      if(data && typeof data === 'object') {
-        document.getElementById('editForm').classList.remove('hidden');
-        document.getElementById('searchBox').style.opacity = "0.5";
-        document.getElementById('stuName').value = data.name;
-        document.getElementById('fName').value = data.father;
-        document.getElementById('stuAddress').value = data.address;
-      } else {
-        alert("Data nahi mila! Application Number ya Mobile check karein.");
-        generateCaptcha();
-      }
-    }
+  if(data.status === "found") {
+
+    document.getElementById('editForm').classList.remove('hidden');
+    document.getElementById('searchBox').style.opacity = "0.5";
+
+    document.getElementById('stuName').value = data.studentName;
+    document.getElementById('fName').value = data.fatherName;
+    document.getElementById('stuAddress').value = data.address;
+
+  } else {
+    alert("❌ Data nahi mila!");
+    generateCaptcha();
+  }
+}
 
     function updateRecord() {
       var updateObj = {
