@@ -90,12 +90,11 @@
         .fetchRecordForEdit(app, mob);
     }
 
-   function fillForm(data) {
+  function fillForm(data) {
   document.getElementById('loader').classList.add('hidden');
   document.getElementById('searchBtn').disabled = false;
 
-  if(data.status === "found") {
-
+  if(data && data.status === "found") {
     document.getElementById('editForm').classList.remove('hidden');
     document.getElementById('searchBox').style.opacity = "0.5";
 
@@ -104,7 +103,7 @@
     document.getElementById('stuAddress').value = data.address;
 
   } else {
-    alert("❌ Data nahi mila!");
+    alert("Data nahi mila! Application Number ya Mobile check karein.");
     generateCaptcha();
   }
 }
