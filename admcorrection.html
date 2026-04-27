@@ -116,9 +116,9 @@
   }
 
   function searchData() {
-    var app = document.getElementById('appNo').value;
-    var mob = document.getElementById('mobile').value;
-    var cap = document.getElementById('captchaInput').value;
+    var app = document.getElementById('appNo').value.trim();
+    var mob = document.getElementById('mobile').value.trim();
+    var cap = document.getElementById('captchaInput').value.trim();
 
     if(!app || !mob) { alert("दोनों फील्ड भरना अनिवार्य है!"); return; }
     if(cap.toUpperCase() !== currentCaptcha) { alert("कैप्चा गलत है!"); generateCaptcha(); return; }
@@ -126,9 +126,14 @@
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
+    // Backend को कॉल करना
     google.script.run
       .withSuccessHandler(fillForm)
-      .withFailureHandler(function(err){ alert("Error: " + err); })
+      .withFailureHandler(function(err){ 
+          document.getElementById('loader').classList.add('hidden');
+          document.getElementById('searchBtn').disabled = false;
+          alert("Server Error: " + err.message); 
+      })
       .fetchRecordForEdit(app, mob);
   }
 
@@ -138,35 +143,43 @@
 
     if(data && data.status === "found") {
       document.getElementById('editForm').classList.remove('hidden');
-      document.getElementById('searchBox').style.display = "none";
+      document.getElementById('searchBox').classList.add('hidden'); // पूरी तरह छुपाने के लिए
 
       // Mapping data to fields
-      document.getElementById('session').value = data.session;
-      document.getElementById('stuName').value = data.studentName;
-      document.getElementById('fName').value = data.fatherName;
-      document.getElementById('mName').value = data.motherName;
-      document.getElementById('stuClass').value = data.class;
-      document.getElementById('stuGender').value = data.gender;
-      document.getElementById('stuMedium').value = data.medium;
-      document.getElementById('stuCategory').value = data.category;
+      document.getElementById('session').value = data.session || "";
+      document.getElementById('stuName').value = data.studentName || "";
+      document.getElementById('fName').value = data.fatherName || "";
+      document.getElementById('mName').value = data.motherName || "";
+      document.getElementById('stuClass').value = data.class || "";
+      document.getElementById('stuGender').value = data.gender || "";
+      document.getElementById('stuMedium').value = data.medium || "";
+      document.getElementById('stuCategory').value = data.category || "";
       document.getElementById('stuSubject').value = data.subject || "";
-      document.getElementById('stuVillage').value = data.village;
-      document.getElementById('stuTehsil').value = data.tehsil;
-      document.getElementById('stuAddress').value = data.address;
-      document.getElementById('stuAdhar').value = data.adhar;
-      document.getElementById('stuSamagra').value = data.samagra;
-      document.getElementById('stuBank').value = data.bank;
-      document.getElementById('stuAccNo').value = data.accountnumber;
-      document.getElementById('stuIfsc').value = data.ifsc;
-      document.getElementById('stuMobile1').value = data.mobile1;
+      document.getElementById('stuVillage').value = data.village || "";
+      document.getElementById('stuTehsil').value = data.tehsil || "";
+      document.getElementById('stuAddress').value = data.address || "";
+      document.getElementById('stuAdhar').value = data.adhar || "";
+      document.getElementById('stuSamagra').value = data.samagra || "";
+      document.getElementById('stuBank').value = data.bank || "";
+      document.getElementById('stuAccNo').value = data.accountnumber || "";
+      document.getElementById('stuIfsc').value = data.ifsc || "";
+      document.getElementById('stuMobile1').value = data.mobile1 || "";
 
-      // Date Format for HTML Input
+      // Date of Birth Fix
       if(data.dob) {
-        var d = new Date(data.dob);
-        if(!isNaN(d)) document.getElementById('stuDob').value = d.toISOString().split('T')[0];
+        try {
+          // अगर डेटा yyyy-mm-dd फॉर्मेट में है
+          var d = new Date(data.dob);
+          if(!isNaN(d.getTime())) {
+            var formattedDate = d.toISOString().split('T')[0];
+            document.getElementById('stuDob').value = formattedDate;
+          }
+        } catch(e) {
+          console.log("Date parsing error:", e);
+        }
       }
     } else {
-      alert("रिकॉर्ड नहीं मिला! कृपया सही विवरण डालें।");
+      alert("रिकॉर्ड नहीं मिला! कृपया एप्लीकेशन नंबर और मोबाइल नंबर चेक करें।");
       generateCaptcha();
     }
   }
@@ -200,8 +213,14 @@
 
     google.script.run
       .withSuccessHandler(function(msg) {
+        document.getElementById('updateLoader').classList.add('hidden');
         alert(msg);
         location.reload();
+      })
+      .withFailureHandler(function(err) {
+        document.getElementById('updateLoader').classList.add('hidden');
+        document.getElementById('updateBtn').disabled = false;
+        alert("Update Failed: " + err.message);
       })
       .updateStudentData(obj);
   }
