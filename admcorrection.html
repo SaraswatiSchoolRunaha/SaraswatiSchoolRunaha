@@ -117,12 +117,14 @@
     var app = document.getElementById('appNo').value.trim();
     var cap = document.getElementById('captchaInput').value.trim();
 
+    // Fix: Yahan se mobile check hata diya gaya hai
     if(!app) { alert("कृपया एप्लीकेशन नंबर भरें!"); return; }
     if(cap.toUpperCase() !== currentCaptcha) { alert("कैप्चा गलत है!"); generateCaptcha(); return; }
 
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
+    // Backend ko sirf Application Number bhej rahe hain
     google.script.run
       .withSuccessHandler(fillForm)
       .withFailureHandler(function(err){ 
@@ -142,7 +144,7 @@
       document.getElementById('editForm').classList.remove('hidden');
       document.getElementById('searchBox').classList.add('hidden'); 
 
-      document.getElementById('session').value = data.session || "";
+      document.getElementById('session').value = data.session || "2026-27";
       document.getElementById('stuName').value = data.studentName || "";
       document.getElementById('fName').value = data.fatherName || "";
       document.getElementById('mName').value = data.motherName || "";
