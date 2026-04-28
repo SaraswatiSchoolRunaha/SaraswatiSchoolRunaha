@@ -126,15 +126,16 @@
     document.getElementById('searchBtn').disabled = true;
 
     // Backend ko sirf Application Number bhej rahe hain
-    google.script.run
-      .withSuccessHandler(fillForm)
-      .withFailureHandler(function(err){ 
-          document.getElementById('loader').classList.add('hidden');
-          document.getElementById('searchBtn').disabled = false;
-          alert("Server Error: " + err.message); 
-      })
-      .fetchRecordForEdit(app);
-  }
+   fetch("https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec?appNo=" + app)
+  .then(res => res.json())
+  .then(data => {
+    fillForm(data);
+  })
+  .catch(err => {
+    document.getElementById('loader').classList.add('hidden');
+    document.getElementById('searchBtn').disabled = false;
+    alert("Error: " + err);
+  });
 
   function fillForm(data) { 
     console.log("Data received:", data);
