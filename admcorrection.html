@@ -145,9 +145,9 @@
       document.getElementById('searchBox').classList.add('hidden'); 
 
       document.getElementById('session').value = data.session || "2026-27";
-      document.getElementById('stuName').value = data.studentName || "";
-      document.getElementById('fName').value = data.fatherName || "";
-      document.getElementById('mName').value = data.motherName || "";
+      document.getElementById('stuName').value = data.studentName || data.name || "";
+      document.getElementById('fName').value = data.fatherName || data.father || "";
+      document.getElementById('mName').value = data.motherName || data.mother || "";
       document.getElementById('stuClass').value = data.class || "";
       document.getElementById('stuGender').value = data.gender || "";
       document.getElementById('stuMedium').value = data.medium || "";
