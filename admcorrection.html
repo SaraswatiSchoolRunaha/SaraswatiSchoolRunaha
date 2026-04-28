@@ -24,9 +24,6 @@
     <h3>Admission Correction Portal</h3>
     <label>Application Number:</label>
     <input type="text" id="appNo" placeholder="Enter Application Number">
-    
-    <label>Mobile Number:</label>
-    <input type="text" id="mobile" placeholder="Enter Registered Mobile Number">
 
     <div style="text-align: center; margin: 15px 0;">
       <span id="captchaDisplay"></span> 
@@ -126,7 +123,6 @@
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
-    // Backend ko sirf Application Number bhej rahe hain
     google.script.run
       .withSuccessHandler(fillForm)
       .withFailureHandler(function(err){ 
@@ -146,7 +142,6 @@
       document.getElementById('editForm').classList.remove('hidden');
       document.getElementById('searchBox').classList.add('hidden'); 
 
-      // Mapping data
       document.getElementById('session').value = data.session || "";
       document.getElementById('stuName').value = data.studentName || "";
       document.getElementById('fName').value = data.fatherName || "";
