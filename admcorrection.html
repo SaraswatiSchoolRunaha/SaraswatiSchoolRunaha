@@ -107,6 +107,8 @@
 <script>
   window.onload = generateCaptcha;
   var currentCaptcha = "";
+  // Is variable mein hum application number save rakhenge
+  var savedAppNo = ""; 
 
   function generateCaptcha() {
     var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -126,7 +128,6 @@
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
-    // Backend को कॉल करना
     google.script.run
       .withSuccessHandler(fillForm)
       .withFailureHandler(function(err){ 
@@ -142,10 +143,13 @@
     document.getElementById('searchBtn').disabled = false;
 
     if(data && data.status === "found") {
+      // Application Number ko memory mein save karein taki update ke waqt kaam aaye
+      savedAppNo = data.appNo; 
+      
       document.getElementById('editForm').classList.remove('hidden');
-      document.getElementById('searchBox').classList.add('hidden'); // पूरी तरह छुपाने के लिए
+      document.getElementById('searchBox').classList.add('hidden'); 
 
-      // Mapping data to fields
+      // Data Mapping
       document.getElementById('session').value = data.session || "";
       document.getElementById('stuName').value = data.studentName || "";
       document.getElementById('fName').value = data.fatherName || "";
@@ -165,18 +169,9 @@
       document.getElementById('stuIfsc').value = data.ifsc || "";
       document.getElementById('stuMobile1').value = data.mobile1 || "";
 
-      // Date of Birth Fix
+      // ✅ Date Fix: Seedha value bharein (Try-catch ki zaroorat nahi)
       if(data.dob) {
-        try {
-          // अगर डेटा yyyy-mm-dd फॉर्मेट में है
-          var d = new Date(data.dob);
-          if(!isNaN(d.getTime())) {
-            var formattedDate = d.toISOString().split('T')[0];
-            document.getElementById('stuDob').value = formattedDate;
-          }
-        } catch(e) {
-          console.log("Date parsing error:", e);
-        }
+        document.getElementById('stuDob').value = data.dob;
       }
     } else {
       alert("रिकॉर्ड नहीं मिला! कृपया एप्लीकेशन नंबर और मोबाइल नंबर चेक करें।");
@@ -185,8 +180,9 @@
   }
 
   function updateRecord() {
+    // ✅ savedAppNo ka upyog karein
     var obj = {
-      appNo: document.getElementById('appNo').value,
+      appNo: savedAppNo, 
       session: document.getElementById('session').value,
       studentName: document.getElementById('stuName').value,
       fatherName: document.getElementById('fName').value,
