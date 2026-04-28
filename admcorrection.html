@@ -107,7 +107,6 @@
 <script>
   window.onload = generateCaptcha;
   var currentCaptcha = "";
-  // Is variable mein hum application number save rakhenge
   var savedAppNo = ""; 
 
   function generateCaptcha() {
@@ -119,15 +118,15 @@
 
   function searchData() {
     var app = document.getElementById('appNo').value.trim();
-    var mob = document.getElementById('mobile').value.trim();
     var cap = document.getElementById('captchaInput').value.trim();
 
-    if(!app || !mob) { alert("दोनों फील्ड भरना अनिवार्य है!"); return; }
+    if(!app) { alert("कृपया एप्लीकेशन नंबर भरें!"); return; }
     if(cap.toUpperCase() !== currentCaptcha) { alert("कैप्चा गलत है!"); generateCaptcha(); return; }
 
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
+    // Backend ko sirf Application Number bhej rahe hain
     google.script.run
       .withSuccessHandler(fillForm)
       .withFailureHandler(function(err){ 
@@ -135,7 +134,7 @@
           document.getElementById('searchBtn').disabled = false;
           alert("Server Error: " + err.message); 
       })
-      .fetchRecordForEdit(app, mob);
+      .fetchRecordForEdit(app);
   }
 
   function fillForm(data) {
@@ -143,13 +142,11 @@
     document.getElementById('searchBtn').disabled = false;
 
     if(data && data.status === "found") {
-      // Application Number ko memory mein save karein taki update ke waqt kaam aaye
       savedAppNo = data.appNo; 
-      
       document.getElementById('editForm').classList.remove('hidden');
       document.getElementById('searchBox').classList.add('hidden'); 
 
-      // Data Mapping
+      // Mapping data
       document.getElementById('session').value = data.session || "";
       document.getElementById('stuName').value = data.studentName || "";
       document.getElementById('fName').value = data.fatherName || "";
@@ -169,18 +166,16 @@
       document.getElementById('stuIfsc').value = data.ifsc || "";
       document.getElementById('stuMobile1').value = data.mobile1 || "";
 
-      // ✅ Date Fix: Seedha value bharein (Try-catch ki zaroorat nahi)
       if(data.dob) {
         document.getElementById('stuDob').value = data.dob;
       }
     } else {
-      alert("रिकॉर्ड नहीं मिला! कृपया एप्लीकेशन नंबर और मोबाइल नंबर चेक करें।");
+      alert("रिकॉर्ड नहीं मिला! कृपया एप्लीकेशन नंबर चेक करें।");
       generateCaptcha();
     }
   }
 
   function updateRecord() {
-    // ✅ savedAppNo ka upyog karein
     var obj = {
       appNo: savedAppNo, 
       session: document.getElementById('session').value,
