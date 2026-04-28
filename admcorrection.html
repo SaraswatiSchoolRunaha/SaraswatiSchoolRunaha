@@ -109,7 +109,9 @@
   function generateCaptcha() {
     var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     currentCaptcha = "";
-    for (var i = 0; i < 5; i++) currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    for (var i = 0; i < 5; i++) {
+      currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
     document.getElementById("captchaDisplay").innerText = currentCaptcha;
   }
 
@@ -118,22 +120,25 @@
     var app = document.getElementById('appNo').value.trim();
     var cap = document.getElementById('captchaInput').value.trim();
 
-    // Fix: Yahan se mobile check hata diya gaya hai
     if(!app) { alert("कृपया एप्लीकेशन नंबर भरें!"); return; }
-    if(cap.toUpperCase() !== currentCaptcha) { alert("कैप्चा गलत है!"); generateCaptcha(); return; }
+    if(cap.toUpperCase() !== currentCaptcha) { 
+      alert("कैप्चा गलत है!"); 
+      generateCaptcha(); 
+      return; 
+    }
 
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
-    // Backend ko sirf Application Number bhej rahe hain
-      google.script.run
+    google.script.run
       .withSuccessHandler(fillForm)
       .withFailureHandler(function(err){ 
-      document.getElementById('loader').classList.add('hidden');
-      document.getElementById('searchBtn').disabled = false;
-      alert("Server Error: " + err.message); 
-  })
-  .fetchRecordForEdit(app);  
+          document.getElementById('loader').classList.add('hidden');
+          document.getElementById('searchBtn').disabled = false;
+          alert("Server Error: " + err.message); 
+      })
+      .fetchRecordForEdit(app);  
+  } // <--- Yeh bracket miss tha, jo ab laga diya gaya hai
 
   function fillForm(data) { 
     console.log("Data received:", data);
