@@ -531,13 +531,8 @@ button[type="submit"] {
       reader.onload = function() {
         formData.set("photo", reader.result);
         let obj = {};
-        formData.forEach((v, k) => {
-          if (k === "dob") {
-            let [year, month, day] = v.split("-");
-            obj[k] = `${day}-${month}-${year}`;
-          } else {
-            obj[k] = v;
-          }
+       formData.forEach((v, k) => {
+          obj[k] = v; 
         });
         sendToServer(obj);
       };
