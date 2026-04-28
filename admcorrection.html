@@ -126,9 +126,9 @@
     document.getElementById('searchBtn').disabled = true;
 
     // Backend ko sirf Application Number bhej rahe hain
-  google.script.run
-  .withSuccessHandler(fillForm)
-  .withFailureHandler(function(err){ 
+      google.script.run
+      .withSuccessHandler(fillForm)
+      .withFailureHandler(function(err){ 
       document.getElementById('loader').classList.add('hidden');
       document.getElementById('searchBtn').disabled = false;
       alert("Server Error: " + err.message); 
