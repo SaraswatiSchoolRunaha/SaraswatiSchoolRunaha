@@ -5,38 +5,48 @@
   <style>
     body { font-family: 'Poppins', sans-serif; background-color: #f0f2f5; padding: 20px; }
     .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 12px; border: 2px solid #007bff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    h3 { text-align: center; color: #333; background: #eef; padding: 10px; border-radius: 8px; }
+    h3 { text-align: center; color: #333; background: #eef; padding: 10px; border-radius: 8px; margin-top: 20px; }
     label { font-weight: bold; font-size: 13px; color: #555; display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+    input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
     .row { display: flex; gap: 15px; flex-wrap: wrap; }
     .row > div { flex: 1; min-width: 200px; }
-    .btn-search { background-color: #007bff; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
-    .btn-update { background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 20px; }
+    .btn-search { background-color: #007bff; color: white; padding: 15px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 10px; }
+    .btn-update { background-color: #28a745; color: white; padding: 18px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 18px; margin-top: 30px; }
     .hidden { display: none; }
-    #captchaDisplay { font-weight: bold; background: #333; color: #fff; padding: 8px 15px; letter-spacing: 4px; border-radius: 4px; display: inline-block; }
+    #captchaDisplay { font-weight: bold; background: #333; color: #fff; padding: 10px 15px; letter-spacing: 5px; border-radius: 5px; display: inline-block; font-size: 20px; }
     .loading { color: #007bff; font-weight: bold; text-align: center; margin-top: 10px; }
+    .search-card { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px dashed #007bff; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div id="searchBox">
-    <h3>Admission Correction Portal</h3>
-    <label>Application Number:</label>
-    <input type="text" id="appNo" placeholder="Enter Application Number">
+  <div id="searchBox" class="search-card">
+    <h3 style="margin-top:0;">Admission Correction Portal</h3>
+    <div class="row">
+      <div>
+        <label>Application Number</label>
+        <input type="text" id="appNo" placeholder="Enter Application Number">
+      </div>
+      <div>
+        <label>Registered Mobile Number</label>
+        <input type="text" id="verifyMob" placeholder="Enter Mobile to Verify">
+      </div>
+    </div>
 
     <div style="text-align: center; margin: 15px 0;">
       <span id="captchaDisplay"></span> 
-      <button onclick="generateCaptcha()" style="width:auto; cursor:pointer;">Refresh</button>
+      <button onclick="generateCaptcha()" style="width:auto; cursor:pointer; background:none; border:none; color:blue; text-decoration:underline;">Refresh</button>
+      <br>
+      <input type="text" id="captchaInput" placeholder="Enter Captcha Above" style="max-width:200px; margin-top:10px; text-align:center;">
     </div>
-    <input type="text" id="captchaInput" placeholder="Enter Captcha Above">
     
-    <button class="btn-search" id="searchBtn" onclick="searchData()">Search & Edit Record</button>
-    <div id="loader" class="hidden loading">Searching Database...</div>
+    <button class="btn-search" id="searchBtn" onclick="searchData()">Verify & Edit My Application</button>
+    <div id="loader" class="hidden loading">Searching Database... ⏳</div>
   </div>
 
   <div id="editForm" class="hidden">
-    <h3 style="color: #28a745;">Edit Student Information</h3>
+    <h3 style="color: #28a745; background: #e6ffed;">✏️ Edit Student Information</h3>
     
     <div class="row">
       <div>
@@ -44,11 +54,17 @@
         <select id="session">
           <option value="2026-27">2026-27</option>
           <option value="2027-28">2027-28</option>
+          <option value="2028-29">2028-29</option>
         </select>
       </div>
       <div>
         <label>Class</label>
-        <input type="text" id="stuClass">
+        <select id="stuClass">
+          <option value="">Select Class</option>
+          <script>
+            for(let i=1; i<=12; i++) document.write(`<option value="${i}">${i}th</option>`);
+          </script>
+        </select>
       </div>
     </div>
 
@@ -62,18 +78,25 @@
 
     <div class="row">
       <div><label>Date of Birth</label><input type="date" id="stuDob"></div>
-      <div><label>Gender</label><input type="text" id="stuGender"></div>
+      <div>
+        <label>Gender</label>
+        <select id="stuGender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
     </div>
 
     <div class="row">
-      <div><label>Medium</label><input type="text" id="stuMedium"></div>
-      <div><label>Category</label><input type="text" id="stuCategory"></div>
+      <div><label>Medium</label><select id="stuMedium"><option value="Hindi">Hindi</option><option value="English">English</option></select></div>
+      <div><label>Category</label><select id="stuCategory"><option value="General">General</option><option value="OBC">OBC</option><option value="SC">SC</option><option value="ST">ST</option></select></div>
     </div>
 
     <label>Subject (for 11th/12th)</label>
-    <input type="text" id="stuSubject">
+    <input type="text" id="stuSubject" placeholder="Ex: Maths, Biology...">
 
-    <h3>Address Details</h3>
+    <h3>📍 Address Details</h3>
     <div class="row">
       <div><label>Village</label><input type="text" id="stuVillage" oninput="this.value = this.value.toUpperCase()"></div>
       <div><label>Tehsil</label><input type="text" id="stuTehsil" oninput="this.value = this.value.toUpperCase()"></div>
@@ -81,23 +104,22 @@
     <label>Full Address</label>
     <textarea id="stuAddress" rows="2" oninput="this.value = this.value.toUpperCase()"></textarea>
 
-    <h3>ID & Bank Details</h3>
+    <h3>💳 ID & Bank Details</h3>
     <div class="row">
-      <div><label>Aadhaar Number</label><input type="text" id="stuAdhar"></div>
-      <div><label>Samagra ID</label><input type="text" id="stuSamagra"></div>
+      <div><label>Aadhaar Number</label><input type="text" id="stuAdhar" maxlength="12"></div>
+      <div><label>Samagra ID</label><input type="text" id="stuSamagra" maxlength="9"></div>
     </div>
     <div class="row">
       <div><label>Bank Name</label><input type="text" id="stuBank" oninput="this.value = this.value.toUpperCase()"></div>
       <div><label>Account Number</label><input type="text" id="stuAccNo"></div>
     </div>
-    <label>IFSC Code</label>
-    <input type="text" id="stuIfsc" oninput="this.value = this.value.toUpperCase()">
+    <div class="row">
+      <div><label>IFSC Code</label><input type="text" id="stuIfsc" oninput="this.value = this.value.toUpperCase()"></div>
+      <div><label>Mobile Number (Primary)</label><input type="text" id="stuMobile1"></div>
+    </div>
 
-    <label>Mobile Number 1</label>
-    <input type="text" id="stuMobile1">
-
-    <button class="btn-update" id="updateBtn" onclick="updateRecord()">Update & Save to Sheet</button>
-    <div id="updateLoader" class="hidden loading">Updating Database... Please Wait.</div>
+    <button class="btn-update" id="updateBtn" onclick="updateRecord()">Save Correction to Database</button>
+    <div id="updateLoader" class="hidden loading">Updating Record... Please Wait. 🚀</div>
   </div>
 </div>
 
@@ -107,7 +129,7 @@
   var savedAppNo = ""; 
 
   function generateCaptcha() {
-    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // No confusing 0, 1, O, I
     currentCaptcha = "";
     for (var i = 0; i < 5; i++) {
       currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -116,56 +138,50 @@
   }
 
   function searchData() { 
-    console.log("Searching...");
     var app = document.getElementById('appNo').value.trim();
+    var mob = document.getElementById('verifyMob').value.trim();
     var cap = document.getElementById('captchaInput').value.trim();
 
-    if(!app) { alert("कृपया एप्लीकेशन नंबर भरें!"); return; }
+    if(!app || !mob) { alert("Please enter App No and Mobile No!"); return; }
     if(cap.toUpperCase() !== currentCaptcha) { 
-      alert("कैप्चा गलत है!"); 
+      alert("Invalid Captcha!"); 
       generateCaptcha(); 
       return; 
     }
 
-    console.log("Searching App No:", app);
-
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
+    // Backend Security function call
     google.script.run
       .withSuccessHandler(fillForm)
       .withFailureHandler(function(err){ 
           document.getElementById('loader').classList.add('hidden');
           document.getElementById('searchBtn').disabled = false;
-          alert("Server Error: " + err.message); 
+          alert("Error: " + err.message); 
       })
-      .fetchRecordForEdit(app);  
+      .fetchRecordWithSecurity(app, mob);  
   }
 
   function fillForm(data) { 
-    console.log("Full Data:", data);
-
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('searchBtn').disabled = false;
 
-    if(data && (data.status === "found" || data.appNo || data.name)) {
+    if(data && data.status === "found") {
+      savedAppNo = data.appNo;
+      
+      document.getElementById('searchBox').classList.add('hidden'); // Hide Search Box
+      document.getElementById('editForm').classList.remove('hidden'); // Show Full Form
 
-      // 🔥 FIXED LINE
-      savedAppNo = data.appNo || data.appno || data.applicationNumber || document.getElementById('appNo').value;
-
-      console.log("Saved AppNo:", savedAppNo);
-
-      document.getElementById('editForm').classList.remove('hidden');
-      // document.getElementById('searchBox').classList.add('hidden'); // optional
-
+      // Mapping Data
       document.getElementById('session').value = data.session || "2026-27";
-      document.getElementById('stuName').value = data.studentName || data.name || "";
-      document.getElementById('fName').value = data.fatherName || data.father || "";
-      document.getElementById('mName').value = data.motherName || data.mother || "";
+      document.getElementById('stuName').value = data.studentName || "";
+      document.getElementById('fName').value = data.fatherName || "";
+      document.getElementById('mName').value = data.motherName || "";
       document.getElementById('stuClass').value = data.class || "";
       document.getElementById('stuGender').value = data.gender || "";
-      document.getElementById('stuMedium').value = data.medium || "";
-      document.getElementById('stuCategory').value = data.category || "";
+      document.getElementById('stuMedium').value = data.medium || "Hindi";
+      document.getElementById('stuCategory').value = data.category || "General";
       document.getElementById('stuSubject').value = data.subject || "";
       document.getElementById('stuVillage').value = data.village || "";
       document.getElementById('stuTehsil').value = data.tehsil || "";
@@ -177,27 +193,20 @@
       document.getElementById('stuIfsc').value = data.ifsc || "";
       document.getElementById('stuMobile1').value = data.mobile1 || "";
 
-      // DOB FIX
       if(data.dob){
         let d = new Date(data.dob);
-        if(!isNaN(d)){
-          document.getElementById('stuDob').value = d.toISOString().split('T')[0];
-        }
+        if(!isNaN(d)) document.getElementById('stuDob').value = d.toISOString().split('T')[0];
       }
 
     } else {
-      alert("रिकॉर्ड नहीं मिला! कृपया एप्लीकेशन नंबर चेक करें।");
+      alert(data.message || "Record not found! Details check karein.");
       generateCaptcha();
     }
   }
 
   function updateRecord() {
-
-    // 🔥 VALIDATION FIX
-    if(!savedAppNo){
-      alert("Application Number missing! दुबारा search करें");
-      return;
-    }
+    if(!savedAppNo){ alert("Critical Error: AppNo Missing!"); return; }
+    if(!confirm("Are you sure you want to save changes?")) return;
 
     var obj = {
       appNo: savedAppNo, 
@@ -227,14 +236,13 @@
 
     google.script.run
       .withSuccessHandler(function(msg) {
-        document.getElementById('updateLoader').classList.add('hidden');
         alert(msg);
         location.reload();
       })
       .withFailureHandler(function(err) {
         document.getElementById('updateLoader').classList.add('hidden');
         document.getElementById('updateBtn').disabled = false;
-        alert("Update Failed: " + err.message);
+        alert("Failed: " + err.message);
       })
       .updateStudentData(obj);
   }
