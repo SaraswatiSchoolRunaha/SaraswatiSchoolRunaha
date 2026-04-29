@@ -3,41 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Correction Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>Correction Portal - Student Admission</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 <style>
-  body { font-family: 'Poppins', sans-serif; background: #f0f4f8; margin:0; padding:20px; }
-  .form-container { max-width:900px; margin:20px auto; background:#fff; border: 2px solid #0056b3; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
+  body { font-family: 'Poppins', sans-serif; background: #e6f0ff; margin:0; padding:20px; }
+  .form-container { max-width:900px; margin:10px auto; background:#fff; border-radius:8px; box-shadow:0 8px 25px rgba(0,0,0,0.2); padding:25px; border:2px solid #0056b3; }
   
   /* Image jaisa Header */
-  .search-header { text-align: center; color: #0056b3; font-size: 28px; font-weight: bold; padding: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
-  .search-header img { width: 35px; }
-
-  /* Compact Row Design */
-  .row { display: flex; gap: 10px; margin-bottom: 10px; padding: 0 20px; }
-  .row > div { flex: 1; }
-
-  input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+  .search-header { text-align: center; color: #0056b3; font-size: 28px; font-weight: bold; padding: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; border-bottom: 2px solid #0056b3; margin-bottom: 20px; }
   
-  /* Captcha Section (Image Style) */
-  .captcha-container { text-align: center; margin: 15px 0; }
-  .captcha-inner { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
-  .captcha-code { border: 1.5px solid #000; border-radius: 10px; padding: 5px 25px; font-size: 22px; font-weight: bold; letter-spacing: 4px; background: #f9f9f9; }
-  .btn-refresh { background: #ff9800; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-  .captcha-input { max-width: 400px; border-color: #0056b3; text-align: center; }
+  h2.fun-header {
+    text-align: center; font-family: 'Luckiest Guy', cursive; font-size: 36px; 
+    background: linear-gradient(45deg, #ffcc00, #ff0066, #00ccff); 
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+    padding: 10px 0; border-bottom: 4px solid #004080; display: block; margin-bottom: 25px;
+  }
+
+  h3 { background:#002366; color:#fff; padding:10px; border-radius:8px; margin-top:20px; font-weight:600; font-size: 16px; }
+  label { font-weight:500; margin-top:10px; display:block; color: #333; font-size: 14px; }
+  
+  input, select, textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; font-family:inherit; transition: 0.3s; background: #fafafa; }
+  input:focus, select:focus { border-color:#004080; box-shadow:0 0 8px rgba(0,64,128,0.2); outline:none; background: #fff; }
+  
+  /* Compact Row */
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 5px; }
+  .row > div { flex:1; min-width: 200px; }
+
+  /* Captcha (As per Image) */
+  .captcha-box { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 15px 0; }
+  .captcha-code { border: 2px solid #000; padding: 5px 20px; font-weight: bold; border-radius: 8px; font-size: 24px; background: #f9f9f9; letter-spacing: 5px; }
+  .refresh-btn { padding: 8px 15px; background: #ff9800; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
   /* Buttons */
-  .btn-submit { background: #4caf50; color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
-  .btn-submit:hover { background: #45a049; }
-
-  /* Edit Form & Photo Box */
-  #editForm { padding: 20px; border-top: 2px solid #0056b3; }
-  .student-photo-box { width: 130px; height: 160px; border: 2px solid #0056b3; border-radius: 5px; background: #fff; margin-bottom: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  .student-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+  .btn-submit { background: #4caf50; color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; display: block; margin: 20px auto; }
+  
+  /* Photo Box Styling */
+  .photo-display-section { display: flex; gap: 20px; align-items: center; background: #f8fbff; padding: 15px; border-radius: 10px; border: 1px solid #ddecff; }
+  .photo-preview { width: 130px; height: 150px; border: 2px solid #002366; border-radius: 6px; object-fit: cover; background: #fff; }
 
   .hidden { display: none; }
-  h3 { background: #0056b3; color: #fff; padding: 8px 15px; font-size: 16px; border-radius: 4px; margin-top: 20px; }
-  .declaration-box { background: #fff9e6; padding: 15px; border: 1px solid #ffcc00; margin-top: 15px; border-radius: 8px; font-size: 13px; }
+  .declaration-box { background: #fffdf2; padding: 15px; border-radius: 8px; border: 1px solid #ffe58f; margin: 20px 0; }
+  .error { border: 2px solid red !important; background-color: #ffe6e6; }
 </style>
 </head>
 <body>
@@ -45,106 +52,143 @@
 <div class="form-container">
   
   <div id="searchBox">
-    <div class="search-header">
-      <span>🎓</span> Application Receipt System
-    </div>
-    
+    <div class="search-header">🎓 Application Receipt System</div>
     <div class="row">
       <div><input type="text" id="appNoSearch" placeholder="Application Number"></div>
-      <div><input type="text" id="mobSearch" placeholder="Mobile Number"></div>
+      <div><input type="tel" id="mobSearch" placeholder="Mobile Number"></div>
     </div>
-
-    <div class="captcha-container">
-      <div class="captcha-inner">
-        <div class="captcha-code" id="captchaDisplay">CKHFTJ</div>
-        <button class="btn-refresh" onclick="generateCaptcha()">🔄 Refresh</button>
-      </div>
-      <center><input type="text" id="captchaInput" class="captcha-input" placeholder="Enter Captcha"></center>
-      <br>
-      <button class="btn-submit" onclick="verifyAndSearch()">Submit</button>
+    <div class="captcha-box">
+      <div class="captcha-code" id="captchaDisplay">XXXXXX</div>
+      <button class="refresh-btn" onclick="generateCaptcha()">🔄 Refresh</button>
     </div>
+    <center><input type="text" id="captchaInput" placeholder="Enter Captcha" style="max-width:300px; text-align:center;"></center>
+    <button class="btn-submit" onclick="verifyAndSearch()">Submit</button>
   </div>
 
   <div id="editForm" class="hidden">
-    <center><h2 style="color:#0056b3; margin-top:0;">EDIT STUDENT DETAILS</h2></center>
-    
-    <form id="correctionForm">
-      <div class="row" style="align-items: flex-end;">
+    <h2 class="fun-header">Edit Admission Form</h2>
+    <form id="admissionForm">
+      
+      <h3>Student Details</h3>
+      <div class="photo-display-section">
+        <img id="photoPreview" class="photo-preview" src="" alt="Photo Preview">
+        <div style="flex:1;">
+          <label>Update Photo</label>
+          <input type="file" id="photoUpload" accept="image/*">
+        </div>
+      </div>
+
+      <div class="row">
         <div>
-          <label>Student Photo</label>
-          <div class="student-photo-box">
-            <img id="photoPreview" src="https://via.placeholder.com/130x160?text=PHOTO">
-          </div>
-          <input type="file" id="photoUpload" accept="image/*" onchange="previewImage(this)">
+          <label>Session</label>
+          <select name="session" id="session">
+            <option value="2026-27">2026-27</option>
+            <option value="2027-28">2027-28</option>
+          </select>
         </div>
-        
-        <div style="flex: 2;">
-          <div class="row">
-            <div><label>Academic Session</label><select id="session"><option>2026-27</option></select></div>
-            <div><label>Class</label><select id="stuClass"><option>10th</option></select></div>
-          </div>
-          <label>Student Full Name</label>
-          <input type="text" id="stuName" oninput="this.value = this.value.toUpperCase()">
+        <div>
+          <label>Class</label>
+          <select name="class" id="classSelect" onchange="toggleSubjects()">
+            <option value="1">1st</option><option value="10">10th</option><option value="12">12th</option>
+          </select>
         </div>
       </div>
 
+      <label>Student Name</label>
+      <input type="text" name="studentName" id="stuName" oninput="this.value = this.value.toUpperCase()">
+
       <div class="row">
-        <div><label>Father's Name</label><input type="text" id="fName"></div>
-        <div><label>Mother's Name</label><input type="text" id="mName"></div>
+        <div><label>Father Name</label><input type="text" name="fatherName" id="fName" oninput="this.value = this.value.toUpperCase()"></div>
+        <div><label>Mother Name</label><input type="text" name="motherName" id="mName" oninput="this.value = this.value.toUpperCase()"></div>
       </div>
 
       <div class="row">
-        <div><label>Date of Birth</label><input type="date" id="stuDob"></div>
-        <div><label>Gender</label><select id="stuGender"><option>Male</option><option>Female</option></select></div>
-        <div><label>Category</label><select id="stuCategory"><option>OBC</option><option>GEN</option></select></div>
+        <div><label>Date of Birth</label><input type="date" name="dob" id="dob"></div>
+        <div><label>Gender</label><select name="gender" id="gender"><option>Male</option><option>Female</option></select></div>
+        <div><label>Category</label><select name="category" id="category"><option>OBC</option><option>General</option><option>SC</option><option>ST</option></select></div>
       </div>
 
-      <h3>📍 ADDRESS & IDS</h3>
+      <h3>Address Details</h3>
       <div class="row">
-        <div><label>Village</label><input type="text" id="stuVillage"></div>
-        <div><label>Tehsil</label><input type="text" id="stuTehsil"></div>
-        <div><label>Aadhaar No.</label><input type="text" id="stuAdhar" maxlength="12"></div>
+        <div><label>State</label><select id="state" name="state" onchange="stateChange()"><option value="Madhya Pradesh">Madhya Pradesh</option></select></div>
+        <div><label>District</label><select id="district" name="district" onchange="districtChange()"><option>Select District</option></select></div>
+        <div><label>Tehsil</label><select id="tehsil" name="tehsil"><option>Select Tehsil</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Village</label><input type="text" name="village" id="village" oninput="this.value = this.value.toUpperCase()"></div>
+        <div style="flex:2;"><label>Full Address</label><textarea name="address" id="address" oninput="this.value = this.value.toUpperCase()"></textarea></div>
       </div>
 
+      <h3>ID & Bank Details</h3>
       <div class="row">
-        <div><label>Samagra ID</label><input type="text" id="stuSamagra"></div>
-        <div><label>Mobile Number</label><input type="text" id="stuMobile" readonly style="background:#eee;"></div>
+        <div><label>Aadhaar Number</label><input type="text" name="adhar" id="adhar" maxlength="12"></div>
+        <div><label>Samagra ID</label><input type="text" name="samgra" id="samgra" maxlength="9"></div>
+      </div>
+      <div class="row">
+        <div><label>Bank Name</label><input type="text" name="bank" id="bank"></div>
+        <div><label>Account No.</label><input type="text" name="accountnumber" id="accNo"></div>
+        <div><label>IFSC Code</label><input type="text" name="ifsc" id="ifsc"></div>
       </div>
 
       <div class="declaration-box">
         <label style="display:flex; gap:10px; cursor:pointer;">
-          <input type="checkbox" id="declarationCheck" style="width:20px; height:20px;">
-          <span>मैं यह घोषणा करता/करती हूँ कि मेरे द्वारा दी गई समस्त जानकारी मेरे ज्ञान के अनुसार पूर्णतः सत्य है। यदि भविष्य में कोई भी जानकारी गलत पाई जाती है, तो मेरे बालक/बालिका का प्रवेश निरस्त किया जा सकता है।</span>
+          <input type="checkbox" id="declaration" required>
+          <span style="font-size:13px;">मैं यह घोषणा करता/करती हूँ कि मेरे द्वारा दी गई समस्त जानकारी सत्य है...</span>
         </label>
       </div>
 
-      <center><button type="button" class="btn-submit" style="margin-top:20px; background:#0056b3;" onclick="processUpdate()">Update Changes</button></center>
+      <button type="button" class="btn-submit" onclick="processUpdate()">Save Corrections 🚀</button>
     </form>
   </div>
 </div>
 
 <script>
-  // Captcha Logic
-  function generateCaptcha() {
-    let code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    document.getElementById('captchaDisplay').innerText = code;
-  }
+  const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
+  var currentCaptcha = "";
 
-  function previewImage(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) { document.getElementById('photoPreview').src = e.target.result; };
-      reader.readAsDataURL(input.files[0]);
-    }
+  window.onload = generateCaptcha;
+
+  function generateCaptcha() {
+    let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    currentCaptcha = "";
+    for (let i = 0; i < 6; i++) { currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length)); }
+    document.getElementById("captchaDisplay").innerText = currentCaptcha;
   }
 
   function verifyAndSearch() {
-    // Yahan search logic aayega... abhi ke liye form show kar rahe hain
+    const app = document.getElementById('appNoSearch').value;
+    const mob = document.getElementById('mobSearch').value;
+    const cap = document.getElementById('captchaInput').value;
+
+    if(cap.toUpperCase() !== currentCaptcha) { alert("Invalid Captcha!"); generateCaptcha(); return; }
+    
+    // Yahan fetch call aayega aapke scriptURL se data laane ke liye
+    // Demo ke liye hum form dikha rahe hain:
     document.getElementById('searchBox').classList.add('hidden');
     document.getElementById('editForm').classList.remove('hidden');
   }
 
-  window.onload = generateCaptcha;
+  // Photo Preview Logic
+  document.getElementById('photoUpload').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) { document.getElementById('photoPreview').src = e.target.result; };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // State/District/Tehsil Logic (Aapka original logic)
+  function stateChange() {
+    let d = document.getElementById("district");
+    d.innerHTML = '<option>Select District</option><option>Bhopal</option><option>Rajgarh</option><option>Sehore</option>';
+  }
+  function districtChange() {
+    let d = document.getElementById("district").value;
+    let t = document.getElementById("tehsil");
+    t.innerHTML = '<option>Select Tehsil</option>';
+    if(d==="Rajgarh") t.innerHTML += '<option>Biaora</option><option>Rajgarh</option><option>Narsinghgarh</option>';
+  }
 </script>
 
 </body>
