@@ -1,258 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <base target="_top">
-  <style>
-    body { font-family: 'Poppins', sans-serif; background-color: #f0f2f5; padding: 20px; }
-    .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 12px; border: 2px solid #007bff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    h3 { text-align: center; color: #333; background: #eef; padding: 10px; border-radius: 8px; margin-top: 20px; }
-    label { font-weight: bold; font-size: 13px; color: #555; display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
-    .row { display: flex; gap: 15px; flex-wrap: wrap; }
-    .row > div { flex: 1; min-width: 200px; }
-    .btn-search { background-color: #007bff; color: white; padding: 15px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 10px; }
-    .btn-update { background-color: #28a745; color: white; padding: 18px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 18px; margin-top: 30px; }
-    .hidden { display: none; }
-    #captchaDisplay { font-weight: bold; background: #333; color: #fff; padding: 10px 15px; letter-spacing: 5px; border-radius: 5px; display: inline-block; font-size: 20px; }
-    .loading { color: #007bff; font-weight: bold; text-align: center; margin-top: 10px; }
-    .search-card { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px dashed #007bff; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correction Portal - Student Information</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+<style>
+  /* Aapke naye Admission Form ki Styling */
+  body { font-family: 'Poppins', Arial, sans-serif; background: #e6f0ff; margin:0; padding:20px; }
+  .form-container { max-width:900px; margin:20px auto; background:#fff; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,0.2); padding:30px; border:2px solid #002366; }
+  
+  h2 {
+    text-align: center; font-family: 'Luckiest Guy', cursive; font-size: 32px; 
+    background: linear-gradient(45deg, #ffcc00, #ff0066, #00ccff); 
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+    padding: 10px 0; border-bottom: 4px solid #004080; display: block; margin: 0 auto 20px;
+  }
+
+  h3 { background:#002366; color:#fff; padding:10px; border-radius:8px; margin-top:20px; font-weight:600; }
+  label { font-weight:500; margin-top:10px; display:block; color: #333; }
+  input, select, textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; font-family:inherit; transition: 0.3s; }
+  input:focus, select:focus { border-color:#004080; box-shadow:0 0 8px rgba(0,64,128,0.3); outline:none; }
+  
+  .row { display:flex; gap:15px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width: 200px; }
+
+  /* Buttons */
+  .btn-search { background: #007bff; color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 15px; }
+  .btn-update { background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 18px; margin-top: 30px; }
+  
+  .hidden { display: none; }
+  .captcha-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; justify-content: center; }
+  .captcha-code { background: #333; color: #fff; padding: 10px 20px; font-weight: bold; border-radius: 6px; letter-spacing: 4px; font-size: 20px; }
+  .search-card { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px dashed #004080; }
+  .loading { color: #004080; text-align: center; font-weight: bold; margin-top: 10px; }
+</style>
 </head>
 <body>
 
-<div class="container">
+<div class="form-container">
   <div id="searchBox" class="search-card">
-    <h3 style="margin-top:0;">Admission Correction Portal</h3>
+    <h2>Correction Portal</h2>
     <div class="row">
       <div>
         <label>Application Number</label>
-        <input type="text" id="appNo" placeholder="Enter Application Number">
+        <input type="text" id="appNoSearch" placeholder="Enter App No.">
       </div>
       <div>
         <label>Registered Mobile Number</label>
-        <input type="text" id="verifyMob" placeholder="Enter Mobile to Verify">
+        <input type="tel" id="mobSearch" placeholder="Enter Mobile No.">
       </div>
     </div>
 
-    <div style="text-align: center; margin: 15px 0;">
-      <span id="captchaDisplay"></span> 
-      <button onclick="generateCaptcha()" style="width:auto; cursor:pointer; background:none; border:none; color:blue; text-decoration:underline;">Refresh</button>
-      <br>
-      <input type="text" id="captchaInput" placeholder="Enter Captcha Above" style="max-width:200px; margin-top:10px; text-align:center;">
+    <div style="text-align:center; margin-top:15px;">
+      <label>Verify Captcha</label>
+      <div class="captcha-box">
+        <div class="captcha-code" id="captchaDisplay">XXXXXX</div>
+        <button type="button" onclick="generateCaptcha()" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">Refresh</button>
+      </div>
+      <input type="text" id="captchaInput" placeholder="Enter Code Here" style="max-width:200px; text-align:center;">
     </div>
-    
-    <button class="btn-search" id="searchBtn" onclick="searchData()">Verify & Edit My Application</button>
+
+    <button class="btn-search" onclick="verifyAndSearch()">Verify & Edit Application</button>
     <div id="loader" class="hidden loading">Searching Database... ⏳</div>
   </div>
 
   <div id="editForm" class="hidden">
-    <h3 style="color: #28a745; background: #e6ffed;">✏️ Edit Student Information</h3>
-    
-    <div class="row">
-      <div>
-        <label>Session</label>
-        <select id="session">
-          <option value="2026-27">2026-27</option>
-          <option value="2027-28">2027-28</option>
-          <option value="2028-29">2028-29</option>
-        </select>
+    <h2>Edit Student Details</h2>
+    <form id="correctionForm">
+      
+      <h3>Student Details</h3>
+      <div class="row">
+        <div>
+          <label>Session</label>
+          <select id="session" name="session">
+            <option value="2026-27">2026-27</option>
+            <option value="2027-28">2027-28</option>
+          </select>
+        </div>
+        <div>
+          <label>Class</label>
+          <select id="stuClass" name="class">
+            <option value="">Select Class</option>
+            <option value="1">1st</option><option value="10">10th</option><option value="12">12th</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label>Class</label>
-        <select id="stuClass">
-          <option value="">Select Class</option>
-          <option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option>
-          <option value="4">4th</option><option value="5">5th</option><option value="6">6th</option>
-          <option value="7">7th</option><option value="8">8th</option><option value="9">9th</option>
-          <option value="10">10th</option><option value="11">11th</option><option value="12">12th</option>
-        </select>
+
+      <label>Student Name</label>
+      <input type="text" id="stuName" oninput="this.value = this.value.toUpperCase()">
+
+      <div class="row">
+        <div><label>Father Name</label><input type="text" id="fName" oninput="this.value = this.value.toUpperCase()"></div>
+        <div><label>Mother Name</label><input type="text" id="mName" oninput="this.value = this.value.toUpperCase()"></div>
       </div>
-    </div>
 
-    <label>Student Name</label>
-    <input type="text" id="stuName" oninput="this.value = this.value.toUpperCase()">
-
-    <div class="row">
-      <div><label>Father's Name</label><input type="text" id="fName" oninput="this.value = this.value.toUpperCase()"></div>
-      <div><label>Mother's Name</label><input type="text" id="mName" oninput="this.value = this.value.toUpperCase()"></div>
-    </div>
-
-    <div class="row">
-      <div><label>Date of Birth</label><input type="date" id="stuDob"></div>
-      <div>
-        <label>Gender</label>
-        <select id="stuGender">
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+      <div class="row">
+        <div><label>Date of Birth</label><input type="date" id="stuDob"></div>
+        <div>
+          <label>Gender</label>
+          <select id="stuGender">
+            <option value="Male">Male</option><option value="Female">Female</option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div><label>Medium</label><select id="stuMedium"><option value="Hindi">Hindi</option><option value="English">English</option></select></div>
-      <div><label>Category</label><select id="stuCategory"><option value="General">General</option><option value="OBC">OBC</option><option value="SC">SC</option><option value="ST">ST</option></select></div>
-    </div>
+      <h3>Address & Contact</h3>
+      <div class="row">
+        <div><label>Village</label><input type="text" id="stuVillage" oninput="this.value = this.value.toUpperCase()"></div>
+        <div><label>Tehsil</label><input type="text" id="stuTehsil" oninput="this.value = this.value.toUpperCase()"></div>
+      </div>
+      <label>Full Address</label>
+      <textarea id="stuAddress" oninput="this.value = this.value.toUpperCase()"></textarea>
 
-    <label>Subject (for 11th/12th)</label>
-    <input type="text" id="stuSubject" placeholder="Ex: Maths, Biology...">
+      <div class="row">
+        <div><label>Aadhaar Number</label><input type="text" id="stuAdhar" maxlength="12"></div>
+        <div><label>Mobile Number</label><input type="text" id="stuMobile1" readonly style="background:#eee;"></div>
+      </div>
 
-    <h3>📍 Address Details</h3>
-    <div class="row">
-      <div><label>Village</label><input type="text" id="stuVillage" oninput="this.value = this.value.toUpperCase()"></div>
-      <div><label>Tehsil</label><input type="text" id="stuTehsil" oninput="this.value = this.value.toUpperCase()"></div>
-    </div>
-    <label>Full Address</label>
-    <textarea id="stuAddress" rows="2" oninput="this.value = this.value.toUpperCase()"></textarea>
-
-    <h3>💳 ID & Bank Details</h3>
-    <div class="row">
-      <div><label>Aadhaar Number</label><input type="text" id="stuAdhar" maxlength="12"></div>
-      <div><label>Samagra ID</label><input type="text" id="stuSamgra" maxlength="9"></div>
-    </div>
-    <div class="row">
-      <div><label>Bank Name</label><input type="text" id="stuBank" oninput="this.value = this.value.toUpperCase()"></div>
-      <div><label>Account Number</label><input type="text" id="stuAccNo"></div>
-    </div>
-    <div class="row">
-      <div><label>IFSC Code</label><input type="text" id="stuIfsc" oninput="this.value = this.value.toUpperCase()"></div>
-      <div><label>Mobile Number (Primary)</label><input type="text" id="stuMobile1"></div>
-    </div>
-
-    <button class="btn-update" id="updateBtn" onclick="updateRecord()">Save Correction to Database</button>
-    <div id="updateLoader" class="hidden loading">Updating Record... Please Wait. 🚀</div>
+      <button type="button" class="btn-update" onclick="updateData()">Save Correction to Database 🚀</button>
+      <div id="updateLoader" class="hidden loading">Updating Record... Please Wait.</div>
+    </form>
   </div>
 </div>
 
 <script>
-  // ZAROORI: Apna Naya Deployment URL Yahan Dalein
+  // 1. ZAROORI: Apna Backend URL yahan dalein
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
-  window.onload = generateCaptcha;
   var currentCaptcha = "";
-  var savedAppNo = ""; 
+  var savedAppNo = "";
+
+  window.onload = generateCaptcha;
 
   function generateCaptcha() {
-    var chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+    let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     currentCaptcha = "";
-    for (var i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     document.getElementById("captchaDisplay").innerText = currentCaptcha;
   }
 
-  function searchData() { 
-    var app = document.getElementById('appNo').value.trim();
-    var mob = document.getElementById('verifyMob').value.trim();
-    var cap = document.getElementById('captchaInput').value.trim();
+  function verifyAndSearch() {
+    let app = document.getElementById('appNoSearch').value.trim();
+    let mob = document.getElementById('mobSearch').value.trim();
+    let cap = document.getElementById('captchaInput').value.trim();
 
-    if(!app || !mob) { alert("Please enter App No and Mobile No!"); return; }
-    if(cap.toUpperCase() !== currentCaptcha) { 
-      alert("Invalid Captcha!"); 
-      generateCaptcha(); 
-      return; 
-    }
+    if(!app || !mob) { alert("ID aur Mobile number dalein!"); return; }
+    if(cap.toUpperCase() !== currentCaptcha) { alert("Captcha galat hai!"); generateCaptcha(); return; }
 
     document.getElementById('loader').classList.remove('hidden');
-    document.getElementById('searchBtn').disabled = true;
 
-    // External fetch request
+    // Apps Script Backend se data mangna
     fetch(`${SCRIPT_URL}?appNo=${app}&mob=${mob}`)
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
-        fillForm(data);
+        document.getElementById('loader').classList.add('hidden');
+        if(data.status === "found") {
+          showForm(data);
+        } else {
+          alert("Record nahi mila! Check details.");
+        }
       })
       .catch(err => {
-          document.getElementById('loader').classList.add('hidden');
-          document.getElementById('searchBtn').disabled = false;
-          alert("Error: Connection Failed! Check if Apps Script is deployed for 'Anyone'.");
+        alert("Server Error!");
+        document.getElementById('loader').classList.add('hidden');
       });
   }
 
-  function fillForm(data) { 
-    document.getElementById('loader').classList.add('hidden');
-    document.getElementById('searchBtn').disabled = false;
+  function showForm(data) {
+    savedAppNo = data.appNo;
+    document.getElementById('searchBox').classList.add('hidden');
+    document.getElementById('editForm').classList.remove('hidden');
 
-    if(data && data.status === "found") {
-      savedAppNo = data.appNo;
-      
-      document.getElementById('searchBox').classList.add('hidden');
-      document.getElementById('editForm').classList.remove('hidden');
-
-      document.getElementById('session').value = data.session || "2026-27";
-      document.getElementById('stuName').value = data.studentName || "";
-      document.getElementById('fName').value = data.fatherName || "";
-      document.getElementById('mName').value = data.motherName || "";
-      document.getElementById('stuClass').value = data.class || "";
-      document.getElementById('stuGender').value = data.gender || "";
-      document.getElementById('stuMedium').value = data.medium || "Hindi";
-      document.getElementById('stuCategory').value = data.category || "General";
-      document.getElementById('stuSubject').value = data.subject || "";
-      document.getElementById('stuVillage').value = data.village || "";
-      document.getElementById('stuTehsil').value = data.tehsil || "";
-      document.getElementById('stuAddress').value = data.address || "";
-      document.getElementById('stuAdhar').value = data.adhar || "";
-      document.getElementById('stuSamgra').value = data.samagra || "";
-      document.getElementById('stuBank').value = data.bank || "";
-      document.getElementById('stuAccNo').value = data.accountnumber || "";
-      document.getElementById('stuIfsc').value = data.ifsc || "";
-      document.getElementById('stuMobile1').value = data.mobile1 || "";
-
-      if(data.dob){
-        document.getElementById('stuDob').value = data.dob;
-      }
-
-    } else {
-      alert("Record not found! Details check karein.");
-      generateCaptcha();
-    }
+    // Data Mapping
+    document.getElementById('stuName').value = data.studentName || "";
+    document.getElementById('fName').value = data.fatherName || "";
+    document.getElementById('mName').value = data.motherName || "";
+    document.getElementById('stuClass').value = data.class || "";
+    document.getElementById('stuVillage').value = data.village || "";
+    document.getElementById('stuAddress').value = data.address || "";
+    document.getElementById('stuAdhar').value = data.adhar || "";
+    document.getElementById('stuMobile1').value = data.mobile1 || "";
+    document.getElementById('session').value = data.session || "2026-27";
+    document.getElementById('stuDob').value = data.dob || "";
   }
 
-  function updateRecord() {
-    if(!savedAppNo){ alert("Critical Error: AppNo Missing!"); return; }
-    if(!confirm("Are you sure you want to save changes?")) return;
-
-    var obj = {
+  function updateData() {
+    if(!confirm("Kya aap badlav save karna chahte hain?")) return;
+    
+    document.getElementById('updateLoader').classList.remove('hidden');
+    
+    let updateObj = {
       action: "update",
-      appNo: savedAppNo, 
-      session: document.getElementById('session').value,
+      appNo: savedAppNo,
       studentName: document.getElementById('stuName').value,
       fatherName: document.getElementById('fName').value,
       motherName: document.getElementById('mName').value,
-      dob: document.getElementById('stuDob').value,
       class: document.getElementById('stuClass').value,
-      gender: document.getElementById('stuGender').value,
-      medium: document.getElementById('stuMedium').value,
-      category: document.getElementById('stuCategory').value,
-      subject: document.getElementById('stuSubject').value,
-      village: document.getElementById('stuVillage').value,
-      tehsil: document.getElementById('stuTehsil').value,
       address: document.getElementById('stuAddress').value,
+      village: document.getElementById('stuVillage').value,
       adhar: document.getElementById('stuAdhar').value,
-      samagra: document.getElementById('stuSamgra').value,
-      bank: document.getElementById('stuBank').value,
-      accountnumber: document.getElementById('stuAccNo').value,
-      ifsc: document.getElementById('stuIfsc').value,
-      mobile1: document.getElementById('stuMobile1').value
+      dob: document.getElementById('stuDob').value
     };
 
-    document.getElementById('updateLoader').classList.remove('hidden');
-    document.getElementById('updateBtn').disabled = true;
-
-    // Sending Data to Apps Script via POST
     fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors', // Security layer for cross-domain
-      body: JSON.stringify(obj)
-    })
-    .then(() => {
-        alert("Request Sent! Record will be updated.");
-        location.reload();
-    })
-    .catch(err => {
-        alert("Error: " + err.message);
-        document.getElementById('updateLoader').classList.add('hidden');
-        document.getElementById('updateBtn').disabled = false;
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(updateObj)
+    }).then(() => {
+      alert("Success! Data update ho gaya.");
+      location.reload();
+    }).catch(() => {
+      alert("Error updating data.");
     });
   }
 </script>
