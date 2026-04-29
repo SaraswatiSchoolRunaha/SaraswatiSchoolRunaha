@@ -61,9 +61,10 @@
         <label>Class</label>
         <select id="stuClass">
           <option value="">Select Class</option>
-          <script>
-            for(let i=1; i<=12; i++) document.write(`<option value="${i}">${i}th</option>`);
-          </script>
+          <option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option>
+          <option value="4">4th</option><option value="5">5th</option><option value="6">6th</option>
+          <option value="7">7th</option><option value="8">8th</option><option value="9">9th</option>
+          <option value="10">10th</option><option value="11">11th</option><option value="12">12th</option>
         </select>
       </div>
     </div>
@@ -124,12 +125,15 @@
 </div>
 
 <script>
+  // ZAROORI: Apna Naya Deployment URL Yahan Dalein
+  const SCRIPT_URL = "APKA_APPS_SCRIPT_URL_HERE";
+
   window.onload = generateCaptcha;
   var currentCaptcha = "";
   var savedAppNo = ""; 
 
   function generateCaptcha() {
-    var chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // No confusing 0, 1, O, I
+    var chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
     currentCaptcha = "";
     for (var i = 0; i < 5; i++) {
       currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -152,15 +156,17 @@
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
-    // Backend Security function call
-    google.script.run
-      .withSuccessHandler(fillForm)
-      .withFailureHandler(function(err){ 
+    // External fetch request
+    fetch(`${SCRIPT_URL}?appNo=${app}&mob=${mob}`)
+      .then(response => response.json())
+      .then(data => {
+        fillForm(data);
+      })
+      .catch(err => {
           document.getElementById('loader').classList.add('hidden');
           document.getElementById('searchBtn').disabled = false;
-          alert("Error: " + err.message); 
-      })
-      .fetchRecordWithSecurity(app, mob);  
+          alert("Error: Connection Failed! Check if Apps Script is deployed for 'Anyone'.");
+      });
   }
 
   function fillForm(data) { 
@@ -170,10 +176,9 @@
     if(data && data.status === "found") {
       savedAppNo = data.appNo;
       
-      document.getElementById('searchBox').classList.add('hidden'); // Hide Search Box
-      document.getElementById('editForm').classList.remove('hidden'); // Show Full Form
+      document.getElementById('searchBox').classList.add('hidden');
+      document.getElementById('editForm').classList.remove('hidden');
 
-      // Mapping Data
       document.getElementById('session').value = data.session || "2026-27";
       document.getElementById('stuName').value = data.studentName || "";
       document.getElementById('fName').value = data.fatherName || "";
@@ -194,12 +199,11 @@
       document.getElementById('stuMobile1').value = data.mobile1 || "";
 
       if(data.dob){
-        let d = new Date(data.dob);
-        if(!isNaN(d)) document.getElementById('stuDob').value = d.toISOString().split('T')[0];
+        document.getElementById('stuDob').value = data.dob;
       }
 
     } else {
-      alert(data.message || "Record not found! Details check karein.");
+      alert("Record not found! Details check karein.");
       generateCaptcha();
     }
   }
@@ -209,6 +213,7 @@
     if(!confirm("Are you sure you want to save changes?")) return;
 
     var obj = {
+      action: "update",
       appNo: savedAppNo, 
       session: document.getElementById('session').value,
       studentName: document.getElementById('stuName').value,
@@ -234,17 +239,21 @@
     document.getElementById('updateLoader').classList.remove('hidden');
     document.getElementById('updateBtn').disabled = true;
 
-    google.script.run
-      .withSuccessHandler(function(msg) {
-        alert(msg);
+    // Sending Data to Apps Script via POST
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors', // Security layer for cross-domain
+      body: JSON.stringify(obj)
+    })
+    .then(() => {
+        alert("Request Sent! Record will be updated.");
         location.reload();
-      })
-      .withFailureHandler(function(err) {
+    })
+    .catch(err => {
+        alert("Error: " + err.message);
         document.getElementById('updateLoader').classList.add('hidden');
         document.getElementById('updateBtn').disabled = false;
-        alert("Failed: " + err.message);
-      })
-      .updateStudentData(obj);
+    });
   }
 </script>
 
