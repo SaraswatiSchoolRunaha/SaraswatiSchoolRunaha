@@ -7,34 +7,43 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 <style>
-  /* Aapke naye Admission Form ki Styling */
-  body { font-family: 'Poppins', Arial, sans-serif; background: #e6f0ff; margin:0; padding:20px; }
+  body { font-family: 'Poppins', sans-serif; background: #e6f0ff; margin:0; padding:20px; }
   .form-container { max-width:900px; margin:20px auto; background:#fff; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,0.2); padding:30px; border:2px solid #002366; }
   
   h2 {
-    text-align: center; font-family: 'Luckiest Guy', cursive; font-size: 32px; 
+    text-align: center; font-family: 'Luckiest Guy', cursive; font-size: 36px; 
     background: linear-gradient(45deg, #ffcc00, #ff0066, #00ccff); 
     background-clip: text; -webkit-background-clip: text; color: transparent;
-    padding: 10px 0; border-bottom: 4px solid #004080; display: block; margin: 0 auto 20px;
+    padding: 20px 0; border-bottom: 4px solid #004080; display: inline-block; width: 100%; margin-bottom: 25px;
   }
 
-  h3 { background:#002366; color:#fff; padding:10px; border-radius:8px; margin-top:20px; font-weight:600; }
-  label { font-weight:500; margin-top:10px; display:block; color: #333; }
-  input, select, textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; font-family:inherit; transition: 0.3s; }
-  input:focus, select:focus { border-color:#004080; box-shadow:0 0 8px rgba(0,64,128,0.3); outline:none; }
+  h3 { background:#002366; color:#fff; padding:12px; border-radius:8px; margin-top:25px; font-weight:600; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+  label { font-weight:500; margin-top:12px; display:block; color: #444; font-size: 14px; }
+  
+  input, select, textarea { width:100%; padding:12px; margin-top:6px; border-radius:8px; border:1px solid #ccc; font-family:inherit; transition: all 0.3s; background: #fafafa; }
+  input:focus, select:focus, textarea:focus { border-color:#004080; box-shadow:0 0 10px rgba(0,64,128,0.2); outline:none; background: #fff; }
   
   .row { display:flex; gap:15px; flex-wrap:wrap; }
   .row > div { flex:1; min-width: 200px; }
 
-  /* Buttons */
-  .btn-search { background: #007bff; color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 15px; }
-  .btn-update { background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 18px; margin-top: 30px; }
-  
+  .btn-search { background: linear-gradient(to right, #007bff, #0056b3); color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 20px; transition: 0.3s; }
+  .btn-search:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,123,255,0.4); }
+
+  .btn-update { background: linear-gradient(to right, #28a745, #1e7e34); color: white; padding: 18px; border: none; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; font-size: 18px; margin-top: 35px; transition: 0.3s; }
+  .btn-update:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(40,167,69,0.3); }
+
   .hidden { display: none; }
-  .captcha-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; justify-content: center; }
-  .captcha-code { background: #333; color: #fff; padding: 10px 20px; font-weight: bold; border-radius: 6px; letter-spacing: 4px; font-size: 20px; }
-  .search-card { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px dashed #004080; }
-  .loading { color: #004080; text-align: center; font-weight: bold; margin-top: 10px; }
+  .captcha-box { display: flex; align-items: center; gap: 15px; margin: 15px 0; justify-content: center; background: #f0f0f0; padding: 10px; border-radius: 10px; }
+  .captcha-code { background: #333; color: #fff; padding: 8px 20px; font-weight: bold; border-radius: 6px; letter-spacing: 5px; font-size: 24px; font-family: monospace; }
+  .search-card { background: #ffffff; padding: 25px; border-radius: 12px; border: 2px dashed #004080; }
+  .error-field { border: 2px solid #ff4d4d !important; background: #fff5f5 !important; }
+  
+  .loading-spinner { 
+    border: 4px solid #f3f3f3; border-top: 4px solid #004080; 
+    border-radius: 50%; width: 30px; height: 30px; 
+    animation: spin 1s linear infinite; margin: 10px auto;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -45,45 +54,47 @@
     <div class="row">
       <div>
         <label>Application Number</label>
-        <input type="text" id="appNoSearch" placeholder="Enter App No.">
+        <input type="text" id="appNoSearch" placeholder="Ex: APP12345">
       </div>
       <div>
         <label>Registered Mobile Number</label>
-        <input type="tel" id="mobSearch" placeholder="Enter Mobile No.">
+        <input type="tel" id="mobSearch" placeholder="10 Digit Mobile No.">
       </div>
     </div>
 
-    <div style="text-align:center; margin-top:15px;">
+    <div style="text-align:center; margin-top:20px;">
       <label>Verify Captcha</label>
       <div class="captcha-box">
         <div class="captcha-code" id="captchaDisplay">XXXXXX</div>
-        <button type="button" onclick="generateCaptcha()" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">Refresh</button>
+        <button type="button" onclick="generateCaptcha()" style="background:none; border:none; color:#004080; cursor:pointer; font-weight:600; text-decoration:underline;">Refresh</button>
       </div>
-      <input type="text" id="captchaInput" placeholder="Enter Code Here" style="max-width:200px; text-align:center;">
+      <input type="text" id="captchaInput" placeholder="Enter Code" style="max-width:180px; text-align:center; font-weight:bold;">
     </div>
 
-    <button class="btn-search" onclick="verifyAndSearch()">Verify & Edit Application</button>
-    <div id="loader" class="hidden loading">Searching Database... ⏳</div>
+    <button class="btn-search" id="mainSearchBtn" onclick="verifyAndSearch()">Verify & Edit Application</button>
+    <div id="loader" class="hidden"><div class="loading-spinner"></div><p style="text-align:center; color:#004080;">Searching Database... Please Wait</p></div>
   </div>
 
   <div id="editForm" class="hidden">
     <h2>Edit Student Details</h2>
     <form id="correctionForm">
       
-      <h3>Student Details</h3>
+      <h3>👤 Basic Information</h3>
       <div class="row">
         <div>
           <label>Session</label>
-          <select id="session" name="session">
+          <select id="session">
             <option value="2026-27">2026-27</option>
             <option value="2027-28">2027-28</option>
           </select>
         </div>
         <div>
           <label>Class</label>
-          <select id="stuClass" name="class">
+          <select id="stuClass">
             <option value="">Select Class</option>
-            <option value="1">1st</option><option value="10">10th</option><option value="12">12th</option>
+            <script>
+              for(let i=1; i<=12; i++) document.write(`<option value="${i}">${i}th</option>`);
+            </script>
           </select>
         </div>
       </div>
@@ -101,34 +112,50 @@
         <div>
           <label>Gender</label>
           <select id="stuGender">
-            <option value="Male">Male</option><option value="Female">Female</option>
+            <option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
           </select>
         </div>
       </div>
 
-      <h3>Address & Contact</h3>
+      <h3>📍 Address Details</h3>
       <div class="row">
-        <div><label>Village</label><input type="text" id="stuVillage" oninput="this.value = this.value.toUpperCase()"></div>
-        <div><label>Tehsil</label><input type="text" id="stuTehsil" oninput="this.value = this.value.toUpperCase()"></div>
+        <div>
+          <label>State</label>
+          <select id="state" onchange="stateChange()">
+            <option value="">Select State</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+          </select>
+        </div>
+        <div>
+          <label>District</label>
+          <select id="district" onchange="districtChange()"><option value="">Select District</option></select>
+        </div>
       </div>
-      <label>Full Address</label>
-      <textarea id="stuAddress" oninput="this.value = this.value.toUpperCase()"></textarea>
 
+      <div class="row">
+        <div><label>Tehsil</label><select id="tehsil"><option value="">Select Tehsil</option></select></div>
+        <div><label>Village</label><input type="text" id="stuVillage" oninput="this.value = this.value.toUpperCase()"></div>
+      </div>
+      
+      <label>Full Address</label>
+      <textarea id="stuAddress" rows="2" oninput="this.value = this.value.toUpperCase()"></textarea>
+
+      <h3>💳 Identity & Contact</h3>
       <div class="row">
         <div><label>Aadhaar Number</label><input type="text" id="stuAdhar" maxlength="12"></div>
-        <div><label>Mobile Number</label><input type="text" id="stuMobile1" readonly style="background:#eee;"></div>
+        <div><label>Mobile Number (Primary)</label><input type="text" id="stuMobile1" readonly style="background:#eee; cursor:not-allowed;"></div>
       </div>
 
-      <button type="button" class="btn-update" onclick="updateData()">Save Correction to Database 🚀</button>
-      <div id="updateLoader" class="hidden loading">Updating Record... Please Wait.</div>
+      <button type="button" class="btn-update" id="updateBtn" onclick="updateData()">Update Database Securely 🚀</button>
+      <div id="updateLoader" class="hidden"><div class="loading-spinner"></div><p style="text-align:center;">Saving Changes...</p></div>
     </form>
   </div>
 </div>
 
 <script>
-  // 1. ZAROORI: Apna Backend URL yahan dalein
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
-
   var currentCaptcha = "";
   var savedAppNo = "";
 
@@ -144,29 +171,32 @@
   }
 
   function verifyAndSearch() {
-    let app = document.getElementById('appNoSearch').value.trim();
-    let mob = document.getElementById('mobSearch').value.trim();
-    let cap = document.getElementById('captchaInput').value.trim();
+    const app = document.getElementById('appNoSearch').value.trim();
+    const mob = document.getElementById('mobSearch').value.trim();
+    const cap = document.getElementById('captchaInput').value.trim();
 
-    if(!app || !mob) { alert("ID aur Mobile number dalein!"); return; }
-    if(cap.toUpperCase() !== currentCaptcha) { alert("Captcha galat hai!"); generateCaptcha(); return; }
+    if(!app || !mob) { alert("Please enter both Application No and Mobile!"); return; }
+    if(cap.toUpperCase() !== currentCaptcha) { alert("Invalid Captcha!"); generateCaptcha(); return; }
 
     document.getElementById('loader').classList.remove('hidden');
+    document.getElementById('mainSearchBtn').disabled = true;
 
-    // Apps Script Backend se data mangna
     fetch(`${SCRIPT_URL}?appNo=${app}&mob=${mob}`)
       .then(res => res.json())
       .then(data => {
         document.getElementById('loader').classList.add('hidden');
+        document.getElementById('mainSearchBtn').disabled = false;
         if(data.status === "found") {
           showForm(data);
         } else {
-          alert("Record nahi mila! Check details.");
+          alert("No record found for these details!");
+          generateCaptcha();
         }
       })
       .catch(err => {
-        alert("Server Error!");
+        alert("Server connection failed!");
         document.getElementById('loader').classList.add('hidden');
+        document.getElementById('mainSearchBtn').disabled = false;
       });
   }
 
@@ -175,23 +205,38 @@
     document.getElementById('searchBox').classList.add('hidden');
     document.getElementById('editForm').classList.remove('hidden');
 
-    // Data Mapping
+    // Basic Mapping
     document.getElementById('stuName').value = data.studentName || "";
     document.getElementById('fName').value = data.fatherName || "";
     document.getElementById('mName').value = data.motherName || "";
     document.getElementById('stuClass').value = data.class || "";
+    document.getElementById('stuDob').value = data.dob || "";
     document.getElementById('stuVillage').value = data.village || "";
     document.getElementById('stuAddress').value = data.address || "";
     document.getElementById('stuAdhar').value = data.adhar || "";
     document.getElementById('stuMobile1').value = data.mobile1 || "";
     document.getElementById('session').value = data.session || "2026-27";
-    document.getElementById('stuDob').value = data.dob || "";
+    document.getElementById('stuGender').value = data.gender || "Male";
   }
 
   function updateData() {
-    if(!confirm("Kya aap badlav save karna chahte hain?")) return;
+    const inputs = document.querySelectorAll('#correctionForm input, #correctionForm select');
+    let valid = true;
+    
+    inputs.forEach(input => {
+      if(input.required && !input.value) {
+        input.classList.add('error-field');
+        valid = false;
+      } else {
+        input.classList.remove('error-field');
+      }
+    });
+
+    if(!valid) return alert("Please fill all required fields!");
+    if(!confirm("Are you sure you want to update this record?")) return;
     
     document.getElementById('updateLoader').classList.remove('hidden');
+    document.getElementById('updateBtn').disabled = true;
     
     let updateObj = {
       action: "update",
@@ -203,7 +248,9 @@
       address: document.getElementById('stuAddress').value,
       village: document.getElementById('stuVillage').value,
       adhar: document.getElementById('stuAdhar').value,
-      dob: document.getElementById('stuDob').value
+      dob: document.getElementById('stuDob').value,
+      gender: document.getElementById('stuGender').value,
+      session: document.getElementById('session').value
     };
 
     fetch(SCRIPT_URL, {
@@ -211,11 +258,35 @@
       mode: "no-cors",
       body: JSON.stringify(updateObj)
     }).then(() => {
-      alert("Success! Data update ho gaya.");
+      alert("✅ Data Updated Successfully!");
       location.reload();
     }).catch(() => {
-      alert("Error updating data.");
+      alert("❌ Update failed!");
+      document.getElementById('updateLoader').classList.add('hidden');
+      document.getElementById('updateBtn').disabled = false;
     });
+  }
+
+  // State District Logic (Matching Admission Form)
+  function stateChange() {
+    let s = document.getElementById("state").value;
+    let d = document.getElementById("district");
+    d.innerHTML = '<option value="">Select District</option>';
+    if (s === "Madhya Pradesh") {
+      const dists = ["Bhopal", "Sehore", "Rajgarh", "Guna", "Indore", "Ujjain"];
+      dists.forEach(dist => d.innerHTML += `<option value="${dist}">${dist}</option>`);
+    }
+  }
+
+  function districtChange() {
+    let d = document.getElementById("district").value;
+    let t = document.getElementById("tehsil");
+    t.innerHTML = '<option value="">Select Tehsil</option>';
+    if (d === "Rajgarh") {
+      const tehsils = ["Rajgarh", "Biaora", "Narsinghgarh", "Sarangpur", "Khujner"];
+      tehsils.forEach(teh => t.innerHTML += `<option value="${teh}">${teh}</option>`);
+    }
+    // Add other districts if needed
   }
 </script>
 
