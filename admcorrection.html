@@ -127,6 +127,8 @@
       return; 
     }
 
+    console.log("Searching App No:", app);
+
     document.getElementById('loader').classList.remove('hidden');
     document.getElementById('searchBtn').disabled = true;
 
@@ -138,17 +140,23 @@
           alert("Server Error: " + err.message); 
       })
       .fetchRecordForEdit(app);  
-  } // <--- Yeh bracket miss tha, jo ab laga diya gaya hai
+  }
 
   function fillForm(data) { 
-    console.log("Data received:", data);
+    console.log("Full Data:", data);
+
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('searchBtn').disabled = false;
 
-    if(data && data.status === "found") {
-      savedAppNo = data.appNo; 
+    if(data && (data.status === "found" || data.appNo || data.name)) {
+
+      // 🔥 FIXED LINE
+      savedAppNo = data.appNo || data.appno || data.applicationNumber || document.getElementById('appNo').value;
+
+      console.log("Saved AppNo:", savedAppNo);
+
       document.getElementById('editForm').classList.remove('hidden');
-      document.getElementById('searchBox').classList.add('hidden'); 
+      // document.getElementById('searchBox').classList.add('hidden'); // optional
 
       document.getElementById('session').value = data.session || "2026-27";
       document.getElementById('stuName').value = data.studentName || data.name || "";
@@ -169,9 +177,14 @@
       document.getElementById('stuIfsc').value = data.ifsc || "";
       document.getElementById('stuMobile1').value = data.mobile1 || "";
 
-      if(data.dob) {
-        document.getElementById('stuDob').value = data.dob;
+      // DOB FIX
+      if(data.dob){
+        let d = new Date(data.dob);
+        if(!isNaN(d)){
+          document.getElementById('stuDob').value = d.toISOString().split('T')[0];
+        }
       }
+
     } else {
       alert("रिकॉर्ड नहीं मिला! कृपया एप्लीकेशन नंबर चेक करें।");
       generateCaptcha();
@@ -179,6 +192,13 @@
   }
 
   function updateRecord() {
+
+    // 🔥 VALIDATION FIX
+    if(!savedAppNo){
+      alert("Application Number missing! दुबारा search करें");
+      return;
+    }
+
     var obj = {
       appNo: savedAppNo, 
       session: document.getElementById('session').value,
