@@ -8,7 +8,7 @@
 <style>
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; }
   
-  /* --- SEARCH CARD (IMAGE LOOK) --- */
+  /* --- SEARCH CARD --- */
   .search-card {
     max-width: 750px; margin: 50px auto; background: #fff;
     border: 3px solid #0056b3; padding: 40px;
@@ -18,13 +18,12 @@
   .input-group-row { display: flex; gap: 15px; margin-bottom: 20px; }
   .input-group-row input { flex: 1; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
   .captcha-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
-  .captcha-box { border: 2px solid #000; border-radius: 8px; padding: 5px 25px; font-size: 24px; font-weight: bold; letter-spacing: 5px; background: #fff; color: #000; }
+  .captcha-box { border: 2px solid #000; border-radius: 8px; padding: 5px 25px; font-size: 24px; font-weight: bold; letter-spacing: 5px; background: #fff; color: #000; min-width: 120px; }
   .refresh-btn { background-color: #ff9800; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; }
   .captcha-input-full { width: 60%; padding: 12px; border: 1px solid #0056b3; border-radius: 8px; text-align: center; margin-bottom: 25px; font-size: 16px; }
   .submit-btn { background-color: #4caf50; color: white; border: none; padding: 12px 60px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-  .submit-btn:hover { background-color: #45a049; }
 
-  /* --- CORRECTION FORM STYLE --- */
+  /* --- CORRECTION FORM --- */
   .form-container { max-width:900px; margin:20px auto; background:#fff; border-radius:12px; padding:25px; border:2px solid #0056b3; box-shadow:0 8px 25px rgba(0,0,0,0.1); }
   .edit-heading { text-align: center; font-weight: 700; font-size: 26px; color: #002366; position: relative; margin-bottom: 25px; padding-bottom: 12px; font-family: 'Poppins'; }
   .edit-heading::after { content: ''; width: 150px; height: 4px; background: #ff0066; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 10px; }
@@ -33,8 +32,29 @@
   input, select, textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; box-sizing: border-box; font-family: inherit; }
   .row { display:flex; gap:15px; flex-wrap:wrap; margin-bottom: 10px; }
   .row > div { flex:1; min-width: 200px; }
-  .photo-preview { width: 130px; height: 160px; border: 2px solid #002366; margin-top: 10px; object-fit: cover; background: #eee; }
-  .declaration-box { background: #fff9e6; padding: 15px; border: 1px solid #ffcc00; border-radius: 8px; margin: 20px 0; }
+
+  /* 1. PHOTO BOX IMPROVEMENT */
+  .photo-upload-section {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 20px; background: #f9fbff; border: 1px dashed #0056b3; border-radius: 10px; margin-top: 15px;
+  }
+  .image-frame {
+    width: 150px; height: 180px; border: 3px solid #002366; background: #fff;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .image-frame img { width: 100%; height: 100%; object-fit: cover; }
+  .image-frame span { color: #999; font-size: 12px; text-align: center; padding: 5px; }
+
+  /* 2. SHAPAT PATRA (DECLARATION) IMPROVEMENT */
+  .declaration-wrapper {
+    background: #fff9e6; border-left: 5px solid #ffcc00; padding: 20px;
+    margin: 25px 0; border-radius: 5px;
+  }
+  .declaration-title { color: #856404; font-weight: bold; margin-bottom: 10px; display: block; }
+  .declaration-text { font-size: 14px; line-height: 1.6; color: #555; cursor: pointer; display: flex; gap: 12px; }
+  .declaration-text input { width: 20px; height: 20px; margin-top: 3px; cursor: pointer; }
+
   .hidden { display: none; }
 </style>
 </head>
@@ -62,13 +82,25 @@
   <form id="correctionForm">
     
     <h3>Student Details</h3>
-    <label>Session (Year)</label>
-    <select name="session" id="editSession" required>
-      <option value="">Select Session</option>
-      <option value="2026-27">2026-27</option>
-      <option value="2027-28">2027-28</option>
-      <option value="2028-29">2028-29</option>
-    </select>
+    <div class="row">
+      <div>
+        <label>Session (Year)</label>
+        <select name="session" id="editSession" required>
+          <option value="">Select Session</option>
+          <option value="2026-27">2026-27</option>
+          <option value="2027-28">2027-28</option>
+        </select>
+      </div>
+      <div>
+        <label>Class</label>
+        <select name="class" id="classSelect" required onchange="toggleSubjects()">
+          <option value="">Select Class</option>
+          <option value="10">10th</option>
+          <option value="11">11th</option>
+          <option value="12">12th</option>
+        </select>
+      </div>
+    </div>
 
     <label>Student Name</label>
     <input type="text" name="studentName" id="editName" oninput="this.value = this.value.toUpperCase()" required>
@@ -80,15 +112,6 @@
 
     <div class="row">
       <div><label>Date of Birth</label><input type="date" name="dob" required></div>
-      <div>
-        <label>Class</label>
-        <select name="class" id="classSelect" required onchange="toggleSubjects()">
-          <option value="">Select Class</option>
-          <option value="10">10th</option>
-          <option value="11">11th</option>
-          <option value="12">12th</option>
-        </select>
-      </div>
       <div id="subjectSection" style="display:none;">
         <label>Select Subject</label>
         <select name="subject" id="subject">
@@ -101,44 +124,36 @@
       </div>
     </div>
 
+    <h3>Address & ID Details</h3>
     <div class="row">
-      <div><label>Gender</label><select name="gender" required><option value="Male">Male</option><option value="Female">Female</option></select></div>
-      <div><label>Medium</label><select name="medium" required><option value="Hindi">Hindi</option><option value="English">English</option></select></div>
-      <div><label>Category</label><select name="category" required><option value="General">General</option><option value="OBC">OBC</option><option value="SC">SC</option><option value="ST">ST</option></select></div>
-    </div>
-
-    <h3>Address Details</h3>
-    <div class="row">
-      <div><label>State</label><select name="state" required><option value="Madhya Pradesh">Madhya Pradesh</option></select></div>
-      <div><label>District</label><select name="district" required><option value="Rajgarh">Rajgarh</option></select></div>
-      <div><label>Tehsil</label><select name="tehsil" required><option value="Biaora">Biaora</option></select></div>
-    </div>
-    <div class="row">
+      <div><label>Tehsil</label><input type="text" name="tehsil" value="Biaora" required></div>
       <div><label>Village</label><input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required></div>
-      <div style="flex:2;"><label>Full Address</label><textarea name="address" oninput="this.value = this.value.toUpperCase()" required></textarea></div>
     </div>
-
-    <h3>ID & Bank Details</h3>
     <div class="row">
       <div><label>Aadhaar Number</label><input type="text" name="adhar" maxlength="12" required></div>
       <div><label>Samagra ID</label><input type="text" name="samgra" maxlength="9" required></div>
     </div>
-    <label>Bank Name</label>
-    <input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required>
+
+    <h3>Bank Details</h3>
     <div class="row">
       <div><label>Account Number</label><input type="text" name="accountnumber" required></div>
       <div><label>IFSC Code</label><input type="text" name="ifsc" oninput="this.value = this.value.toUpperCase()" required></div>
     </div>
 
-    <h3>Upload Photo & Captcha</h3>
-    <label>Upload Photo</label>
-    <input type="file" name="photo" id="photoUpload" accept="image/*" onchange="previewImg(this)">
-    <center><img id="photoPreview" class="photo-preview" src="" alt="Photo Preview"></center>
+    <h3>Upload Student Photo</h3>
+    <div class="photo-upload-section">
+      <div class="image-frame" id="imageFrame">
+        <img id="photoPreview" src="" style="display:none;">
+        <span id="placeholderText">PHOTO<br>PREVIEW</span>
+      </div>
+      <input type="file" name="photo" id="photoUpload" accept="image/*" onchange="previewImg(this)" style="max-width: 250px;">
+    </div>
 
-    <div class="declaration-box">
-      <label style="display:flex; gap:10px; cursor:pointer;">
-        <input type="checkbox" required>
-        <span>मैं यह घोषणा करता हूँ कि दी गई समस्त जानकारी सत्य है।</span>
+    <div class="declaration-wrapper">
+      <span class="declaration-title">★ शपथ पत्र (Declaration)</span>
+      <label class="declaration-text">
+        <input type="checkbox" id="shapatCheck" required>
+        <span>मैं यह शपथ पूर्वक घोषणा करता/करती हूँ कि आवेदन में दी गई उपरोक्त समस्त जानकारी मेरे ज्ञान और विश्वास के अनुसार सत्य है। यदि कोई जानकारी गलत पाई जाती है, तो मेरा आवेदन निरस्त किया जा सकता है।</span>
       </label>
     </div>
 
@@ -153,42 +168,55 @@
   </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
+  function updateRecord(event) {
+    if(event) event.preventDefault();
 
-  function refreshCaptcha(id) {
-    let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let code = "";
-    for (let i = 0; i < 6; i++) { code += chars.charAt(Math.floor(Math.random() * chars.length)); }
-    document.getElementById(id).innerText = code;
-  }
+    const capInp = document.getElementById('finalCapInput').value.toUpperCase();
+    const capCode = document.getElementById('finalCaptcha').innerText;
 
-  function toggleSubjects() {
-    const cls = document.getElementById('classSelect').value;
-    document.getElementById('subjectSection').style.display = (cls == "11" || cls == "12") ? "block" : "none";
-  }
-
-  function previewImg(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) { document.getElementById('photoPreview').src = e.target.result; };
-      reader.readAsDataURL(input.files[0]);
+    // 1. Captcha Check (Hindi Message)
+    if(capInp !== capCode) { 
+      Swal.fire({
+        icon: 'error',
+        title: 'गलती!',
+        text: 'कैप्चा कोड गलत है, कृपया सही कोड दर्ज करें।',
+        confirmButtonText: 'ठीक है',
+        confirmButtonColor: '#d33'
+      });
+      refreshCaptcha('finalCaptcha');
+      return; 
     }
+
+    // 2. Loading State (Hindi Message)
+    Swal.fire({
+      title: 'अपडेट हो रहा है...',
+      text: 'कृपया प्रतीक्षा करें, आपका डेटा सुरक्षित किया जा रहा है।',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    // 3. Success Message (Data update hone ke baad)
+    // Yahan fetch logic aayega, abhi demo ke liye timeout hai
+    setTimeout(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'सफलतापूर्वक अपडेट हुआ!',
+        text: 'आपका आवेदन सुधार (Correction) सफलतापूर्वक दर्ज कर लिया गया है।',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#28a745'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Page refresh karke wapas search par le jayega
+          location.reload(); 
+        }
+      });
+    }, 2500); 
   }
-
-  function handleSearch() {
-    const capInp = document.getElementById('captchaInp').value.toUpperCase();
-    const capCode = document.getElementById('captchaCode').innerText;
-
-    if(capInp !== capCode) { alert("Invalid Search Captcha!"); return; }
-
-    // Search logic here
-    document.getElementById('searchSection').classList.add('hidden');
-    document.getElementById('correctionSection').classList.remove('hidden');
-    refreshCaptcha('finalCaptcha');
-  }
-
-  window.onload = () => refreshCaptcha('captchaCode');
 </script>
 
 </body>
