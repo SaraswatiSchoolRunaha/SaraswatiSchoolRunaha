@@ -586,6 +586,7 @@
     .then(res => res.text())
     .then(result => {
       Swal.close();
+     
       if(result.trim() === "Success") {
         Swal.fire({ icon: 'success', title: 'सफलतापूर्वक अपडेट हुआ!' }).then(() => { location.reload(); });
       } else {
@@ -597,8 +598,19 @@
       Swal.fire({ icon: 'error', title: 'नेटवर्क समस्या', text: err.message });
     });
   }
+  window.onload = () => refreshCaptcha('captchaCodeif(result.trim() === "Success") {
+  Swal.fire({ icon: 'success', title: 'सफलतापूर्वक अपडेट हुआ!' }).then(() => {
 
-  window.onload = () => refreshCaptcha('captchaCode');
+    const appNo = document.getElementById('appNo').value;
+    const mobNo = document.querySelector('[name="mobile1"]').value;
+
+    // Redirect to receipt page with data
+    window.location.href = `Reciptprint.html?appNo=${appNo}&mob=${mobNo}`;
+
+  });
+} else {
+  Swal.fire({ icon: 'info', text: 'सर्वर रिस्पॉन्स: ' + result });
+}
 </script>
 </body>
 </html>
