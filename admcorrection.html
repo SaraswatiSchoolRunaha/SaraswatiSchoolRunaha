@@ -434,17 +434,20 @@
     </span>
   </label>
 </div>
-<div style="display: flex; align-items: center; gap: 10px;">
-    <!-- यहाँ कैप्चा कोड दिखेगा -->
-    <div id="captchaBox" style="background: #eee; padding: 10px; font-weight: bold; letter-spacing: 5px; font-family: monospace; font-size: 20px; border: 1px solid #ccc;">
+    
+<div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;">
+    <!-- कैप्चा डिस्प्ले बॉक्स -->
+    <div id="finalCaptcha" style="background: #e1eafb; padding: 10px 20px; font-weight: bold; letter-spacing: 5px; font-family: monospace; font-size: 24px; border: 2px dashed #1a73e8; color: #1a73e8; user-select: none;">
         XXXXXX
     </div>
     <!-- रिफ्रेश बटन -->
-    <button type="button" onclick="generateCaptcha()">Refresh</button>
+    <button type="button" class="refresh-btn-simple" onclick="refreshCaptcha('finalCaptcha')">Refresh ↻</button>
 </div>
 
-<!-- इनपुट बॉक्स जहाँ यूजर कोड लिखेगा -->
-<input type="text" id="userInput" placeholder="Enter Captcha" style="margin-top: 10px;">
+<!-- कैप्चा इनपुट बॉक्स -->
+<div style="text-align: center;">
+    <input type="text" id="finalCapInput" placeholder="ऊपर दिया गया कोड यहाँ लिखें" style="width: 250px; text-align: center; margin-top: 10px; border: 2px solid #1a73e8;" required>
+</div>
 
 <button type="submit" class="submit-btn" style="display:block; margin: 20px auto;">Update Admission 🚀</button>
 
