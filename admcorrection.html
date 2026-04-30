@@ -85,10 +85,11 @@
     </div>
 
     <div class="row">
-      <div><label>Date of Birth</label><input type="date" name="dob" required></div>
-      <div>
-  
-<div class="row">
+  <div>
+    <label>Date of Birth</label>
+    <input type="date" name="dob" required>
+  </div>
+
   <div>
     <label>Class</label>
     <select name="class" id="classSelect" required onchange="toggleSubjects()">
@@ -107,17 +108,18 @@
       <option value="12">12th</option>
     </select>
   </div>
-<div id="subjectSection" style="display:none;">
-  <label>Select Subject (For 11th & 12th)</label>
-  <select name="subject" id="subject">
-    <option value="">Select Subject</option>
-    <option value="Maths">Maths</option>
-    <option value="Biology">Biology</option>
-    <option value="Commerce">Commerce</option>
-    <option value="Arts">Arts</option>
-  </select>
-</div>
-  
+
+  <div id="subjectSection" style="display:none;">
+    <label>Select Subject</label>
+    <select name="subject" id="subject">
+      <option value="">Select Subject</option>
+      <option value="Maths">Maths</option>
+      <option value="Biology">Biology</option>
+      <option value="Commerce">Commerce</option>
+      <option value="Arts">Arts</option>
+    </select>
+  </div>
+
   <div>
     <label>Gender</label>
     <select name="gender" required>
