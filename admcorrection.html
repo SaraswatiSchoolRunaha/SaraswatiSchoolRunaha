@@ -92,7 +92,66 @@
   margin-top: 10px;
   display: none;
 }
+/* ===== 2nd CAPTCHA NEW DESIGN ===== */
 
+.final-captcha-box {
+  background: linear-gradient(135deg, #e3f2fd, #ffffff);
+  border: 2px solid #1a73e8;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.final-captcha-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1a73e8;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.final-captcha-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.final-captcha-code {
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 6px;
+  padding: 10px 20px;
+  background: #000;
+  color: #00ffcc;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+.final-refresh-btn {
+  background: #ff5722;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.final-refresh-btn:hover {
+  background: #e64a19;
+}
+
+.final-captcha-input {
+  width: 60%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #1a73e8;
+  text-align: center;
+  font-size: 16px;
+}
 </style>
 </head>
 <body>
@@ -385,17 +444,21 @@
   </label>
 </div>
 
-    <!-- अपडेट फॉर्म कैप्चा -->
-    <label style="text-align: center; display: block;">Security Code</label>
-    <div class="captcha-wrapper">
-      <div class="captcha-box-simple" id="finalCaptcha">XXXXXX</div>
-      <button type="button" class="refresh-btn-simple" onclick="refreshCaptcha('finalCaptcha')">Refresh</button>
-    </div>
-    <input type="text" id="finalCapInput" class="captcha-input-simple" placeholder="Enter Above Code" required>
+  <!-- अपडेट फॉर्म कैप्चा -->
+<div class="final-captcha-box">
 
-    <button type="submit" class="submit-btn" style="display:block; margin: 20px auto;">Update Admission 🚀</button>
-  </form>
+  <label class="final-captcha-label">🔐 Security Verification</label>
+
+  <div class="final-captcha-wrapper">
+    <div class="final-captcha-code" id="finalCaptcha">XXXXXX</div>
+    <button type="button" class="final-refresh-btn" onclick="refreshCaptcha('finalCaptcha')">↻</button>
+  </div>
+
+  <input type="text" id="finalCapInput" class="final-captcha-input" placeholder="Enter Security Code" required>
+
 </div>
+
+<button type="submit" class="submit-btn" style="display:block; margin: 20px auto;">Update Admission 🚀</button>
 
 <script>
   const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
