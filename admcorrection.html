@@ -171,48 +171,93 @@
     }
   }
 
-  function handleSearch() {
-    const capInp = document.getElementById('captchaInp').value.toUpperCase();
-    const capCode = document.getElementById('captchaCode').innerText;
-    if(capInp !== capCode) {
-      Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा गलत है।' });
-      return;
-    }
-    document.getElementById('searchSection').classList.add('hidden');
-    document.getElementById('correctionSection').classList.remove('hidden');
-    refreshCaptcha('finalCaptcha');
+function handleSearch() {
+  const capInp = document.getElementById('captchaInp').value.toUpperCase();
+  const capCode = document.getElementById('captchaCode').innerText;
+  const appNo = document.getElementById('appNo').value;
+  const mobNo = document.getElementById('mobNo').value;
+
+  // 1. Captcha Check
+  if(capInp !== capCode) {
+    Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा गलत है।' });
+    return;
   }
 
-  function updateRecord(event) {
-    event.preventDefault();
-    const capInp = document.getElementById('finalCapInput').value.toUpperCase();
-    const capCode = document.getElementById('finalCaptcha').innerText;
+  // 2. Input Validation (Application No. ya Mobile No. hona zaroori hai)
+  if(!appNo && !mobNo) {
+    Swal.fire({ icon: 'warning', title: 'जानकारी अधूरी है', text: 'कृपया Application Number या Mobile Number दर्ज करें।' });
+    return;
+  }
 
-    if(capInp !== capCode) { 
-      Swal.fire({ icon: 'error', title: 'गलती!', text: 'फाइनल कैप्चा गलत है।' });
-      refreshCaptcha('finalCaptcha');
-      return; 
-    }
+  // 3. Loading Animation
+  Swal.fire({
+    title: 'डेटा खोजा जा रहा है...',
+    text: 'कृपया प्रतीक्षा करें',
+    allowOutsideClick: false,
+    didOpen: () => { Swal.showLoading(); }
+  });
 
-    Swal.fire({
-      title: 'अपडेट हो रहा है...',
-      text: 'कृपया प्रतीक्षा करें।',
-      allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading(); }
+  // 4. Backend se Data Fetch karna (Google Sheet ko request bhejna)
+  // Yeh URL mein action=search parameter bhej raha hai
+  const fetchUrl = `${scriptURL}?action=search&appNo=${encodeURIComponent(appNo)}&mobNo=${encodeURIComponent(mobNo)}`;
+
+  fetch(fetchUrl)
+    .then(response => response.json())
+    .then(data => {
+      Swal.close(); // Loading band karein
+
+      if(data.success) {
+        // 5. Agar data mil gaya, toh Search chhupayein aur Form dikhayein
+        document.getElementById('searchSection').classList.add('hidden');
+        document.getElementById('correctionSection').classList.remove('hidden');
+        refreshCaptcha('finalCaptcha');
+
+        // 6. Form inputs mein data fill (populate) karna
+        document.querySelector('input[name="studentName"]').value = data.studentName || '';
+        document.querySelector('input[name="fatherName"]').value = data.fatherName || '';
+        document.querySelector('input[name="motherName"]').value = data.motherName || '';
+        document.querySelector('input[name="dob"]').value = data.dob || '';
+        
+        // Class aur Subject set karna
+        document.querySelector('select[name="class"]').value = data.class || '';
+        toggleSubjects(); // Class ke hisab se subject list open karna
+        document.querySelector('select[name="subject"]').value = data.subject || '';
+
+        // Address & Bank Details
+        document.querySelector('input[name="village"]').value = data.village || '';
+        document.querySelector('textarea[name="address"]').value = data.address || '';
+        document.querySelector('input[name="adhar"]').value = data.adhar || '';
+        document.querySelector('input[name="samgra"]').value = data.samgra || '';
+        document.querySelector('input[name="accountnumber"]').value = data.accountnumber || '';
+        document.querySelector('input[name="ifsc"]').value = data.ifsc || '';
+
+        // Photo Preview set karna
+        if(data.photoUrl) {
+          const img = document.getElementById('photoPreview');
+          img.src = data.photoUrl;
+          img.style.display = 'block';
+          document.getElementById('placeholderText').style.display = 'none';
+        }
+
+      } else {
+        // Agar record nahi mila
+        Swal.fire({ icon: 'error', title: 'रिकॉर्ड नहीं मिला', text: 'दिए गए नंबर से कोई डेटा मौजूद नहीं है।' });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      Swal.fire({ icon: 'error', title: 'सर्वर एरर', text: 'डेटा लाने में तकनीकी समस्या हुई।' });
     });
-
-    setTimeout(() => {
-      Swal.fire({
-        icon: 'success',
-        title: 'सफलतापूर्वक अपडेट हुआ!',
-        text: 'जानकारी दर्ज कर ली गई है।',
-        confirmButtonText: 'ठीक है'
-      }).then(() => { location.reload(); });
-    }, 2000); 
-  }
-
-  window.onload = () => refreshCaptcha('captchaCode');
+}
+  // Page load hone par pehla captcha generate karna
+  window.onload = () => {
+    refreshCaptcha('captchaCode');
+  };
 </script>
+  
 
-</body>
-</html>
+
+
+
+
+  
