@@ -435,18 +435,27 @@
   </label>
 </div>
     
-<div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;">
-    <!-- कैप्चा डिस्प्ले बॉक्स -->
-    <div id="finalCaptcha" style="background: #e1eafb; padding: 10px 20px; font-weight: bold; letter-spacing: 5px; font-family: monospace; font-size: 24px; border: 2px dashed #1a73e8; color: #1a73e8; user-select: none;">
-        XXXXXX
-    </div>
-    <!-- रिफ्रेश बटन -->
-    <button type="button" class="refresh-btn-simple" onclick="refreshCaptcha('finalCaptcha')">Refresh ↻</button>
-</div>
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+    
+    <!-- साइड में नाम के साथ कैप्चा बॉक्स -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <span style="font-weight: 600; color: #333; font-size: 14px;">Security Code:</span>
+        
+        <div id="finalCaptcha" style="background: #e1eafb; padding: 8px 15px; font-weight: bold; letter-spacing: 5px; font-family: monospace; font-size: 22px; border: 2px dashed #1a73e8; color: #1a73e8; user-select: none; border-radius: 5px;">
+            XXXXXX
+        </div>
 
-<!-- कैप्चा इनपुट बॉक्स -->
-<div style="text-align: center;">
-    <input type="text" id="finalCapInput" placeholder="ऊपर दिया गया कोड यहाँ लिखें" style="width: 250px; text-align: center; margin-top: 10px; border: 2px solid #1a73e8;" required>
+        <button type="button" class="refresh-btn-simple" onclick="refreshCaptcha('finalCaptcha')" style="padding: 8px 12px; background: #ff9800; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+            Refresh 
+        </button>
+    </div>
+
+    <!-- इनपुट बॉक्स का लेबल और इनपुट -->
+    <div style="margin-top: 15px; width: 100%; text-align: center;">
+        <label for="finalCapInput" style="display: block; font-size: 13px; margin-bottom: 5px; color: #666;">Type the code shown above:</label>
+        <input type="text" id="finalCapInput" placeholder="यहाँ कोड भरें" style="width: 200px; text-align: center; padding: 10px; border: 1px solid #1a73e8; border-radius: 5px; font-size: 16px;" required>
+    </div>
+
 </div>
 
 <button type="submit" class="submit-btn" style="display:block; margin: 20px auto;">Update Admission 🚀</button>
