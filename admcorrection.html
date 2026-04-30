@@ -12,12 +12,17 @@
   .header-title { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 26px; font-weight: bold; color: #0056b3; margin-bottom: 30px; }
   .input-group-row { display: flex; gap: 15px; margin-bottom: 20px; }
   .input-group-row input { flex: 1; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
-  .captcha-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
-  .captcha-box { border: 2px solid #000; border-radius: 8px; padding: 5px 25px; font-size: 24px; font-weight: bold; letter-spacing: 5px; background: #fff; color: #000; min-width: 120px; }
-  .refresh-btn { background-color: #ff9800; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-  .captcha-input-full { width: 60%; padding: 12px; border: 1px solid #0056b3; border-radius: 8px; text-align: center; margin-bottom: 25px; font-size: 16px; } ye wala code ho hatana hai
-  .submit-btn { background-color: #4caf50; color: white; border: none; padding: 12px 60px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+  /* --- 1. सर्च पेज वाला कैप्चा (Capture55.JPG जैसा) --- */
+  .captcha-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+  .captcha-box-simple { border: 1px solid #000; border-radius: 5px; padding: 8px 25px; font-size: 22px; font-weight: bold; letter-spacing: 5px; background: #fff; color: #000; min-width: 130px; text-align: center; }
+  .refresh-btn-simple { background-color: #ff9800; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 14px; }
+  .captcha-input-simple { width: 60%; padding: 12px; border: 1px solid #0056b3; border-radius: 8px; text-align: center; margin-bottom: 25px; font-size: 16px; }
 
+    /* --- 2. अपडेट फॉर्म वाला कैप्चा (Professional Look) --- */
+  .final-captcha-container { background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px dashed #002366; margin: 20px 0; display: flex; flex-direction: column; align-items: center; }
+  .captcha-box-pro { background: linear-gradient(135deg, #002366, #004080); color: #fff; padding: 10px 30px; font-size: 26px; font-weight: bold; letter-spacing: 8px; border-radius: 6px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-family: 'Courier New', monospace; margin-bottom: 10px; }
+  
+  .submit-btn { background-color: #4caf50; color: white; border: none; padding: 12px 60px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
   /* CORRECTION FORM */
   .form-container { max-width:900px; margin:20px auto; background:#fff; border-radius:12px; padding:25px; border:2px solid #0056b3; box-shadow:0 8px 25px rgba(0,0,0,0.1); }
   .edit-heading { text-align: center; font-weight: 700; font-size: 26px; color: #002366; position: relative; margin-bottom: 25px; padding-bottom: 12px; font-family: 'Poppins'; }
