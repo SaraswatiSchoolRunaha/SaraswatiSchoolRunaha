@@ -144,10 +144,9 @@
 </div>
 
 <script>
-  // 1. Apna naya Deployment URL yahan dalein
+  // 1. Apna Deployment URL
   const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
-  // Captcha refresh karne ke liye
   function refreshCaptcha(id) {
     let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
@@ -155,64 +154,50 @@
     document.getElementById(id).innerText = code;
   }
 
-  // Class ke hisab se subject dikhane ke liye
   function toggleSubjects() {
     const cls = document.getElementById('classSelect').value;
-    document.getElementById('subjectSection').style.display = (cls == "11" || cls == "12") ? "block" : "none";
+    const subSec = document.getElementById('subjectSection');
+    if(subSec) subSec.style.display = (cls == "11" || cls == "12") ? "block" : "none";
   }
 
-  // Photo preview ke liye
-  function previewImg(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) { 
-        const img = document.getElementById('photoPreview');
-        img.src = e.target.result; 
-        img.style.display = 'block';
-        document.getElementById('placeholderText').style.display = 'none';
-      };
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-
-  // --- SEARCH FUNCTION (Google Sheet se data lane ke liye) ---
   function handleSearch() {
     const capInp = document.getElementById('captchaInp').value.toUpperCase();
     const capCode = document.getElementById('captchaCode').innerText;
     const appNo = document.getElementById('appNo').value;
-    const mobNo = document.getElementById('mobNo').value;
 
     if(capInp !== capCode) {
       Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा गलत है।' });
       return;
     }
 
-    if(!appNo && !mobNo) {
-      Swal.fire({ icon: 'warning', title: 'अधूरा डेटा', text: 'Application No या Mobile No भरें।' });
+    if(!appNo) {
+      Swal.fire({ icon: 'warning', title: 'अधूरा डेटा', text: 'Application No भरें।' });
       return;
     }
 
     Swal.fire({ title: 'खोज रहे हैं...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-    // Backend ko request bhejna
-    fetch(`${scriptURL}?action=search&appNo=${appNo}&mobNo=${mobNo}`)
+    // Apps Script ke doGet() ko call karna
+    fetch(`${scriptURL}?appNo=${appNo}`)
       .then(response => response.json())
       .then(data => {
         Swal.close();
         if(data.status === "found") {
-          // Form dikhana
           document.getElementById('searchSection').classList.add('hidden');
           document.getElementById('correctionSection').classList.remove('hidden');
           refreshCaptcha('finalCaptcha');
 
-          // Data bharna
           const form = document.getElementById('correctionForm');
-          form.studentName.value = data.studentName || "";
-          form.fatherName.value = data.fatherName || "";
-          form.motherName.value = data.motherName || "";
+          
+          // YAHAN BADLAV KIYA GAYA HAI (Backend keys ke hisaab se)
+          form.studentName.value = data.name || "";    // data.studentName ki jagah data.name
+          form.fatherName.value = data.father || "";   // data.fatherName ki jagah data.father
+          form.motherName.value = data.mother || "";   // data.motherName ki jagah data.mother
           form.dob.value = data.dob || "";
           form.class.value = data.class || "";
-          toggleSubjects(); // Subject box open karne ke liye
+          
+          toggleSubjects(); 
+          
           form.subject.value = data.subject || "";
           form.village.value = data.village || "";
           form.address.value = data.address || "";
@@ -221,9 +206,11 @@
           form.accountnumber.value = data.accountnumber || "";
           form.ifsc.value = data.ifsc || "";
 
-          if(data.photoUrl) {
-            document.getElementById('photoPreview').src = data.photoUrl;
-            document.getElementById('photoPreview').style.display = 'block';
+          // Photo preview
+          if(data.photo) {
+            const img = document.getElementById('photoPreview');
+            img.src = data.photo;
+            img.style.display = 'block';
             document.getElementById('placeholderText').style.display = 'none';
           }
         } else {
@@ -236,7 +223,6 @@
       });
   }
 
-  // --- UPDATE FUNCTION (Data save karne ke liye) ---
   function updateRecord(event) {
     event.preventDefault();
     const capInp = document.getElementById('finalCapInput').value.toUpperCase();
@@ -253,7 +239,8 @@
     const formData = new FormData(form);
     formData.append("appNo", document.getElementById('appNo').value);
 
-    fetch(scriptURL, { method: 'POST', body: formData })
+    // POST request bhej raha hai (Apps Script ke doPost ko)
+    fetch(scriptURL, { method: 'POST', body: new URLSearchParams(formData) })
       .then(res => res.text())
       .then(result => {
         Swal.close();
@@ -270,7 +257,7 @@
   }
 
   window.onload = () => refreshCaptcha('captchaCode');
-</script> 
+</script>
   
 </body>
 </html>
