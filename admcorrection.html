@@ -279,24 +279,66 @@
       });
   }
 
-  function updateRecord(event) {
+function updateRecord(event) {
     event.preventDefault();
+    
+    // 1. कैप्चा चेक
     const capInp = document.getElementById('finalCapInput').value.toUpperCase();
     const capCode = document.getElementById('finalCaptcha').innerText;
-    if(capInp !== capCode) { Swal.fire({ icon: 'error', text: 'कैप्चा गलत है।' }); return; }
+    if(capInp !== capCode) { 
+      Swal.fire({ icon: 'error', text: 'कैप्चा गलत है।' }); 
+      return; 
+    }
 
-    Swal.fire({ title: 'अपडेट हो रहा है...', didOpen: () => { Swal.showLoading(); } });
-    const formData = new FormData(document.getElementById('correctionForm'));
-    formData.append("appNo", document.getElementById('appNo').value);
+    // 2. लोडिंग दिखाना
+    Swal.fire({ 
+      title: 'अपडेट हो रहा है...', 
+      text: 'कृपया प्रतीक्षा करें',
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading(); } 
+    });
 
-    fetch(scriptURL, { method: 'POST', body: new URLSearchParams(formData) })
-      .then(res => res.text())
-      .then(result => {
-        Swal.close();
-        if(result === "Success") {
-          Swal.fire({ icon: 'success', title: 'अपडेट हो गया!' }).then(() => location.reload());
-        }
-      });
+    // 3. डेटा तैयार करना
+    const form = document.getElementById('correctionForm');
+    const formData = new FormData(form);
+    
+    // URLSearchParams का उपयोग करके डेटा भेजना (ताकि Apps Script आसानी से पढ़ सके)
+    const searchParams = new URLSearchParams();
+    formData.forEach((value, key) => {
+      searchParams.append(key, value);
+    });
+    searchParams.append("appNo", document.getElementById('appNo').value);
+
+    // 4. सर्वर पर भेजना
+    fetch(scriptURL, { 
+      method: 'POST', 
+      body: searchParams 
+    })
+    .then(res => res.text())
+    .then(result => {
+      Swal.close(); // लोडिंग बंद करें
+      
+      // 5. सफलता का मैसेज
+      // हम मान रहे हैं कि सर्वर से 'Success' आ रहा है
+      if(result.trim() === "Success") {
+        Swal.fire({ 
+          icon: 'success', 
+          title: 'सफलतापूर्वक अपडेट हुआ!', 
+          text: 'छात्र का रिकॉर्ड सफलतापूर्वक सुधारा गया है।',
+          confirmButtonText: 'ठीक है',
+          confirmButtonColor: '#28a745'
+        }).then(() => {
+          location.reload(); // पेज रिफ्रेश
+        });
+      } else {
+        // अगर सर्वर ने 'Success' के अलावा कुछ और भेजा (जैसे Error)
+        Swal.fire({ icon: 'info', text: 'सर्वर रिस्पॉन्स: ' + result });
+      }
+    })
+    .catch(err => {
+      Swal.close();
+      Swal.fire({ icon: 'error', title: 'नेटवर्क समस्या', text: err.message });
+    });
   }
 
   window.onload = () => refreshCaptcha('captchaCode');
