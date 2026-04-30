@@ -8,22 +8,32 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; }
-  .search-card { max-width: 750px; margin: 50px auto; background: #fff; border: 3px solid #0056b3; padding: 40px; box-shadow: 10px 10px 20px rgba(0,0,0,0.1); text-align: center; }
-  .header-title { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 26px; font-weight: bold; color: #0056b3; margin-bottom: 30px; }
+  .search-card { max-width: 750px; margin: 50px auto; background: #fff; border: 3px solid #1a73e8; padding: 40px; box-shadow: 10px 10px 20px rgba(0,0,0,0.1); text-align: center; }
+  .header-title { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 26px; font-weight: bold; color: #1a73e8; margin-bottom: 30px; }
   .input-group-row { display: flex; gap: 15px; margin-bottom: 20px; }
   .input-group-row input { flex: 1; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
-  /* --- 1. सर्च पेज वाला कैप्चा (Capture55.JPG जैसा) --- */
-  .captcha-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
-  .captcha-box-simple { border: 1px solid #000; border-radius: 5px; padding: 8px 25px; font-size: 22px; font-weight: bold; letter-spacing: 5px; background: #fff; color: #000; min-width: 130px; text-align: center; }
-  .refresh-btn-simple { background-color: #ff9800; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 14px; }
-  .captcha-input-simple { width: 60%; padding: 12px; border: 1px solid #0056b3; border-radius: 8px; text-align: center; margin-bottom: 25px; font-size: 16px; }
 
-    /* --- 2. अपडेट फॉर्म वाला कैप्चा (Professional Look) --- */
-  .final-captcha-container { background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px dashed #002366; margin: 20px 0; display: flex; flex-direction: column; align-items: center; }
-  .captcha-box-pro { background: linear-gradient(135deg, #002366, #004080); color: #fff; padding: 10px 30px; font-size: 26px; font-weight: bold; letter-spacing: 8px; border-radius: 6px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-family: 'Courier New', monospace; margin-bottom: 10px; }
+  /* --- केवल कैप्चा डिजाइन (Capture55_2.JPG के अनुसार) --- */
+  .captcha-wrapper { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; }
   
+  .captcha-box-simple { 
+    border: 1px solid #000; border-radius: 5px; padding: 8px 30px; 
+    font-size: 22px; font-weight: bold; letter-spacing: 5px; 
+    background: #fff; color: #000; min-width: 140px; font-family: sans-serif; text-align: center;
+  }
+
+  .refresh-btn-simple { 
+    background-color: #ff9800; color: white; border: none; border-radius: 5px; 
+    padding: 10px 18px; cursor: pointer; font-weight: bold; font-size: 14px;
+  }
+
+  .captcha-input-simple { 
+    width: 50%; padding: 12px; border: 1px solid #1a73e8; border-radius: 8px; 
+    text-align: center; margin-bottom: 25px; font-size: 16px; 
+  }
+  /* -------------------------------------------------- */
+
   .submit-btn { background-color: #4caf50; color: white; border: none; padding: 12px 60px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-  /* CORRECTION FORM */
   .form-container { max-width:900px; margin:20px auto; background:#fff; border-radius:12px; padding:25px; border:2px solid #0056b3; box-shadow:0 8px 25px rgba(0,0,0,0.1); }
   .edit-heading { text-align: center; font-weight: 700; font-size: 26px; color: #002366; position: relative; margin-bottom: 25px; padding-bottom: 12px; font-family: 'Poppins'; }
   .edit-heading::after { content: ''; width: 150px; height: 4px; background: #ff0066; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 10px; }
@@ -32,11 +42,9 @@
   input, select, textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; box-sizing: border-box; font-family: inherit; }
   .row { display:flex; gap:15px; flex-wrap:wrap; margin-bottom: 10px; }
   .row > div { flex:1; min-width: 200px; }
-
   .photo-upload-section { display: flex; flex-direction: column; align-items: flex-start; padding: 20px; background: #f9fbff; border: 1px dashed #0056b3; border-radius: 10px; margin-top: 15px; }
   .image-frame { width: 150px; height: 180px; border: 3px solid #002366; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   .image-frame img { width: 100%; height: 100%; object-fit: cover; }
-
   .declaration-wrapper { background: #fff9e6; border-left: 5px solid #ffcc00; padding: 20px; margin: 25px 0; border-radius: 5px; border: 1px solid #ffeeba; }
   .declaration-title { color: #856404; font-weight: bold; margin-bottom: 10px; display: block; font-size: 16px; }
   .declaration-text { font-size: 14px; line-height: 1.6; color: #555; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; }
@@ -47,16 +55,18 @@
 <body>
 
 <div id="searchSection" class="search-card">
-  <div class="header-title"><span>🎓</span> Correction Of Application</div>
+  <div class="header-title"><span>🎓</span> Application Receipt System</div>
   <div class="input-group-row">
     <input type="text" id="appNo" placeholder="Application Number">
     <input type="text" id="mobNo" placeholder="Mobile Number">
   </div>
+
+  <!-- सर्च पेज कैप्चा -->
   <div class="captcha-wrapper">
-    <div class="captcha-box" id="captchaCode">CKHFTJ</div>
-    <button class="refresh-btn" onclick="refreshCaptcha('captchaCode')">Refresh</button>
+    <div class="captcha-box-simple" id="captchaCode">CKHFTJ</div>
+    <button type="button" class="refresh-btn-simple" onclick="refreshCaptcha('captchaCode')">Refresh</button>
   </div>
-  <input type="text" id="captchaInp" class="captcha-input-full" placeholder="Enter Captcha">
+  <input type="text" id="captchaInp" class="captcha-input-simple" placeholder="Enter Captcha">
   <br>
   <button class="submit-btn" onclick="handleSearch()">Submit</button>
 </div>
@@ -80,8 +90,6 @@
         <label>Class</label>
         <select name="class" id="classSelect" required onchange="toggleSubjects()">
           <option value="">Select Class</option>
-          <option value="1">1st to 12th...</option>
-          <!-- (Aapne jo options likhe the wahi rahenge) -->
           <option value="10">10th</option>
           <option value="11">11th</option>
           <option value="12">12th</option>
@@ -100,59 +108,12 @@
     </div>
 
     <div class="row">
-      <div>
-        <label>Gender</label>
-        <select name="gender" required>
-          <option value="">Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-      </div>
-      <div>
-        <label>Medium</label>
-        <select name="medium" required>
-          <option value="">Select</option>
-          <option value="Hindi">Hindi</option>
-          <option value="English">English</option>
-        </select>
-      </div>
-      <div>
-        <label>Category</label>
-        <select name="category" required>
-          <option value="">Select</option>
-          <option value="General">General</option>
-          <option value="OBC">OBC</option>
-          <option value="SC">SC</option>
-          <option value="ST">ST</option>
-        </select>
-      </div>
+      <div><label>Gender</label><select name="gender" required><option value="">Select</option><option value="Male">Male</option><option value="Female">Female</option></select></div>
+      <div><label>Medium</label><select name="medium" required><option value="">Select</option><option value="Hindi">Hindi</option><option value="English">English</option></select></div>
+      <div><label>Category</label><select name="category" required><option value="">Select</option><option value="General">General</option><option value="OBC">OBC</option><option value="SC">SC</option><option value="ST">ST</option></select></div>
     </div>
 
     <h3>Address Details</h3>
-    <div class="row">
-      <div>
-        <label>State</label>
-        <select name="state" required>
-          <option value="Madhya Pradesh">Madhya Pradesh</option>
-        </select>
-      </div>
-      <div>
-        <label>District</label>
-        <select name="district" required>
-          <option value="Rajgarh">Rajgarh</option>
-          <!-- Baaki options -->
-        </select>
-      </div>
-      <div>
-        <label>Tehsil</label>
-        <select name="tehsil" required>
-           <option value="">Select Tehsil</option>
-           <option>Biaora</option>
-           <!-- Baaki options -->
-        </select>
-      </div>
-    </div>
-
     <div class="row">
       <div><label>Village</label><input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required></div>
       <div style="flex:2;"><label>Full Address</label><textarea name="address" oninput="this.value = this.value.toUpperCase()" required></textarea></div>
@@ -162,8 +123,9 @@
     <div class="row">
       <div><label>Aadhaar Number</label><input type="text" name="adhar" maxlength="12" required></div>
       <div><label>Samgra ID</label><input type="text" name="samgra" maxlength="9" required></div>
-    </div
-  <h3> Bank Details</h3>
+    </div>
+
+    <h3> Bank Details</h3>
     <div class="row">
       <div><label>Bank Name</label><input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required></div>
       <div><label>Account Number</label><input type="text" name="accountnumber" required></div>
@@ -189,17 +151,18 @@
       <span class="declaration-title">★ शपथ पत्र (Declaration)</span>
       <label class="declaration-text">
         <input type="checkbox" id="shapatCheck" required>
-        <span> मैं यह घोषणा करता/करती हूँ कि मेरे द्वारा दी गई समस्त जानकारी मेरे ज्ञान के अनुसार पूर्णतः सत्य है। 
-      यदि भविष्य में कोई भी जानकारी गलत पाई जाती है, तो मेरे बालक/बालिका का प्रवेश निरस्त किया जा सकता है।</span>
+        <span> मैं यह घोषणा करता/करती हूँ कि मेरे द्वारा दी गई समस्त जानकारी पूर्णतः सत्य है।</span>
       </label>
     </div>
 
-  <label style="text-align: center; display: block;">Captcha Code</label>
-<div class="captcha-wrapper">
-  <div class="captcha-box" id="captchaCode">XXXXXX</div>
-  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
-</div>
-<input type="text" id="captchaInput" class="captcha-input-full" placeholder="Enter Captcha" required>
+    <!-- अपडेट फॉर्म कैप्चा -->
+    <label style="text-align: center; display: block;">Security Code</label>
+    <div class="captcha-wrapper">
+      <div class="captcha-box-simple" id="finalCaptcha">XXXXXX</div>
+      <button type="button" class="refresh-btn-simple" onclick="refreshCaptcha('finalCaptcha')">Refresh</button>
+    </div>
+    <input type="text" id="finalCapInput" class="captcha-input-simple" placeholder="Enter Above Code" required>
+
     <button type="submit" class="submit-btn" style="display:block; margin: 20px auto;">Update Admission 🚀</button>
   </form>
 </div>
@@ -239,6 +202,7 @@
 
     if(capInp !== capCode) {
       Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा गलत है।' });
+      refreshCaptcha('captchaCode');
       return;
     }
     Swal.fire({ title: 'खोज रहे हैं...', didOpen: () => { Swal.showLoading(); } });
@@ -252,8 +216,6 @@
           document.getElementById('correctionSection').classList.remove('hidden');
           refreshCaptcha('finalCaptcha');
           const form = document.getElementById('correctionForm');
-          
-          // Data filling logic
           form.studentName.value = data.name || "";
           form.fatherName.value = data.father || "";
           form.motherName.value = data.mother || "";
@@ -270,7 +232,6 @@
           form.accountnumber.value = data.accountnumber || "";
           form.ifsc.value = data.ifsc || "";
           form.mobile1.value = data.mobile1 || "";
-
           if(data.photo) {
             document.getElementById('photoPreview').src = data.photo;
             document.getElementById('photoPreview').style.display = 'block';
@@ -282,59 +243,31 @@
       });
   }
 
-function updateRecord(event) {
+  function updateRecord(event) {
     event.preventDefault();
-    
-    // 1. कैप्चा चेक
     const capInp = document.getElementById('finalCapInput').value.toUpperCase();
     const capCode = document.getElementById('finalCaptcha').innerText;
     if(capInp !== capCode) { 
       Swal.fire({ icon: 'error', text: 'कैप्चा गलत है।' }); 
+      refreshCaptcha('finalCaptcha');
       return; 
     }
 
-    // 2. लोडिंग दिखाना
-    Swal.fire({ 
-      title: 'अपडेट हो रहा है...', 
-      text: 'कृपया प्रतीक्षा करें',
-      allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading(); } 
-    });
+    Swal.fire({ title: 'अपडेट हो रहा है...', text: 'कृपया प्रतीक्षा करें', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-    // 3. डेटा तैयार करना
     const form = document.getElementById('correctionForm');
     const formData = new FormData(form);
-    
-    // URLSearchParams का उपयोग करके डेटा भेजना (ताकि Apps Script आसानी से पढ़ सके)
     const searchParams = new URLSearchParams();
-    formData.forEach((value, key) => {
-      searchParams.append(key, value);
-    });
+    formData.forEach((value, key) => { searchParams.append(key, value); });
     searchParams.append("appNo", document.getElementById('appNo').value);
 
-    // 4. सर्वर पर भेजना
-    fetch(scriptURL, { 
-      method: 'POST', 
-      body: searchParams 
-    })
+    fetch(scriptURL, { method: 'POST', body: searchParams })
     .then(res => res.text())
     .then(result => {
-      Swal.close(); // लोडिंग बंद करें
-      
-      // 5. सफलता का मैसेज
-      // हम मान रहे हैं कि सर्वर से 'Success' आ रहा है
+      Swal.close();
       if(result.trim() === "Success") {
-        Swal.fire({ 
-          icon: 'success', 
-          title: 'सफलतापूर्वक अपडेट हुआ!', 
-          text: 'छात्र का रिकॉर्ड सफलतापूर्वक सुधारा गया है।',
-          confirmButtonText: 'ठीक है',
-          confirmButtonColor: '#28a745'
-        }).then(() => {
-          location.reload(); // पेज रिफ्रेश
-        });
+        Swal.fire({ icon: 'success', title: 'सफलतापूर्वक अपडेट हुआ!' }).then(() => { location.reload(); });
       } else {
-        // अगर सर्वर ने 'Success' के अलावा कुछ और भेजा (जैसे Error)
         Swal.fire({ icon: 'info', text: 'सर्वर रिस्पॉन्स: ' + result });
       }
     })
