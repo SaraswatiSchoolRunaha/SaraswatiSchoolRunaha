@@ -463,12 +463,35 @@
 <script>
   const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
-  function refreshCaptcha(id) {
+// पेज लोड होते ही कैप्चा को मेमोरी से लोड करने के लिए
+window.onload = function() {
+    setupCaptcha('captchaCode');  // 1st Page (Search)
+    setupCaptcha('finalCaptcha'); // 2nd Page (Update)
+};
+
+function setupCaptcha(id) {
+    let savedCode = localStorage.getItem('saved_' + id);
+    if (savedCode && document.getElementById(id)) {
+        document.getElementById(id).innerText = savedCode;
+    } else {
+        refreshCaptcha(id);
+    }
+}
+
+function refreshCaptcha(id) {
     let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
-    for (let i = 0; i < 6; i++) { code += chars.charAt(Math.floor(Math.random() * chars.length)); }
-    document.getElementById(id).innerText = code;
-  }
+    for (let i = 0; i < 6; i++) { 
+        code += chars.charAt(Math.floor(Math.random() * chars.length)); 
+    }
+    
+    let target = document.getElementById(id);
+    if(target) {
+        target.innerText = code;
+        // कोड को ब्राउज़र की मेमोरी में सेव करें ताकि रिफ्रेश पर न बदले
+        localStorage.setItem('saved_' + id, code);
+    }
+}
 
   function previewImg(input) {
     if (input.files && input.files[0]) {
