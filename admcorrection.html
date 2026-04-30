@@ -157,25 +157,177 @@
   </div>
 </div> 
     <h3>Address Details</h3>
-    <div class="row">
-      <div><label>State</label><input type="text" name="state" value="Madhya Pradesh" readonly></div>
-      <div><label>District</label><input type="text" name="district" value="Rajgarh" readonly></div>
-    </div>
-    <div class="row">
-      <div><label>Village</label><input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required></div>
-      <div style="flex:2;"><label>Full Address</label><textarea name="address" oninput="this.value = this.value.toUpperCase()" required></textarea></div>
-    </div>
 
-    <h3>ID & Bank Details</h3>
-    <div class="row">
-      <div><label>Aadhaar Number</label><input type="text" name="adhar" maxlength="12" placeholder="[Aadhaar Redacted]" required></div>
-      <div><label>Samgra ID</label><input type="text" name="samgra" maxlength="9" required></div>
-    </div>
-    <div class="row">
-      <div><label>Account Number</label><input type="text" name="accountnumber" required></div>
-      <div><label>IFSC Code</label><input type="text" name="ifsc" oninput="this.value = this.value.toUpperCase()" required></div>
-    </div>
+<div class="row">
+  <div>
+    <label>State</label>
+<select name="state" id="state" onchange="stateChange()" required>
+  <option value="">Select State</option>
+  <option value="Andhra Pradesh">Andhra Pradesh</option>
+  <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+  <option value="Assam">Assam</option>
+  <option value="Bihar">Bihar</option>
+  <option value="Chhattisgarh">Chhattisgarh</option>
+  <option value="Madhya Pradesh">Madhya Pradesh</option>
+  <option value="Uttar Pradesh">Uttar Pradesh</option>
+  <option value="Maharashtra">Maharashtra</option>
+  <option value="Rajasthan">Rajasthan</option>
+  <option value="Gujarat">Gujarat</option>
+  <option value="Punjab">Punjab</option>
+  <option value="Haryana">Haryana</option>
+  <option value="Delhi">Delhi</option>
+  <option value="West Bengal">West Bengal</option>
+  <!-- बाकी states भी डाल सकते हो -->
+</select>
+  </div>
+  <div>
+  <label>District</label>
+<select name="district" id="district" onchange="districtChange()" required>
+  <option value="">Select District</option>
+  <option>Alirajpur</option>
+  <option>Anuppur</option>
+  <option>Ashoknagar</option>
+  <option>Balaghat</option>
+  <option>Barwani</option>
+  <option>Betul</option>
+  <option>Bhind</option>
+  <option>Bhopal</option>
+  <option>Burhanpur</option>
+  <option>Chhatarpur</option>
+  <option>Chhindwara</option>
+  <option>Damoh</option>
+  <option>Datia</option>
+  <option>Dewas</option>
+  <option>Dhar</option>
+  <option>Dindori</option>
+  <option>Guna</option>
+  <option>Gwalior</option>
+  <option>Harda</option>
+  <option>Indore</option>
+  <option>Jabalpur</option>
+  <option>Jhabua</option>
+  <option>Katni</option>
+  <option>Khandwa</option>
+  <option>Khargone</option>
+  <option>Mandla</option>
+  <option>Mandsaur</option>
+  <option>Morena</option>
+  <option>Narsinghpur</option>
+  <option>Neemuch</option>
+  <option>Niwari</option>
+  <option>Panna</option>
+  <option>Raisen</option>
+  <option>Rajgarh</option>
+  <option>Ratlam</option>
+  <option>Rewa</option>
+  <option>Sagar</option>
+  <option>Satna</option>
+  <option>Sehore</option>
+  <option>Seoni</option>
+  <option>Shahdol</option>
+  <option>Shajapur</option>
+  <option>Sheopur</option>
+  <option>Shivpuri</option>
+  <option>Sidhi</option>
+  <option>Singrauli</option>
+  <option>Tikamgarh</option>
+  <option>Ujjain</option>
+  <option>Umaria</option>
+  <option>Vidisha</option>
+</select>
+  </div>
+</div>
 
+<div class="row">
+  <div>
+   <label>Tehsil</label>
+<select name="tehsil" id="tehsil" onchange="tehsilChange()" required>
+  <option value="">Select Tehsil</option>
+  
+  <!-- Bhopal -->
+  <option>Berasia</option>
+  <option>Huzur</option>
+
+  <!-- Rajgarh -->
+  <option>Rajgarh</option>
+  <option>Biaora</option>
+  <option>Narsinghgarh</option>
+  <option>Sarangpur</option>
+  <option>Khujner</option>
+  <option>Pachore</option>
+  <option>Jirapur</option>
+
+  <!-- Sehore -->
+  <option>Sehore</option>
+  <option>Ashta</option>
+  <option>Ichhawar</option>
+  <option>Nasrullaganj</option>
+  <option>Budhni</option>
+  <option>Shyampur</option>
+  <option>Jawar</option>
+
+  <!-- Guna -->
+  <option>Guna</option>
+  <option>Aron</option>
+  <option>Bamori</option>
+  <option>Raghogarh</option>
+  <option>Chachaura</option>
+</select>
+</div>
+<div>  
+    <label>Village</label>
+    <input type="text" name="village" oninput="this.value = this.value.toUpperCase()" required>
+  </div>
+</div>
+
+<!-- Full Address alag line me -->
+<div class="row">
+  <div style="flex:1;">
+    <label>Full Address</label>
+    <textarea name="address" oninput="this.value = this.value.toUpperCase()" required></textarea>
+  </div>
+</div>
+  
+<h3>ID Details</h3>
+<div class="row">
+  <div>
+    <label>Aadhaar Number</label>
+    <input type="text" name="adhar" maxlength="12" pattern="\d{12}" required>
+  </div>
+  <div>
+    <label>Samagra ID</label>
+    <input type="text" name="samgra" maxlength="9" pattern="\d{9}" required>
+  </div>
+</div>
+
+<h3>Bank Details</h3>
+<label>Bank Name</label>
+<input type="text" name="bank" oninput="this.value = this.value.toUpperCase()" required>
+
+<div class="row">
+  <div>
+    <label>Account Number</label>
+     <input type="text" name="accountnumber" maxlength="15" pattern="\d{15}" required>
+  </div>
+  <div>
+    <label>IFSC Code</label>
+   <input type="text" name="ifsc" oninput="this.value = this.value.toUpperCase()" required>
+  </div>
+</div>
+
+<h3>Contact Details</h3>
+
+<div class="row">
+  <div>
+    <label>Mobile Number 1</label>
+    <input type="tel" name="mobile1" maxlength="10" pattern="[0-9]{10}" required>
+  </div>
+
+  <div>
+    <label>Mobile Number 2 (Optional )</label>
+    <input type="tel" name="mobile2" maxlength="10" pattern="[0-9]{10}">
+  </div>
+</div>
    <h3>Upload Photo</h3>
     <div class="photo-upload-section">
       <div class="image-frame">
