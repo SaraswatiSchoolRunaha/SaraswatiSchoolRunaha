@@ -189,22 +189,12 @@
       </label>
     </div>
 
-   <label style="font-weight: bold; color: #002366;">Security Verification</label>
-<div class="captcha-container">
-  <div class="captcha-box-wrapper">
-    <!-- कैप्चा कोड -->
-    <div class="captcha-box" id="captchaCode">XXXXXX</div>
-    
-    <!-- रिफ्रेश बटन -->
-    <button type="button" class="refresh-btn" onclick="generateCaptcha()" title="Refresh Code">
-      🔄
-    </button>
-  </div>
-  
-  <!-- टाइप करने वाला बॉक्स -->
-  <input type="text" id="captchaInput" class="captcha-input-full" placeholder="Enter Code Here" required>
+  <label style="text-align: center; display: block;">Captcha Code</label>
+<div class="captcha-wrapper">
+  <div class="captcha-box" id="captchaCode">XXXXXX</div>
+  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
 </div>
-
+<input type="text" id="captchaInput" class="captcha-input-full" placeholder="Enter Captcha" required>
     <button type="submit" class="submit-btn" style="display:block; margin: 20px auto;">Update Admission 🚀</button>
   </form>
 </div>
