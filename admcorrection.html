@@ -434,18 +434,17 @@
     </span>
   </label>
 </div>
-    
-<!-- अपडेट फॉर्म कैप्चा (2nd Captcha) -->
-<div class="final-captcha-box">
-  <label class="final-captcha-label">🔐 Security Verification</label>
+<div style="display: flex; align-items: center; gap: 10px;">
+    <!-- यहाँ कैप्चा कोड दिखेगा -->
+    <div id="captchaBox" style="background: #eee; padding: 10px; font-weight: bold; letter-spacing: 5px; font-family: monospace; font-size: 20px; border: 1px solid #ccc;">
+        XXXXXX
+    </div>
+    <!-- रिफ्रेश बटन -->
+    <button type="button" onclick="generateCaptcha()">Refresh</button>
+</div>
 
-  <div class="final-captcha-wrapper">
-    <div class="final-captcha-code" id="finalCaptcha">XXXXXX</div>
-    <button type="button" class="final-refresh-btn" onclick="refreshCaptcha('finalCaptcha')" title="Refresh Captcha">Refresh↻</button>
-  </div>
-
-  <input type="text" id="finalCapInput" class="final-captcha-input" placeholder="Type the code above" maxlength="6" required>
-</div><div class="simple-captcha-box">
+<!-- इनपुट बॉक्स जहाँ यूजर कोड लिखेगा -->
+<input type="text" id="userInput" placeholder="Enter Captcha" style="margin-top: 10px;">
 
 <button type="submit" class="submit-btn" style="display:block; margin: 20px auto;">Update Admission 🚀</button>
 
