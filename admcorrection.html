@@ -511,33 +511,52 @@ function refreshCaptcha(id) {
     if(subSec) subSec.style.display = (cls == "11" || cls == "12") ? "block" : "none";
   }
 
-  function handleSearch() {
+function handleSearch() {
     const capInp = document.getElementById('captchaInp').value.toUpperCase();
     const capCode = document.getElementById('captchaCode').innerText;
     const appNo = document.getElementById('appNo').value;
+    const mobNo = document.getElementById('mobNo').value; // मोबाइल नंबर भी लें
 
+    // 1. कैप्चा चेक
     if(capInp !== capCode) {
       Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा गलत है।' });
       refreshCaptcha('captchaCode');
       return;
     }
+
+    if(!appNo || !mobNo) {
+      Swal.fire({ icon: 'warning', text: 'Application Number और Mobile Number दोनों भरें।' });
+      return;
+    }
+
     Swal.fire({ title: 'खोज रहे हैं...', didOpen: () => { Swal.showLoading(); } });
 
-    fetch(`${scriptURL}?appNo=${appNo}`)
+    // 2. डेटा फेच करना (action=search पैरामीटर जोड़ना जरूरी हो सकता है)
+    fetch(`${scriptURL}?action=search&appNo=${appNo}&mobNo=${mobNo}`)
       .then(res => res.json())
       .then(data => {
         Swal.close();
         if(data.status === "found") {
+          // डेटा मिलने पर सर्च कार्ड छिपाएं और फॉर्म दिखाएं
           document.getElementById('searchSection').classList.add('hidden');
           document.getElementById('correctionSection').classList.remove('hidden');
+          
+          // नया कैप्चा लोड करें
           refreshCaptcha('finalCaptcha');
+
+          // फॉर्म में डेटा भरना
           const form = document.getElementById('correctionForm');
           form.studentName.value = data.name || "";
           form.fatherName.value = data.father || "";
           form.motherName.value = data.mother || "";
           form.dob.value = data.dob || "";
           form.class.value = data.class || "";
-          toggleSubjects();
+          
+          if(data.class == "11" || data.class == "12") {
+             document.getElementById('subjectSection').style.display = "block";
+             form.subject.value = data.subject || "";
+          }
+
           form.gender.value = data.gender || "";
           form.medium.value = data.medium || "";
           form.category.value = data.category || "";
@@ -548,61 +567,25 @@ function refreshCaptcha(id) {
           form.address.value = data.address || "";
           form.adhar.value = data.adhar || "";
           form.samgra.value = data.samgra || "";
+          form.bank.value = data.bank || ""; // बैंक का नाम
           form.accountnumber.value = data.accountnumber || "";
           form.ifsc.value = data.ifsc || "";
           form.mobile1.value = data.mobile1 || "";
+          form.mobile2.value = data.mobile2 || "";
+
           if(data.photo) {
             document.getElementById('photoPreview').src = data.photo;
             document.getElementById('photoPreview').style.display = 'block';
-            document.getElementById('placeholderText').style.display = 'none';
           }
         } else {
-          Swal.fire({ icon: 'error', text: 'रिकॉर्ड नहीं मिला।' });
+          Swal.fire({ icon: 'error', text: 'रिकॉर्ड नहीं मिला। कृपया सही विवरण दर्ज करें।' });
+          refreshCaptcha('captchaCode'); // गलत होने पर कैप्चा बदलें
         }
+      })
+      .catch(err => {
+        Swal.close();
+        Swal.fire({ icon: 'error', title: 'Error', text: 'डेटा लोड करने में समस्या आई।' });
       });
-  }
-
-  function updateRecord(event) {
-    event.preventDefault();
-    const capInp = document.getElementById('finalCapInput').value.toUpperCase();
-    const capCode = document.getElementById('finalCaptcha').innerText;
-    if(capInp !== capCode) { 
-      Swal.fire({ icon: 'error', text: 'कैप्चा गलत है।' }); 
-      refreshCaptcha('finalCaptcha');
-      return; 
-    }
-
-    Swal.fire({ title: 'अपडेट हो रहा है...', text: 'कृपया प्रतीक्षा करें', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-
-    const form = document.getElementById('correctionForm');
-    const formData = new FormData(form);
-    const searchParams = new URLSearchParams();
-    formData.forEach((value, key) => { searchParams.append(key, value); });
-    searchParams.append("appNo", document.getElementById('appNo').value);
-
-    fetch(scriptURL, { method: 'POST', body: searchParams })
-    .then(res => res.text())
-    .then(result => {
-      Swal.close();
-     
-     if(result.trim() === "Success") {
-  Swal.fire({ icon: 'success', title: 'सफलतापूर्वक अपडेट हुआ!' }).then(() => {
-
-    const appNo = document.getElementById('appNo').value;
-    const mobNo = document.querySelector('[name="mobile1"]').value;
-
-    // Redirect to receipt page
-    window.location.href = `Recipt.html?appNo=${appNo}&mobile1=${mobNo}`;
-
-  });
-} else {
-  Swal.fire({ icon: 'info', text: 'सर्वर रिस्पॉन्स: ' + result });
-}
-})
-.catch(err => {
-  Swal.close();
-  Swal.fire({ icon: 'error', title: 'नेटवर्क समस्या', text: err.message });
-});
 }
 </script>
 </body>
