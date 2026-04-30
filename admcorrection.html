@@ -512,51 +512,90 @@ function refreshCaptcha(id) {
   }
 
 function handleSearch() {
+    // 1. इनपुट से वैल्यू उठाना
     const capInp = document.getElementById('captchaInp').value.toUpperCase();
     const capCode = document.getElementById('captchaCode').innerText;
-    const appNo = document.getElementById('appNo').value;
-    const mobNo = document.getElementById('mobNo').value; // यहाँ मोबाइल नंबर उठाएं
+    const appNo = document.getElementById('appNo').value.trim();
+    const mobNo = document.getElementById('mobNo').value.trim();
 
+    // 2. कैप्चा वैलिडेशन
     if(capInp !== capCode) {
-      Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा गलत है।' });
-      refreshCaptcha('captchaCode');
-      return;
+        Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा कोड गलत है।' });
+        refreshCaptcha('captchaCode');
+        return;
     }
 
-    // यह चेक करें कि दोनों बॉक्स भरे हों
+    // 3. खाली बॉक्स की चेकिंग
     if(!appNo || !mobNo) {
-      Swal.fire({ icon: 'warning', text: 'Application Number और Mobile Number दोनों दर्ज करें।' });
-      return;
+        Swal.fire({ icon: 'warning', text: 'कृपया Application Number और Mobile Number दोनों भरें।' });
+        return;
     }
 
     Swal.fire({ title: 'खोज रहे हैं...', didOpen: () => { Swal.showLoading(); } });
 
-    // यहाँ URL में mobNo को भी साथ भेजें
+    // 4. सर्वर से डेटा मांगना (appNo और mobNo दोनों भेज रहे हैं)
     fetch(`${scriptURL}?action=search&appNo=${appNo}&mobNo=${mobNo}`)
-      .then(res => res.json())
-      .then(data => {
-        Swal.close();
-        
-        // अगर स्टेटस "found" है, तभी आगे बढ़ें
-        if(data.status === "found") {
-          document.getElementById('searchSection').classList.add('hidden');
-          document.getElementById('correctionSection').classList.remove('hidden');
-          refreshCaptcha('finalCaptcha');
-          
-          // बाकी का फॉर्म भरने का कोड यहाँ...
-          const form = document.getElementById('correctionForm');
-          form.studentName.value = data.name || "";
-          // ... (बाकी फील्ड्स)
-        } else {
-          // अगर मोबाइल नंबर या एप्लीकेशन नंबर गलत है, तो यह मैसेज आएगा
-          Swal.fire({ icon: 'error', text: 'रिकॉर्ड नहीं मिला! कृपया एप्लीकेशन नंबर और मोबाइल नंबर की जाँच करें।' });
-          refreshCaptcha('captchaCode');
-        }
-      })
-      .catch(err => {
-        Swal.close();
-        Swal.fire({ icon: 'error', text: 'सर्वर से संपर्क नहीं हो पाया।' });
-      });
+        .then(res => res.json())
+        .then(data => {
+            Swal.close();
+            
+            if(data.status === "found") {
+                // सर्च कार्ड छिपाएं और फॉर्म दिखाएं
+                document.getElementById('searchSection').classList.add('hidden');
+                document.getElementById('correctionSection').classList.remove('hidden');
+                
+                // फॉर्म लोड होने पर दूसरा कैप्चा ताज़ा करें
+                refreshCaptcha('finalCaptcha');
+
+                // 5. फॉर्म के सभी फील्ड्स में डेटा भरना (Complete Mapping)
+                const form = document.getElementById('correctionForm');
+                
+                form.studentName.value = data.name || "";
+                form.fatherName.value = data.father || "";
+                form.motherName.value = data.mother || "";
+                form.dob.value = data.dob || "";
+                form.class.value = data.class || "";
+                
+                // अगर क्लास 11 या 12 है तो सब्जेक्ट दिखाएं
+                toggleSubjects(); 
+                if(data.subject) form.subject.value = data.subject;
+
+                form.gender.value = data.gender || "";
+                form.medium.value = data.medium || "";
+                form.category.value = data.category || "";
+                form.state.value = data.state || "";
+                form.district.value = data.district || "";
+                form.tehsil.value = data.tehsil || "";
+                form.village.value = data.village || "";
+                form.address.value = data.address || "";
+                form.adhar.value = data.adhar || "";
+                form.samgra.value = data.samgra || "";
+                form.bank.value = data.bank || "";
+                form.accountnumber.value = data.accountnumber || "";
+                form.ifsc.value = data.ifsc || "";
+                form.mobile1.value = data.mobile1 || "";
+                if(data.mobile2) form.mobile2.value = data.mobile2;
+
+                // फोटो प्रीव्यू
+                if(data.photo) {
+                    const photoImg = document.getElementById('photoPreview');
+                    photoImg.src = data.photo;
+                    photoImg.style.display = 'block';
+                }
+            } else {
+                // अगर डेटा नहीं मिला (गलत मोबाइल या ऐप नंबर)
+                Swal.fire({ 
+                    icon: 'error', 
+                    title: 'रिकॉर्ड नहीं मिला', 
+                    text: 'एप्लीकेशन नंबर या मोबाइल नंबर गलत है।' 
+                });
+                refreshCaptcha('captchaCode');
+            }
+        })
+        .catch(err => {
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'नेटवर्क त्रुटि', text: 'डेटा लोड करने में समस्या आई।' });
+        });
 }
 </script>
 </body>
