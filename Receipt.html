@@ -167,44 +167,48 @@ async function openReceipt(){
     let cap = document.getElementById("captchaInput").value.trim();
     let btn = document.querySelector(".submit");
 
-    // Khali fields check karna
     if(!appNo || !mobile){
         alert("Application No और Mobile भरें");
         return;
     }
 
-    // Captcha check karna
     if(cap.toUpperCase() !== captcha){
         alert("Captcha गलत है");
         generateCaptcha();
         return;
     }
 
-    // 🔥 APNA APPS SCRIPT URL YAHAN DALEIN
     const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec"; 
 
-    // Button ko disable karein taaki user baar-baar click na kare
     btn.innerText = "Checking...";
     btn.disabled = true;
 
     try {
-        // Apps Script se poochna ki kya data sahi hai
         const response = await fetch(`${scriptURL}?appNo=${appNo}&mobile1=${mobile}`);
         const result = await response.json();
 
+        // 🔥 IMPORTANT LOGIC
         if (result.status === "found") {
-            // ✅ AGAR SAHI HAI: Tabhi ye window open hogi
-            window.open("./Reciptprint.html?appNo=" + appNo + "&mobile1=" + mobile, "_blank");
+            // ✅ BOTH CORRECT
+            window.open(`./Reciptprint.html?appNo=${appNo}&mobile1=${mobile}`, "_blank");
+
+        } else if (result.status === "wrong_app") {
+            alert("❌ Application Number गलत है");
+
+        } else if (result.status === "wrong_mobile") {
+            alert("❌ Mobile Number गलत है");
+
         } else {
-            // ❌ AGAR GALAT HAI: Toh alert aayega aur window open NAHI hogi
-            alert("❌ " + (result.message || "एप्लीकेशन नंबर या मोबाइल नंबर गलत है।"));
-            generateCaptcha();
-            document.getElementById("captchaInput").value = "";
+            alert("❌ " + (result.message || "डेटा नहीं मिला"));
         }
+
+        // हर case में captcha reset
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+
     } catch (error) {
         alert("⚠️ सर्वर एरर! इंटरनेट चेक करें।");
     } finally {
-        // Button wapas normal karein
         btn.innerText = "Submit";
         btn.disabled = false;
     }
