@@ -541,7 +541,7 @@
           const form = document.getElementById('correctionForm');
           
           // डेटा मैपिंग (JSON Key और Form Name के आधार पर)
-          const fields = ['studentName', 'fatherName', 'motherName', 'dob', 'gender', 'medium', 'category', 'state', 'district', 'tehsil', 'village', 'address', 'adhar', 'samgra', 'bank', 'accountnumber', 'ifsc', 'mobile1', 'mobile2'];
+          const fields = ['name', 'father', 'mother', 'dob', 'gender', 'medium', 'category', 'state', 'district', 'tehsil', 'village', 'address', 'adhar', 'samgra', 'bank', 'accountnumber', 'ifsc', 'mobile1', 'mobile2'];
           
           fields.forEach(f => { if(form[f]) form[f].value = data[f] || ""; });
           
