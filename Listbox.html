@@ -142,29 +142,33 @@
   function fetchRecords() {
     document.getElementById("count-label").innerText = "Searching...";
 
-    fetch(scriptURL)
-      .then(response => response.json())
-      .then(students => {
-        // 2. फिल्टर लॉजिक (Mobile या App Number के आधार पर)
-        let filtered = students.filter(s => {
-          let s_mobile = String(s.mobile1 || "").trim();
-          let search_mobile = String(mobile_search || "").trim();
-          let s_appno = String(s.appno || "").trim();
-          let search_appno = String(appno_search || "").trim();
+    // URL में मोबाइल नंबर जोड़ना ताकि Apps Script को पता चले कि क्या खोजना है
+    const finalURL = `${scriptURL}?mobile1=${encodeURIComponent(mobile_search)}`;
 
-          if (appno_search) return s_appno === search_appno;
-          if (mobile_search) return s_mobile === search_mobile;
-          return false;
-        });
-
-        displayResults(filtered);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById("data").innerHTML = "<tr><td colspan='11'>डेटा लोड करने में समस्या आई।</td></tr>";
-      });
+    fetch(finalURL, {
+      method: "GET",
+      redirect: "follow" // Google Apps Script के लिए यह बहुत ज़रूरी है
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(students => {
+      // अगर Apps Script 'no_record' भेजता है तो खाली लिस्ट भेजें
+      if (students.status === "no_record") {
+        displayResults([]);
+      } else {
+        // अगर डेटा मिल गया है, तो उसे सीधा टेबल में दिखाएँ
+        // (Apps Script पहले से ही फिल्टर करके भेज रहा है, इसलिए यहाँ दोबारा फिल्टर की ज़रूरत नहीं है)
+        displayResults(Array.isArray(students) ? students : [students]);
+      }
+    })
+    .catch(error => {
+      console.error('Error Details:', error);
+      document.getElementById("data").innerHTML = "<tr><td colspan='11'>डेटा लोड करने में समस्या आई। (सर्वर से संपर्क नहीं हो सका)</td></tr>";
+    });
   }
-
+  
   // 3. डेटा को टेबल में दिखाने का फंक्शन
   function displayResults(filtered) {
     let html = "";
