@@ -195,10 +195,10 @@ async function openReceipt() {
             window.location.href = printURL; // इसी विंडो में खोलें या window.open का उपयोग करें
         } 
         else if (result.status === "wrong_mobile") {
-            alert("❌ मोबाइल नंबर गलत है! रिकॉर्ड से मैच नहीं हुआ।");
+            alert("❌ कृपया अपना मोबाइल नंबर जाँच लें ।");
         } 
         else if (result.status === "wrong_app") {
-            alert("❌ एप्लीकेशन नंबर गलत है।");
+            alert("❌ कृपया अपना एप्लिकेशन नंबर चेक करें ।");
         } 
         else {
             alert("❌ रिकॉर्ड नहीं मिला।");
