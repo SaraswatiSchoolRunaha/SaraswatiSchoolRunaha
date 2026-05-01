@@ -498,74 +498,79 @@
     if (subSec) subSec.style.display = (cls == "11" || cls == "12") ? "block" : "none";
   }
 
-  // --- खोज (Search) फंक्शन ---
-  function handleSearch() {
-    const capInp = document.getElementById('captchaInp').value.toUpperCase();
-    const capCode = document.getElementById('captchaCode').innerText;
-    const appNo = document.getElementById('appNo').value.trim();
-    const mobNo = document.getElementById('mobNo').value.trim();
+ // --- सुधारा हुआ handleSearch फंक्शन ---
+function handleSearch() {
+  const capInp = document.getElementById('captchaInp').value.toUpperCase();
+  const capCode = document.getElementById('captchaCode').innerText;
+  const appNo = document.getElementById('appNo').value.trim();
+  const mobNo = document.getElementById('mobNo').value.trim();
 
-    if (capInp !== capCode) {
-      Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा कोड गलत है।' });
+  if (capInp !== capCode) {
+    Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा कोड गलत है।' });
+    refreshCaptcha('captchaCode');
+    document.getElementById('captchaInp').value = "";
+    return;
+  }
+
+  if (!appNo || !mobNo) {
+    Swal.fire({ icon: 'warning', text: 'कृपया विवरण भरें।' });
+    return;
+  }
+
+  Swal.fire({ title: 'खोज रहे हैं...', didOpen: () => { Swal.showLoading(); } });
+
+  fetch(`${scriptURL}?action=search&appNo=${appNo}&mobNo=${mobNo}`)
+    .then(res => res.json())
+    .then(data => {
+      Swal.close();
+      if (data.status === "found") {
+        document.getElementById('searchSection').classList.add('hidden');
+        document.getElementById('correctionSection').classList.remove('hidden');
+        refreshCaptcha('finalCaptcha');
+
+        const form = document.getElementById('correctionForm');
+
+        // 1. नाम, पिता और माता का नाम (खास मैपिंग)
+        // Apps Script से 'name' आ रहा है, उसे HTML के 'studentName' में डाल रहे हैं
+        if (form['studentName']) form['studentName'].value = data.name || "";
+        if (form['fatherName']) form['fatherName'].value = data.father || "";
+        if (form['motherName']) form['motherName'].value = data.mother || "";
+
+        // 2. बाकी सभी फील्ड्स जो सीधे मैच करते हैं
+        const otherFields = [
+          'dob', 'gender', 'medium', 'category', 'state', 'district', 
+          'tehsil', 'village', 'address', 'adhar', 'samgra', 'bank', 
+          'accountnumber', 'ifsc', 'mobile1', 'mobile2'
+        ];
+        
+        otherFields.forEach(f => { 
+          if(form[f]) form[f].value = data[f] || ""; 
+        });
+        
+        // 3. क्लास और सब्जेक्ट
+        if(form.class) form.class.value = data.class || "";
+        toggleSubjects();
+        if (data.subject && form.subject) form.subject.value = data.subject;
+
+        // 4. फोटो प्रीव्यू
+        if (data.photo) {
+          const photoImg = document.getElementById('photoPreview');
+          photoImg.src = data.photo;
+          photoImg.style.display = 'block';
+        }
+      } 
+      else if (data.status === "error") {
+        refreshCaptcha('captchaCode');
+        document.getElementById('captchaInp').value = "";
+        Swal.fire({ icon: 'error', title: 'त्रुटि', text: data.message });
+      }
+    })
+    .catch(err => {
+      Swal.close();
       refreshCaptcha('captchaCode');
-      document.getElementById('captchaInp').value = "";
-      return;
-    }
-
-    if (!appNo || !mobNo) {
-      Swal.fire({ icon: 'warning', text: 'कृपया विवरण भरें।' });
-      return;
-    }
-
-    Swal.fire({ title: 'खोज रहे हैं...', didOpen: () => { Swal.showLoading(); } });
-
-    fetch(`${scriptURL}?action=search&appNo=${appNo}&mobNo=${mobNo}`)
-      .then(res => res.json())
-      .then(data => {
-        Swal.close();
-        if (data.status === "found") {
-          document.getElementById('searchSection').classList.add('hidden');
-          document.getElementById('correctionSection').classList.remove('hidden');
-          refreshCaptcha('finalCaptcha');
-
-          const form = document.getElementById('correctionForm');
-          // फील्ड्स के नाम (Apps Script के JSON Keys से मैच होने चाहिए)
-          const fields = [
-            'name', 
-            'father', 
-            'mother', 
-            'dob', 
-            'gender', 
-            'medium', 
-            'category', 
-            'state', 
-            'district', 
-            'tehsil', 
-            'village', 
-            'address', 
-            'adhar', 
-            'samgra', 
-            'bank', 
-            'accountnumber', 
-            'ifsc', 
-            'mobile1', 
-            'mobile2'];
-          
-          fields.forEach(f => { if(form[f]) form[f].value = data[f] || ""; });
-          
-          if(form.class) form.class.value = data.class || "";
-          toggleSubjects();
-          if (data.subject && form.subject) form.subject.value = data.subject;
-
-          if (data.photo) {
-            const photoImg = document.getElementById('photoPreview');
-            photoImg.src = data.photo;
-            photoImg.style.display = 'block';
-          }
-        } 
-        else if (data.status === "error") {
-          refreshCaptcha('captchaCode');
-          document.getElementById('captchaInp').value = "";
+      Swal.fire({ icon: 'error', title: 'त्रुटि', text: 'डेटा लोड करने में विफल।' });
+    });
+}
           
           // अलग-अलग मैसेज दिखाना
           if (data.message === "application_wrong") {
