@@ -167,11 +167,13 @@ async function openReceipt() {
     let cap = document.getElementById("captchaInput").value.trim();
     let btn = document.querySelector(".submit");
 
+    // 1. इनपुट चेक
     if (!appNo || !mobileValue) {
         alert("कृपया Application No और Mobile भरें");
         return;
     }
 
+    // 2. कैप्चा चेक
     if (cap.toUpperCase() !== captcha) {
         alert("Captcha गलत है");
         generateCaptcha();
@@ -184,33 +186,45 @@ async function openReceipt() {
     btn.disabled = true;
 
     try {
-        // 1. सर्वर से डेटा मांगें और पक्का करें कि Cache न हो
-        const response = await fetch(`${scriptURL}?appNo=${appNo}&mobile1=${mobileValue}&t=${new Date().getTime()}`);
+        // 🔥 सुधार 1: URL में स्पेशल करैक्टर के लिए encodeURIComponent का प्रयोग
+        // 🔥 सुधार 2: Google Script के रिडायरेक्ट को संभालने के लिए 'follow' मोड
+        const finalURL = `${scriptURL}?appNo=${encodeURIComponent(appNo)}&mobile1=${encodeURIComponent(mobileValue)}&t=${new Date().getTime()}`;
+        
+        const response = await fetch(finalURL, {
+            method: "GET",
+            mode: "cors", // CORS सपोर्ट के लिए
+            redirect: "follow" // Google Apps Script के लिए यह अनिवार्य है
+        });
+
+        // चेक करें कि रिस्पॉन्स सही है या नहीं
+        if (!response.ok) throw new Error("Network response was not ok");
+
         const result = await response.json();
 
-        // 2. सख्त चेकिंग: केवल 'found' होने पर ही आगे बढ़ें
+        // 3. डेटा के हिसाब से एक्शन
         if (result.status === "found") {
-            // ✅ डेटा सही होने पर ही प्रिंट पेज खुलेगा
-            const printURL = `./Reciptprint.html?appNo=${appNo}&mobile1=${mobileValue}`;
-            window.location.href = printURL; // इसी विंडो में खोलें या window.open का उपयोग करें
+            // ✅ डेटा सही होने पर प्रिंट पेज पर भेजें
+            const printURL = `./Reciptprint.html?appNo=${encodeURIComponent(appNo)}&mobile1=${encodeURIComponent(mobileValue)}`;
+            window.location.href = printURL;
         } 
         else if (result.status === "wrong_mobile") {
-            alert("❌ कृपया अपना मोबाइल नंबर जाँच लें ।");
+            alert("❌ कृपया अपना मोबाइल नंबर जाँच लें।");
         } 
         else if (result.status === "wrong_app") {
-            alert("❌ कृपया अपना एप्लिकेशन नंबर चेक करें ।");
+            alert("❌ कृपया अपना एप्लिकेशन नंबर चेक करें।");
         } 
         else {
-            alert("❌ रिकॉर्ड नहीं मिला।");
+            alert("❌ रिकॉर्ड नहीं मिला: " + (result.message || "डेटाबेस में जानकारी नहीं है।"));
         }
 
     } catch (error) {
-        console.error(error);
-        alert("⚠️ वेरिफिकेशन फेल हो गया। कृपया इंटरनेट चेक करें।");
+        console.error("Verification Error:", error);
+        // यहाँ असली एरर पता चलेगा
+        alert("⚠️ सर्वर से संपर्क नहीं हो पाया।\nसंभावित कारण:\n1. इंटरनेट बंद है।\n2. आपने Apps Script को 'Anyone' के लिए Deploy नहीं किया है।");
     } finally {
         btn.innerText = "Submit";
         btn.disabled = false;
-        generateCaptcha();
+        generateCaptcha(); // कैप्चा रीसेट करें
     }
 }
 </script>
