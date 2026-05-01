@@ -135,63 +135,78 @@
   let appno_search = params.get("appNo");
   let mobile_search = params.get("mobile1");
 
-  let students = JSON.parse(localStorage.getItem("students")) || [];
+  // 1. यहाँ अपना Google Apps Script का Web App URL डालें
+  const scriptURL = "यहाँ_अपना_SCRIPT_URL_पेस्ट_करें"; 
 
-  // Logic: Search by AppNo OR Mobile
-let filtered = students.filter(s => {
-  // .trim() खाली जगह (spaces) हटा देता है
-  let s_mobile = String(s.mobile1 || "").trim();
-  let search_mobile = String(mobile_search || "").trim();
-  
-  let s_appno = String(s.appno || "").trim();
-  let search_appno = String(appno_search || "").trim();
+  // डेटा फेच करने का फंक्शन
+  function fetchRecords() {
+    document.getElementById("count-label").innerText = "Searching...";
 
-  if (appno_search) return s_appno === search_appno;
-  if (mobile_search) return s_mobile === search_mobile;
-  
-  return false; // अगर कुछ न मिले तो खाली रहे
-});
+    fetch(scriptURL)
+      .then(response => response.json())
+      .then(students => {
+        // 2. फिल्टर लॉजिक (Mobile या App Number के आधार पर)
+        let filtered = students.filter(s => {
+          let s_mobile = String(s.mobile1 || "").trim();
+          let search_mobile = String(mobile_search || "").trim();
+          let s_appno = String(s.appno || "").trim();
+          let search_appno = String(appno_search || "").trim();
 
-  let html = "";
-  document.getElementById("count-label").innerText = filtered.length + " Total Entries";
+          if (appno_search) return s_appno === search_appno;
+          if (mobile_search) return s_mobile === search_mobile;
+          return false;
+        });
 
-  if(filtered.length > 0){
-    filtered.forEach(s => {
-      // ✅ Security Check: Agar koi field khali ho toh "-" dikhaye
-      html += `
-      <tr>
-        <td style="font-weight:bold; color:#d32f2f;">${s.appno || 'N/A'}</td>
-        <td>${s.mobile1 || '-'}</td>
-        <td style="text-align:left; font-weight:500;">${s.name || 'Unknown'}</td>
-        <td style="text-align:left;">${s.father || '-'}</td>
-        <td>${s.mother || '-'}</td>
-        <td>${s.dob || '-'}</td>
-        <td><span class="badge cls-badge">${s.class || '-'}</span></td>
-        <td>${s.medium || '-'}</td>
-        <td><span class="badge gen-badge">${s.gender || '-'}</span></td>
-        <td>${s.category || '-'}</td>
-        <td>
-          <button class="btn-print" onclick="printRec('${s.appno}','${s.mobile1}')">
-            PRINT
-          </button>
-        </td>
-      </tr>
-      `;
-    });
-  } else {
-    html = "<tr><td colspan='11' style='padding:50px; color:#999;'>No matching records found in database.</td></tr>";
+        displayResults(filtered);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("data").innerHTML = "<tr><td colspan='11'>डेटा लोड करने में समस्या आई।</td></tr>";
+      });
   }
 
-  document.getElementById("data").innerHTML = html;
+  // 3. डेटा को टेबल में दिखाने का फंक्शन
+  function displayResults(filtered) {
+    let html = "";
+    document.getElementById("count-label").innerText = filtered.length + " Total Entries";
 
-  function printRec(appno, mobile){
-    if(!appno || appno === 'undefined') {
-        alert("Error: Application Number missing!");
-        return;
+    if (filtered.length > 0) {
+      filtered.forEach(s => {
+        html += `
+        <tr>
+          <td style="font-weight:bold; color:#d32f2f;">${s.appno || 'N/A'}</td>
+          <td>${s.mobile1 || '-'}</td>
+          <td style="text-align:left; font-weight:500;">${s.name || 'Unknown'}</td>
+          <td style="text-align:left;">${s.father || '-'}</td>
+          <td>${s.mother || '-'}</td>
+          <td>${s.dob || '-'}</td>
+          <td><span class="badge cls-badge">${s.class || '-'}</span></td>
+          <td>${s.medium || '-'}</td>
+          <td><span class="badge gen-badge">${s.gender || '-'}</span></td>
+          <td>${s.category || '-'}</td>
+          <td>
+            <button class="btn-print" onclick="printRec('${s.appno}','${s.mobile1}')">
+              PRINT
+            </button>
+          </td>
+        </tr>`;
+      });
+    } else {
+      html = "<tr><td colspan='11' style='padding:50px; color:#999;'>No matching records found in database.</td></tr>";
+    }
+    document.getElementById("data").innerHTML = html;
+  }
+
+  // पेज लोड होते ही सर्च शुरू करें
+  fetchRecords();
+
+  function printRec(appno, mobile) {
+    if (!appno || appno === 'undefined') {
+      alert("Error: Application Number missing!");
+      return;
     }
     window.location.href = "Reciptprint.html?appNo=" + appno + "&mobile1=" + mobile;
   }
 </script>
-
 </body>
 </html>
