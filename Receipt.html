@@ -116,7 +116,7 @@
 
     <div class="row">
       <input type="text" id="appNo" placeholder="Application Number">
-      <input type="text" id="mobile" placeholder="Mobile Number">
+      <input type="text" id="mobile1" placeholder="Mobile Number">
     </div>
 
     <div class="captcha-box">
@@ -144,7 +144,7 @@ window.onload = function() {
         document.getElementById("appNo").value = appNoFromURL; 
     }
     if (mobileFromURL) { 
-        document.getElementById("mobile").value = mobileFromURL; 
+        document.getElementById("mobile1").value = mobileFromURL; 
     }
     
     generateCaptcha(); // कैप्चा लोड करें
