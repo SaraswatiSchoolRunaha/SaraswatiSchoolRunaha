@@ -418,10 +418,9 @@
   </div>
 </div>
 
-<h3>Upload Photo & Captcha</h3>
-
+<!-- इसे ढूंढें और बदलें -->
 <label>Upload Photo</label>
-<input type="file" name="photo" id="photoUpload" accept="image/*" required>
+<input type="file" name="photo" id="photoUpload" accept="image/*" onchange="previewImg(this)" required>
 <img id="photoPreview" class="photo-preview" src="" alt="Photo Preview">
 
 <div class="declaration-wrapper">
@@ -481,17 +480,17 @@
     }
   }
 
-  function previewImg(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('photoPreview').src = e.target.result;
-        document.getElementById('photoPreview').style.display = 'block';
-      }
-      reader.readAsDataURL(input.files[0]);
+function previewImg(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById('photoPreview');
+      img.src = e.target.result;
+      img.style.display = 'block'; // बॉक्स को दिखाने के लिए
     }
+    reader.readAsDataURL(input.files[0]);
   }
-
+}
   function toggleSubjects() {
     const cls = document.getElementById('classSelect').value;
     const subSec = document.getElementById('subjectSection');
