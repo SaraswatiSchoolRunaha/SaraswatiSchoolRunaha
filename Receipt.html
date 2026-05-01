@@ -163,11 +163,11 @@ function generateCaptcha(){
 // 3. सबमिट बटन का फंक्शन (Verification logic ke sath)
 async function openReceipt(){
     let appNo = document.getElementById("appNo").value.trim();
-    let mobile = document.getElementById("mobile").value.trim();
+    let mobileValue = document.getElementById("mobile").value.trim();
     let cap = document.getElementById("captchaInput").value.trim();
     let btn = document.querySelector(".submit");
 
-    if(!appNo || !mobile){
+    if(!appNo || !mobileValue){
         alert("Application No और Mobile भरें");
         return;
     }
@@ -178,39 +178,39 @@ async function openReceipt(){
         return;
     }
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec"; 
+    const scriptURL = "YOUR_SCRIPT_URL_HERE"; // अपना URL यहाँ रहने दें
 
     btn.innerText = "Checking...";
     btn.disabled = true;
 
     try {
-        const response = await fetch(`${scriptURL}?appNo=${appNo}&mobile1=${mobile}`);
+        // 1. पहले Apps Script से चेक करवाएं कि डेटा सही है या नहीं
+        const response = await fetch(`${scriptURL}?appNo=${appNo}&mobile1=${mobileValue}`);
         const result = await response.json();
 
-        // 🔥 IMPORTANT LOGIC
+        // 2. अगर स्टेटस "found" है, तभी रसीद खोलें
         if (result.status === "found") {
-            // ✅ BOTH CORRECT
-            window.open(`./Reciptprint.html?appNo=${appNo}&mobile1=${mobile}`, "_blank");
-
-        } else if (result.status === "wrong_app") {
-            alert("❌ Application Number गलत है");
-
-        } else if (result.status === "wrong_mobile") {
-            alert("❌ Mobile Number गलत है");
-
-        } else {
-            alert("❌ " + (result.message || "डेटा नहीं मिला"));
+            window.open(`./Reciptprint.html?appNo=${appNo}&mobile1=${mobileValue}`, "_blank");
+        } 
+        // 3. अगर मोबाइल गलत है तो अलर्ट दिखाएँ
+        else if (result.status === "wrong_mobile") {
+            alert("❌ मोबाइल नंबर गलत है! कृपया वही नंबर डालें जो फॉर्म भरते समय डाला था।");
+        } 
+        // 4. अगर एप्लीकेशन नंबर गलत है
+        else if (result.status === "wrong_app") {
+            alert("❌ एप्लीकेशन नंबर नहीं मिला।");
+        } 
+        else {
+            alert("❌ डेटा मैच नहीं हुआ।");
         }
 
-        // हर case में captcha reset
-        generateCaptcha();
-        document.getElementById("captchaInput").value = "";
-
     } catch (error) {
-        alert("⚠️ सर्वर एरर! इंटरनेट चेक करें।");
+        alert("⚠️ सर्वर एरर! कृपया इंटरनेट चेक करें।");
     } finally {
         btn.innerText = "Submit";
         btn.disabled = false;
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
     }
 }
 </script>
