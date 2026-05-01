@@ -16,110 +16,106 @@
     margin: 0;
   }
 
-  /* Main Container जैसा आपकी इमेज में है */
+  /* मुख्य बॉक्स - Capture55.JPG जैसा */
   .main-box {
     background: white;
-    width: 90%;
-    max-width: 900px;
+    width: 95%;
+    max-width: 600px;
     padding: 40px;
-    border: 3px solid #1e5ba3; /* Blue Border */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 3px solid #1e5ba3; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     border-radius: 4px;
     text-align: center;
   }
 
-  /* Title with Icon */
   .title-section {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 30px;
+    gap: 12px;
+    margin-bottom: 35px;
   }
 
   .title-section h2 {
     color: #1e5ba3;
     margin: 0;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
   }
 
-  /* Input Row (Application & Mobile Number) */
-  .input-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+  /* मोबाइल नंबर इनपुट - अब यह अकेला और बड़ा है */
+  .input-group {
+    margin-bottom: 25px;
   }
 
   input[type="text"] {
-    flex: 1;
-    min-width: 250px;
-    padding: 12px 15px;
+    width: 80%;
+    padding: 14px 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 16px;
     outline: none;
-    transition: 0.2s;
+    text-align: center;
+    transition: 0.3s;
   }
 
   input[type="text"]:focus {
     border-color: #1e5ba3;
-    box-shadow: 0 0 5px rgba(30,91,163,0.2);
+    box-shadow: 0 0 8px rgba(30,91,163,0.2);
   }
 
-  /* Captcha Area */
+  /* कैप्चा सेक्शन */
   .captcha-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     margin-bottom: 20px;
   }
 
   #captcha {
-    background: white;
+    background: #fff;
     border: 1px solid #000;
-    padding: 8px 25px;
-    font-size: 20px;
+    padding: 10px 25px;
+    font-size: 22px;
     font-weight: bold;
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     border-radius: 6px;
     user-select: none;
+    min-width: 120px;
   }
 
   .btn-refresh {
-    background: #ff9800; /* Orange color from image */
+    background: #ff9800; 
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 12px 18px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
   }
 
-  /* Captcha Input Box */
-  .captcha-box {
-    width: 50%;
-    margin: 0 auto 25px;
+  .captcha-input-box {
+    width: 60%;
+    margin: 0 auto 30px;
   }
 
-  .captcha-box input {
-    text-align: center;
+  .captcha-input-box input {
     width: 100%;
     border: 1px solid #1e5ba3;
+    background-color: #fff;
   }
 
-  /* Submit Button */
+  /* सबमिट बटन */
   .btn-submit {
-    background: #4caf50; /* Green color from image */
+    background: #4caf50; 
     color: white;
     border: none;
-    padding: 12px 60px;
+    padding: 14px 80px;
     font-size: 18px;
     font-weight: bold;
     border-radius: 8px;
@@ -129,13 +125,7 @@
 
   .btn-submit:hover {
     background: #43a047;
-    transform: translateY(-2px);
-  }
-
-  /* Mobile Responsive */
-  @media (max-width: 600px) {
-    .input-row { flex-direction: column; }
-    .captcha-box { width: 100%; }
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
   }
 </style>
 </head>
@@ -144,21 +134,23 @@
 <div class="main-box">
   <div class="title-section">
     <span>🎓</span>
-    <h2>Application Receipt System</h2>
+    <h2>Application Search </h2>
   </div>
 
-  <div class="input-row">
-    <input type="text" id="appNo" placeholder="Application Number" disabled style="background: #f9f9f9; cursor: not-allowed;">
-    <input type="text" id="mobile1" placeholder="Mobile Number" maxlength="10" inputmode="numeric">
+  <!-- अब सिर्फ मोबाइल नंबर का कॉलम है -->
+  <div class="input-group">
+    <input type="text" id="mobile1" placeholder="Registered Mobile Number" maxlength="10" inputmode="numeric">
   </div>
 
+  <!-- कैप्चा कोड एरिया -->
   <div class="captcha-container">
-    <div id="captcha">LOADING</div>
+    <div id="captcha">...</div>
     <button class="btn-refresh" onclick="generateCaptcha()">🔄 Refresh</button>
   </div>
 
-  <div class="captcha-box">
-    <input type="text" id="captchaInput" placeholder="Enter Captcha">
+  <!-- कैप्चा इनपुट - यहाँ कोड डालना अनिवार्य है -->
+  <div class="captcha-input-box">
+    <input type="text" id="captchaInput" placeholder="Enter Captcha Code">
   </div>
 
   <button class="btn-submit" onclick="searchData()">Submit</button>
@@ -167,7 +159,7 @@
 <script>
 let currentCaptcha = "";
 
-// कैप्चा बनाने का फंक्शन
+// नया कैप्चा कोड जनरेट करने का फंक्शन
 function generateCaptcha(){
   let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   currentCaptcha = "";
@@ -175,30 +167,38 @@ function generateCaptcha(){
     currentCaptcha += chars[Math.floor(Math.random()*chars.length)];
   }
   document.getElementById("captcha").innerText = currentCaptcha;
+  // कैप्चा बॉक्स को खाली कर दें ताकि हर बार नया डालना पड़े
+  document.getElementById("captchaInput").value = "";
 }
 
-// सर्च फंक्शन
+// डेटा सर्च और वैलिडेशन
 function searchData(){
   let mobile = document.getElementById("mobile1").value.trim();
   let captchaInput = document.getElementById("captchaInput").value.trim();
 
+  // मोबाइल नंबर की जाँच
   if(mobile.length !== 10 || isNaN(mobile)){
     alert("कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें।");
     return;
   }
 
-  if(captchaInput.toUpperCase() !== currentCaptcha.toUpperCase()){
-    alert("कैप्चा कोड गलत है।");
-    generateCaptcha();
-    document.getElementById("captchaInput").value = "";
+  // कैप्चा की अनिवार्य जाँच
+  if(captchaInput === ""){
+    alert("कृपया कैप्चा कोड दर्ज करें।");
     return;
   }
 
-  // Listbox.html पर मोबाइल नंबर भेजना
+  if(captchaInput.toUpperCase() !== currentCaptcha.toUpperCase()){
+    alert("कैप्चा कोड गलत है। नया कोड आ रहा है...");
+    generateCaptcha(); // गलत होने पर तुरंत नया कैप्चा
+    return;
+  }
+
+  // सब सही होने पर Listbox पर भेजें
   window.location.href = "Listbox.html?mobile1=" + encodeURIComponent(mobile);
 }
 
-// पेज लोड होते ही कैप्चा दिखाएँ
+// पेज खुलते ही कैप्चा लोड करें
 window.onload = generateCaptcha;
 </script>
 
