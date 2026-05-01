@@ -138,11 +138,19 @@
   let students = JSON.parse(localStorage.getItem("students")) || [];
 
   // Logic: Search by AppNo OR Mobile
-  let filtered = students.filter(s => {
-    if (appno_search) return String(s.appno) === String(appno_search);
-    if (mobile_search) return String(s.mobile1) === String(mobile_search);
-    return true; 
-  });
+let filtered = students.filter(s => {
+  // .trim() खाली जगह (spaces) हटा देता है
+  let s_mobile = String(s.mobile1 || "").trim();
+  let search_mobile = String(mobile_search || "").trim();
+  
+  let s_appno = String(s.appno || "").trim();
+  let search_appno = String(appno_search || "").trim();
+
+  if (appno_search) return s_appno === search_appno;
+  if (mobile_search) return s_mobile === search_mobile;
+  
+  return false; // अगर कुछ न मिले तो खाली रहे
+});
 
   let html = "";
   document.getElementById("count-label").innerText = filtered.length + " Total Entries";
