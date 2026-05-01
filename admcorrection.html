@@ -463,35 +463,33 @@
 <script>
   const scriptURL = "https://script.google.com/macros/s/AKfycbxEQpFakRt3gJ5z8i1yQbGTfKTRUpRqc5xhJoviGiWhHFX3N3eIzviFQVEgaRNoxRhh/exec";
 
-// पेज लोड होते ही कैप्चा को मेमोरी से लोड करने के लिए
-window.onload = function() {
-    setupCaptcha('captchaCode');  // 1st Page (Search)
-    setupCaptcha('finalCaptcha'); // 2nd Page (Update)
-};
+  // पेज लोड होते ही कैप्चा सेटअप
+  window.onload = function() {
+    setupCaptcha('captchaCode');  // पहला पेज
+    setupCaptcha('finalCaptcha'); // दूसरा पेज (Update)
+  };
 
-function setupCaptcha(id) {
+  function setupCaptcha(id) {
     let savedCode = localStorage.getItem('saved_' + id);
     if (savedCode && document.getElementById(id)) {
-        document.getElementById(id).innerText = savedCode;
+      document.getElementById(id).innerText = savedCode;
     } else {
-        refreshCaptcha(id);
+      refreshCaptcha(id);
     }
-}
+  }
 
-function refreshCaptcha(id) {
+  function refreshCaptcha(id) {
     let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
-    for (let i = 0; i < 6; i++) { 
-        code += chars.charAt(Math.floor(Math.random() * chars.length)); 
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    
     let target = document.getElementById(id);
-    if(target) {
-        target.innerText = code;
-        // कोड को ब्राउज़र की मेमोरी में सेव करें ताकि रिफ्रेश पर न बदले
-        localStorage.setItem('saved_' + id, code);
+    if (target) {
+      target.innerText = code;
+      localStorage.setItem('saved_' + id, code);
     }
-}
+  }
 
   function previewImg(input) {
     if (input.files && input.files[0]) {
@@ -499,7 +497,8 @@ function refreshCaptcha(id) {
       reader.onload = function(e) {
         document.getElementById('photoPreview').src = e.target.result;
         document.getElementById('photoPreview').style.display = 'block';
-        document.getElementById('placeholderText').style.display = 'none';
+        if (document.getElementById('placeholderText')) 
+          document.getElementById('placeholderText').style.display = 'none';
       }
       reader.readAsDataURL(input.files[0]);
     }
@@ -508,95 +507,125 @@ function refreshCaptcha(id) {
   function toggleSubjects() {
     const cls = document.getElementById('classSelect').value;
     const subSec = document.getElementById('subjectSection');
-    if(subSec) subSec.style.display = (cls == "11" || cls == "12") ? "block" : "none";
+    if (subSec) subSec.style.display = (cls == "11" || cls == "12") ? "block" : "none";
   }
 
-function handleSearch() {
-    // 1. इनपुट से वैल्यू उठाना
+  // --- खोज (Search) फंक्शन ---
+  function handleSearch() {
     const capInp = document.getElementById('captchaInp').value.toUpperCase();
     const capCode = document.getElementById('captchaCode').innerText;
     const appNo = document.getElementById('appNo').value.trim();
     const mobNo = document.getElementById('mobNo').value.trim();
 
-    // 2. कैप्चा वैलिडेशन
-    if(capInp !== capCode) {
-        Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा कोड गलत है।' });
-        refreshCaptcha('captchaCode');
-        return;
+    if (capInp !== capCode) {
+      Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा कोड गलत है।' });
+      refreshCaptcha('captchaCode');
+      return;
     }
 
-    // 3. खाली बॉक्स की चेकिंग
-    if(!appNo || !mobNo) {
-        Swal.fire({ icon: 'warning', text: 'कृपया Application Number और Mobile Number दोनों भरें।' });
-        return;
+    if (!appNo || !mobNo) {
+      Swal.fire({ icon: 'warning', text: 'कृपया विवरण भरें।' });
+      return;
     }
 
     Swal.fire({ title: 'खोज रहे हैं...', didOpen: () => { Swal.showLoading(); } });
 
-    // 4. सर्वर से डेटा मांगना (appNo और mobNo दोनों भेज रहे हैं)
     fetch(`${scriptURL}?action=search&appNo=${appNo}&mobNo=${mobNo}`)
-        .then(res => res.json())
-        .then(data => {
-            Swal.close();
-            
-            if(data.status === "found") {
-                // सर्च कार्ड छिपाएं और फॉर्म दिखाएं
-                document.getElementById('searchSection').classList.add('hidden');
-                document.getElementById('correctionSection').classList.remove('hidden');
-                
-                // फॉर्म लोड होने पर दूसरा कैप्चा ताज़ा करें
-                refreshCaptcha('finalCaptcha');
+      .then(res => res.json())
+      .then(data => {
+        Swal.close();
+        if (data.status === "found") {
+          document.getElementById('searchSection').classList.add('hidden');
+          document.getElementById('correctionSection').classList.remove('hidden');
+          refreshCaptcha('finalCaptcha');
 
-                // 5. फॉर्म के सभी फील्ड्स में डेटा भरना (Complete Mapping)
-                const form = document.getElementById('correctionForm');
-                
-                form.studentName.value = data.name || "";
-                form.fatherName.value = data.father || "";
-                form.motherName.value = data.mother || "";
-                form.dob.value = data.dob || "";
-                form.class.value = data.class || "";
-                
-                // अगर क्लास 11 या 12 है तो सब्जेक्ट दिखाएं
-                toggleSubjects(); 
-                if(data.subject) form.subject.value = data.subject;
+          const form = document.getElementById('correctionForm');
+          
+          // डेटा मैपिंग (JSON Key और Form Name के आधार पर)
+          const fields = ['studentName', 'fatherName', 'motherName', 'dob', 'gender', 'medium', 'category', 'state', 'district', 'tehsil', 'village', 'address', 'adhar', 'samgra', 'bank', 'accountnumber', 'ifsc', 'mobile1', 'mobile2'];
+          
+          fields.forEach(f => { if(form[f]) form[f].value = data[f] || ""; });
+          
+          // क्लास और सब्जेक्ट हैंडलिंग
+          if(form.class) form.class.value = data.class || "";
+          toggleSubjects();
+          if (data.subject && form.subject) form.subject.value = data.subject;
 
-                form.gender.value = data.gender || "";
-                form.medium.value = data.medium || "";
-                form.category.value = data.category || "";
-                form.state.value = data.state || "";
-                form.district.value = data.district || "";
-                form.tehsil.value = data.tehsil || "";
-                form.village.value = data.village || "";
-                form.address.value = data.address || "";
-                form.adhar.value = data.adhar || "";
-                form.samgra.value = data.samgra || "";
-                form.bank.value = data.bank || "";
-                form.accountnumber.value = data.accountnumber || "";
-                form.ifsc.value = data.ifsc || "";
-                form.mobile1.value = data.mobile1 || "";
-                if(data.mobile2) form.mobile2.value = data.mobile2;
+          if (data.photo) {
+            const photoImg = document.getElementById('photoPreview');
+            photoImg.src = data.photo;
+            photoImg.style.display = 'block';
+            if (document.getElementById('placeholderText')) 
+               document.getElementById('placeholderText').style.display = 'none';
+          }
+        } else {
+          Swal.fire({ icon: 'error', title: 'रिकॉर्ड नहीं मिला', text: 'ऐप नंबर या मोबाइल नंबर गलत है।' });
+          refreshCaptcha('captchaCode');
+        }
+      })
+      .catch(err => {
+        Swal.close();
+        Swal.fire({ icon: 'error', title: 'त्रुटि', text: 'डेटा लोड करने में विफल।' });
+      });
+  }
 
-                // फोटो प्रीव्यू
-                if(data.photo) {
-                    const photoImg = document.getElementById('photoPreview');
-                    photoImg.src = data.photo;
-                    photoImg.style.display = 'block';
-                }
-            } else {
-                // अगर डेटा नहीं मिला (गलत मोबाइल या ऐप नंबर)
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'रिकॉर्ड नहीं मिला', 
-                    text: 'एप्लीकेशन नंबर या मोबाइल नंबर गलत है।' 
-                });
-                refreshCaptcha('captchaCode');
-            }
-        })
-        .catch(err => {
-            Swal.close();
-            Swal.fire({ icon: 'error', title: 'नेटवर्क त्रुटि', text: 'डेटा लोड करने में समस्या आई।' });
+  // --- अपडेट (Update) फंक्शन ---
+  async function updateRecord(event) {
+    if (event) event.preventDefault();
+
+    const finalInp = document.getElementById('finalCapInput').value.toUpperCase();
+    const finalCode = document.getElementById('finalCaptcha').innerText;
+
+    if (finalInp !== finalCode) {
+      Swal.fire({ icon: 'error', text: 'सिक्योरिटी कोड (कैप्चा) गलत है!' });
+      refreshCaptcha('finalCaptcha');
+      return;
+    }
+
+    const form = document.getElementById('correctionForm');
+    const formData = new FormData(form);
+    
+    // फोटो को Base64 में कन्वर्ट करना
+    const fileInput = document.getElementById('photoUpload');
+    let base64Photo = "";
+    if (fileInput.files.length > 0) {
+      base64Photo = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    }
+
+    // डेटा ऑब्जेक्ट तैयार करना
+    const obj = { action: "update" };
+    formData.forEach((value, key) => obj[key] = value);
+    if (base64Photo) obj.photoData = base64Photo;
+    obj.appNo = document.getElementById('appNo').value; // आईडी ट्रैकिंग के लिए
+
+    Swal.fire({ title: 'सुरक्षित किया जा रहा है...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+    fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(obj)
+    })
+    .then(res => res.json())
+    .then(response => {
+      Swal.close();
+      if (response.status === "success") {
+        Swal.fire({ icon: 'success', title: 'सफलता!', text: 'डेटा अपडेट कर दिया गया है।' })
+        .then(() => {
+          localStorage.clear();
+          location.reload(); 
         });
-}
+      } else {
+        Swal.fire({ icon: 'error', title: 'त्रुटि', text: response.message });
+      }
+    })
+    .catch(err => {
+      Swal.close();
+      Swal.fire({ icon: 'error', title: 'सर्वर त्रुटि', text: 'अपडेट विफल रहा।' });
+    });
+  }
 </script>
 </body>
 </html>
