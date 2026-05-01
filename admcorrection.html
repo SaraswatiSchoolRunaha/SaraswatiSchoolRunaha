@@ -462,21 +462,13 @@
 <script>
   const scriptURL = "https://script.google.com/macros/s/AKfycbxEQpFakRt3gJ5z8i1yQbGTfKTRUpRqc5xhJoviGiWhHFX3N3eIzviFQVEgaRNoxRhh/exec";
 
-  // पेज लोड होते ही कैप्चा सेटअप
+  // पेज लोड होते ही कैप्चा सेटअप (बिना सेव किए, ताकि हर बार नया आए)
   window.onload = function() {
-    setupCaptcha('captchaCode');  // पहला पेज
-    setupCaptcha('finalCaptcha'); // दूसरा पेज (Update)
+    refreshCaptcha('captchaCode');  // पहला पेज
+    refreshCaptcha('finalCaptcha'); // दूसरा पेज (Update)
   };
 
-  function setupCaptcha(id) {
-    let savedCode = localStorage.getItem('saved_' + id);
-    if (savedCode && document.getElementById(id)) {
-      document.getElementById(id).innerText = savedCode;
-    } else {
-      refreshCaptcha(id);
-    }
-  }
-
+  // कैप्चा जनरेट करने का फंक्शन (localStorage हटा दिया गया है)
   function refreshCaptcha(id) {
     let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
@@ -486,7 +478,6 @@
     let target = document.getElementById(id);
     if (target) {
       target.innerText = code;
-      localStorage.setItem('saved_' + id, code);
     }
   }
 
@@ -496,8 +487,6 @@
       reader.onload = function(e) {
         document.getElementById('photoPreview').src = e.target.result;
         document.getElementById('photoPreview').style.display = 'block';
-        if (document.getElementById('placeholderText')) 
-          document.getElementById('placeholderText').style.display = 'none';
       }
       reader.readAsDataURL(input.files[0]);
     }
@@ -519,6 +508,7 @@
     if (capInp !== capCode) {
       Swal.fire({ icon: 'error', title: 'गलती!', text: 'कैप्चा कोड गलत है।' });
       refreshCaptcha('captchaCode');
+      document.getElementById('captchaInp').value = "";
       return;
     }
 
@@ -539,13 +529,11 @@
           refreshCaptcha('finalCaptcha');
 
           const form = document.getElementById('correctionForm');
-          
-          // डेटा मैपिंग (JSON Key और Form Name के आधार पर)
-          const fields = ['name', 'father', 'mother', 'dob', 'gender', 'medium', 'category', 'state', 'district', 'tehsil', 'village', 'address', 'adhar', 'samgra', 'bank', 'accountnumber', 'ifsc', 'mobile1', 'mobile2'];
+          // फील्ड्स के नाम (Apps Script के JSON Keys से मैच होने चाहिए)
+          const fields = ['studentName', 'fatherName', 'motherName', 'dob', 'gender', 'medium', 'category', 'state', 'district', 'tehsil', 'village', 'address', 'adhar', 'samgra', 'bank', 'accountnumber', 'ifsc', 'mobile1', 'mobile2'];
           
           fields.forEach(f => { if(form[f]) form[f].value = data[f] || ""; });
           
-          // क्लास और सब्जेक्ट हैंडलिंग
           if(form.class) form.class.value = data.class || "";
           toggleSubjects();
           if (data.subject && form.subject) form.subject.value = data.subject;
@@ -554,16 +542,23 @@
             const photoImg = document.getElementById('photoPreview');
             photoImg.src = data.photo;
             photoImg.style.display = 'block';
-            if (document.getElementById('placeholderText')) 
-               document.getElementById('placeholderText').style.display = 'none';
           }
-        } else {
-          Swal.fire({ icon: 'error', title: 'रिकॉर्ड नहीं मिला', text: 'ऐप नंबर या मोबाइल नंबर गलत है।' });
+        } 
+        else if (data.status === "error") {
           refreshCaptcha('captchaCode');
+          document.getElementById('captchaInp').value = "";
+          
+          // अलग-अलग मैसेज दिखाना
+          if (data.message === "application_wrong") {
+             Swal.fire({ icon: 'error', title: 'गलत आवेदन क्रमांक', text: 'यह Application Number हमारी लिस्ट में नहीं है।' });
+          } else if (data.message === "mobile_wrong") {
+             Swal.fire({ icon: 'error', title: 'गलत मोबाइल नंबर', text: 'Application Number सही है, लेकिन मोबाइल नंबर मैच नहीं कर रहा।' });
+          }
         }
       })
       .catch(err => {
         Swal.close();
+        refreshCaptcha('captchaCode');
         Swal.fire({ icon: 'error', title: 'त्रुटि', text: 'डेटा लोड करने में विफल।' });
       });
   }
@@ -578,13 +573,13 @@
     if (finalInp !== finalCode) {
       Swal.fire({ icon: 'error', text: 'सिक्योरिटी कोड (कैप्चा) गलत है!' });
       refreshCaptcha('finalCaptcha');
+      document.getElementById('finalCapInput').value = "";
       return;
     }
 
     const form = document.getElementById('correctionForm');
     const formData = new FormData(form);
     
-    // फोटो को Base64 में कन्वर्ट करना
     const fileInput = document.getElementById('photoUpload');
     let base64Photo = "";
     if (fileInput.files.length > 0) {
@@ -595,11 +590,10 @@
       });
     }
 
-    // डेटा ऑब्जेक्ट तैयार करना
     const obj = { action: "update" };
     formData.forEach((value, key) => obj[key] = value);
     if (base64Photo) obj.photoData = base64Photo;
-    obj.appNo = document.getElementById('appNo').value; // आईडी ट्रैकिंग के लिए
+    obj.appNo = document.getElementById('appNo').value;
 
     Swal.fire({ title: 'सुरक्षित किया जा रहा है...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
@@ -613,15 +607,16 @@
       if (response.status === "success") {
         Swal.fire({ icon: 'success', title: 'सफलता!', text: 'डेटा अपडेट कर दिया गया है।' })
         .then(() => {
-          localStorage.clear();
-          location.reload(); 
+          location.reload(); // पेज रिफ्रेश होने पर कैप्चा अपने आप बदल जाएगा
         });
       } else {
+        refreshCaptcha('finalCaptcha');
         Swal.fire({ icon: 'error', title: 'त्रुटि', text: response.message });
       }
     })
     .catch(err => {
       Swal.close();
+      refreshCaptcha('finalCaptcha');
       Swal.fire({ icon: 'error', title: 'सर्वर त्रुटि', text: 'अपडेट विफल रहा।' });
     });
   }
