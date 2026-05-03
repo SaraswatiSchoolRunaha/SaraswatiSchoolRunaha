@@ -385,6 +385,20 @@ background:Red;   /* 👈 halka grey hover */
 display:block;
 }
 
+  /* Login hone ke baad topbar ka look */
+.user-info {
+    color: white;
+    font-weight: bold;
+    margin-right: 15px;
+    font-size: 14px;
+}
+.logout-btn {
+    background: #ff5722 !important;
+    color: white !important;
+    padding: 5px 15px !important;
+    border-radius: 20px !important;
+}
+
 </style>
 
 </head>
@@ -658,34 +672,121 @@ Gallary
 </div>
 </div>
 
-<!-- LOGIN -->
+<!-- Naya Login Popup -->
 <div class="popup" id="loginPopup">
-<div class="popup-box">
-<h3>Login</h3>
-<select>
-<option>Student Login</option>
-<option>Teacher Login</option>
-<option>Principal Login</option>
-</select><br><br>
-<input type="text" placeholder="User ID"><br><br>
-<input type="password" placeholder="Password"><br><br>
-<button onclick="closeLogin()">Submit</button>
-</div>
+    <div class="popup-box">
+        <h3 style="margin-bottom:20px; color:#002366;">Admin/Staff Login</h3>
+        
+        <label style="display:block; text-align:left; font-size:12px;">Login Type:</label>
+        <select id="userRole" style="width:100%; padding:10px; margin-bottom:15px;">
+            <option value="teacher">Teacher Login</option>
+            <option value="principal">Principal Login</option>
+        </select>
+
+        <input type="text" id="username" placeholder="User ID" style="width:100%; padding:10px; margin-bottom:10px;">
+        <input type="password" id="password" placeholder="Password" style="width:100%; padding:10px; margin-bottom:15px;">
+        
+        <button onclick="handleLogin()" style="width:100%; padding:12px; background:#002366; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Login Now</button>
+        
+        <p onclick="closeLogin()" style="margin-top:15px; cursor:pointer; font-size:13px; color:red;">Cancel</p>
+    </div>
 </div>
 
 <footer>
 © 2026 Saraswati Bal Vidhya Mandir High School Runaha
 </footer>
 <script>
-function checkResult(){
-  const now = new Date();
-  const resultDate = new Date(2026, 3, 13, 11, 0);
+// 1. Login Credentials
+const credentials = {
+    teacher: { id: "teacher", pass: "teacher123" },
+    principal: { id: "23320124505", pass: "sbvm@123" }
+};
 
-  if(now < resultDate){
-     alert("परिणाम अभी उपलब्ध नहीं है।\nकृपया 13 अप्रैल 2026 को सुबह 11 बजे के बाद देखें।");
-  } else {
-    window.open("https://script.google.com/macros/s/AKfycbw5TpK4L4fQre9Zf8UMehoTHolEq_dD4k7G_LvxfK-HJn-SpzwahAc1N6qBpGZY72psRg/exec", "_blank");
-  }
+// 2. Page Load hote hi Student Mode set karna (IMP)
+window.onload = function() {
+    applyPermissions('student'); 
+};
+
+// 3. Popup Open/Close
+function openLogin() { 
+    document.getElementById('loginPopup').style.display = 'flex'; 
+}
+
+function closeLogin() { 
+    document.getElementById('loginPopup').style.display = 'none'; 
+}
+
+// 4. Login Logic
+function handleLogin() {
+    const role = document.getElementById('userRole').value;
+    const enteredId = document.getElementById('username').value;
+    const enteredPass = document.getElementById('password').value;
+
+    if (enteredId === credentials[role].id && enteredPass === credentials[role].pass) {
+        alert("Saraswati School Portal: Login Successful as " + role.toUpperCase());
+        applyPermissions(role);
+        closeLogin();
+    } else {
+        alert("गलत आईडी या पासवर्ड! कृपया दोबारा जाँचें ।");
+    }
+}
+
+// 5. Menu Permissions (Sabse Zaruri Hissa)
+function applyPermissions(role) {
+    const allMenus = document.querySelectorAll('nav .dropdown, nav > a');
+    
+    // Students ko kya dikhega (Bina login ke)
+    const studentAllowed = ["Home", "Gallery", "Contact"]; 
+    // Note: Result, Admit Card, Fees aapke niche wale boxes mein hain, 
+    // agar nav mein bhi hain toh unke naam yahan likhein.
+
+    // Teacher ko kya dikhega
+    const teacherAllowed = ["Home", "Attendance", "Profile Upd", "Result Upd", "Gallery", "Contact"];
+
+    allMenus.forEach(menu => {
+        const menuText = menu.innerText.trim();
+
+        if (role === "student") {
+            // Student Permission
+            if (studentAllowed.some(allowed => menuText.includes(allowed))) {
+                menu.style.display = "inline-block";
+            } else {
+                menu.style.display = "none";
+            }
+        } 
+        else if (role === "teacher") {
+            // Teacher Permission
+            if (teacherAllowed.some(allowed => menuText.includes(allowed))) {
+                menu.style.display = "inline-block";
+            } else {
+                menu.style.display = "none";
+            }
+        } 
+        else if (role === "principal") {
+            // Principal Permission (Sab dikhao)
+            menu.style.display = "inline-block";
+        }
+    });
+
+    // Topbar update karna login ke baad
+    if (role !== "student") {
+        document.querySelector('.topbar').innerHTML = `
+            <span class="user-info" style="color:white; margin-right:10px;">User: ${role.toUpperCase()}</span>
+            <button class="logout-btn" onclick="location.reload()" style="background:red; color:white;">Logout</button>
+        `;
+    }
+}
+
+// 6. Result Check Function
+function checkResult(){
+    const now = new Date();
+    const resultDate = new Date(2026, 3, 13, 11, 0); 
+
+    if(now < resultDate){
+        alert("परिणाम अभी उपलब्ध नहीं है।\nकृपया 13 अप्रैल 2026 को सुबह 11 बजे के बाद देखें।");
+    } else {
+        window.open("https://script.google.com/macros/s/AKfycbw5TpK4L4fQre9Zf8UMehoTHolEq_dD4k7G_LvxfK-HJn-SpzwahAc1N6qBpGZY72psRg/exec", "_blank");
+    }
 }
 </script>
 </body>
