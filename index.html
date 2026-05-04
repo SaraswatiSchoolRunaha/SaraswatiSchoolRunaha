@@ -324,22 +324,28 @@ background:#ff5722;
 color:white;
 transform:scale(1.05);
 }
-/* LOGIN POPUP */
-.popup{
-display:none;
-position:fixed;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
-justify-content:center;
-align-items:center;
+  
+/* LOGIN POPUP FIX */
+.popup {
+    display: none;      /* Shuruat mein hidden rahega */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7); /* Thoda aur dark background */
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;     /* 👈 Isse popup slider aur header ke upar dikhega */
 }
 
-.popup-box{
-background:white;
-padding:20px;
-border-radius:10px;
-width:300px;
+.popup-box {
+    background: white;
+    padding: 30px;      /* Spacing thodi badha di gayi hai */
+    border-radius: 15px;
+    width: 320px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Sunder dikhne ke liye shadow */
+    text-align: center;
 }
 
 /* FOOTER */
