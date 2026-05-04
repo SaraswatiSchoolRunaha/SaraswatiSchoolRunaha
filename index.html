@@ -405,6 +405,17 @@ display:block;
     border-radius: 20px !important;
 }
 
+/* Welcome Popup Special Style */
+#welcomePopup .popup-box {
+    border-top: 5px solid #28a745; /* Green color for welcome */
+    animation: popIn 0.5s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+ 
 </style>
 
 </head>
@@ -699,6 +710,23 @@ Gallary
         <p onclick="closeLogin()" style="margin-top:15px; cursor:pointer; font-size:13px; color:red; text-align:center;">Cancel</p>
     </div>
 </div>
+<!-- Automatic Welcome Popup -->
+<div class="popup" id="welcomePopup" style="display:none;">
+    <div class="popup-box">
+        <h2 style="color:#002366; margin-bottom:15px;">🙏 स्वागत है!</h2>
+        <p style="font-size:16px; color:#333; margin-bottom:20px;">
+            सरस्वती बाल विद्या मंदिर के पोर्टल पर आपका स्वागत है। <br>
+            <b>नया अपडेट:</b> वार्षिक परीक्षा परिणाम और प्रवेश 2026-27 की जानकारी उपलब्ध है।
+        </p>
+        <button onclick="closeWelcomePopup()" style="width:100%; padding:12px; background:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">आगे बढ़ें (Continue)</button>
+    </div>
+</div>
+
+
+
+
+
+  
 <footer>
 © 2026 Saraswati Bal Vidhya Mandir High School Runaha
 </footer>
@@ -824,6 +852,20 @@ function checkResult(){
     } else {
         window.open("https://script.google.com/macros/s/AKfycbw5TpK4L4fQre9Zf8UMehoTHolEq_dD4k7G_LvxfK-HJn-SpzwahAc1N6qBpGZY72psRg/exec", "_blank");
     }
+}
+  
+// Website load hote hi popup dikhane ke liye logic
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        const welcome = document.getElementById('welcomePopup');
+        if(welcome) welcome.style.display = 'flex';
+    }, 800); // 0.8 second baad popup aayega
+});
+
+// Welcome popup band karne ka function
+function closeWelcomePopup() {
+    const welcome = document.getElementById('welcomePopup');
+    if(welcome) welcome.style.display = 'none';
 }
 </script>
 </body>
