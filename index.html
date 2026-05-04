@@ -695,90 +695,108 @@ Gallary
 © 2026 Saraswati Bal Vidhya Mandir High School Runaha
 </footer>
 <script>
-// 1. Login Credentials
+// 1. Credentials Configuration
 const credentials = {
     teacher: { id: "teacher", pass: "teacher123" },
     principal: { id: "23320124505", pass: "sbvm@123" }
 };
 
-// 2. Page Load hote hi Student Mode set karna (IMP)
-window.onload = function() {
-    applyPermissions('student'); 
-};
+// 2. Initial Setup: Page load par permissions set karna
+document.addEventListener('DOMContentLoaded', () => {
+    applyPermissions('student');
+});
 
-// 3. Popup Open/Close
+// 3. Popup Controls
 function openLogin() { 
-    document.getElementById('loginPopup').style.display = 'flex'; 
+    const popup = document.getElementById('loginPopup');
+    if(popup) popup.style.display = 'flex'; 
 }
 
 function closeLogin() { 
-    document.getElementById('loginPopup').style.display = 'none'; 
+    const popup = document.getElementById('loginPopup');
+    if(popup) popup.style.display = 'none'; 
 }
 
-// 4. Login Logic
+// 4. Login Functionality (The Fix)
 function handleLogin() {
-    const role = document.getElementById('userRole').value;
-    const enteredId = document.getElementById('username').value;
-    const enteredPass = document.getElementById('password').value;
+    const roleSelect = document.getElementById('userRole');
+    const userField = document.getElementById('username');
+    const passField = document.getElementById('password');
 
-    if (enteredId === credentials[role].id && enteredPass === credentials[role].pass) {
+    if (!roleSelect || !userField || !passField) {
+        console.error("Login fields missing in HTML!");
+        return;
+    }
+
+    const role = roleSelect.value;
+    const enteredId = userField.value.trim();
+    const enteredPass = passField.value.trim();
+
+    // Verification Logic
+    if (credentials[role] && enteredId === credentials[role].id && enteredPass === credentials[role].pass) {
         alert("Saraswati School Portal: Login Successful as " + role.toUpperCase());
         applyPermissions(role);
         closeLogin();
+        
+        // Clear fields for security
+        userField.value = "";
+        passField.value = "";
     } else {
-        alert("गलत आईडी या पासवर्ड! कृपया दोबारा जाँचें ।");
+        alert("गलत आईडी या पासवर्ड! कृपया दोबारा जाँचें।");
     }
 }
 
-// 5. Menu Permissions (Sabse Zaruri Hissa)
+// 5. Menu Visibility Logic
 function applyPermissions(role) {
     const allMenus = document.querySelectorAll('nav .dropdown, nav > a');
     
-    // Students ko kya dikhega (Bina login ke)
-    const studentAllowed = ["Home", "Gallery", "Contact"]; 
-    // Note: Result, Admit Card, Fees aapke niche wale boxes mein hain, 
-    // agar nav mein bhi hain toh unke naam yahan likhein.
-
-    // Teacher ko kya dikhega
+    // Permission Lists
+    const studentAllowed = ["Home", "Gallery", "Contact"];
     const teacherAllowed = ["Home", "Attendance", "Profile Upd", "Result Upd", "Gallery", "Contact"];
 
     allMenus.forEach(menu => {
-        const menuText = menu.innerText.trim();
-
+        const menuText = menu.textContent.trim();
+        
         if (role === "student") {
-            // Student Permission
-            if (studentAllowed.some(allowed => menuText.includes(allowed))) {
-                menu.style.display = "inline-block";
-            } else {
-                menu.style.display = "none";
-            }
+            const isAllowed = studentAllowed.some(allowed => menuText.includes(allowed));
+            menu.style.display = isAllowed ? "inline-block" : "none";
         } 
         else if (role === "teacher") {
-            // Teacher Permission
-            if (teacherAllowed.some(allowed => menuText.includes(allowed))) {
-                menu.style.display = "inline-block";
-            } else {
-                menu.style.display = "none";
-            }
+            const isAllowed = teacherAllowed.some(allowed => menuText.includes(allowed));
+            menu.style.display = isAllowed ? "inline-block" : "none";
         } 
         else if (role === "principal") {
-            // Principal Permission (Sab dikhao)
-            menu.style.display = "inline-block";
+            menu.style.display = "inline-block"; // Access All
         }
     });
 
-    // Topbar update karna login ke baad
-    if (role !== "student") {
-        document.querySelector('.topbar').innerHTML = `
-            <span class="user-info" style="color:white; margin-right:10px;">User: ${role.toUpperCase()}</span>
-            <button class="logout-btn" onclick="location.reload()" style="background:red; color:white;">Logout</button>
+    // Update Topbar UI
+    updateTopbar(role);
+}
+
+// 6. Topbar UI Update
+function updateTopbar(role) {
+    const topbar = document.querySelector('.topbar');
+    if (!topbar) return;
+
+    if (role === 'student') {
+        topbar.innerHTML = `
+            <button onclick="alert('English Selected')">EN</button>
+            <button onclick="alert('Hindi Selected')">HI</button>
+            <button onclick="openLogin()">Login</button>
+        `;
+    } else {
+        topbar.innerHTML = `
+            <span class="user-info" style="color:white; margin-right:15px; font-weight:bold;">User: ${role.toUpperCase()}</span>
+            <button class="logout-btn" onclick="location.reload()" style="background:red; color:white; border:none; padding:6px 15px; border-radius:20px; cursor:pointer; font-weight:bold;">Logout</button>
         `;
     }
 }
 
-// 6. Result Check Function
+// 7. Result Check Helper
 function checkResult(){
     const now = new Date();
+    // Month is 0-indexed (3 = April)
     const resultDate = new Date(2026, 3, 13, 11, 0); 
 
     if(now < resultDate){
