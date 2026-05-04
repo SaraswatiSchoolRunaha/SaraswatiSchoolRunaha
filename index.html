@@ -356,41 +356,66 @@ text-align:center;
 padding:15px;
 }
 
-/* MENU SUBMENU */
-.dropdown{
-display:inline-block;
-position:relative;
+/* ===== MODERN DROPDOWN SYSTEM ===== */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
 }
 
-.dropdown-content{
-display:none;
-position:absolute;
-background: #f2f2f2;   /* 👈 green ki jagah white */
-min-width:220px;
-border-radius:4px;
-text-align:left;
-font-family:Calibri, Arial, sans-serif;
-top:27px;
-z-index:999;
-box-shadow:0 0 10px rgba(0,0,0,0.2);
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff; /* Bilkul saaf safed */
+    min-width: 240px;
+    top: 100%; /* Header ke bilkul neeche se suru hoga */
+    left: 0;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.2); /* Gehri aur sunder shadow */
+    border-radius: 12px; /* Rounded corners */
+    overflow: hidden;
+    z-index: 1000;
+    border-top: 4px solid #ffcc00; /* School ka peela rang (Yellow) */
+    
+    /* Smooth slide-down animation */
+    animation: menuSlide 0.3s ease-out;
 }
 
-.dropdown-content a{
-display:block;
-color:black;   /* 👈 text black */
-padding:10px 12px;   /* 👈 spacing bhi thodi kam */
-text-decoration:none;
-line-height:0.1;   /* 👈 text gap kam */
+.dropdown-content a {
+    display: block;
+    color: #333 !important; /* Dark text jo padhne mein aasan ho */
+    padding: 14px 18px !important;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    border-bottom: 1px solid #f1f1f1; /* Har link ke beech halki line */
+    transition: all 0.2s ease;
+    text-align: left !important;
+    line-height: 1.4 !important; /* Text ke beech sahi gap */
 }
 
-.dropdown-content a:hover{
-background:Red;   /* 👈 halka grey hover */
+/* Last link se border hatane ke liye */
+.dropdown-content a:last-child {
+    border-bottom: none;
 }
 
-.dropdown:hover .dropdown-content{
-display:block;
+/* Hover Effect: Mouse le jane par badlav */
+.dropdown-content a:hover {
+    background-color: #002366 !important; /* School ka dark blue color */
+    color: #ffffff !important; /* Safed text hover par */
+    padding-left: 25px !important; /* Thoda slide hone wala effect */
 }
 
+/* Hover karne par menu dikhana */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Animation Keyframes */
+@keyframes menuSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+  
   /* Login hone ke baad topbar ka look */
 .user-info {
     color: white;
@@ -721,11 +746,6 @@ Gallary
         <button onclick="closeWelcomePopup()" style="width:100%; padding:12px; background:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">आगे बढ़ें (Continue)</button>
     </div>
 </div>
-
-
-
-
-
   
 <footer>
 © 2026 Saraswati Bal Vidhya Mandir High School Runaha
