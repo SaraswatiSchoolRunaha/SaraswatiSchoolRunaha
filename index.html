@@ -760,11 +760,14 @@ function applyPermissions(role) {
     
     // Permission Lists: Kaun kya dekhega
     const studentAllowed = ["Home", "Gallery", "Contact"];
-    
+
+   // teacher  ke liye Limited Access (Yahan se Fees/TC/Promotion hata diya hai)
+     const teacherAllowed = ["Home", "Attendance", "Result Upd", "Gallery", "Contact"];
+  
     // Principal ke liye Limited Access (Yahan se Fees/TC/Promotion hata diya hai)
-    const principalAllowed = ["Home", "Attendance", "Profile Upd", "Result Upd", "Admission", "Gallery", "Contact"];
+    const principalAllowed = ["Home", "Attendance", "Profile Upd", "Result Upd", "Admit Car Upd", "Fees Upd", "Certificate", "Gallery", "Contact"];
     
-    const teacherAllowed = ["Home", "Attendance", "Result Upd", "Gallery", "Contact"];
+ 
 
     allMenus.forEach(menu => {
         const menuText = menu.textContent.trim();
