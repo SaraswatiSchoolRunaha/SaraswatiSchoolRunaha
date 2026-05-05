@@ -310,26 +310,36 @@
 
     window.onload = function() {
         generateCaptcha();
+        
+        // 1. पिछले पेज से डेटा प्राप्त करना
         const params = new URLSearchParams(window.location.search);
-        const roll = params.get("roll") || "000000";
+        const roll = params.get("roll") || "Not Found";
+        const sClass = params.get("class") || "10th"; // Default if empty
+        const year = params.get("year") || "2026";
+
         document.getElementById("roll").value = roll;
 
-        // Fetch Data Simulation
+        // 2. पुराने डेटा बॉक्स में जानकारी दिखाना (Simulation)
         setTimeout(() => {
             document.getElementById("old_name").innerText = "RAJESH KUMAR";
             document.getElementById("old_father").innerText = "MR. SHYAM LAL";
             document.getElementById("old_mother").innerText = "MRS. GEETA DEVI";
             document.getElementById("old_dob").innerText = "15-08-2008";
-            document.getElementById("old_class").innerText = "10th";
+            document.getElementById("old_class").innerText = sClass; // URL से आया हुआ
             document.getElementById("old_medium").innerText = "Hindi";
             document.getElementById("old_category").innerText = "GENERAL";
-        }, 1000);
+        }, 800);
     };
 
     function enable(id){
         let field = document.getElementById(id);
         field.disabled = !field.disabled;
-        if(!field.disabled) field.focus();
+        if(!field.disabled) {
+            field.focus();
+            field.style.borderColor = "#003366";
+        } else {
+            field.style.borderColor = "#ccc";
+        }
     }
 
     function submitData(){
@@ -337,21 +347,25 @@
         const isAccepted = document.getElementById("acceptTerms").checked;
         
         if(userCaptcha.toUpperCase() !== currentCaptcha) {
-            alert("गलत कैप्चा कोड!");
+            alert("❌ गलत कैप्चा कोड!");
             generateCaptcha();
             return;
         }
 
         if(!isAccepted) {
-            alert("कृपया घोषणा पत्र स्वीकार करें।");
+            alert("⚠️ कृपया घोषणा पत्र स्वीकार करें।");
             return;
         }
 
+        // 3. एप्लीकेशन आईडी जेनरेट करना और सेव करना
         const appID = "COR-2026-" + Math.floor(10000 + Math.random() * 99999);
-        alert("✅ आवेदन सफल!\nएप्लीकेशन आईडी: " + appID);
-        window.location.href = "index.html";
+        localStorage.setItem("lastAppID", appID); // इसे स्टोर किया ताकि status.html पढ़ सके
+        
+        alert("✅ आवेदन सफल!\n\nएप्लीकेशन आईडी: " + appID);
+        
+        // यहाँ अपनी स्टेटस फाइल का नाम लिखें, उदाहरण के लिए status.html
+        window.location.href = "status.html"; 
     }
 </script>
-
 </body>
 </html>
