@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marksheet Status Portal</title>
+    <style>
+        /* Page setup */
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        /* Main Card with Border */
+        .card { 
+            background-color: white;
+            width: 350px; 
+            padding: 25px; 
+            border: 3px solid #007bff; 
+            border-radius: 15px;       
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.15); 
+        }
+
+        h3 { 
+            text-align: center; 
+            color: #333; 
+            margin-top: 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.2);
+        }
+
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .captcha-box { 
+            background: #e9ecef; 
+            padding: 10px; 
+            font-weight: bold; 
+            letter-spacing: 5px; 
+            border: 1px dashed #666; 
+            flex: 1;
+            text-align: center;
+            user-select: none;
+        }
+
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover { 
+            background-color: #0056b3; 
+        }
+
+        #result { 
+            margin-top: 15px; 
+            text-align: center; 
+            font-weight: bold; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3>Check Status</h3>
+    
+    <label>Application Number</label>
+    <input type="text" id="appNo" placeholder="Enter Application No.">
+    
+    <label>Roll Number</label>
+    <input type="text" id="rollNo" placeholder="Enter Roll Number">
+    
+    <label>Captcha Code</label>
+    <div class="captcha-container">
+        <div class="captcha-box" id="captchaVal">B8K2L</div>
+        <input type="text" id="userCaptcha" placeholder="Type Code" style="margin-bottom: 0; flex: 1;">
+    </div>
+    
+    <button onclick="checkStatus()">Get Result</button>
+    <p id="result"></p>
+</div>
+
+<script>
+    function checkStatus() {
+        const app = document.getElementById('appNo').value;
+        const roll = document.getElementById('rollNo').value;
+        const captcha = document.getElementById('userCaptcha').value;
+        const actualCaptcha = document.getElementById('captchaVal').innerText;
+        const resultDiv = document.getElementById('result');
+
+        if(app === "" || roll === "" || captcha === "") {
+            resultDiv.innerText = "⚠️ Sabhi fields bharna zaroori hai!";
+            resultDiv.style.color = "orange";
+            return;
+        }
+
+        if(captcha.toUpperCase() !== actualCaptcha) {
+            resultDiv.innerText = "❌ Galat Captcha! Phir se koshish karein.";
+            resultDiv.style.color = "red";
+            return;
+        }
+
+        // Status Logic (Aap ise database se connect karenge tab badal sakte hain)
+        let appStatus = "Rejected"; // Isse "Approved" bhi kar sakte hain testing ke liye
+        let rejectReason = "Dostavej (Documents) saaf nahi hain."; // Reason text
+
+        // Naye page ka content generate karna
+        const reportWindow = window.open('', '_blank');
+        reportWindow.document.write(`
+            <html>
+            <head>
+                <title>Application Status Report</title>
+                <style>
+                    body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; }
+                    .header-line { height: 10px; background: #0056b3; border-radius: 5px 5px 0 0; }
+                    .table-container { background: white; border-radius: 0 0 10px 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow-x: auto; }
+                    table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+                    th { background: #f8f9fa; color: #333; padding: 15px 10px; text-align: left; font-size: 12px; border-bottom: 2px solid #0056b3; text-transform: uppercase; }
+                    td { padding: 15px 10px; border-bottom: 1px solid #eee; font-size: 13px; color: #555; }
+                    .badge { padding: 5px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; }
+                    .bg-red { background: #dc3545; }
+                    .bg-green { background: #28a745; }
+                    .reason-col { color: #d9534f; font-weight: 500; }
+                    h2 { color: #333; text-align: center; }
+                </style>
+            </head>
+            <body>
+                <h2>Marksheet Application Verification</h2>
+                <div class="header-line"></div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>App No.</th>
+                                <th>Mobile</th>
+                                <th>Student Name</th>
+                                <th>Father Name</th>
+                                <th>Mother Name</th>
+                                <th>DOB</th>
+                                <th>Class</th>
+                                <th>Medium</th>
+                                <th>Status</th>
+                                <th>Rejection Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${app}</td>
+                                <td>9876XXXXXX</td>
+                                <td>Rahul Kumar</td>
+                                <td>Suresh Kumar</td>
+                                <td>Sunita Devi</td>
+                                <td>10/05/2006</td>
+                                <td>12th</td>
+                                <td>Hindi</td>
+                                <td><span class="badge ${appStatus === 'Rejected' ? 'bg-red' : 'bg-green'}">${appStatus}</span></td>
+                                <td class="reason-col">${appStatus === 'Rejected' ? rejectReason : '-'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <center><button onclick="window.print()" style="padding:10px 20px; cursor:pointer;">Print Result</button></center>
+            </body>
+            </html>
+        `);
+    }
+</script>
+
+</body>
+</html>
