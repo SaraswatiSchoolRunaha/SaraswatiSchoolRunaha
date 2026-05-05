@@ -17,7 +17,6 @@
             margin: 0;
         }
 
-        /* Form Container with Deep Blue Border */
         .search-container {
             background: #ffffff;
             padding: 40px;
@@ -28,7 +27,6 @@
             position: relative;
         }
 
-        /* Header patti */
         .search-container::before {
             content: "";
             position: absolute;
@@ -169,10 +167,9 @@
             <label>Academic Year</label>
             <select id="year">
                 <option value="">--Select--</option>
-		<option value="2027">2027</option>
-		<option value="2026">2026</option>
-		<option value="2025">2025</option>
-		
+                <option value="2027">2027</option>
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
             </select>
         </div>
     </div>
@@ -207,6 +204,13 @@ function generateCaptcha() {
     document.getElementById("captchaInput").value = ""; 
 }
 
+// Enter Key दबाने पर भी सबमिट होगा
+document.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        validateAndGo();
+    }
+});
+
 function validateAndGo() {
     const roll = document.getElementById("roll").value;
     const sClass = document.getElementById("class").value;
@@ -224,8 +228,8 @@ function validateAndGo() {
         return;
     }
 
-    // Yahan destination badal di gayi hai
-    const url = "marsheetcorrection.html?roll=" + encodeURIComponent(roll) + 
+    // स्पेलिंग सही कर दी गई है: marksheetcorrection.html
+    const url = "marksheetcorrection.html?roll=" + encodeURIComponent(roll) + 
                 "&class=" + encodeURIComponent(sClass) + 
                 "&year=" + encodeURIComponent(year);
 
