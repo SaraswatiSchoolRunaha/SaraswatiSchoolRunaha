@@ -1,1 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marksheet Correction Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 10px;
+            border: 2px solid #003366;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #0056b3;
+        }
+
+        .header h2 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; text-transform: uppercase; }
+
+        .content { padding: 30px; }
+
+        .roll-section {
+            background: #eef2f7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            border-left: 5px solid #003366;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .roll-section label { font-weight: bold; color: #003366; }
+        .roll-section input { background: transparent; border: none; font-size: 16px; font-weight: bold; color: #333; outline: none; }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .comparison-table th {
+            background: #f0f4f8;
+            color: #003366;
+            text-align: left;
+            padding: 12px;
+            font-size: 13px;
+            border-bottom: 2px solid #003366;
+        }
+
+        .comparison-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .old-data-box {
+            color: #777;
+            font-style: italic;
+            font-weight: 600;
+            background: #f9f9f9;
+            padding: 8px;
+            border-radius: 4px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #003366;
+            margin: 25px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            text-transform: uppercase;
+        }
+
+        input[type="text"], input[type="date"], input[type="file"], select {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        input:disabled, select:disabled { background: #fdfdfd; color: #ccc; border-color: #eee; }
+        input:enabled, select:enabled { border-color: #003366; background: #fff; box-shadow: 0 0 5px rgba(0,51,102,0.1); }
+
+        .doc-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            background: #fdfdfd;
+            padding: 15px;
+            border: 1px dashed #003366;
+            border-radius: 6px;
+        }
+
+        .declaration-box {
+            margin-top: 25px;
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ffe082;
+            display: flex;
+            gap: 12px;
+        }
+
+        .captcha-box {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #captchaDisplay {
+            background: #e9ecef;
+            padding: 8px 15px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            border: 1px solid #003366;
+            color: #003366;
+            font-family: monospace;
+        }
+
+        .btn-submit {
+            background: #003366;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .btn-submit:hover { background: #002244; }
+    </style>
+</head>
+<body onload="generateCaptcha()">
+
+<div class="main-card">
+    <div class="header">
+        <h2>Marksheet Correction Portal</h2>
+    </div>
+
+    <div class="content">
+        <div class="roll-section">
+            <label>ROLL NUMBER:</label>
+            <input type="text" id="roll" readonly>
+        </div>
+
+        <div class="section-title">Correction Details (Compare & Edit)</div>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th width="5%">Edit</th>
+                    <th width="25%">Field Name</th>
+                    <th width="35%">Current Record (Old)</th>
+                    <th width="35%">New Information (Correct)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Student Name -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('name')"></td>
+                    <td><strong>Student Name</strong></td>
+                    <td><span class="old-data-box" id="old_name">Loading...</span></td>
+                    <td><input type="text" id="name" disabled placeholder="Enter Correct Name"></td>
+                </tr>
+                <!-- Father Name -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('father')"></td>
+                    <td><strong>Father's Name</strong></td>
+                    <td><span class="old-data-box" id="old_father">Loading...</span></td>
+                    <td><input type="text" id="father" disabled placeholder="Enter Father's Name"></td>
+                </tr>
+                <!-- Mother Name -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('mother')"></td>
+                    <td><strong>Mother's Name</strong></td>
+                    <td><span class="old-data-box" id="old_mother">Loading...</span></td>
+                    <td><input type="text" id="mother" disabled placeholder="Enter Mother's Name"></td>
+                </tr>
+                <!-- Date of Birth -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('dob')"></td>
+                    <td><strong>Date of Birth</strong></td>
+                    <td><span class="old-data-box" id="old_dob">Loading...</span></td>
+                    <td><input type="date" id="dob" disabled></td>
+                </tr>
+                <!-- Class -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('class')"></td>
+                    <td><strong>Class</strong></td>
+                    <td><span class="old-data-box" id="old_class">Loading...</span></td>
+                    <td>
+                        <select id="class" disabled>
+                            <option value="">--Select Class--</option>
+                            <option value="10th">10वीं (Secondary)</option>
+                            <option value="12th">12वीं (Higher Secondary)</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- Medium -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('medium')"></td>
+                    <td><strong>Medium</strong></td>
+                    <td><span class="old-data-box" id="old_medium">Loading...</span></td>
+                    <td>
+                        <select id="medium" disabled>
+                            <option value="">--Select Medium--</option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="English">English</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- Category -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('category')"></td>
+                    <td><strong>Category</strong></td>
+                    <td><span class="old-data-box" id="old_category">Loading...</span></td>
+                    <td>
+                        <select id="category" disabled>
+                            <option value="">--Select Category--</option>
+                            <option value="General">General</option>
+                            <option value="OBC">OBC</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- Photo -->
+                <tr>
+                    <td><input type="checkbox" onclick="enable('photo')"></td>
+                    <td><strong>Student Photo</strong></td>
+                    <td>
+                        <div class="old-data-box" style="text-align:center;">
+                            <img id="old_photo_img" src="https://via.placeholder.com/50" alt="Current Photo" style="border:1px solid #ddd; border-radius:4px;">
+                            <br><small>Current Photo</small>
+                        </div>
+                    </td>
+                    <td><input type="file" id="photo" disabled accept="image/*"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-title">Required Documents</div>
+        <div class="doc-section">
+            <div class="field-row">
+                <label style="font-weight:600; font-size:12px;">Birth Certificate *</label>
+                <input type="file" id="birthCert" style="width: 100%;">
+            </div>
+            <div class="field-row">
+                <label style="font-weight:600; font-size:12px;">Aadhar Card *</label>
+                <input type="file" id="aadhar" style="width: 100%;">
+            </div>
+        </div>
+
+        <div class="declaration-box">
+            <input type="checkbox" id="acceptTerms" style="width: 20px; height: 20px; cursor: pointer;">
+            <label for="acceptTerms" style="font-size: 13px; font-weight: 600; color: #444;">
+                मैं घोषित करता हूँ कि दी गई जानकारी सत्य है। किसी भी त्रुटि की जिम्मेदारी मेरी होगी।
+            </label>
+        </div>
+
+        <div class="captcha-box">
+            <div id="captchaDisplay"></div>
+            <button type="button" onclick="generateCaptcha()" style="background:none; border:none; cursor:pointer;">🔄</button>
+            <input type="text" id="captcha" placeholder="Code" style="width: 100px;">
+        </div>
+
+        <button class="btn-submit" onclick="submitData()">SUBMIT CORRECTION REQUEST</button>
+    </div>
+</div>
+
+<script>
+    let currentCaptcha = "";
+
+    function generateCaptcha() {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let code = "";
+        for(let i=0; i<6; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        currentCaptcha = code;
+        document.getElementById("captchaDisplay").innerText = code;
+    }
+
+    window.onload = function() {
+        generateCaptcha();
+        
+        // 1. पिछले पेज से डेटा प्राप्त करना
+        const params = new URLSearchParams(window.location.search);
+        const roll = params.get("roll") || "Not Found";
+        const sClass = params.get("class") || "10th"; // Default if empty
+        const year = params.get("year") || "2026";
+
+        document.getElementById("roll").value = roll;
+
+        // 2. पुराने डेटा बॉक्स में जानकारी दिखाना (Simulation)
+        setTimeout(() => {
+            document.getElementById("old_name").innerText = "RAJESH KUMAR";
+            document.getElementById("old_father").innerText = "MR. SHYAM LAL";
+            document.getElementById("old_mother").innerText = "MRS. GEETA DEVI";
+            document.getElementById("old_dob").innerText = "15-08-2008";
+            document.getElementById("old_class").innerText = sClass; // URL से आया हुआ
+            document.getElementById("old_medium").innerText = "Hindi";
+            document.getElementById("old_category").innerText = "GENERAL";
+        }, 800);
+    };
+
+    function enable(id){
+        let field = document.getElementById(id);
+        field.disabled = !field.disabled;
+        if(!field.disabled) {
+            field.focus();
+            field.style.borderColor = "#003366";
+        } else {
+            field.style.borderColor = "#ccc";
+        }
+    }
+
+    function submitData(){
+        const userCaptcha = document.getElementById("captcha").value;
+        const isAccepted = document.getElementById("acceptTerms").checked;
+        
+        if(userCaptcha.toUpperCase() !== currentCaptcha) {
+            alert("❌ गलत कैप्चा कोड!");
+            generateCaptcha();
+            return;
+        }
+
+        if(!isAccepted) {
+            alert("⚠️ कृपया घोषणा पत्र स्वीकार करें।");
+            return;
+        }
+
+        // 3. एप्लीकेशन आईडी जेनरेट करना और सेव करना
+        const appID = "COR-2026-" + Math.floor(10000 + Math.random() * 99999);
+        localStorage.setItem("lastAppID", appID); // इसे स्टोर किया ताकि status.html पढ़ सके
+        
+        alert("✅ आवेदन सफल!\n\nएप्लीकेशन आईडी: " + appID);
+        
+        // यहाँ अपनी स्टेटस फाइल का नाम लिखें, उदाहरण के लिए status.html
+        window.location.href = "status.html"; 
+    }
+</script>
+</body>
+</html>
 
