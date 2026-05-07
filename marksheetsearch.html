@@ -234,12 +234,15 @@ function validateAndGo() {
     }
 
     // स्पेलिंग सही कर दी गई है: marksheetcorrection.html
-    const url = "marksheetcorrection.html?roll=" + encodeURIComponent(roll) + 
-                "&class=" + encodeURIComponent(sClass) + 
-                "&year=" + encodeURIComponent(year);
+   const baseUrl = window.location.origin + window.location.pathname;
 
-    window.location.href = url;
-}
+const url = baseUrl +
+    "?page=correction" +
+    "&roll=" + encodeURIComponent(roll) +
+    "&class=" + encodeURIComponent(sClass) +
+    "&year=" + encodeURIComponent(year);
+
+window.location.href = url;
 </script>
 
 </body>
