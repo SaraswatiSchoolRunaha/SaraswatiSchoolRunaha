@@ -433,16 +433,33 @@
                 document: docData
             };
 
-            // Backend ko data bhejna
+           // Backend ko data bhejna
             google.script.run
                 .withSuccessHandler(function(appID) {
-                    alert("✅ आवेदन सफल!\n\nआपकी एप्लीकेशन आईडी: " + appID);
-                    // Application success ke baad redirect
-                    window.location.href = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?page=status&id=" + appID;
+                    // Agar backend ne error message bheja ho (jaise "Error: Roll not found")
+                    if (appID.toString().startsWith("Error")) {
+                        alert("❌ " + appID);
+                        if(btn) {
+                            btn.disabled = false;
+                            btn.innerText = "SUBMIT CORRECTION REQUEST";
+                        }
+                    } else {
+                        // Success Case
+                        alert("✅ आवेदन सफल!\n\nआपकी एप्लीकेशन आईडी: " + appID);
+                        
+                        // Aapka actual deployed URL niche hai
+                        const webAppUrl = "https://script.google.com/macros/s/AKfycbz-WSiacRlmQotiMX8cf3yAUk6vcvnozE0zxT7Eet8MIndmiYFTthltGO5rV281Cayd2Q/exec";
+                        
+                        // Status page par redirect karein
+                        window.location.href = webAppUrl + "?page=status&id=" + appID;
+                    }
                 })
                 .withFailureHandler(function(err) {
                     alert("Submission Error: " + err);
-                    if(btn) btn.disabled = false;
+                    if(btn) {
+                        btn.disabled = false;
+                        btn.innerText = "SUBMIT CORRECTION REQUEST";
+                    }
                 })
                 .processCorrection(formData);
 
@@ -453,7 +470,7 @@
                 btn.innerText = "SUBMIT CORRECTION REQUEST";
             }
         }
-    }
+    } // submitData function yahan band ho raha hai
 </script>
 </body>
 </html>
