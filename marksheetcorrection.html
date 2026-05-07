@@ -157,7 +157,7 @@
         .btn-submit:hover { background: #002244; }
     </style>
 </head>
-<body onload="generateCaptcha()">
+<body>
 
 <div class="main-card">
     <div class="header">
@@ -311,19 +311,31 @@
     let currentCaptcha = "";
 
     // 1. Page Load Logic
-    window.onload = function() {
-        generateCaptcha();
-        const urlParams = new URLSearchParams(window.location.search);
-        const rollNo = urlParams.get('roll');
-        const studentClass = urlParams.get('class');
+  window.onload = function () {
 
-        if (rollNo) {
-            document.getElementById("roll").value = rollNo;
-            // Purana data fetch karne ke liye call
-            fetchStudentDetails(rollNo, studentClass);
-        }
-    };
+    generateCaptcha();
 
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const rollNo = urlParams.get('roll');
+    const studentClass = urlParams.get('class');
+
+    console.log("ROLL:", rollNo);
+    console.log("CLASS:", studentClass);
+
+    if (rollNo && studentClass) {
+
+        document.getElementById("roll").value = rollNo;
+
+        fetchStudentDetails(rollNo, studentClass);
+
+    } else {
+
+        console.log("URL Parameters Missing");
+
+    }
+};
+    
     // 2. Google Sheets se Purana Data Fetch karna
     function fetchStudentDetails(roll, sClass) {
         if (!roll) return;
