@@ -218,8 +218,9 @@
                     <td>
                         <select id="class" disabled>
                             <option value="">--Select Class--</option>
-                            <option value="12th">12वीं (Higher Secondary)</option>
-                            <option value="10th">10वीं (Secondary</option>
+                            <option value="12th">12th </option>
+                            <option value="11th">11th </option>
+                            <option value="10th">10th </option>
                             <option value="9th">9th </option>
                             <option value="8th">8th </option>
                             <option value="7th">7th </option>
@@ -417,60 +418,67 @@
             btn.innerText = "Processing... Please Wait";
         }
 
-        try {
-            // Files read karna
-            const photoData = await getFileData('photo');
-            const docData = await getFileData('document'); // Aadhar ya Birth Certificate ID
+       try {
+            // 1. Files read karna (Promise.all se speed badh jayegi)
+            const [photoData, birthCertData, aadharData] = await Promise.all([
+                getFileData('photo'),
+                getFileData('birthCert'),
+                getFileData('aadhar')
+            ]);
 
-            // Sirf wahi data uthana jo enable (correct) kiya gaya hai
+            // 2. Sirf wahi data uthana jo enable (checkbox checked) kiya gaya hai
             const formData = {
                 roll: document.getElementById("roll").value,
-                newName: document.getElementById("name").disabled ? "" : document.getElementById("name").value,
-                newFather: document.getElementById("father_name").disabled ? "" : document.getElementById("father_name").value,
-                newMother: document.getElementById("mother_name") && !document.getElementById("mother_name").disabled ? document.getElementById("mother_name").value : "",
-                newDob: document.getElementById("dob") && !document.getElementById("dob").disabled ? document.getElementById("dob").value : "",
+                
+                // Checkbox enabled fields
+                newName:   document.getElementById("name").disabled   ? "" : document.getElementById("name").value,
+                newFather: document.getElementById("father").disabled ? "" : document.getElementById("father").value,
+                newMother: document.getElementById("mother").disabled ? "" : document.getElementById("mother").value,
+                newDob:    document.getElementById("dob").disabled    ? "" : document.getElementById("dob").value,
+                newClass:  document.getElementById("class").disabled  ? "" : document.getElementById("class").value,
+                newMedium: document.getElementById("medium").disabled ? "" : document.getElementById("medium").value,
+                
+                // Files (Agar upload ki gayi hain)
                 photo: photoData,
-                document: docData
+                birthCert: birthCertData,
+                aadhar: aadharData
             };
 
-           // Backend ko data bhejna
+            // 3. Validation: Kya koi correction select ki gayi hai?
+            const isAnyCorrection = formData.newName || formData.newFather || formData.newMother || 
+                                     formData.newDob || formData.newClass || formData.newMedium || formData.photo;
+            
+            if (!isAnyCorrection && !formData.birthCert && !formData.aadhar) {
+                alert("⚠️ कृपया कम से कम एक सुधार या डॉक्यूमेंट चुनें।");
+                if(btn) { btn.disabled = false; btn.innerText = "SUBMIT CORRECTION REQUEST"; }
+                return;
+            }
+
+            // 4. Backend (Code.gs) ko data bhejna
             google.script.run
                 .withSuccessHandler(function(appID) {
-                    // Agar backend ne error message bheja ho (jaise "Error: Roll not found")
                     if (appID.toString().startsWith("Error")) {
                         alert("❌ " + appID);
-                        if(btn) {
-                            btn.disabled = false;
-                            btn.innerText = "SUBMIT CORRECTION REQUEST";
-                        }
+                        btn.disabled = false;
+                        btn.innerText = "SUBMIT CORRECTION REQUEST";
                     } else {
-                        // Success Case
                         alert("✅ आवेदन सफल!\n\nआपकी एप्लीकेशन आईडी: " + appID);
-                        
-                        // Aapka actual deployed URL niche hai
                         const webAppUrl = "https://script.google.com/macros/s/AKfycbz-WSiacRlmQotiMX8cf3yAUk6vcvnozE0zxT7Eet8MIndmiYFTthltGO5rV281Cayd2Q/exec";
-                        
-                        // Status page par redirect karein
                         window.location.href = webAppUrl + "?page=status&id=" + appID;
                     }
                 })
                 .withFailureHandler(function(err) {
                     alert("Submission Error: " + err);
-                    if(btn) {
-                        btn.disabled = false;
-                        btn.innerText = "SUBMIT CORRECTION REQUEST";
-                    }
+                    btn.disabled = false;
+                    btn.innerText = "SUBMIT CORRECTION REQUEST";
                 })
                 .processCorrection(formData);
 
         } catch (err) {
             alert("System Error: " + err.message);
-            if(btn) {
-                btn.disabled = false;
-                btn.innerText = "SUBMIT CORRECTION REQUEST";
-            }
+            btn.disabled = false;
+            btn.innerText = "SUBMIT CORRECTION REQUEST";
         }
-    } // submitData function yahan band ho raha hai
 </script>
 </body>
 </html>
