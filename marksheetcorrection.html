@@ -309,12 +309,42 @@
 <script>
     let currentCaptcha = "";
 
-    // 1. Page Load hote hi Captcha generate karein
+    // 1. Page Load Logic
     window.onload = function() {
         generateCaptcha();
+        const urlParams = new URLSearchParams(window.location.search);
+        const rollNo = urlParams.get('roll');
+        const studentClass = urlParams.get('class');
+
+        if (rollNo) {
+            document.getElementById("roll").value = rollNo;
+            // Backend se data lene ke liye call
+            fetchStudentDetails(rollNo, studentClass);
+        }
     };
 
-    // 2. Captcha banane ka function
+    // 2. Google Sheets se Data Fetch karne ka function
+    function fetchStudentDetails(roll, sClass) {
+        if (!roll) return;
+        
+        // Button ya loader dikhane ke liye yahan logic dal sakte hain
+        google.script.run
+            .withSuccessHandler(function(data) {
+                if(data) {
+                    // Span IDs check karein ki HTML me yahi hain na
+                    if(document.getElementById('old_name')) document.getElementById('old_name').innerText = data.name || "---";
+                    if(document.getElementById('old_father')) document.getElementById('old_father').innerText = data.father || "---";
+                    if(document.getElementById('old_mother')) document.getElementById('old_mother').innerText = data.mother || "---";
+                    if(document.getElementById('old_dob')) document.getElementById('old_dob').innerText = data.dob || "---";
+                    
+                    if(data.photoUrl && document.getElementById('old_photo_img')) {
+                        document.getElementById('old_photo_img').src = data.photoUrl;
+                    }
+                }
+            })
+            .getStudentData(roll, sClass); // Yeh function Code.gs mein hona chahiye
+    }
+
     function generateCaptcha() {
         const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         let code = "";
@@ -325,34 +355,48 @@
         document.getElementById("captchaDisplay").innerText = code;
     }
 
-    // 3. Photo Preview Logic (Jab user naya photo select karega)
-    document.getElementById('photo').onchange = evt => {
-        const [file] = document.getElementById('photo').files;
-        if (file) {
-            // Naye photo ka preview purani photo ki jagah dikhayega
-            document.getElementById('old_photo_img').src = URL.createObjectURL(file);
-        }
-    };
+    // 3. File Helper (File ko text format mein badalne ke liye)
+    function getFileData(fileId) {
+        return new Promise((resolve, reject) => {
+            const fileElement = document.getElementById(fileId);
+            if (!fileElement || !fileElement.files[0]) {
+                resolve(null);
+                return;
+            }
+            const file = fileElement.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                resolve({
+                    base64: e.target.result.split(',')[1],
+                    type: file.type,
+                    name: file.name
+                });
+            };
+            reader.onerror = (err) => resolve(null);
+            reader.readAsDataURL(file);
+        });
+    }
 
-    // 4. Checkbox se Input Field ko Enable/Disable karna
+    // 4. Input Enable/Disable logic
     function enable(id){
         let field = document.getElementById(id);
+        if(!field) return;
+        
         field.disabled = !field.disabled;
         if(!field.disabled) {
             field.focus();
             field.style.borderColor = "#003366";
         } else {
             field.style.borderColor = "#ccc";
-            field.value = ""; // Disable hone par field saaf ho jaye
+            field.value = ""; 
         }
     }
 
-    // 5. Data Submit karne ka function
-    function submitData(){
+    // 5. Final Submit Logic (Async banaya gaya hai files ke liye)
+    async function submitData(){
         const userCaptcha = document.getElementById("captcha").value;
         const isAccepted = document.getElementById("acceptTerms").checked;
         
-        // Validation check
         if(userCaptcha.toUpperCase() !== currentCaptcha) {
             alert("❌ गलत कैप्चा कोड!");
             generateCaptcha();
@@ -364,14 +408,35 @@
             return;
         }
 
-        // Application ID generate karna
-        const appID = "COR-2026-" + Math.floor(10000 + Math.random() * 99999);
-        localStorage.setItem("lastAppID", appID); 
-        
-        alert("✅ आवेदन सफल!\n\nआपकी एप्लीकेशन आईडी: " + appID);
-        
-        // Status page par redirect karna
-        window.location.href = "status.html"; 
+        // Loader dikhayein (taki user baar baar click na kare)
+        const btn = document.querySelector('button[onclick="submitData()"]');
+        if(btn) btn.disabled = true;
+
+        try {
+            // Files read karna
+            const photoData = await getFileData('photo');
+            const docData = await getFileData('document'); // Aadhar/Birth cert ID
+
+            const formData = {
+                roll: document.getElementById("roll").value,
+                newName: document.getElementById("name").value, // Checkbox se enable hone wala field
+                newFather: document.getElementById("father_name").value,
+                photo: photoData,
+                document: docData
+            };
+
+            // Backend ko data bhejna
+            google.script.run
+                .withSuccessHandler(function(appID) {
+                    alert("✅ आवेदन सफल!\n\nआपकी आईडी: " + appID);
+                    window.location.href = "status.html?id=" + appID;
+                })
+                .processCorrection(formData); // Yeh function Code.gs mein banayein
+
+        } catch (err) {
+            alert("Error: " + err.message);
+            if(btn) btn.disabled = false;
+        }
     }
 </script>
 </body>
