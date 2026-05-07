@@ -309,6 +309,12 @@
 <script>
     let currentCaptcha = "";
 
+    // 1. Page Load hote hi Captcha generate karein
+    window.onload = function() {
+        generateCaptcha();
+    };
+
+    // 2. Captcha banane ka function
     function generateCaptcha() {
         const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         let code = "";
@@ -319,29 +325,16 @@
         document.getElementById("captchaDisplay").innerText = code;
     }
 
-    window.onload = function() {
-        generateCaptcha();
-        
-        // 1. पिछले पेज से डेटा प्राप्त करना
-        const params = new URLSearchParams(window.location.search);
-        const roll = params.get("roll") || "Not Found";
-        const sClass = params.get("class") || "10th"; // Default if empty
-        const year = params.get("year") || "2026";
-
-        document.getElementById("roll").value = roll;
-
-        // 2. पुराने डेटा बॉक्स में जानकारी दिखाना (Simulation)
-        setTimeout(() => {
-            document.getElementById("old_name").innerText = "RAJESH KUMAR";
-            document.getElementById("old_father").innerText = "MR. SHYAM LAL";
-            document.getElementById("old_mother").innerText = "MRS. GEETA DEVI";
-            document.getElementById("old_dob").innerText = "15-08-2008";
-            document.getElementById("old_class").innerText = sClass; // URL से आया हुआ
-            document.getElementById("old_medium").innerText = "Hindi";
-            document.getElementById("old_category").innerText = "GENERAL";
-        }, 800);
+    // 3. Photo Preview Logic (Jab user naya photo select karega)
+    document.getElementById('photo').onchange = evt => {
+        const [file] = document.getElementById('photo').files;
+        if (file) {
+            // Naye photo ka preview purani photo ki jagah dikhayega
+            document.getElementById('old_photo_img').src = URL.createObjectURL(file);
+        }
     };
 
+    // 4. Checkbox se Input Field ko Enable/Disable karna
     function enable(id){
         let field = document.getElementById(id);
         field.disabled = !field.disabled;
@@ -350,13 +343,16 @@
             field.style.borderColor = "#003366";
         } else {
             field.style.borderColor = "#ccc";
+            field.value = ""; // Disable hone par field saaf ho jaye
         }
     }
 
+    // 5. Data Submit karne ka function
     function submitData(){
         const userCaptcha = document.getElementById("captcha").value;
         const isAccepted = document.getElementById("acceptTerms").checked;
         
+        // Validation check
         if(userCaptcha.toUpperCase() !== currentCaptcha) {
             alert("❌ गलत कैप्चा कोड!");
             generateCaptcha();
@@ -368,13 +364,13 @@
             return;
         }
 
-        // 3. एप्लीकेशन आईडी जेनरेट करना और सेव करना
+        // Application ID generate karna
         const appID = "COR-2026-" + Math.floor(10000 + Math.random() * 99999);
-        localStorage.setItem("lastAppID", appID); // इसे स्टोर किया ताकि status.html पढ़ सके
+        localStorage.setItem("lastAppID", appID); 
         
-        alert("✅ आवेदन सफल!\n\nएप्लीकेशन आईडी: " + appID);
+        alert("✅ आवेदन सफल!\n\nआपकी एप्लीकेशन आईडी: " + appID);
         
-        // यहाँ अपनी स्टेटस फाइल का नाम लिखें, उदाहरण के लिए status.html
+        // Status page par redirect karna
         window.location.href = "status.html"; 
     }
 </script>
