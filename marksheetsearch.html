@@ -216,7 +216,12 @@ document.addEventListener('keypress', function (e) {
     }
 });
 
-function validateAndGo() {
+function validateAndGo(event) {
+
+    if(event){
+        event.preventDefault();
+    }
+
     const roll = document.getElementById("roll").value;
     const sClass = document.getElementById("class").value;
     const year = document.getElementById("year").value;
