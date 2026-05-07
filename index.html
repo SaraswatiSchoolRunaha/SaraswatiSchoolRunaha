@@ -887,6 +887,57 @@ function closeWelcomePopup() {
     const welcome = document.getElementById('welcomePopup');
     if(welcome) welcome.style.display = 'none';
 }
+  
+// --- YAHAN SE COPY KAREIN ---
+
+// 8. URL Parameters se data load karne ka logic
+window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const rollNo = urlParams.get('roll');
+    const sClass = urlParams.get('class');
+
+    // Agar URL me data hai toh automatic fetch shuru karo
+    if (rollNo && sClass) {
+        // Roll number input box ko auto-fill karein
+        const rollField = document.getElementById("roll");
+        if(rollField) rollField.value = rollNo;
+        
+        // Data fetch karne wala function call karein
+        fetchStudentDetails(rollNo, sClass);
+    }
+});
+
+// 9. Server (Code.gs) se purana data mangwane ka function
+function fetchStudentDetails(roll, sClass) {
+    // UI par loading message dikhana (Optional)
+    console.log("Fetching details for:", roll, sClass);
+    
+    google.script.run
+        .withSuccessHandler(function(data) {
+            if(data && !data.error) {
+                // Form ke 'Old Record' wale spans/inputs me data bharna
+                // Dhayan dein: Aapke HTML me ye IDs honi chahiye
+                if(document.getElementById('old_name')) document.getElementById('old_name').innerText = data.name || "---";
+                if(document.getElementById('old_father')) document.getElementById('old_father').innerText = data.father || "---";
+                if(document.getElementById('old_mother')) document.getElementById('old_mother').innerText = data.mother || "---";
+                if(document.getElementById('old_dob')) document.getElementById('old_dob').innerText = data.dob || "---";
+                
+                // Photo preview update karna
+                if(data.photoUrl && document.getElementById('old_photo_img')) {
+                    document.getElementById('old_photo_img').src = data.photoUrl;
+                }
+            } else {
+                alert("Database me ye Roll No. nahi mila!");
+            }
+        })
+        .getStudentData(roll, sClass); // Ye function Code.gs me hona chahiye
+}
+
+// --- YAHAN TAK ---
+
+
+
+  
 </script>
 </body>
 </html>
