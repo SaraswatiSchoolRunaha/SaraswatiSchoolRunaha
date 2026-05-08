@@ -210,46 +210,50 @@ function generateCaptcha() {
     document.getElementById("captchaInput").value = "";
 }
 
-document.addEventListener('keypress', function (e) {
+// Enter key se submit karne ke liye
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         validateAndGo(e);
     }
 });
 
 function validateAndGo(event) {
-
-    if(event){
+    // Agar event pass hua hai (jaise enter key ya click), toh preventDefault karein
+    if (event && typeof event.preventDefault === 'function') {
         event.preventDefault();
     }
 
-    const roll = document.getElementById("roll").value;
+    const roll = document.getElementById("roll").value.trim();
     const sClass = document.getElementById("class").value;
     const year = document.getElementById("year").value;
-    const userInput = document.getElementById("captchaInput").value;
+    const userInput = document.getElementById("captchaInput").value.trim();
 
-    if (roll.trim() === "" || sClass === "" || year === "") {
+    // Basic Validation
+    if (roll === "" || sClass === "" || year === "") {
         alert("Please fill all fields properly.");
         return;
     }
 
+    // Captcha Validation
     if (userInput.toUpperCase() !== generatedCode) {
         alert("Invalid Captcha code!");
         generateCaptcha();
         return;
     }
 
-    // Redirect to correction page
-    const webAppUrl =
-    "https://script.google.com/macros/s/AKfycbxkq9UyIClyjov64J96ADJvzNKNnwcgSkp_lZY8ce4ayUq-QdFWJv-o8WZzEG--RTPCQg/exec";
-    const url =
-    webAppUrl +
-    "?page=correction" +
-    "&roll=" + encodeURIComponent(roll) +
-    "&class=" + encodeURIComponent(sClass) +
-    "&year=" + encodeURIComponent(year);
+    // URL Construction
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbxkq9UyIClyjov64J96ADJvzNKNnwcgSkp_lZY8ce4ayUq-QdFWJv-o8WZzEG--RTPCQg/exec";
+    
+    const params = new URLSearchParams({
+        page: 'correction',
+        roll: roll,
+        class: sClass,
+        year: year
+    });
 
-    window.location.href = url;
-    }
+    // Final Redirect
+    window.location.href = `${webAppUrl}?${params.toString()}`;
+}
 </script>
 
 </body>
