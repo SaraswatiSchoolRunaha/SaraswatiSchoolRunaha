@@ -27,17 +27,21 @@
             position: relative;
         }
 
-        .search-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: #003366;
-            border-radius: 6px 6px 0 0;
-        }
-
+       .search-container {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    border: 2px solid #003366; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+    
+    /* YAHAN BADLAV KARNA HAI */
+    width: 95%;           /* Mobile screen par poora fit aayega */
+    max-width: 400px;     /* Badi screen par 400px se zyada nahi failega */
+    
+    position: relative;
+    box-sizing: border-box; /* Isse padding box ke andar hi rahegi */
+}
+        
         .center-header { text-align: center; }
 
         h2 {
