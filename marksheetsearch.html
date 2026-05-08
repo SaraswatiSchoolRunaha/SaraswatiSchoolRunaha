@@ -238,14 +238,17 @@ function validateAndGo(event) {
         return;
     }
 
-    // Redirect to marksheet correction page
-       const url =
-        "?page=correction" +
-        "&roll=" + encodeURIComponent(roll) +
-        "&class=" + encodeURIComponent(sClass) +
-        "&year=" + encodeURIComponent(year);
+    // Redirect to correction page
+    const webAppUrl =
+    "https://script.google.com/macros/s/AKfycbxkq9UyIClyjov64J96ADJvzNKNnwcgSkp_lZY8ce4ayUq-QdFWJv-o8WZzEG--RTPCQg/exec";
+    const url =
+    webAppUrl +
+    "?page=correction" +
+    "&roll=" + encodeURIComponent(roll) +
+    "&class=" + encodeURIComponent(sClass) +
+    "&year=" + encodeURIComponent(year);
 
-        window.location.href = url;
+    window.location.href = url;
     }
 </script>
 
