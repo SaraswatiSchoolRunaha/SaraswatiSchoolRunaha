@@ -199,6 +199,7 @@
 <script>
 let generatedCode = "";
 
+// 1. Captcha generate karne ka function
 function generateCaptcha() {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let code = "";
@@ -210,13 +211,23 @@ function generateCaptcha() {
     document.getElementById("captchaInput").value = "";
 }
 
-// Enter key se submit karne ke liye
+// 2. Network error ya Server crash hone par ye chalega
+function handleFailure(err) {
+    const btn = document.querySelector(".submit-btn");
+    alert("Server Error: " + err.message);
+    btn.innerText = "SUBMIT REQUEST";
+    btn.disabled = false;
+    generateCaptcha();
+}
+
+// Enter key support
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
-        validateAndGo(e);
+        validateAndGo();
     }
 });
 
+// 3. Main Validation aur Backend call
 function validateAndGo(event) {
     if (event && typeof event.preventDefault === 'function') {
         event.preventDefault();
@@ -227,23 +238,26 @@ function validateAndGo(event) {
     const year = document.getElementById("year").value;
     const userInput = document.getElementById("captchaInput").value.trim();
 
+    // Khali fields check karna
     if (roll === "" || sClass === "" || year === "") {
         alert("Please fill all fields properly.");
         return;
     }
 
+    // Captcha check karna
     if (userInput.toUpperCase() !== generatedCode) {
         alert("Invalid Captcha code!");
         generateCaptcha();
         return;
     }
 
-    // Button ko disable karein taaki baar-baar click na ho
+    // UI Update: Button ko lock karna
     const btn = document.querySelector(".submit-btn");
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // Backend se data mangwayein
+    // Backend call (Google Apps Script)
+    // Note: getStudentData function mein 'year' bhi bhej rahe hain
     google.script.run
         .withSuccessHandler(function(response) {
             if (response.error) {
@@ -252,20 +266,21 @@ function validateAndGo(event) {
                 btn.disabled = false;
                 generateCaptcha();
             } else {
-                // Agar data mil gaya, tab correction page par bhejien parameters ke sath
+                // Redirect logic
                 const webAppUrl = "https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec";
                 const params = new URLSearchParams({
                     page: 'correction',
                     roll: roll,
-                    class: sClass
+                    class: sClass,
+                    year: year // Year ko bhi URL mein add kar diya
                 });
                 window.top.location.href = `${webAppUrl}?${params.toString()}`;
             }
         })
-        .getStudentData(roll, sClass); // Backend function call
+        .withFailureHandler(handleFailure) // Server error handle karne ke liye
+        .getStudentData(roll, sClass, year); 
 }
 </script>
-
 </body>
 </html>
 
