@@ -337,7 +337,7 @@
 };
     
     // 2. Google Sheets se Purana Data Fetch karna
-    function fetchStudentDetails(roll, sClass) {
+ function fetchStudentDetails(roll, sClass, year) {
         if (!roll) return;
         
         google.script.run
@@ -356,7 +356,7 @@
                     console.log("Data not found or error occurred");
                 }
             })
-            .getStudentData(roll, sClass); 
+            .getStudentData(roll, sClass, year);
     }
 
     // 3. Captcha Refresh function
