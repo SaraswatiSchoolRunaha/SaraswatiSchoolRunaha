@@ -255,6 +255,17 @@ function validateAndGo() {
             "&roll=" + encodeURIComponent(roll) +
             "&class=" + encodeURIComponent(sClass) +
             "&year=" + encodeURIComponent(year);
+ }
+        })
+
+        .withFailureHandler(handleFailure)
+
+        .getStudentData(roll, sClass, year);
+}
+
+
+
+                
         document.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { validateAndGo(); }
 });
