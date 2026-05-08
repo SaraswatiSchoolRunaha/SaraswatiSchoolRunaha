@@ -258,7 +258,11 @@ function validateAndGo() {
                 window.location.origin +
                  window.location.pathname +
                 "?" + params.toString();
-
+            }
+        })
+        .withFailureHandler(handleFailure)
+        .getStudentData(roll, sClass, year);
+}
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') { validateAndGo(); }
 });
