@@ -193,7 +193,6 @@
 <script>
 let generatedCode = "";
 
-// 1. Captcha generate karne ka function
 function generateCaptcha() {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let code = "";
@@ -205,75 +204,65 @@ function generateCaptcha() {
     document.getElementById("captchaInput").value = "";
 }
 
-// 2. Network error ya Server crash hone par ye chalega
 function handleFailure(err) {
     const btn = document.querySelector(".submit-btn");
-    alert("Server Error: " + err.message);
+    alert("Server Connection Error: " + err.message);
     btn.innerText = "SUBMIT REQUEST";
     btn.disabled = false;
     generateCaptcha();
 }
 
-// Enter key support
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-        validateAndGo();
-    }
-});
-
-// 3. Main Validation aur Backend call
-function validateAndGo(event) {
-    if (event && typeof event.preventDefault === 'function') {
-        event.preventDefault();
-    }
-
+function validateAndGo() {
     const roll = document.getElementById("roll").value.trim();
     const sClass = document.getElementById("class").value;
     const year = document.getElementById("year").value;
     const userInput = document.getElementById("captchaInput").value.trim();
 
-    // Khali fields check karna
     if (roll === "" || sClass === "" || year === "") {
         alert("Please fill all fields properly.");
         return;
     }
 
-    // Captcha check karna
     if (userInput.toUpperCase() !== generatedCode) {
         alert("Invalid Captcha code!");
         generateCaptcha();
         return;
     }
 
-    // UI Update: Button ko lock karna
     const btn = document.querySelector(".submit-btn");
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // Backend call (Google Apps Script)
-    // Note: getStudentData function mein 'year' bhi bhej rahe hain
+    // Backend Call
     google.script.run
         .withSuccessHandler(function(response) {
-            if (response.error) {
-                alert("Error: " + response.error);
+            console.log("Backend Response:", response); // Debugging ke liye
+
+            // Yahan check kijiye: backend 'status' bhej raha hai ya 'error'
+            if (response.status === "error" || response.error) {
+                alert("Error: " + (response.message || response.error));
                 btn.innerText = "SUBMIT REQUEST";
                 btn.disabled = false;
                 generateCaptcha();
             } else {
-                // Redirect logic
-                const webAppUrl = "https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec";
+                // Agar data mil gaya, toh redirection
+                const webAppUrl = ScriptApp.getService().getUrl(); // Auto-detect URL
                 const params = new URLSearchParams({
                     page: 'correction',
                     roll: roll,
                     class: sClass,
-                    year: year // Year ko bhi URL mein add kar diya
+                    year: year
                 });
-                window.top.location.href = `${webAppUrl}?${params.toString()}`;
+                window.location.href = webAppUrl + "?" + params.toString();
             }
         })
-        .withFailureHandler(handleFailure) // Server error handle karne ke liye
-        .getStudentData(roll, sClass, year); 
+        .withFailureHandler(handleFailure)
+        .getStudentData(roll, sClass, year);
 }
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { validateAndGo(); }
+});
 </script>
 </body>
 </html>
