@@ -4,175 +4,192 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marksheet Correction Portal</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
+   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
 
-        body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: block;
-}
-
-.header {
-    background: #003366;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    border-bottom: none;
-}
-
-/* Card ko mobile par fit karne ke liye */
-@media (max-width: 600px) {
-    .content { padding: 15px; }
-    .comparison-table thead { display: none; }
-    .comparison-table, .comparison-table tbody, .comparison-table tr, .comparison-table td {
+    /* Global Settings - No Padding/Margins */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
         display: block;
+    }
+
+    /* Main Container - No Borders/Shadows */
+    .main-card {
         width: 100%;
-    }
-    .comparison-table td {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: #ffffff;
         border: none;
-        padding: 5px 0;
+        box-shadow: none;
     }
-    .comparison-table td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        display: block;
+
+    /* Clean Header - No Bottom Line */
+    .header {
+        background: #003366;
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+        border-bottom: none;
+    }
+
+    .header h2 { 
+        margin: 0; 
+        font-size: 1.5rem; 
+        letter-spacing: 1px; 
+        text-transform: uppercase; 
+    }
+
+    .content { padding: 30px; }
+
+    /* Roll Section Styling */
+    .roll-section {
+        background: #eef2f7;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 25px;
+        border-left: 5px solid #003366;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .roll-section label { font-weight: bold; color: #003366; }
+    .roll-section input { background: transparent; border: none; font-size: 16px; font-weight: bold; color: #333; outline: none; }
+
+    /* Table Design */
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+
+    .comparison-table th {
+        background: #f0f4f8;
         color: #003366;
+        text-align: left;
+        padding: 12px;
+        font-size: 13px;
+        border-bottom: 2px solid #003366;
     }
-}
 
-        .header {
-            background: #003366;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 4px solid #0056b3;
-        }
+    .comparison-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+    }
 
-        .header h2 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; text-transform: uppercase; }
+    .old-data-box {
+        color: #777;
+        font-style: italic;
+        font-weight: 600;
+        background: #f9f9f9;
+        padding: 8px;
+        border-radius: 4px;
+        display: block;
+    }
 
-        .content { padding: 30px; }
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #003366;
+        margin: 25px 0 15px 0;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ddd;
+        text-transform: uppercase;
+    }
 
-        .roll-section {
-            background: #eef2f7;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 25px;
-            border-left: 5px solid #003366;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    /* Inputs & Selects */
+    input[type="text"], input[type="date"], input[type="file"], select {
+        width: 95%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        transition: 0.3s;
+    }
 
-        .roll-section label { font-weight: bold; color: #003366; }
-        .roll-section input { background: transparent; border: none; font-size: 16px; font-weight: bold; color: #333; outline: none; }
+    input:disabled, select:disabled { background: #fdfdfd; color: #ccc; border-color: #eee; }
+    input:enabled, select:enabled { border-color: #003366; background: #fff; box-shadow: 0 0 5px rgba(0,51,102,0.1); }
 
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
+    /* Document Section */
+    .doc-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        background: #fdfdfd;
+        padding: 15px;
+        border: 1px dashed #003366;
+        border-radius: 6px;
+    }
 
-        .comparison-table th {
-            background: #f0f4f8;
-            color: #003366;
-            text-align: left;
-            padding: 12px;
-            font-size: 13px;
-            border-bottom: 2px solid #003366;
-        }
+    .declaration-box {
+        margin-top: 25px;
+        background: #fff9e6;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #ffe082;
+        display: flex;
+        gap: 12px;
+    }
 
-        .comparison-table td {
-            padding: 15px 12px;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-
-        .old-data-box {
-            color: #777;
-            font-style: italic;
-            font-weight: 600;
-            background: #f9f9f9;
-            padding: 8px;
-            border-radius: 4px;
+    /* Mobile Responsive Settings */
+    @media (max-width: 600px) {
+        .content { padding: 15px; }
+        .comparison-table thead { display: none; }
+        .comparison-table, .comparison-table tbody, .comparison-table tr, .comparison-table td {
             display: block;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: #003366;
-            margin: 25px 0 15px 0;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
-            text-transform: uppercase;
-        }
-
-        input[type="text"], input[type="date"], input[type="file"], select {
-            width: 90%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-
-        input:disabled, select:disabled { background: #fdfdfd; color: #ccc; border-color: #eee; }
-        input:enabled, select:enabled { border-color: #003366; background: #fff; box-shadow: 0 0 5px rgba(0,51,102,0.1); }
-
-        .doc-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            background: #fdfdfd;
-            padding: 15px;
-            border: 1px dashed #003366;
-            border-radius: 6px;
-        }
-
-        .declaration-box {
-            margin-top: 25px;
-            background: #fff9e6;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #ffe082;
-            display: flex;
-            gap: 12px;
-        }
-
-        .captcha-box {
-            margin-top: 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        #captchaDisplay {
-            background: #e9ecef;
-            padding: 8px 15px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            border: 1px solid #003366;
-            color: #003366;
-            font-family: monospace;
-        }
-
-        .btn-submit {
-            background: #003366;
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
             width: 100%;
-            margin-top: 30px;
         }
+        .comparison-table td {
+            border: none;
+            padding: 10px 0;
+        }
+        .comparison-table td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            display: block;
+            color: #003366;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="date"], select { width: 100%; }
+    }
 
-        .btn-submit:hover { background: #002244; }
-    </style>
+    /* Captcha & Button */
+    .captcha-box {
+        margin-top: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #captchaDisplay {
+        background: #e9ecef;
+        padding: 8px 15px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        border: 1px solid #003366;
+        color: #003366;
+        font-family: monospace;
+    }
+
+    .btn-submit {
+        background: #003366;
+        color: white;
+        border: none;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    .btn-submit:hover { background: #002244; }
+</style>
 </head>
 <body>
 
