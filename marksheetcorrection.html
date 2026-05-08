@@ -486,11 +486,17 @@
                 })
                 .processCorrection(formData);
 
-        } catch (err) {
-            alert("System Error: " + err.message);
-            btn.disabled = false;
-            btn.innerText = "SUBMIT CORRECTION REQUEST";
-        }
+       } catch (err) {
+
+    alert("System Error: " + err.message);
+
+    btn.disabled = false;
+
+    btn.innerText = "SUBMIT CORRECTION REQUEST";
+}
+
+}
+</script>
 </script>
 </body>
 </html>
