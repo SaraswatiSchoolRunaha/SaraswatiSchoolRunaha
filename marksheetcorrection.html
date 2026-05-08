@@ -16,15 +16,25 @@
             justify-content: center;
         }
 
-        .main-card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 900px;
-            border-radius: 10px;
-            border: 2px solid #003366;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+       /* Card ko mobile par fit karne ke liye */
+@media (max-width: 600px) {
+    .content { padding: 15px; }
+    .comparison-table thead { display: none; } /* Mobile par header chhupa dein */
+    .comparison-table, .comparison-table tbody, .comparison-table tr, .comparison-table td {
+        display: block;
+        width: 100%;
+    }
+    .comparison-table td {
+        border: none;
+        padding: 5px 0;
+    }
+    .comparison-table td::before {
+        content: attr(data-label); /* Isse pata chalega kaunsa field hai */
+        font-weight: bold;
+        display: block;
+        color: #003366;
+    }
+}
 
         .header {
             background: #003366;
