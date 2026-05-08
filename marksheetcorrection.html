@@ -319,15 +319,15 @@
 
     const rollNo = urlParams.get('roll');
     const studentClass = urlParams.get('class');
-
+    const academicYear = urlParams.get('year');
+      
     console.log("ROLL:", rollNo);
     console.log("CLASS:", studentClass);
 
-    if (rollNo && studentClass) {
-
+  if (rollNo && studentClass && academicYear) {
         document.getElementById("roll").value = rollNo;
 
-        fetchStudentDetails(rollNo, studentClass);
+    fetchStudentDetails(rollNo, studentClass, academicYear);
 
     } else {
 
