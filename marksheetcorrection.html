@@ -8,18 +8,25 @@
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f9;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
 
-       /* Card ko mobile par fit karne ke liye */
+.header {
+    background: #003366;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: none;
+}
+
+/* Card ko mobile par fit karne ke liye */
 @media (max-width: 600px) {
     .content { padding: 15px; }
-    .comparison-table thead { display: none; } /* Mobile par header chhupa dein */
+    .comparison-table thead { display: none; }
     .comparison-table, .comparison-table tbody, .comparison-table tr, .comparison-table td {
         display: block;
         width: 100%;
@@ -29,7 +36,7 @@
         padding: 5px 0;
     }
     .comparison-table td::before {
-        content: attr(data-label); /* Isse pata chalega kaunsa field hai */
+        content: attr(data-label);
         font-weight: bold;
         display: block;
         color: #003366;
