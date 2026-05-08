@@ -218,7 +218,6 @@ document.addEventListener('keydown', function (e) {
 });
 
 function validateAndGo(event) {
-    // Agar event pass hua hai (jaise enter key ya click), toh preventDefault karein
     if (event && typeof event.preventDefault === 'function') {
         event.preventDefault();
     }
@@ -228,31 +227,42 @@ function validateAndGo(event) {
     const year = document.getElementById("year").value;
     const userInput = document.getElementById("captchaInput").value.trim();
 
-    // Basic Validation
     if (roll === "" || sClass === "" || year === "") {
         alert("Please fill all fields properly.");
         return;
     }
 
-    // Captcha Validation
     if (userInput.toUpperCase() !== generatedCode) {
         alert("Invalid Captcha code!");
         generateCaptcha();
         return;
     }
 
-    // URL Construction
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec";
-    
-    const params = new URLSearchParams({
-        page: 'correction',
-        roll: roll,
-        class: sClass,
-        year: year
-    });
+    // Button ko disable karein taaki baar-baar click na ho
+    const btn = document.querySelector(".submit-btn");
+    btn.innerText = "SEARCHING...";
+    btn.disabled = true;
 
-    // Final Redirect
-    window.location.href = `${webAppUrl}?${params.toString()}`;
+    // Backend se data mangwayein
+    google.script.run
+        .withSuccessHandler(function(response) {
+            if (response.error) {
+                alert("Error: " + response.error);
+                btn.innerText = "SUBMIT REQUEST";
+                btn.disabled = false;
+                generateCaptcha();
+            } else {
+                // Agar data mil gaya, tab correction page par bhejien parameters ke sath
+                const webAppUrl = "https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec";
+                const params = new URLSearchParams({
+                    page: 'correction',
+                    roll: roll,
+                    class: sClass
+                });
+                window.top.location.href = `${webAppUrl}?${params.toString()}`;
+            }
+        })
+        .getStudentData(roll, sClass); // Backend function call
 }
 </script>
 
