@@ -247,22 +247,17 @@ function validateAndGo() {
                 generateCaptcha();
             } else {
                 // CORRECT WAY TO REDIRECT:
-                // Pehle hum current page ka URL lete hain
-                google.script.run.withSuccessHandler(function(url) {
                     const params = new URLSearchParams({
-                        page: 'correction',
-                        roll: roll,
-                        class: sClass,
-                        year: year
-                    });
-                    // Redirect to the correction page
-                    window.top.location.href = url + "?" + params.toString();
-                }).getWebAppUrl(); // Iske liye hume ek chota function backend mein chahiye
-            }
-        })
-        .withFailureHandler(handleFailure)
-        .getStudentData(roll, sClass, year);
-}
+                    page: 'correction',
+                    roll: roll,
+                    class: sClass,
+                    year: year
+        });
+
+                window.top.location.href =
+                window.location.origin +
+                 window.location.pathname +
+                "?" + params.toString();
 
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') { validateAndGo(); }
