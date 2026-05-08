@@ -239,14 +239,14 @@ function validateAndGo(event) {
     }
 
     // Redirect to marksheet correction page
-    const url =
-        "marksheetcorrection.html" +
-        "?roll=" + encodeURIComponent(roll) +
+       const url =
+        "?page=correction" +
+        "&roll=" + encodeURIComponent(roll) +
         "&class=" + encodeURIComponent(sClass) +
         "&year=" + encodeURIComponent(year);
 
-    window.location.href = url;
-}
+        window.location.href = url;
+    }
 </script>
 
 </body>
