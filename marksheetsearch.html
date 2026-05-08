@@ -207,13 +207,12 @@ function generateCaptcha() {
     }
     generatedCode = code;
     document.getElementById("captchaValue").innerText = code;
-    document.getElementById("captchaInput").value = ""; 
+    document.getElementById("captchaInput").value = "";
 }
 
-// Enter Key दबाने पर भी सबमिट होगा
 document.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-        validateAndGo();
+        validateAndGo(e);
     }
 });
 
@@ -239,17 +238,15 @@ function validateAndGo(event) {
         return;
     }
 
-    // स्पेलिंग सही कर दी गई है: marksheetcorrection.html
-   const baseUrl = window.location.origin + window.location.pathname;
+    // Redirect to marksheet correction page
+    const url =
+        "marksheetcorrection.html" +
+        "?roll=" + encodeURIComponent(roll) +
+        "&class=" + encodeURIComponent(sClass) +
+        "&year=" + encodeURIComponent(year);
 
-const url = baseUrl +
-    "?page=correction" +
-    "&roll=" + encodeURIComponent(roll) +
-    "&class=" + encodeURIComponent(sClass) +
-    "&year=" + encodeURIComponent(year);
-
-window.location.href = url;
-    }
+    window.location.href = url;
+}
 </script>
 
 </body>
