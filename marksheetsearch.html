@@ -246,25 +246,17 @@ function validateAndGo() {
                 btn.disabled = false;
                 generateCaptcha();
             } else {
-                // CORRECT WAY TO REDIRECT:
-                    const params = new URLSearchParams({
-                    page: 'correction',
-                    roll: roll,
-                    class: sClass,
-                    year: year
-        });
+               // REDIRECT TO CORRECTION PAGE
+            const url = window.location.href.split("?")[0];
 
-                window.top.location.href =
-                window.location.origin +
-                 window.location.pathname +
-                "?" + params.toString();
-            }
-        })
-        .withFailureHandler(handleFailure)
-        .getStudentData(roll, sClass, year);
-}
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { validateAndGo(); }
+            window.top.location.href =
+            url +
+            "?page=correction" +
+            "&roll=" + encodeURIComponent(roll) +
+            "&class=" + encodeURIComponent(sClass) +
+            "&year=" + encodeURIComponent(year);
+        document.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { validateAndGo(); }
 });
 </script>
 </body>
