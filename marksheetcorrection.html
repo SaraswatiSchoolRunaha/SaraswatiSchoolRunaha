@@ -459,19 +459,20 @@ async function submitData() {
         ]);
 
         // 2. Form Data taiyar karna
-        const formData = {
-            roll: rollNo,
-            newName:   getValIfEnabled("name"),
-            newFather: getValIfEnabled("father"),
-            newMother: getValIfEnabled("mother"),
-            newDob:    getValIfEnabled("dob"),
-            newClass:  getValIfEnabled("class"),
-            newMedium: getValIfEnabled("medium"),
-            photo: photoData,
-            birthCert: birthCertData,
-            aadhar: aadharData
-        };
-
+        // Iske andar 'newCategory' add karein
+    const formData = {
+        roll: rollNo,
+        newName:    getValIfEnabled("name"),
+        newFather:  getValIfEnabled("father"),
+        newMother:  getValIfEnabled("mother"),
+        newDob:     getValIfEnabled("dob"),
+        newClass:   getValIfEnabled("class"),
+        newMedium:  getValIfEnabled("medium"),
+        newCategory: getValIfEnabled("category"), // <-- Ye line add karein
+        photo: photoData,
+        birthCert: birthCertData,
+        aadhar: aadharData
+    };
         // 3. Validation: Kya koi sudhaar chuna gaya hai?
         const hasChange = Object.keys(formData).some(key => key !== 'roll' && formData[key] && formData[key] !== "");
         
