@@ -525,7 +525,7 @@ async function submitData() {
         }
 
         // 4. Backend Request
-     fetch("https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec", {
+     fetch("https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec", {
   method: "POST",
   body: JSON.stringify(formData)
 })
@@ -537,7 +537,7 @@ async function submitData() {
     } else {
         alert("✅ आवेदन सफल!\n\nID: " + appID);
 
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec";
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
         window.location.href = webAppUrl + "?page=status&id=" + appID;
     }
 })
