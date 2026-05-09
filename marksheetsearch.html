@@ -238,45 +238,47 @@ function validateAndGo() {
         return;
     }
 
+    function submitCorrectionRequest() {
     const btn = document.querySelector(".submit-btn");
-    btn.innerText = "SEARCHING...";
+    btn.innerText = "PROCESSING...";
     btn.disabled = true;
 
+    // URL parameters se data nikalna (Roll aur Year verify karne ke liye)
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Saare data ko ek object mein pack karein
+    const formData = {
+        roll: urlParams.get('roll'),
+        year: urlParams.get('year'),
+        newName: document.getElementById('newName').value,
+        newFather: document.getElementById('newFather').value,
+        newMother: document.getElementById('newMother').value,
+        newDob: document.getElementById('newDob').value,
+        newGender: document.getElementById('newGender').value,
+        newSamagra: document.getElementById('newSamagra').value,
+        // File handling logic agar aapne lagaya hai toh...
+    };
+
+    // Google script ko call karein aur 'formData' bhein
     google.script.run
         .withSuccessHandler(function(response) {
-            console.log("Response:", response);
-
-            // 1. Safety Check: Agar server se response null mile
-            if (!response) {
-                alert("Error: Server se koi response nahi mila. Code.gs function check karein.");
-                btn.innerText = "SUBMIT REQUEST";
-                btn.disabled = false;
-                return; 
-            }
-
-            // 2. Business Logic Check: Agar data galat ho ya error ho
-            if (response.error || response.status === "error") {
-                alert("Error: " + (response.error || response.message));
-                btn.innerText = "SUBMIT REQUEST";
-                btn.disabled = false;
-                generateCaptcha();
-            } 
-            else {
-                // 3. Success: Redirect to Correction Page
-                const url = window.location.origin + window.location.pathname;
-
-                window.location.href =
-                    url +
-                    "?page=correction" +
-                    "&roll=" + encodeURIComponent(roll) +
-                    "&class=" + encodeURIComponent(sClass) +
-                    "&year=" + encodeURIComponent(year);
+            btn.disabled = false;
+            btn.innerText = "SUBMIT REQUEST";
+            
+            if (response === "SUCCESS-UPDATED") {
+                alert("Aapka correction form successfully jama ho gaya hai!");
+                window.location.href = window.location.origin + window.location.pathname; // Home par wapas
+            } else {
+                alert(response); // Error message dikhayega
             }
         })
-        .withFailureHandler(handleFailure)
-        .getStudentData(roll, sClass, year);
+        .withFailureHandler(function(err) {
+            alert("Fatal Error: " + err.message);
+            btn.disabled = false;
+            btn.innerText = "SUBMIT REQUEST";
+        })
+        .processCorrectionForm(formData); // <--- Yahan data pass ho raha hai
 }
-
 // Enter key se submit karne ke liye listener
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') { 
