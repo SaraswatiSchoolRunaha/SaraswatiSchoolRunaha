@@ -4,34 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Search Portal</title>
+    
+    <!-- Fonts ko style tag se BAHAR rakha hai -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+
     <style>
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Isse extra space khatam ho jayega aur box center mein rahega */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-       .search-container {
-    background: #ffffff;
-    padding: 40px;
-    border-radius: 8px;
-    border: 2px solid #003366; 
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
-    
-    /* YAHAN BADLAV KARNA HAI */
-    width: 95%;           /* Mobile screen par poora fit aayega */
-    max-width: 400px;     /* Badi screen par 400px se zyada nahi failega */
-    
-    position: relative;
-    box-sizing: border-box; /* Isse padding box ke andar hi rahegi */
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Horizontal center */
+            align-items: center;     /* Vertical center */
+        }
+
+        .search-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            border-top: 5px solid #003366; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+            
+            width: 95%;           
+            max-width: 400px;     
+            position: relative;
+        }
         
         .center-header { text-align: center; }
 
@@ -55,13 +61,13 @@
             text-transform: uppercase;
         }
 
+        /* 16px font size mobile zoom issue ko fix karta hai */
         input[type="text"], select {
             width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 16px; 
             background-color: #fff;
         }
 
@@ -82,14 +88,14 @@
             background: #f4f4f4;
             padding: 10px 20px;
             font-weight: bold;
-            font-style: italic;
             letter-spacing: 4px;
             border-radius: 4px;
             border: 1px dashed #003366;
             color: #003366;
             user-select: none;
-            font-size: 18px;
+            font-size: 20px;
         }
+
         .refresh-btn {
             cursor: pointer;
             font-size: 20px;
@@ -104,7 +110,7 @@
             background-color: #003366;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
