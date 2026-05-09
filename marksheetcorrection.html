@@ -375,21 +375,39 @@
         if (!roll) return;
         
         google.script.run
-            .withSuccessHandler(function(data) {
-                if(data && !data.error) {
-                    // Span IDs mein data set karna
-                    if(document.getElementById('old_name')) document.getElementById('old_name').innerText = data.name || "---";
-                    if(document.getElementById('old_father')) document.getElementById('old_father').innerText = data.father || "---";
-                    if(document.getElementById('old_mother')) document.getElementById('old_mother').innerText = data.mother || "---";
-                    if(document.getElementById('old_dob')) document.getElementById('old_dob').innerText = data.dob || "---";
-                    
-                    if(data.photoUrl && document.getElementById('old_photo_img')) {
-                        document.getElementById('old_photo_img').src = data.photoUrl;
-                    }
-                } else {
-                    console.log("Data not found or error occurred");
-                }
-            })
+          .withSuccessHandler(function(data) {
+    if(data && !data.error) {
+
+        if(document.getElementById('old_name'))
+            document.getElementById('old_name').innerText = data.name || "---";
+
+        if(document.getElementById('old_father'))
+            document.getElementById('old_father').innerText = data.father || "---";
+
+        if(document.getElementById('old_mother'))
+            document.getElementById('old_mother').innerText = data.mother || "---";
+
+        if(document.getElementById('old_dob'))
+            document.getElementById('old_dob').innerText = data.dob || "---";
+
+        // YE 3 LINES ADD KARO
+        if(document.getElementById('old_class'))
+            document.getElementById('old_class').innerText = data.class || "---";
+
+        if(document.getElementById('old_medium'))
+            document.getElementById('old_medium').innerText = data.medium || "---";
+
+        if(document.getElementById('old_category'))
+            document.getElementById('old_category').innerText = data.category || "---";
+
+        if(data.photoUrl && document.getElementById('old_photo_img')) {
+            document.getElementById('old_photo_img').src = data.photoUrl;
+        }
+
+    } else {
+        console.log("Data not found or error occurred");
+    }
+})         
             .getStudentData(roll, sClass, year);
     }
 
