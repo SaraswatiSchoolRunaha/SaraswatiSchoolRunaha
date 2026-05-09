@@ -58,6 +58,7 @@
             <select id="class">
                 <option value="">--Select--</option>
                 <option value="12th">12th</option>
+                <option value="11th">11th</option>
                 <option value="10th">10th</option>
                 <option value="9th">9th</option>
                 <option value="8th">8th</option>
@@ -107,7 +108,6 @@
 <script>
 let generatedCode = "";
 
-// 1. Captcha generate karne ka function
 function generateCaptcha() {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let code = "";
@@ -119,16 +119,6 @@ function generateCaptcha() {
     document.getElementById("captchaInput").value = "";
 }
 
-// 2. Network error handler
-function handleFailure(err) {
-    const btn = document.querySelector(".submit-btn");
-    alert("Server Error: " + err.message);
-    btn.innerText = "SUBMIT REQUEST";
-    btn.disabled = false;
-    generateCaptcha();
-}
-
-// 3. Search Logic
 function validateAndGo() {
     const roll = document.getElementById("roll").value.trim();
     const sClass = document.getElementById("class").value;
@@ -150,22 +140,37 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // Server check
+    // Yahan check karein ki Code.gs mein function ka naam 'getStudentData' hi hai na?
     google.script.run
         .withSuccessHandler(function(response) {
+            console.log("Server Response:", response); // Browser Console mein check karne ke liye
+            
+            if (!response) {
+                alert("Error: Server se koi jawab nahi mila (Null Response).");
+                resetButton(btn);
+                return;
+            }
+
             if (response.status === "success") {
-                // Agar data mil gaya toh Correction page par bhej do
                 const url = window.location.origin + window.location.pathname;
                 window.location.href = url + "?page=correction&roll=" + encodeURIComponent(roll) + "&year=" + encodeURIComponent(year);
             } else {
-                alert(response.message);
-                btn.innerText = "SUBMIT REQUEST";
-                btn.disabled = false;
-                generateCaptcha();
+                alert("Sheet Error: " + response.message);
+                resetButton(btn);
             }
         })
-        .withFailureHandler(handleFailure)
-        .getStudentData(roll, sClass, year);
+        .withFailureHandler(function(err) {
+            console.error("Script Run Error:", err);
+            alert("Critical Error: " + err.toString());
+            resetButton(btn);
+        })
+        .getStudentData(roll, sClass, year); 
+}
+
+function resetButton(btn) {
+    btn.innerText = "SUBMIT REQUEST";
+    btn.disabled = false;
+    generateCaptcha();
 }
 
 document.addEventListener('keydown', function (e) {
