@@ -246,33 +246,42 @@ function validateAndGo() {
         .withSuccessHandler(function(response) {
             console.log("Response:", response);
 
+            // 1. Safety Check: Agar server se response null mile
+            if (!response) {
+                alert("Error: Server se koi response nahi mila. Code.gs function check karein.");
+                btn.innerText = "SUBMIT REQUEST";
+                btn.disabled = false;
+                return; 
+            }
+
+            // 2. Business Logic Check: Agar data galat ho ya error ho
             if (response.error || response.status === "error") {
                 alert("Error: " + (response.error || response.message));
                 btn.innerText = "SUBMIT REQUEST";
                 btn.disabled = false;
                 generateCaptcha();
             } 
-           else {
+            else {
+                // 3. Success: Redirect to Correction Page
+                const url = window.location.origin + window.location.pathname;
 
-            // REDIRECT TO CORRECTION PAGE
-            const url = window.location.origin + window.location.pathname;
-
-            window.location.href =
-            url +
-            "?page=correction" +
-            "&roll=" + encodeURIComponent(roll) +
-            "&class=" + encodeURIComponent(sClass) +
-            "&year=" + encodeURIComponent(year);
-        }
+                window.location.href =
+                    url +
+                    "?page=correction" +
+                    "&roll=" + encodeURIComponent(roll) +
+                    "&class=" + encodeURIComponent(sClass) +
+                    "&year=" + encodeURIComponent(year);
+            }
         })
-
         .withFailureHandler(handleFailure)
-
         .getStudentData(roll, sClass, year);
 }
-           
-        document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { validateAndGo(); }
+
+// Enter key se submit karne ke liye listener
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { 
+        validateAndGo(); 
+    }
 });
 </script>
 </body>
