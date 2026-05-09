@@ -376,7 +376,7 @@
         
         google.script.run
           .withSuccessHandler(function(data) {
-    if(data && !data.error) {
+    if(data && data.status === "success") {
 
         if(document.getElementById('old_name'))
             document.getElementById('old_name').innerText = data.name || "---";
