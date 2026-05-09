@@ -245,17 +245,19 @@ function validateAndGo() {
                 btn.innerText = "SUBMIT REQUEST";
                 btn.disabled = false;
                 generateCaptcha();
-            } else {
-               // REDIRECT TO CORRECTION PAGE
-            const url = window.location.href.split("?")[0];
+            } 
+           else {
 
-            window.top.location.href =
+            // REDIRECT TO CORRECTION PAGE
+            const url = window.location.origin + window.location.pathname;
+
+            window.location.href =
             url +
             "?page=correction" +
             "&roll=" + encodeURIComponent(roll) +
             "&class=" + encodeURIComponent(sClass) +
             "&year=" + encodeURIComponent(year);
- }
+        }
         })
 
         .withFailureHandler(handleFailure)
