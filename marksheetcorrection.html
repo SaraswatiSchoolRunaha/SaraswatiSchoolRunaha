@@ -525,29 +525,26 @@ async function submitData() {
         }
 
         // 4. Backend Request
-        google.script.run
-            .withSuccessHandler(function(appID) {
-                if (appID.startsWith("Error")) {
-                    alert("❌ " + appID);
-                    resetBtn(btn, originalBtnText);
-                } else {
-                    alert("✅ आवेदन सफल!\n\nआपकी आईडी: " + appID);
-                    // Base URL dynamically handle karein
-                    const webAppUrl = "https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec"; 
-                    window.location.href = webAppUrl + "?page=status&id=" + appID;
-                }
-            })
-            .withFailureHandler(function(err) {
-                alert("❌ Server Error: " + err.message);
-                resetBtn(btn, originalBtnText);
-            })
-            .processCorrection(formData);
-
-    } catch (err) {
-        alert("⚠️ System Error: " + err.message);
+     fetch("YOUR_APPS_SCRIPT_URL", {
+  method: "POST",
+  body: JSON.stringify(formData)
+})
+.then(res => res.text())
+.then(appID => {
+    if (appID.startsWith("Error")) {
+        alert("❌ " + appID);
         resetBtn(btn, originalBtnText);
+    } else {
+        alert("✅ आवेदन सफल!\n\nID: " + appID);
+
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbwYerwdkyliWtqFrpLOHw5uOwjadwQUtJb5QJmSuSZ3GkufFj0LIdoe-3WQsX_LDFvd6g/exec";
+        window.location.href = webAppUrl + "?page=status&id=" + appID;
     }
-}
+})
+.catch(err => {
+    alert("❌ Error: " + err);
+    resetBtn(btn, originalBtnText);
+});
 
 // Helper functions for cleaner code
 function getValIfEnabled(id) {
