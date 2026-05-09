@@ -5,131 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Search Portal</title>
     
-    <!-- Fonts ko style tag se BAHAR rakha hai -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* Isse extra space khatam ho jayega aur box center mein rahega */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f9;
             height: 100vh;
             display: flex;
-            justify-content: center; /* Horizontal center */
-            align-items: center;     /* Vertical center */
+            justify-content: center;
+            align-items: center;
         }
-
         .search-container {
             background: #ffffff;
             padding: 40px;
             border-radius: 12px;
             border-top: 5px solid #003366; 
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
-            
             width: 95%;           
             max-width: 400px;     
-            position: relative;
         }
-        
         .center-header { text-align: center; }
-
-        h2 {
-            color: #003366;
-            margin-bottom: 30px;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 1.3rem;
-            letter-spacing: 1px;
-        }
-
+        h2 { color: #003366; margin-bottom: 30px; font-weight: 600; text-transform: uppercase; font-size: 1.3rem; letter-spacing: 1px; }
         .input-group { margin-bottom: 18px; }
-
-        label {
-            display: block;
-            font-size: 11px;
-            color: #444;
-            margin-bottom: 5px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* 16px font size mobile zoom issue ko fix karta hai */
-        input[type="text"], select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px; 
-            background-color: #fff;
-        }
-
-        input[type="text"]:focus, select:focus {
-            border-color: #003366;
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 51, 102, 0.2);
-        }
-
-        .captcha-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        #captchaValue {
-            background: #f4f4f4;
-            padding: 10px 20px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            border-radius: 4px;
-            border: 1px dashed #003366;
-            color: #003366;
-            user-select: none;
-            font-size: 20px;
-        }
-
-        .refresh-btn {
-            cursor: pointer;
-            font-size: 20px;
-            background: none;
-            border: none;
-            color: #003366;
-        }
-
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            background-color: #003366;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.3s;
-        }
-
-        button.submit-btn:hover {
-            background-color: #002244;
-        }
-
-        .footer-text {
-            text-align: center;
-            font-size: 11px;
-            color: #777;
-            margin-top: 25px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
+        label { display: block; font-size: 11px; color: #444; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; }
+        input[type="text"], select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; background-color: #fff; }
+        .captcha-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        #captchaValue { background: #f4f4f4; padding: 10px 20px; font-weight: bold; letter-spacing: 4px; border-radius: 4px; border: 1px dashed #003366; color: #003366; user-select: none; font-size: 20px; }
+        .refresh-btn { cursor: pointer; font-size: 20px; background: none; border: none; color: #003366; }
+        button.submit-btn { width: 100%; padding: 15px; background-color: #003366; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .footer-text { text-align: center; font-size: 11px; color: #777; margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; }
     </style>
 </head>
 <body onload="generateCaptcha()">
@@ -149,19 +57,19 @@
             <label>Class</label>
             <select id="class">
                 <option value="">--Select--</option>
-                <option value="12th">12th </option>
-                <option value="10th">10th </option>
-                <option value="9th">9th </option>
-                <option value="8th">8th </option>
-                <option value="7th">7th </option>
-                <option value="6th">6th </option>
-                <option value="5th">5th </option>
-                <option value="4th">4th </option>
-                <option value="3rd">3rd </option>
-                <option value="2nd">2nd </option>
-                <option value="1st">1st </option>
-                <option value="KG2">KG2 </option>
-                <option value="KG1"> KG1 </option>   
+                <option value="12th">12th</option>
+                <option value="10th">10th</option>
+                <option value="9th">9th</option>
+                <option value="8th">8th</option>
+                <option value="7th">7th</option>
+                <option value="6th">6th</option>
+                <option value="5th">5th</option>
+                <option value="4th">4th</option>
+                <option value="3rd">3rd</option>
+                <option value="2nd">2nd</option>
+                <option value="1st">1st</option>
+                <option value="KG2">KG2</option>
+                <option value="KG1">KG1</option>    
             </select>
         </div>
         <div style="flex: 1;">
@@ -220,7 +128,7 @@ function handleFailure(err) {
     generateCaptcha();
 }
 
-// 3. Main Logic
+// 3. Search Logic
 function validateAndGo() {
     const roll = document.getElementById("roll").value.trim();
     const sClass = document.getElementById("class").value;
@@ -238,55 +146,31 @@ function validateAndGo() {
         return;
     }
 
-    function submitCorrectionRequest() {
     const btn = document.querySelector(".submit-btn");
-    btn.innerText = "PROCESSING...";
+    btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // URL parameters se data nikalna (Roll aur Year verify karne ke liye)
-    const urlParams = new URLSearchParams(window.location.search);
-
-    // Saare data ko ek object mein pack karein
-    const formData = {
-        roll: urlParams.get('roll'),
-        year: urlParams.get('year'),
-        newName: document.getElementById('newName').value,
-        newFather: document.getElementById('newFather').value,
-        newMother: document.getElementById('newMother').value,
-        newDob: document.getElementById('newDob').value,
-        newGender: document.getElementById('newGender').value,
-        newSamagra: document.getElementById('newSamagra').value,
-        // File handling logic agar aapne lagaya hai toh...
-    };
-
-    // Google script ko call karein aur 'formData' bhein
+    // Server check
     google.script.run
         .withSuccessHandler(function(response) {
-            btn.disabled = false;
-            btn.innerText = "SUBMIT REQUEST";
-            
-            if (response === "SUCCESS-UPDATED") {
-                alert("Aapka correction form successfully jama ho gaya hai!");
-                window.location.href = window.location.origin + window.location.pathname; // Home par wapas
+            if (response.status === "success") {
+                // Agar data mil gaya toh Correction page par bhej do
+                const url = window.location.origin + window.location.pathname;
+                window.location.href = url + "?page=correction&roll=" + encodeURIComponent(roll) + "&year=" + encodeURIComponent(year);
             } else {
-                alert(response); // Error message dikhayega
+                alert(response.message);
+                btn.innerText = "SUBMIT REQUEST";
+                btn.disabled = false;
+                generateCaptcha();
             }
         })
-        .withFailureHandler(function(err) {
-            alert("Fatal Error: " + err.message);
-            btn.disabled = false;
-            btn.innerText = "SUBMIT REQUEST";
-        })
-        .processCorrectionForm(formData); // <--- Yahan data pass ho raha hai
+        .withFailureHandler(handleFailure)
+        .getStudentData(roll, sClass, year);
 }
-// Enter key se submit karne ke liye listener
+
 document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { 
-        validateAndGo(); 
-    }
+    if (e.key === 'Enter') { validateAndGo(); }
 });
-    
 </script>
 </body>
 </html>
-
