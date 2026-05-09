@@ -151,14 +151,21 @@ function validateAndGo() {
                 return;
             }
 
-            if (response.status === "success") {
-                const url = window.location.origin + window.location.pathname;
-                window.location.href = url + "?page=correction&roll=" + encodeURIComponent(roll) + "&year=" + encodeURIComponent(year);
+           if (response.status === "success") {
+
+        const url = window.location.origin + window.location.pathname;
+
+        window.location.href = url 
+            + "?page=correction"
+            + "&roll=" + encodeURIComponent(roll)
+            + "&class=" + encodeURIComponent(sClass)
+            + "&year=" + encodeURIComponent(year);
+
             } else {
-                alert("Sheet Error: " + response.message);
-                resetButton(btn);
-            }
-        })
+        alert("Sheet Error: " + response.message);
+        resetButton(btn);
+    }     
+    })
         .withFailureHandler(function(err) {
             console.error("Script Run Error:", err);
             alert("Critical Error: " + err.toString());
