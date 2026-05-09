@@ -546,7 +546,9 @@ async function submitData() {
     resetBtn(btn, originalBtnText);
 });
 
-// Helper functions for cleaner code
+} // submitData function close here
+
+// Helper functions
 function getValIfEnabled(id) {
     let el = document.getElementById(id);
     return (el && !el.disabled) ? el.value : "";
@@ -556,7 +558,7 @@ function resetBtn(btn, text) {
     btn.disabled = false;
     btn.innerText = text;
 }
-</script>
+    </script>
 </body>
 </html>
 
