@@ -141,14 +141,13 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // Fixed Structure
     google.script.run
         .withSuccessHandler(function(response) {
             console.log("Server Response:", response);
             
             if (response && response.status === "success") {
-                // scriptUrl direct Code.gs template se aayega
-                var baseUrl = "<?= scriptUrl ?>"; 
+                // scriptUrl ko safe tarike se handle karein
+                var baseUrl = '<?!= scriptUrl ?>'; 
                 
                 var finalUrl = baseUrl 
                     + "?page=correction"
@@ -157,13 +156,20 @@ function validateAndGo() {
                     + "&year=" + encodeURIComponent(year);
 
                 window.top.location.href = finalUrl;
-
             } else {
-                alert("Error: " + (response ? response.message : "Data nahi mila"));
+                alert("Result: " + (response ? response.message : "Record nahi mila"));
                 resetButton(btn);
             }
         })
         .withFailureHandler(function(err) {
+            console.error("Script Run Error:", err);
+            alert("System Error: " + err.toString());
+            resetButton(btn);
+        })
+       .getStudentData(roll, sClass, year); 
+}        
+    
+    .withFailureHandler(function(err) {
             console.error("Script Run Error:", err);
             alert("Critical Error: " + err.toString());
             resetButton(btn);
