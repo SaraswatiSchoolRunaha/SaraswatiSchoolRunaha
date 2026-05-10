@@ -109,50 +109,46 @@ function validateAndGo() {
     const year = document.getElementById("year").value;
     const userInput = document.getElementById("captchaInput").value.trim();
 
-    // 1. Basic Validation
     if (!roll || !sClass || !year) {
         alert("⚠️ कृपया रोल नंबर, कक्षा और वर्ष का चयन करें!");
         return;
     }
 
-    // 2. Captcha Validation
     if (userInput.toUpperCase() !== generatedCode) {
         alert("❌ गलत कैप्चा कोड! कृपया दोबारा प्रयास करें।");
         generateCaptcha();
         return;
     }
 
-    // 3. Button Loading State
     const btn = document.querySelector(".submit-btn");
-    const originalText = btn.innerText;
     btn.innerText = "⌛ SEARCHING...";
     btn.disabled = true;
 
-   // 4. Server Call (GitHub to Google Apps Script Bridge)
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec"; // <--- Yahan apna Web App URL paste karein
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
 
+    // FETCH API istemal karein (Isme google.script.run ki zaroorat nahi hai)
     fetch(`${webAppUrl}?roll=${roll}&class=${sClass}&year=${year}`)
         .then(response => response.json())
         .then(response => {
             if (response && response.status === "success") {
                 if (response.redirectUrl) {
-                    // Redirect Logic
+                    // Yahan se redirection hoga
                     window.location.href = response.redirectUrl;
                 } else {
-                    alert("❌ सर्वर एरर: Redirect URL नहीं मिला!");
+                    alert("❌ Error: Redirect URL missing in response");
                     resetButton(btn);
                 }
             } else {
-                alert("ℹ️ " + (response?.message || "रिकॉर्ड नहीं मिला। कृपया जानकारी जाँचें।"));
+                alert("ℹ️ " + (response.message || "Record not found!"));
                 resetButton(btn);
             }
         })
         .catch(err => {
-            alert("❌ सिस्टम एरer: Connection failed! Check Web App Deployment.");
+            console.error("Fetch Error:", err);
+            alert("❌ System Error: Connection failed!");
             resetButton(btn);
-    }); 
-} // Yahan function khatam hona chahiye
-    
+        });
+}
 </script>
 </body>
 </html>
