@@ -15,16 +15,20 @@
         padding: 0;
         display: block;
     }
+/* Is hisse ko dhundhein aur aise update karein */
+.main-card {
+    width: 100%;
+    max-width: 900px;
+    background: #ffffff;
+    border-radius: 12px;
+    margin: 0 auto;
 
-    /* Main Container - No Borders/Shadows */
-    .main-card {
-        width: 100%;
-        max-width: 1000px;
-        margin: 0 auto;
-        background: #ffffff;
-        border: none;
-        box-shadow: none;
-    }
+    /* --- YE DO LINES ZAROORI HAIN BORDER KE LIYE --- */
+    border: 2px solid #003366; /* Blue rang ka solid border */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Halka shadow jo border ko ubharega */
+    
+    overflow: hidden;
+}
 
     /* Clean Header - No Bottom Line */
     .header {
