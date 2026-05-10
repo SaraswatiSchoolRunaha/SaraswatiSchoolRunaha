@@ -20,14 +20,17 @@
         .footer-text { text-align: center; font-size: 11px; color: #777; margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; }
     </style>
 </head>
+
 <body onload="generateCaptcha()">
 
 <div class="search-container">
     <h2>Student Search Portal</h2>
+
     <div class="input-group">
         <label>Roll Number</label>
         <input type="text" id="roll" placeholder="Enter Roll No." autofocus>
     </div>
+
     <div class="input-group" style="display: flex; gap: 15px;">
         <div style="flex: 1;">
             <label>Class</label>
@@ -35,7 +38,6 @@
                 <option value="">--Select--</option>
                 <option value="12th">12th</option>
                 <option value="10th">10th</option>
-                <!-- Add other classes as needed -->
             </select>
         </div>
         <div style="flex: 1;">
@@ -47,6 +49,7 @@
             </select>
         </div>
     </div>
+
     <div class="input-group">
         <label>Captcha</label>
         <div class="captcha-row">
@@ -55,25 +58,37 @@
         </div>
         <input type="text" id="captchaInput" placeholder="Enter code">
     </div>
+
     <button class="submit-btn" onclick="validateAndGo()">SUBMIT REQUEST</button>
+
     <div class="footer-text">&copy; 2026 Marksheet Portal</div>
 </div>
 
 <script>
 let generatedCode = "";
 
+/* ================= CAPTCHA ================= */
 function generateCaptcha() {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let code = "";
     for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
+        code += chars[Math.floor(Math.random() * chars.length)];
     }
     generatedCode = code;
     document.getElementById("captchaValue").innerText = code;
     document.getElementById("captchaInput").value = "";
 }
 
+/* ================= RESET BUTTON ================= */
+function resetButton(btn) {
+    btn.innerText = "SUBMIT REQUEST";
+    btn.disabled = false;
+    generateCaptcha();
+}
+
+/* ================= MAIN FUNCTION ================= */
 function validateAndGo() {
+
     const roll = document.getElementById("roll").value.trim();
     const sClass = document.getElementById("class").value;
     const year = document.getElementById("year").value;
@@ -94,35 +109,38 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // --- YE WALA HISSA DHYAN SE DEKHO, AB FIX HAI ---
+    /* ================= FIXED GOOGLE SCRIPT CALL ================= */
     google.script.run
         .withSuccessHandler(function(response) {
-            if (response && response.status === "success") {
-                var baseUrl = '<?!= scriptUrl ?>'; 
-                var finalUrl = baseUrl 
-                    + "?page=marksheetcorrection" // File name match honi chahiye
-                    + "&roll=" + encodeURIComponent(roll)
-                    + "&class=" + encodeURIComponent(sClass)
-                    + "&year=" + encodeURIComponent(year);
 
-                window.top.location.href = finalUrl;
+            if (response && response.status === "success") {
+
+                // SAFE URL (NO scriptUrl dependency)
+                var baseUrl = window.location.href.split("?")[0];
+
+                var finalUrl = baseUrl +
+                    "?page=marksheetcorrection" +
+                    "&roll=" + encodeURIComponent(roll) +
+                    "&class=" + encodeURIComponent(sClass) +
+                    "&year=" + encodeURIComponent(year);
+
+                window.location.href = finalUrl;
+
             } else {
-                alert("Error: " + (response ? response.message : "Record nahi mila"));
+                alert(response?.message || "Record nahi mila");
                 resetButton(btn);
             }
         })
+
         .withFailureHandler(function(err) {
-            alert("System Error: " + err.toString());
+            console.error(err);
+            alert("Server Error! Try again.");
             resetButton(btn);
         })
-        .getStudentData(roll, sClass, year); 
-}
 
-function resetButton(btn) {
-    btn.innerText = "SUBMIT REQUEST";
-    btn.disabled = false;
-    generateCaptcha();
+        .getStudentData(roll, sClass, year);
 }
 </script>
+
 </body>
 </html>
