@@ -6,6 +6,7 @@
     <title>Student Search Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        /* CSS Same as before */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: #f4f7f9; height: 100vh; display: flex; justify-content: center; align-items: center; }
         .search-container { background: #ffffff; padding: 40px; border-radius: 12px; border-top: 5px solid #003366; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); width: 95%; max-width: 400px; }
@@ -40,15 +41,15 @@
                 <option value="11th">11th</option>
                 <option value="10th">10th</option>
                 <option value="9th">9th</option>
-                 <option value="8th">8th</option>
+                <option value="8th">8th</option>
                 <option value="7th">7th</option>
-                 <option value="6th">6th</option>
+                <option value="6th">6th</option>
                 <option value="5th">5th</option>
-                 <option value="4th">4th</option>
-                <option value="3rd">3rdh</option>
-                 <option value="2nd">2nd</option>
+                <option value="4th">4th</option>
+                <option value="3rd">3rd</option>
+                <option value="2nd">2nd</option>
                 <option value="1st">1st</option>
-                 <option value="KG2">KG2</option>
+                <option value="KG2">KG2</option>
                 <option value="KG1">KG1</option>
             </select>
         </div>
@@ -97,7 +98,6 @@ function generateCaptcha() {
     document.getElementById("captchaInput").value = "";
 }
 
-/* ================= RESET BUTTON ================= */
 function resetButton(btn) {
     btn.innerText = "SUBMIT REQUEST";
     btn.disabled = false;
@@ -106,14 +106,14 @@ function resetButton(btn) {
 
 /* ================= MAIN FUNCTION ================= */
 function validateAndGo() {
-
+    // Trim input data to avoid empty space errors
     const roll = document.getElementById("roll").value.trim();
     const sClass = document.getElementById("class").value;
     const year = document.getElementById("year").value;
     const userInput = document.getElementById("captchaInput").value.trim();
 
     if (!roll || !sClass || !year) {
-        alert("Saari jankari bhariye!");
+        alert("Kripya saari jankari bhariye!");
         return;
     }
 
@@ -127,35 +127,29 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    /* ================= FIXED GOOGLE SCRIPT CALL ================= */
     google.script.run
         .withSuccessHandler(function(response) {
-
             if (response && response.status === "success") {
-
-                // SAFE URL (NO scriptUrl dependency)
+                // Redirecting with URL parameters
                 var baseUrl = window.location.href.split("?")[0];
-
-                var finalUrl = baseUrl +
-                    "?page=marksheetcorrection" +
-                    "&roll=" + encodeURIComponent(roll) +
-                    "&class=" + encodeURIComponent(sClass) +
+                var finalUrl = baseUrl + 
+                    "?page=marksheetcorrection" + 
+                    "&roll=" + encodeURIComponent(roll) + 
+                    "&class=" + encodeURIComponent(sClass) + 
                     "&year=" + encodeURIComponent(year);
 
                 window.location.href = finalUrl;
-
             } else {
-                alert(response?.message || "Record nahi mila");
+                // Error message from Code.gs will be displayed here
+                alert(response?.message || "Record nahi mila. Kripya details check karein.");
                 resetButton(btn);
             }
         })
-
         .withFailureHandler(function(err) {
             console.error(err);
-            alert("Server Error! Try again.");
+            alert("Server Error! Kuch der baad koshish karein.");
             resetButton(btn);
         })
-
         .getStudentData(roll, sClass, year);
 }
 </script>
