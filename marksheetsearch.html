@@ -171,7 +171,8 @@ function validateAndGo() {
             resetButton(btn);
         })
         .getStudentData(roll, sClass, year); 
-}function resetButton(btn) {
+}
+    function resetButton(btn) {
     btn.innerText = "SUBMIT REQUEST";
     btn.disabled = false;
     generateCaptcha();
