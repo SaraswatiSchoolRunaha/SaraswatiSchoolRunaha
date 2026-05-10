@@ -7,12 +7,13 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Humne font fix kiya hai taaki MIME error na aaye -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f4f7f9;
             height: 100vh;
             display: flex;
@@ -140,28 +141,25 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // Correct Structure for google.script.run
+    // Fixed Structure
     google.script.run
         .withSuccessHandler(function(response) {
             console.log("Server Response:", response);
             
-            if (!response) {
-                alert("Error: Server se koi jawab nahi mila.");
-                resetButton(btn);
-                return;
-            }
+            if (response && response.status === "success") {
+                // scriptUrl direct Code.gs template se aayega
+                var baseUrl = "<?= scriptUrl ?>"; 
+                
+                var finalUrl = baseUrl 
+                    + "?page=correction"
+                    + "&roll=" + encodeURIComponent(roll)
+                    + "&class=" + encodeURIComponent(sClass)
+                    + "&year=" + encodeURIComponent(year);
 
-            if (response.status === "success") {
-                google.script.url.getLocation(function(location) {
-                    var baseUrl = location.url; 
-                    window.top.location.href = baseUrl 
-                        + "?page=correction"
-                        + "&roll=" + encodeURIComponent(roll)
-                        + "&class=" + encodeURIComponent(sClass)
-                        + "&year=" + encodeURIComponent(year);
-                });
+                window.top.location.href = finalUrl;
+
             } else {
-                alert("Sheet Error: " + response.message);
+                alert("Error: " + (response ? response.message : "Data nahi mila"));
                 resetButton(btn);
             }
         })
@@ -172,7 +170,8 @@ function validateAndGo() {
         })
         .getStudentData(roll, sClass, year); 
 }
-    function resetButton(btn) {
+
+function resetButton(btn) {
     btn.innerText = "SUBMIT REQUEST";
     btn.disabled = false;
     generateCaptcha();
