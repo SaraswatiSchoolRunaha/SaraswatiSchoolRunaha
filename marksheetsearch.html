@@ -151,21 +151,23 @@ function validateAndGo() {
                 return;
             }
 
-           if (response.status === "success") {
+         if (response.status === "success") {
+        // Purana window.location wala logic hata kar ye dalein:
+        google.script.url.getLocation(function(location) {
+            var baseUrl = location.url; // Ye automatic sahi Web App URL nikal lega
+            
+            // window.top ka use karein taaki iframe se bahar nikal kar page redirect ho
+            window.top.location.href = baseUrl 
+                + "?page=correction"
+                + "&roll=" + encodeURIComponent(roll)
+                + "&class=" + encodeURIComponent(sClass)
+                + "&year=" + encodeURIComponent(year);
+        });
 
-        const url = window.location.origin + window.location.pathname;
-
-        window.location.href = url 
-            + "?page=correction"
-            + "&roll=" + encodeURIComponent(roll)
-            + "&class=" + encodeURIComponent(sClass)
-            + "&year=" + encodeURIComponent(year);
-
-            } else {
+    } else {
         alert("Sheet Error: " + response.message);
         resetButton(btn);
-    }     
-    })
+    }
         .withFailureHandler(function(err) {
             console.error("Script Run Error:", err);
             alert("Critical Error: " + err.toString());
