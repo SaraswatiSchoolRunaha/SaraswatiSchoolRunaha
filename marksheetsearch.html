@@ -129,7 +129,7 @@ function validateAndGo() {
     btn.disabled = true;
 
    // 4. Server Call (GitHub to Google Apps Script Bridge)
-    const webAppUrl = "APNA_DEPLOY_KIYA_HUA_URL_YAHAN_DAALEIN"; // <--- Yahan apna Web App URL paste karein
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec"; // <--- Yahan apna Web App URL paste karein
 
     fetch(`${webAppUrl}?roll=${roll}&class=${sClass}&year=${year}`)
         .then(response => response.json())
