@@ -86,7 +86,6 @@
 <script>
 let generatedCode = "";
 
-/* ================= CAPTCHA ================= */
 function generateCaptcha() {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let code = "";
@@ -104,9 +103,7 @@ function resetButton(btn) {
     generateCaptcha();
 }
 
-/* ================= MAIN FUNCTION ================= */
 function validateAndGo() {
-    // Trim input data to avoid empty space errors
     const roll = document.getElementById("roll").value.trim();
     const sClass = document.getElementById("class").value;
     const year = document.getElementById("year").value;
@@ -127,27 +124,28 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
+    // Direct search call
     google.script.run
         .withSuccessHandler(function(response) {
             if (response && response.status === "success") {
-                // Redirecting with URL parameters
-                var baseUrl = window.location.href.split("?")[0];
-                var finalUrl = baseUrl + 
-                    "?page=marksheetcorrection" + 
-                    "&roll=" + encodeURIComponent(roll) + 
-                    "&class=" + encodeURIComponent(sClass) + 
-                    "&year=" + encodeURIComponent(year);
-
-                window.location.href = finalUrl;
+                // Success hone par URL fetch karke redirect karein
+                google.script.run.withSuccessHandler(function(url) {
+                    var finalUrl = url + 
+                        "?page=marksheetcorrection" + 
+                        "&roll=" + encodeURIComponent(roll) + 
+                        "&class=" + encodeURIComponent(sClass) + 
+                        "&year=" + encodeURIComponent(year);
+                    
+                    // window.top hi sabse zaroori hai redirect ke liye
+                    window.top.location.href = finalUrl;
+                }).getScriptUrl(); 
             } else {
-                // Error message from Code.gs will be displayed here
-                alert(response?.message || "Record nahi mila. Kripya details check karein.");
+                alert(response?.message || "Record nahi mila.");
                 resetButton(btn);
             }
         })
         .withFailureHandler(function(err) {
-            console.error(err);
-            alert("Server Error! Kuch der baad koshish karein.");
+            alert("Server Error: " + err);
             resetButton(btn);
         })
         .getStudentData(roll, sClass, year);
