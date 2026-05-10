@@ -126,18 +126,16 @@ function validateAndGo() {
 
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
 
-    // FETCH API istemal karein (Isme google.script.run ki zaroorat nahi hai)
     fetch(`${webAppUrl}?roll=${roll}&class=${sClass}&year=${year}`)
         .then(response => response.json())
         .then(response => {
             if (response && response.status === "success") {
-                if (response.redirectUrl) {
-                    // Yahan se redirection hoga
-                    window.location.href = response.redirectUrl;
-                } else {
-                    alert("❌ Error: Redirect URL missing in response");
-                    resetButton(btn);
-                }
+                // APNE CORRECTION PAGE KA SAHI FILENAME YA URL YAHAN DAALEIN
+                // Agar aapka correction page 'correction.html' hai toh:
+                const nextPath = "correction.html"; 
+                
+                // URL Parameters ke saath redirect karein
+                window.location.href = `${nextPath}?roll=${encodeURIComponent(roll)}&class=${encodeURIComponent(sClass)}&year=${encodeURIComponent(year)}`;
             } else {
                 alert("ℹ️ " + (response.message || "Record not found!"));
                 resetButton(btn);
