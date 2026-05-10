@@ -109,50 +109,61 @@ function validateAndGo() {
     const year = document.getElementById("year").value;
     const userInput = document.getElementById("captchaInput").value.trim();
 
+    // 1. Basic Validation
     if (!roll || !sClass || !year) {
-        alert("Kripya saari jankari bhariye!");
+        alert("⚠️ कृपया रोल नंबर, कक्षा और वर्ष का चयन करें!");
         return;
     }
 
+    // 2. Captcha Validation
     if (userInput.toUpperCase() !== generatedCode) {
-        alert("Galat Captcha!");
+        alert("❌ गलत कैप्चा कोड! कृपया दोबारा प्रयास करें।");
         generateCaptcha();
         return;
     }
 
+    // 3. Button Loading State
     const btn = document.querySelector(".submit-btn");
-    btn.innerText = "SEARCHING...";
+    const originalText = btn.innerText;
+    btn.innerText = "⌛ SEARCHING...";
     btn.disabled = true;
 
-    // सर्वर कॉल
-   google.script.run
+    // 4. Server Call
+    google.script.run
         .withSuccessHandler(function(response) {
             if (response && response.status === "success") {
                 if (response.redirectUrl) {
                     
-                    // 1. सबसे पहले इसी विंडो को _top पर भेजने की कोशिश करें
-                    window.top.location.href = response.redirectUrl;
+                    // --- मज़बूत रीडायरेक्ट लॉजिक ---
+                    // कोशिश 1: सीधी विंडो नेविगेशन
+                    try {
+                        window.top.location.href = response.redirectUrl;
+                    } catch (e) {
+                        console.log("Direct redirect blocked, trying anchor...");
+                    }
 
-                    // 2. बैकअप: अगर 0.5 सेकंड में पेज नहीं बदला, तो एंकर टैग से ज़बरदस्ती खोलें
+                    // कोशिश 2: एंकर टैग (यह सबसे ज़्यादा कामयाब होता है)
+                    var a = document.createElement('a');
+                    a.href = response.redirectUrl;
+                    a.target = '_top'; // Iframe को तोड़कर मुख्य पेज पर जाने के लिए
+                    document.body.appendChild(a);
+                    
                     setTimeout(function() {
-                        var a = document.createElement('a');
-                        a.href = response.redirectUrl;
-                        a.target = '_top'; // बहुत ज़रूरी: इसी विंडो में ऊपर वाले लेवल पर खोलेगा
-                        document.body.appendChild(a);
                         a.click();
-                    }, 500);
+                    }, 100);
 
                 } else {
-                    alert("Redirect URL नहीं मिला!");
+                    alert("❌ सर्वर एरर: Redirect URL नहीं मिला!");
                     resetButton(btn);
                 }
             } else {
-                alert(response?.message || "Record nahi mila.");
+                // रिकॉर्ड न मिलने पर मैसेज
+                alert("ℹ️ " + (response?.message || "रिकॉर्ड नहीं मिला। कृपया जानकारी जाँचें।"));
                 resetButton(btn);
             }
         })
         .withFailureHandler(function(err) {
-            alert("Server Error: " + err);
+            alert("❌ सिस्टम एरर: " + err);
             resetButton(btn);
         })
         .getStudentData(roll, sClass, year);
