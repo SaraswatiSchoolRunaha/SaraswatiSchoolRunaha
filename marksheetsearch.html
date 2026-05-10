@@ -7,7 +7,6 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Humne font fix kiya hai taaki MIME error na aaye -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
@@ -141,14 +140,11 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
+    // Fixed Structure - No duplicates here
     google.script.run
         .withSuccessHandler(function(response) {
-            console.log("Server Response:", response);
-            
             if (response && response.status === "success") {
-                // scriptUrl ko safe tarike se handle karein
                 var baseUrl = '<?!= scriptUrl ?>'; 
-                
                 var finalUrl = baseUrl 
                     + "?page=correction"
                     + "&roll=" + encodeURIComponent(roll)
@@ -164,14 +160,6 @@ function validateAndGo() {
         .withFailureHandler(function(err) {
             console.error("Script Run Error:", err);
             alert("System Error: " + err.toString());
-            resetButton(btn);
-        })
-       .getStudentData(roll, sClass, year); 
-}        
-    
-    .withFailureHandler(function(err) {
-            console.error("Script Run Error:", err);
-            alert("Critical Error: " + err.toString());
             resetButton(btn);
         })
         .getStudentData(roll, sClass, year); 
