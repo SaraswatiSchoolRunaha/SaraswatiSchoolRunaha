@@ -7,26 +7,35 @@
 
 <style>
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* dvh मोबाइल ब्राउज़र बार के हिसाब से हाइट एडजस्ट करता है */
+  min-height: 100dvh; 
+  background-color: #f4f7f9;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-  /* मुख्य बॉक्स - Capture55.JPG जैसा */
-  .main-box {
-    background: white;
-    width: 95%;
-    max-width: 600px;
-    padding: 40px;
-    border: 3px solid #1e5ba3; 
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    border-radius: 4px;
-    text-align: center;
-  }
+.main-box {
+  background: white;
+  width: 100%;
+  max-width: 450px; /* डेस्कटॉप पर ज्यादा चौड़ा नहीं होगा */
+  padding: 30px 20px;
+  border: 2px solid #1e5ba3;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+/* इनपुट्स और बटन को मोबाइल पर फुल विड्थ देने के लिए */
+input[type="text"], .btn-submit {
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+  
 
   .title-section {
     display: flex;
