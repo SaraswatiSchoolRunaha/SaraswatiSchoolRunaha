@@ -127,14 +127,24 @@ function validateAndGo() {
     btn.disabled = true;
 
     // सिर्फ एक सर्वर कॉल - यहीं से डेटा भी चेक होगा और URL भी मिलेगा
+  // सर्वर कॉल
     google.script.run
         .withSuccessHandler(function(response) {
             if (response && response.status === "success") {
-                // सर्वर से आए हुए redirectUrl पर भेजें
                 if (response.redirectUrl) {
-                    window.top.location.href = response.redirectUrl;
+                    // तरीका 1: नए टैब में खोलने के लिए (सबसे ज्यादा सफल)
+                    const win = window.open(response.redirectUrl, '_top');
+                    
+                    // अगर ऊपर वाला काम न करे, तो यह बैकअप (Link Click) तरीका:
+                    if(!win) {
+                      const link = document.createElement('a');
+                      link.href = response.redirectUrl;
+                      link.target = '_top'; // इसी विंडो में खोलने के लिए
+                      document.body.appendChild(link);
+                      link.click();
+                    }
                 } else {
-                    alert("Redirect URL fetch nahi ho paya!");
+                    alert("URL नहीं मिला!");
                     resetButton(btn);
                 }
             } else {
@@ -147,8 +157,7 @@ function validateAndGo() {
             resetButton(btn);
         })
         .getStudentData(roll, sClass, year);
-}
+    
 </script>
-
 </body>
 </html>
