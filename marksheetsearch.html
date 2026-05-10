@@ -140,43 +140,38 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // Yahan check karein ki Code.gs mein function ka naam 'getStudentData' hi hai na?
+    // Correct Structure for google.script.run
     google.script.run
         .withSuccessHandler(function(response) {
-            console.log("Server Response:", response); // Browser Console mein check karne ke liye
+            console.log("Server Response:", response);
             
             if (!response) {
-                alert("Error: Server se koi jawab nahi mila (Null Response).");
+                alert("Error: Server se koi jawab nahi mila.");
                 resetButton(btn);
                 return;
             }
 
-         if (response.status === "success") {
-        // Purana window.location wala logic hata kar ye dalein:
-        google.script.url.getLocation(function(location) {
-            var baseUrl = location.url; // Ye automatic sahi Web App URL nikal lega
-            
-            // window.top ka use karein taaki iframe se bahar nikal kar page redirect ho
-            window.top.location.href = baseUrl 
-                + "?page=correction"
-                + "&roll=" + encodeURIComponent(roll)
-                + "&class=" + encodeURIComponent(sClass)
-                + "&year=" + encodeURIComponent(year);
-        });
-
-    } else {
-        alert("Sheet Error: " + response.message);
-        resetButton(btn);
-    }
+            if (response.status === "success") {
+                google.script.url.getLocation(function(location) {
+                    var baseUrl = location.url; 
+                    window.top.location.href = baseUrl 
+                        + "?page=correction"
+                        + "&roll=" + encodeURIComponent(roll)
+                        + "&class=" + encodeURIComponent(sClass)
+                        + "&year=" + encodeURIComponent(year);
+                });
+            } else {
+                alert("Sheet Error: " + response.message);
+                resetButton(btn);
+            }
+        })
         .withFailureHandler(function(err) {
             console.error("Script Run Error:", err);
             alert("Critical Error: " + err.toString());
             resetButton(btn);
         })
         .getStudentData(roll, sClass, year); 
-}
-
-function resetButton(btn) {
+}function resetButton(btn) {
     btn.innerText = "SUBMIT REQUEST";
     btn.disabled = false;
     generateCaptcha();
