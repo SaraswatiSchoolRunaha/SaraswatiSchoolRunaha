@@ -125,23 +125,25 @@ function validateAndGo() {
     btn.disabled = true;
 
     // सर्वर कॉल
-    google.script.run
+   google.script.run
         .withSuccessHandler(function(response) {
             if (response && response.status === "success") {
                 if (response.redirectUrl) {
-                    // तरीका 1: _top लेवल पर विंडो ओपन करना
-                    const win = window.open(response.redirectUrl, '_top');
                     
-                    // तरीका 2: यदि पॉप-अप ब्लॉक हो या विंडो हैंडल न मिले
-                    if(!win) {
-                        const link = document.createElement('a');
-                        link.href = response.redirectUrl;
-                        link.target = '_top'; 
-                        document.body.appendChild(link);
-                        link.click();
-                    }
+                    // 1. सबसे पहले इसी विंडो को _top पर भेजने की कोशिश करें
+                    window.top.location.href = response.redirectUrl;
+
+                    // 2. बैकअप: अगर 0.5 सेकंड में पेज नहीं बदला, तो एंकर टैग से ज़बरदस्ती खोलें
+                    setTimeout(function() {
+                        var a = document.createElement('a');
+                        a.href = response.redirectUrl;
+                        a.target = '_top'; // बहुत ज़रूरी: इसी विंडो में ऊपर वाले लेवल पर खोलेगा
+                        document.body.appendChild(a);
+                        a.click();
+                    }, 500);
+
                 } else {
-                    alert("URL नहीं मिला!");
+                    alert("Redirect URL नहीं मिला!");
                     resetButton(btn);
                 }
             } else {
@@ -154,7 +156,6 @@ function validateAndGo() {
             resetButton(btn);
         })
         .getStudentData(roll, sClass, year);
-} // <--- यहाँ ब्रैकेट गायब था, अब ठीक है।
 </script>
 </body>
 </html>
