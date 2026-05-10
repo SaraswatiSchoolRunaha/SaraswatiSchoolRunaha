@@ -132,7 +132,7 @@ function validateAndGo() {
             if (response && response.status === "success") {
                 // APNE CORRECTION PAGE KA SAHI FILENAME YA URL YAHAN DAALEIN
                 // Agar aapka correction page 'correction.html' hai toh:
-                const nextPath = "correction.html"; 
+                const nextPath = "marksheetcorrection.html"; 
                 
                 // URL Parameters ke saath redirect karein
                 window.location.href = `${nextPath}?roll=${encodeURIComponent(roll)}&class=${encodeURIComponent(sClass)}&year=${encodeURIComponent(year)}`;
