@@ -109,11 +109,13 @@ function validateAndGo() {
     const year = document.getElementById("year").value;
     const userInput = document.getElementById("captchaInput").value.trim();
 
+    // बेसिक वैलिडेशन
     if (!roll || !sClass || !year) {
         alert("Kripya saari jankari bhariye!");
         return;
     }
 
+    // कैप्चा चेक
     if (userInput.toUpperCase() !== generatedCode) {
         alert("Galat Captcha!");
         generateCaptcha();
@@ -124,21 +126,17 @@ function validateAndGo() {
     btn.innerText = "SEARCHING...";
     btn.disabled = true;
 
-    // Direct search call
+    // सिर्फ एक सर्वर कॉल - यहीं से डेटा भी चेक होगा और URL भी मिलेगा
     google.script.run
         .withSuccessHandler(function(response) {
             if (response && response.status === "success") {
-                // Success hone par URL fetch karke redirect karein
-                google.script.run.withSuccessHandler(function(url) {
-                    var finalUrl = url + 
-                        "?page=marksheetcorrection" + 
-                        "&roll=" + encodeURIComponent(roll) + 
-                        "&class=" + encodeURIComponent(sClass) + 
-                        "&year=" + encodeURIComponent(year);
-                    
-                    // window.top hi sabse zaroori hai redirect ke liye
-                    window.top.location.href = finalUrl;
-                }).getScriptUrl(); 
+                // सर्वर से आए हुए redirectUrl पर भेजें
+                if (response.redirectUrl) {
+                    window.top.location.href = response.redirectUrl;
+                } else {
+                    alert("Redirect URL fetch nahi ho paya!");
+                    resetButton(btn);
+                }
             } else {
                 alert(response?.message || "Record nahi mila.");
                 resetButton(btn);
