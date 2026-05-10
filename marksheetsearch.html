@@ -128,44 +128,30 @@ function validateAndGo() {
     btn.innerText = "⌛ SEARCHING...";
     btn.disabled = true;
 
-    // 4. Server Call
-    google.script.run
-        .withSuccessHandler(function(response) {
+   // 4. Server Call (GitHub to Google Apps Script Bridge)
+    const webAppUrl = "APNA_DEPLOY_KIYA_HUA_URL_YAHAN_DAALEIN"; // <--- Yahan apna Web App URL paste karein
+
+    fetch(`${webAppUrl}?roll=${roll}&class=${sClass}&year=${year}`)
+        .then(response => response.json())
+        .then(response => {
             if (response && response.status === "success") {
                 if (response.redirectUrl) {
-                    
-                    // --- मज़बूत रीडायरेक्ट लॉजिक ---
-                    // कोशिश 1: सीधी विंडो नेविगेशन
-                    try {
-                        window.top.location.href = response.redirectUrl;
-                    } catch (e) {
-                        console.log("Direct redirect blocked, trying anchor...");
-                    }
-
-                    // कोशिश 2: एंकर टैग (यह सबसे ज़्यादा कामयाब होता है)
-                    var a = document.createElement('a');
-                    a.href = response.redirectUrl;
-                    a.target = '_top'; // Iframe को तोड़कर मुख्य पेज पर जाने के लिए
-                    document.body.appendChild(a);
-                    
-                    setTimeout(function() {
-                        a.click();
-                    }, 100);
-
+                    // Redirect Logic
+                    window.location.href = response.redirectUrl;
                 } else {
                     alert("❌ सर्वर एरर: Redirect URL नहीं मिला!");
                     resetButton(btn);
                 }
             } else {
-                // रिकॉर्ड न मिलने पर मैसेज
                 alert("ℹ️ " + (response?.message || "रिकॉर्ड नहीं मिला। कृपया जानकारी जाँचें।"));
                 resetButton(btn);
             }
         })
-        .withFailureHandler(function(err) {
-            alert("❌ सिस्टम एरर: " + err);
+        .catch(err => {
+            alert("❌ सिस्टम एरer: Connection failed! Check Web App Deployment.");
             resetButton(btn);
-        })
+        });
+    
         .getStudentData(roll, sClass, year);
 }
 </script>
