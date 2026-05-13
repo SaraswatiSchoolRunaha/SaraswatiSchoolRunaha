@@ -425,13 +425,22 @@
         const originalBtnText = btn.innerText;
         btn.innerText = "⌛ Processing... Please Wait";
 
-        try {
-            const [photoData, birthCertData, aadharData] = await Promise.all([
-                getFileData('photo'),
-                getFileData('birthCert'),
-                getFileData('aadhar')
-            ]);
+        // ... baki code ...
+      try {
+          const [photoData, birthCertData, aadharData] = await Promise.all([
+              getFileData('photo'),
+              getFileData('birthCert'),
+              getFileData('aadhar')
+          ]);
 
+          const formData = {
+              // ... aapka form data ...
+          };
+
+          // YAHAN PAR '}' LAGANA JAROORI HAI
+      } catch (err) { 
+          // ... error handle ...
+      }
             const formData = {
                 action: "processCorrection", // Backend ko batane ke liye ki kya karna hai
                 roll: rollNo,
@@ -509,6 +518,10 @@ fetch(WEB_APP_URL, {
         btn.disabled = false;
         btn.innerText = text;
     }
+        .then(() => {
+    alert("✅ आवेदन भेज दिया गया है!");
+    location.reload(); // Ise use karein, page refresh hote hi button theek ho jayega
+})
 
     // Captcha naya banane ke liye
     function generateCaptcha() {
