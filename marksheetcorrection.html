@@ -15,19 +15,31 @@
         padding: 0;
         display: block;
     }
-/* Is hisse ko dhundhein aur aise update karein */
+/* --- UPDATED MAIN CARD WITH BORDER & SHADOW --- */
 .main-card {
     width: 100%;
     max-width: 900px;
     background: #ffffff;
     border-radius: 12px;
-    margin: 0 auto;
+    margin: 20px auto; /* Upar-neeche thoda gap taki shadow aur border saaf dikhe */
 
-    /* --- YE DO LINES ZAROORI HAIN BORDER KE LIYE --- */
-    border: 2px solid #003366; /* Blue rang ka solid border */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Halka shadow jo border ko ubharega */
+    /* Blue rang ka solid border */
+    border: 2px solid #003366; 
     
-    overflow: hidden;
+    /* Halka shadow jo card ko background se upar uthayega */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+    
+    overflow: hidden; /* Taki corners rounded rahein aur content bahar na nikle */
+    transition: transform 0.3s ease; /* Hover effect ke liye (optional) */
+}
+
+/* Mobile Devices ke liye adjustment */
+@media (max-width: 600px) {
+    .main-card {
+        margin: 10px; /* Mobile par screen se chipkega nahi */
+        width: auto;
+        border-radius: 8px;
+    }
 }
 
     /* Clean Header - No Bottom Line */
