@@ -338,12 +338,23 @@
             </label>
         </div>
 
-        <div class="captcha-box">
-            <div id="captchaDisplay"></div>
-            <button type="button" onclick="generateCaptcha()" style="background:none; border:none; cursor:pointer;">🔄</button>
-            <input type="text" id="captcha" placeholder="Code" style="width: 100px;">
-        </div>
+        <!-- Captcha Section Updated -->
+        <div class="captcha-box" style="margin-top: 25px; display: flex; align-items: center; gap: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+    
+    <!-- Captcha Display (Text yahan bada dikhega) -->
+    <div id="captchaDisplay" style="background: #ffffff; padding: 10px 20px; font-weight: 800; font-size: 28px; letter-spacing: 8px; border: 2px dashed #003366; color: #d32f2f; font-family: 'Courier New', monospace; user-select: none; min-width: 140px; text-align: center;">
+        LOADING
+    </div>
 
+    <!-- Refresh Button -->
+    <button type="button" onclick="generateCaptcha()" style="background: #003366; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">
+        🔄
+    </button>
+
+    <!-- Input Box -->
+    <input type="text" id="captcha" placeholder="Enter Code" style="width: 140px; padding: 12px; font-size: 18px; font-weight: bold; border: 2px solid #003366; border-radius: 5px; text-align: center; text-transform: uppercase;">
+    
+</div>
         <button class="btn-submit" onclick="submitData()">SUBMIT CORRECTION REQUEST</button>
     </div>
 </div>
