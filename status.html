@@ -42,8 +42,9 @@
 
 <script>
     let generatedCaptcha = "";
+    // Apni Web App URL yahan dalein
+    const WEB_APP_URL = "YOUR_DEPLOYED_WEB_APP_URL_HERE"; 
 
-    // 1. कैप्चा जेनरेट करने का फंक्शन
     function generateCaptcha() {
         const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         let code = "";
@@ -54,57 +55,80 @@
         document.getElementById("captchaVal").innerText = code;
     }
 
-    // 2. पेज लोड होते ही डेटा रिकवर करना
     window.onload = function() {
         generateCaptcha();
-        
-        // localStorage से आईडी उठाना
         const savedAppID = localStorage.getItem("lastAppID");
         if(savedAppID) {
             document.getElementById("appNo").value = savedAppID;
         }
     };
 
-    function checkStatus() {
-        const app = document.getElementById('appNo').value;
-        const roll = document.getElementById('rollNo').value;
-        const userCaptcha = document.getElementById('userCaptcha').value;
+    async function checkStatus() {
+        const app = document.getElementById('appNo').value.trim();
+        const roll = document.getElementById('rollNo').value.trim();
+        const userCaptcha = document.getElementById('userCaptcha').value.trim();
         const resultDiv = document.getElementById('result');
 
-        if(app === "" || roll === "" || userCaptcha === "") {
+        if(!app || !roll || !userCaptcha) {
             resultDiv.innerText = "⚠️ Sabhi fields bharna zaroori hai!";
             resultDiv.style.color = "orange";
             return;
         }
 
         if(userCaptcha.toUpperCase() !== generatedCaptcha) {
-            resultDiv.innerText = "❌ Galat Captcha! Phir se koshish karein.";
+            resultDiv.innerText = "❌ Galat Captcha!";
             resultDiv.style.color = "red";
-            generateCaptcha(); // गलत होने पर कैप्चा बदलें
+            generateCaptcha();
             return;
         }
 
-        // स्टेटस लॉजिक (डेमो के लिए)
-        let appStatus = "Rejected"; 
-        let rejectReason = "Dostavej (Documents) saaf nahi hain.";
+        resultDiv.innerText = "⏳ Verification chal rahi hai...";
+        resultDiv.style.color = "blue";
 
+        try {
+            // Google Sheets se data lane ke liye API call
+            // Note: Hum parameters bhej rahe hain search ke liye
+            const response = await fetch(`${WEB_APP_URL}?roll=${roll}&app=${app}`);
+            const result = await response.json();
+
+            if (result.status === "success") {
+                resultDiv.innerText = "✅ Record Mil Gaya!";
+                resultDiv.style.color = "green";
+                openReport(result.data, app);
+            } else {
+                resultDiv.innerText = "❌ " + (result.message || "Record nahi mila");
+                resultDiv.style.color = "red";
+            }
+        } catch (error) {
+            resultDiv.innerText = "❌ System Error: " + error.message;
+            resultDiv.style.color = "red";
+        }
+    }
+
+    function openReport(s, appNo) {
         const reportWindow = window.open('', '_blank');
+        
+        // Status color logic
+        const statusClass = s.status === 'Rejected' ? 'bg-red' : 'bg-green';
+        
         reportWindow.document.write(`
             <html>
             <head>
-                <title>Report - ${app}</title>
+                <title>Report - ${appNo}</title>
                 <style>
                     body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; }
                     .header-line { height: 10px; background: #0056b3; border-radius: 5px 5px 0 0; }
                     .table-container { background: white; border-radius: 0 0 10px 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow-x: auto; }
-                    table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-                    th { background: #f8f9fa; color: #333; padding: 15px 10px; text-align: left; font-size: 11px; border-bottom: 2px solid #0056b3; }
-                    td { padding: 15px 10px; border-bottom: 1px solid #eee; font-size: 13px; color: #444; }
-                    .badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; font-size: 10px; }
+                    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+                    th { background: #f8f9fa; color: #333; padding: 12px; text-align: left; font-size: 12px; border-bottom: 2px solid #0056b3; white-space: nowrap; }
+                    td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; color: #444; }
+                    .badge { padding: 5px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; text-transform: uppercase; }
                     .bg-red { background: #dc3545; }
                     .bg-green { background: #28a745; }
+                    .student-img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; border: 1px solid #ddd; }
                     h2 { color: #003366; text-align: center; margin-bottom: 5px; }
-                    .print-btn { background: #003366; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+                    .print-btn { background: #003366; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+                    @media print { .print-btn { display: none; } }
                 </style>
             </head>
             <body>
@@ -117,33 +141,30 @@
                             <tr>
                                 <th>App No.</th>
                                 <th>Roll No.</th>
-                                <th>Samgra ID </th>
-                                <th>Session.</th>
+                                <th>Photo</th>
                                 <th>Student Name</th>
                                 <th>Father Name</th>
                                 <th>Mother Name</th>
                                 <th>Class</th>
                                 <th>DOB</th>
                                 <th>Medium</th>
-                                <th>Category</th>
-                                <th>Gender</th>
-                                <th>Subject</th> 
-                                <th>Photos</th>
                                 <th>Status</th>
-                                <th>Correction Marksheet </th>
-                                <th>Rejection Reason</th>
+                                <th>Reason (If any)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><b>${app}</b></td>
-                                <td>${roll}</td>
-                                <td>RAJESH KUMAR</td>
-                                <td>SHYAM LAL</td>
-                                <td>GEETA DEVI</td>
-                                <td>12th</td>
-                                <td><span class="badge ${appStatus === 'Rejected' ? 'bg-red' : 'bg-green'}">${appStatus}</span></td>
-                                <td style="color:red;">${appStatus === 'Rejected' ? rejectReason : '-'}</td>
+                                <td><b>${appNo}</b></td>
+                                <td>${s.roll || 'N/A'}</td>
+                                <td><img src="${s.photoUrl || 'https://via.placeholder.com/50'}" class="student-img"></td>
+                                <td>${s.name}</td>
+                                <td>${s.father}</td>
+                                <td>${s.mother}</td>
+                                <td>${s.class || 'N/A'}</td>
+                                <td>${s.dob}</td>
+                                <td>${s.medium}</td>
+                                <td><span class="badge ${statusClass}">${s.status || 'Pending'}</span></td>
+                                <td style="color:red; font-size: 11px;">${s.rejectReason || '-'}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -154,7 +175,6 @@
         `);
     }
 </script>
-
 </body>
 </html>
 
