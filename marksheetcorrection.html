@@ -425,64 +425,74 @@
     }
 
     // Form Submit Function
-    async function submitData() {
-        const btn = document.querySelector(".btn-submit");
-        const captchaInput = document.getElementById("captcha");
-        const termsCheck = document.getElementById("acceptTerms");
-        const rollNo = document.getElementById("roll").value;
+   async function submitData() {
+    const btn = document.querySelector(".btn-submit");
+    const captchaInput = document.getElementById("captcha");
+    const termsCheck = document.getElementById("acceptTerms");
+    const rollNo = document.getElementById("roll").value;
 
-        if (!rollNo) { alert("⚠️ कृपया Roll Number दर्ज करें।"); return; }
-        if (captchaInput.value.toUpperCase() !== currentCaptcha) { 
-            alert("❌ गलत कैप्चा कोड!"); generateCaptcha(); return; 
-        }
-        if (!termsCheck.checked) { alert("⚠️ कृपया घोषणा पत्र स्वीकार करें।"); return; }
-
-        const originalBtnText = btn.innerText;
-        btn.disabled = true;
-        btn.innerText = "⌛ Processing... Please Wait";
-
-        try {
-            // Files ko base64 mein convert karna
-            const photoData = await getFileData('photo');
-            const birthCertData = await getFileData('birthCert');
-            const aadharData = await getFileData('aadhar');
-
-            const formData = {
-                action: "processCorrection",
-                roll: rollNo,
-                oldClass: window.searchClass,
-                oldYear: window.searchYear,
-                newName: getValIfEnabled("name"),
-                newFather: getValIfEnabled("father"),
-                newMother: getValIfEnabled("mother"),
-                newDob: getValIfEnabled("dob"),
-                newClass: getValIfEnabled("class"),
-                newMedium: getValIfEnabled("medium"),
-                newCategory: getValIfEnabled("category"),
-                photo: photoData,
-                birthCert: birthCertData,
-                aadhar: aadharData
-            };
-
-            const response = await fetch(WEB_APP_URL, {
-                method: "POST",
-                mode: "no-cors", 
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(formData)
-            });
-
-            // No-cors mode mein response read nahi hota, isliye successful assume karte hain
-            alert("✅ आवेदन सफलतापूर्वक भेज दिया गया है!");
-            location.reload(); 
-
-        } catch (err) {
-            console.error("Submit Error:", err);
-            alert("❌ Error: " + err.message);
-            btn.disabled = false;
-            btn.innerText = originalBtnText;
-        }
+    if (!rollNo) { alert("⚠️ कृपया Roll Number दर्ज करें।"); return; }
+    if (captchaInput.value.toUpperCase() !== currentCaptcha) { 
+        alert("❌ गलत कैप्चा कोड!"); generateCaptcha(); return; 
     }
+    if (!termsCheck.checked) { alert("⚠️ कृपया घोषणा पत्र स्वीकार करें।"); return; }
 
+    // --- APPLICATION NUMBER GENERATE KAREIN ---
+    const appNo = "CORR-" + Date.now().toString().slice(-6); 
+
+    const originalBtnText = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = "⌛ Processing... Please Wait";
+
+    try {
+        const photoData = await getFileData('photo');
+        const birthCertData = await getFileData('birthCert');
+        const aadharData = await getFileData('aadhar');
+
+        const formData = {
+            action: "processCorrection",
+            appNo: appNo, // Ye number backend pe jayega
+            roll: rollNo,
+            oldClass: window.searchClass,
+            oldYear: window.searchYear,
+            newName: getValIfEnabled("name"),
+            newFather: getValIfEnabled("father"),
+            newMother: getValIfEnabled("mother"),
+            newDob: getValIfEnabled("dob"),
+            newClass: getValIfEnabled("class"),
+            newMedium: getValIfEnabled("medium"),
+            newCategory: getValIfEnabled("category"),
+            photo: photoData,
+            birthCert: birthCertData,
+            aadhar: aadharData
+        };
+
+        await fetch(WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors", 
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(formData)
+        });
+
+        // --- SUCCESS MESSAGE WITH APPLICATION NUMBER ---
+        // Reload karne ke bajaye user ko number dikhayein
+        document.querySelector(".content").innerHTML = `
+            <div style="text-align:center; padding:40px;">
+                <h2 style="color:#28a745;">✅ आवेदन सफल!</h2>
+                <p>आपका आवेदन नंबर (Application No) सुरक्षित कर लें:</p>
+                <h1 style="color:#003366; background:#eef2f7; padding:15px; border-radius:8px; border:2px dashed #003366;">${appNo}</h1>
+                <p style="color:#666;">इसे नोट कर लें, सुधार की स्थिति जांचने के लिए इसकी आवश्यकता होगी।</p>
+                <button onclick="location.reload()" style="padding:10px 20px; background:#003366; color:white; border:none; border-radius:4px; cursor:pointer;">नया आवेदन करें</button>
+            </div>
+        `;
+
+    } catch (err) {
+        console.error("Submit Error:", err);
+        alert("❌ Error: " + err.message);
+        btn.disabled = false;
+        btn.innerText = originalBtnText;
+    }
+}
     // Helper: Input enable/disable karna
     function enable(id) {
         const input = document.getElementById(id);
