@@ -369,29 +369,45 @@
     };
     
     // FETCH API ka istemal karke data mangwana
-    function fetchStudentDetails(roll, sClass, year) {
-        if (!roll) return;
-        
-        fetch(`${WEB_APP_URL}?roll=${roll}&class=${sClass}&year=${year}`)
-            .then(res => res.json())
-            .then(data => {
-                if(data && data.status === "success") {
-                    document.getElementById('old_name').innerText = data.data.name || "---";
-                    document.getElementById('old_father').innerText = data.data.father || "---";
-                    document.getElementById('old_mother').innerText = data.data.mother || "---";
-                    document.getElementById('old_dob').innerText = data.data.dob || "---";
-                    document.getElementById('old_class').innerText = sClass || "---";
-                    document.getElementById('old_medium').innerText = data.data.medium || "---";
-                    document.getElementById('old_category').innerText = data.data.category || "---";
-                    
-                    if(data.data.photoUrl) {
-                        document.getElementById('old_photo_img').src = data.data.photoUrl;
-                    }
-                }
-            })
-            .catch(err => console.error("Error fetching data:", err));
-    }
+   function fetchStudentDetails(roll, sClass, year) {
+    if (!roll) return;
+    
+    // Loading indicator ke liye
+    const boxes = ['old_name', 'old_father', 'old_mother', 'old_dob', 'old_class', 'old_medium', 'old_category'];
+    boxes.forEach(id => document.getElementById(id).innerText = "Loading...");
 
+    // URL ko sahi se format karein
+    const finalUrl = `${WEB_APP_URL}?roll=${encodeURIComponent(roll)}&class=${encodeURIComponent(sClass)}&year=${encodeURIComponent(year)}`;
+
+    fetch(finalUrl, {
+        method: "GET",
+        mode: "cors", 
+        redirect: "follow" // Yeh line sabse zaroori hai
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data && data.status === "success") {
+            document.getElementById('old_name').innerText = data.data.name || "---";
+            document.getElementById('old_father').innerText = data.data.father || "---";
+            document.getElementById('old_mother').innerText = data.data.mother || "---";
+            document.getElementById('old_dob').innerText = data.data.dob || "---";
+            document.getElementById('old_class').innerText = sClass || "---";
+            document.getElementById('old_medium').innerText = data.data.medium || "---";
+            document.getElementById('old_category').innerText = data.data.category || "---";
+            
+            if(data.data.photoUrl) {
+                document.getElementById('old_photo_img').src = data.data.photoUrl;
+            }
+        } else {
+            alert("❌ Record Nahi Mila: " + (data.message || "Unknown error"));
+            boxes.forEach(id => document.getElementById(id).innerText = "Not Found");
+        }
+    })
+    .catch(err => {
+        console.error("Error:", err);
+        alert("⚠️ Connection Error: Check Web App URL or Internet.");
+    });
+}
     // FINAL SUBMIT LOGIC (Updated for GitHub)
     async function submitData() {
         const btn = document.querySelector(".btn-submit");
