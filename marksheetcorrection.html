@@ -350,7 +350,7 @@
 
 <script>
     let currentCaptcha = "";
-    // Yahan apna sahi Web App URL daalein
+    // Google Web App URL
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
 
     window.onload = function () {
@@ -368,47 +368,52 @@
         }
     };
     
-    // FETCH API ka istemal karke data mangwana
-   function fetchStudentDetails(roll, sClass, year) {
-    if (!roll) return;
-    
-    // Loading indicator ke liye
-    const boxes = ['old_name', 'old_father', 'old_mother', 'old_dob', 'old_class', 'old_medium', 'old_category'];
-    boxes.forEach(id => document.getElementById(id).innerText = "Loading...");
+    // Student ki purani details fetch karna
+    function fetchStudentDetails(roll, sClass, year) {
+        if (!roll) return;
+        
+        const boxes = ['old_name', 'old_father', 'old_mother', 'old_dob', 'old_class', 'old_medium', 'old_category'];
+        boxes.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.innerText = "Loading...";
+        });
 
-    // URL ko sahi se format karein
-    const finalUrl = `${WEB_APP_URL}?roll=${encodeURIComponent(roll)}&class=${encodeURIComponent(sClass)}&year=${encodeURIComponent(year)}`;
+        const finalUrl = `${WEB_APP_URL}?roll=${encodeURIComponent(roll)}&class=${encodeURIComponent(sClass)}&year=${encodeURIComponent(year)}`;
 
-    fetch(finalUrl, {
-        method: "GET",
-        mode: "cors", 
-        redirect: "follow" // Yeh line sabse zaroori hai
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data && data.status === "success") {
-            document.getElementById('old_name').innerText = data.data.name || "---";
-            document.getElementById('old_father').innerText = data.data.father || "---";
-            document.getElementById('old_mother').innerText = data.data.mother || "---";
-            document.getElementById('old_dob').innerText = data.data.dob || "---";
-            document.getElementById('old_class').innerText = sClass || "---";
-            document.getElementById('old_medium').innerText = data.data.medium || "---";
-            document.getElementById('old_category').innerText = data.data.category || "---";
-            
-            if(data.data.photoUrl) {
-                document.getElementById('old_photo_img').src = data.data.photoUrl;
+        fetch(finalUrl, {
+            method: "GET",
+            mode: "cors", 
+            redirect: "follow"
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data && data.status === "success") {
+                document.getElementById('old_name').innerText = data.data.name || "---";
+                document.getElementById('old_father').innerText = data.data.father || "---";
+                document.getElementById('old_mother').innerText = data.data.mother || "---";
+                document.getElementById('old_dob').innerText = data.data.dob || "---";
+                document.getElementById('old_class').innerText = sClass || "---";
+                document.getElementById('old_medium').innerText = data.data.medium || "---";
+                document.getElementById('old_category').innerText = data.data.category || "---";
+                
+                if(data.data.photoUrl && document.getElementById('old_photo_img')) {
+                    document.getElementById('old_photo_img').src = data.data.photoUrl;
+                }
+            } else {
+                alert("❌ Record Nahi Mila: " + (data.message || "Unknown error"));
+                boxes.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.innerText = "Not Found";
+                });
             }
-        } else {
-            alert("❌ Record Nahi Mila: " + (data.message || "Unknown error"));
-            boxes.forEach(id => document.getElementById(id).innerText = "Not Found");
-        }
-    })
-    .catch(err => {
-        console.error("Error:", err);
-        alert("⚠️ Connection Error: Check Web App URL or Internet.");
-    });
-}
-    // FINAL SUBMIT LOGIC (Updated for GitHub)
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            alert("⚠️ Connection Error: Internet check karein.");
+        });
+    }
+
+    // Form Submit Function
     async function submitData() {
         const btn = document.querySelector(".btn-submit");
         const captchaInput = document.getElementById("captcha");
@@ -421,28 +426,18 @@
         }
         if (!termsCheck.checked) { alert("⚠️ कृपया घोषणा पत्र स्वीकार करें।"); return; }
 
-        btn.disabled = true;
         const originalBtnText = btn.innerText;
+        btn.disabled = true;
         btn.innerText = "⌛ Processing... Please Wait";
 
-        // ... baki code ...
-      try {
-          const [photoData, birthCertData, aadharData] = await Promise.all([
-              getFileData('photo'),
-              getFileData('birthCert'),
-              getFileData('aadhar')
-          ]);
+        try {
+            // Files ko base64 mein convert karna
+            const photoData = await getFileData('photo');
+            const birthCertData = await getFileData('birthCert');
+            const aadharData = await getFileData('aadhar');
 
-          const formData = {
-              // ... aapka form data ...
-          };
-
-          // YAHAN PAR '}' LAGANA JAROORI HAI
-      } catch (err) { 
-          // ... error handle ...
-      }
             const formData = {
-                action: "processCorrection", // Backend ko batane ke liye ki kya karna hai
+                action: "processCorrection",
                 roll: rollNo,
                 oldClass: window.searchClass,
                 oldYear: window.searchYear,
@@ -458,43 +453,41 @@
                 aadhar: aadharData
             };
 
-         // --- Is updated fetch block ko use karein ---
-fetch(WEB_APP_URL, {
-    method: "POST",
-    mode: "no-cors", 
-    headers: {
-        "Content-Type": "text/plain;charset=utf-8" 
-    },
-    body: JSON.stringify(formData) // Bracket yahan band hoga
-})
-.then(() => {
-    alert("✅ आवेदन भेज दिया गया है!\n\nKripya check karein ki data sheet mein save hua ya nahi.");
-    resetBtn(btn, originalBtnText);
-    // Form reset karne ke liye niche wali line add kar sakte hain
-    // document.getElementById("correctionForm").reset(); 
-    // generateCaptcha(); 
-})
-.catch(err => {
-    console.error("Fetch Error:", err);
-    alert("❌ Error: " + err);
-    resetBtn(btn, originalBtnText);
-});
-       
-    // Baki helper functions (getFileData, getValIfEnabled, generateCaptcha) wahi rahenge...
-// Checkbox click karne par input box kholne ke liye
+            const response = await fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors", 
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(formData)
+            });
+
+            // No-cors mode mein response read nahi hota, isliye successful assume karte hain
+            alert("✅ आवेदन सफलतापूर्वक भेज दिया गया है!");
+            location.reload(); 
+
+        } catch (err) {
+            console.error("Submit Error:", err);
+            alert("❌ Error: " + err.message);
+            btn.disabled = false;
+            btn.innerText = originalBtnText;
+        }
+    }
+
+    // Helper: Input enable/disable karna
     function enable(id) {
         const input = document.getElementById(id);
-        input.disabled = !input.disabled;
-        if (!input.disabled) input.focus();
+        if(input) {
+            input.disabled = !input.disabled;
+            if (!input.disabled) input.focus();
+        }
     }
 
-    // Sirf wahi data lene ke liye jiska checkbox tick ho
+    // Helper: Sirf enabled field ki value lena
     function getValIfEnabled(id) {
         const input = document.getElementById(id);
-        return !input.disabled ? input.value : "";
+        return (input && !input.disabled) ? input.value : "";
     }
 
-    // Files (Photo/Aadhar) ko read karne ke liye logic
+    // Helper: File reader (Promise based)
     function getFileData(id) {
         return new Promise((resolve) => {
             const fileInput = document.getElementById(id);
@@ -513,22 +506,12 @@ fetch(WEB_APP_URL, {
         });
     }
 
-    // Button ko wapas normal karne ke liye
-    function resetBtn(btn, text) {
-        btn.disabled = false;
-        btn.innerText = text;
-    }
-        .then(() => {
-    alert("✅ आवेदन भेज दिया गया है!");
-    location.reload(); // Ise use karein, page refresh hote hi button theek ho jayega
-})
-
-    // Captcha naya banane ke liye
+    // Captcha generate karna
     function generateCaptcha() {
         currentCaptcha = Math.random().toString(36).substring(2, 8).toUpperCase();
-        document.getElementById("captchaDisplay").innerText = currentCaptcha;
+        const display = document.getElementById("captchaDisplay");
+        if(display) display.innerText = currentCaptcha;
     }
-            
 </script>
 </body>
 </html>
