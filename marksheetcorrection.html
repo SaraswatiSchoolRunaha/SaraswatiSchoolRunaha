@@ -449,26 +449,73 @@
                 aadhar: aadharData
             };
 
-            // POST request bhejna (JSON string ke saath)
-            fetch(WEB_APP_URL, {
-                method: "POST",
-                mode: "no-cors", // Google Scripts ke liye zaroori hai agar Simple Post ho
-                body: JSON.stringify(formData)
-            }).then(() => {
-                alert("✅ आवेदन भेज दिया गया है!\n\nKripya check karein ki data sheet mein save hua ya nahi.");
-                resetBtn(btn, originalBtnText);
-            }).catch(err => {
-                alert("❌ Error: " + err);
-                resetBtn(btn, originalBtnText);
-            });
-
-        } catch (err) {
-            alert("❌ सिस्टम एरर: " + err.message);
-            resetBtn(btn, originalBtnText);
-        }
+         // --- Is updated fetch block ko use karein ---
+fetch(WEB_APP_URL, {
+    method: "POST",
+    mode: "no-cors", 
+    headers: {
+        "Content-Type": "text/plain;charset=utf-8" 
+    },
+    body: JSON.stringify(formData) // Bracket yahan band hoga
+})
+.then(() => {
+    alert("✅ आवेदन भेज दिया गया है!\n\nKripya check karein ki data sheet mein save hua ya nahi.");
+    resetBtn(btn, originalBtnText);
+    // Form reset karne ke liye niche wali line add kar sakte hain
+    // document.getElementById("correctionForm").reset(); 
+    // generateCaptcha(); 
+})
+.catch(err => {
+    console.error("Fetch Error:", err);
+    alert("❌ Error: " + err);
+    resetBtn(btn, originalBtnText);
+});
+       
+    // Baki helper functions (getFileData, getValIfEnabled, generateCaptcha) wahi rahenge...
+// Checkbox click karne par input box kholne ke liye
+    function enable(id) {
+        const input = document.getElementById(id);
+        input.disabled = !input.disabled;
+        if (!input.disabled) input.focus();
     }
 
-    // Baki helper functions (getFileData, getValIfEnabled, generateCaptcha) wahi rahenge...
+    // Sirf wahi data lene ke liye jiska checkbox tick ho
+    function getValIfEnabled(id) {
+        const input = document.getElementById(id);
+        return !input.disabled ? input.value : "";
+    }
+
+    // Files (Photo/Aadhar) ko read karne ke liye logic
+    function getFileData(id) {
+        return new Promise((resolve) => {
+            const fileInput = document.getElementById(id);
+            const file = fileInput ? fileInput.files[0] : null;
+            if (!file) return resolve(null);
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                resolve({
+                    base64: e.target.result.split(",")[1],
+                    type: file.type,
+                    name: file.name
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Button ko wapas normal karne ke liye
+    function resetBtn(btn, text) {
+        btn.disabled = false;
+        btn.innerText = text;
+    }
+
+    // Captcha naya banane ke liye
+    function generateCaptcha() {
+        currentCaptcha = Math.random().toString(36).substring(2, 8).toUpperCase();
+        document.getElementById("captchaDisplay").innerText = currentCaptcha;
+    }
+            
 </script>
 </body>
 </html>
