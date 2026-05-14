@@ -275,7 +275,7 @@
                 resultDiv.style.color = "#27ae60";
                 
                 localStorage.setItem("lastAppID", app);
-                openReport(result.data, app);
+               openReport(result.data, result.data.appNo || app);
 
                 // --- यहाँ बदलाव किया गया है (सफल होने पर बॉक्स खाली करना) ---
                 appField.value = "";
