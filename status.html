@@ -243,12 +243,11 @@
         const app = appField.value.trim();
         const roll = rollField.value.trim();
         const userCaptcha = captchaField.value.trim();
-
-        if(!app || !roll || !userCaptcha) {
-            resultDiv.innerText = "⚠️ कृपया सभी जानकारी भरें!";
-            resultDiv.style.color = "#e67e22";
-            return;
-        }
+            if(!app || !roll || !userCaptcha) {
+                resultDiv.innerText = "⚠️ कृपया सभी जानकारी भरें!";
+                resultDiv.style.color = "#e67e22";
+                return;
+            }
 
         if(userCaptcha.toUpperCase() !== generatedCaptcha) {
             resultDiv.innerText = "❌ गलत कैप्चा कोड!";
