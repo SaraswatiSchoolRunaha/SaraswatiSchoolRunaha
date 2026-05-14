@@ -241,7 +241,8 @@
 
     function openReport(s, appNo) {
         const reportWindow = window.open('', '_blank');
-        const statusClass = (s.status && s.status.toLowerCase() === 'rejected') ? 'bg-red' : 'bg-green';
+        // 'appStatus' चेक करें क्योंकि Apps Script से यही नाम आ रहा है
+        const statusClass = (s.appStatus && s.appStatus.toLowerCase() === 'rejected') ? 'bg-red' : 'bg-green';
         
         reportWindow.document.write(`
             <!DOCTYPE html>
@@ -249,18 +250,18 @@
             <head>
                 <title>Verification Report - ${appNo}</title>
                 <style>
-                    body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 40px; margin: 0; }
-                    .report-card { background: white; max-width: 1100px; margin: auto; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; }
+                    body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; margin: 0; }
+                    .report-card { background: white; width: 100%; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow-x: auto; }
                     .header { background: #003366; color: white; padding: 20px; text-align: center; }
-                    .content { padding: 30px; }
+                    .content { padding: 20px; }
                     .header-line { height: 5px; background: #ff9933; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-                    th { background: #f8f9fa; color: #333; padding: 15px; text-align: left; border: 1px solid #dee2e6; font-size: 13px; }
-                    td { padding: 15px; border: 1px solid #dee2e6; font-size: 14px; color: #444; }
-                    .badge { padding: 6px 12px; border-radius: 4px; color: white; font-weight: bold; font-size: 12px; text-transform: uppercase; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 1200px; }
+                    th { background: #f8f9fa; color: #333; padding: 10px; text-align: center; border: 1px solid #dee2e6; font-size: 11px; text-transform: uppercase; }
+                    td { padding: 10px; border: 1px solid #dee2e6; font-size: 13px; color: #444; text-align: center; vertical-align: middle; }
+                    .badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; text-transform: uppercase; }
                     .bg-red { background: #dc3545; }
                     .bg-green { background: #28a745; }
-                    .student-img { width: 70px; height: 70px; border-radius: 5px; object-fit: cover; border: 2px solid #003366; }
+                    .student-img { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; border: 1px solid #003366; }
                     .print-btn { background: #003366; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 30px; }
                     @media print { .print-btn { display: none; } body { background: white; padding: 0; } }
                 </style>
@@ -298,12 +299,21 @@
                             <tbody>
                                 <tr>
                                     <td><strong>${appNo}</strong></td>
-                                    <td>${s.roll || 'N/A'}</td>
-                                    <td><img src="${s.photoUrl || 'https://via.placeholder.com/70'}" class="student-img"></td>
-                                    <td>${s.name || 'N/A'}</td>
-                                    <td>${s.father || 'N/A'}</td>
-                                    <td>${s.mother || 'N/A'}</td>
-                                    <td><span class="badge ${statusClass}">${s.status || 'Pending'}</span></td>
+                                    <td>${s.roll || '-'}</td>
+                                    <td>${s.samgra || '-'}</td>
+                                    <td>${s.session || '-'}</td>
+                                    <td>${s.name || '-'}</td>
+                                    <td>${s.father || '-'}</td>
+                                    <td>${s.mother || '-'}</td>
+                                    <td>${s.dob || '-'}</td>
+                                    <td>${s.medium || '-'}</td>
+                                    <td>${s.category || '-'}</td>
+                                    <td>${s.class || '-'}</td>
+                                    <td>${s.gender || '-'}</td>
+                                    <td>${s.subject || '-'}</td>
+                                    <td><img src="${s.photoUrl || 'https://via.placeholder.com/60'}" class="student-img"></td>
+                                    <td><span class="badge ${statusClass}">${s.appStatus || 'Pending'}</span></td>
+                                    <td>${s.correction || '-'}</td>
                                     <td style="color:#c0392b;">${s.rejectReason || '-'}</td>
                                 </tr>
                             </tbody>
