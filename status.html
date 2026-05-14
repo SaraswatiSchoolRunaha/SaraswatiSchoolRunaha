@@ -244,11 +244,10 @@
         }
     }
 
-   function openReport(s, appNo) {
+  function openReport(s, appNo) {
     const reportWindow = window.open('', '_blank');
     
-    // स्टेटस के हिसाब से रंग (CSS Class) तय करना
-    let statusClass = "bg-yellow"; // Default if something is wrong
+    let statusClass = "bg-yellow"; 
     const currentStatus = (s.appStatus || "Pending").trim();
     const statusLower = currentStatus.toLowerCase();
 
@@ -266,87 +265,89 @@
         <head>
             <title>Verification Report - ${appNo}</title>
             <style>
-                body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; margin: 0; }
-                .report-card { background: white; width: 100%; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow-x: auto; }
-                .header { background: #003366; color: white; padding: 20px; text-align: center; }
-                .content { padding: 20px; }
-                .header-line { height: 5px; background: #ff9933; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 1200px; }
-                th { background: #f8f9fa; color: #333; padding: 10px; text-align: center; border: 1px solid #dee2e6; font-size: 11px; text-transform: uppercase; }
-                td { padding: 10px; border: 1px solid #dee2e6; font-size: 13px; color: #444; text-align: center; vertical-align: middle; }
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; background: #fff; }
+                .header { background: #003366; color: white; padding: 15px; text-align: center; border-bottom: 4px solid #ff9933; }
                 
-                /* Status Badge Styles */
-                .badge { padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; text-transform: uppercase; display: inline-block; }
+                table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: auto; }
+                th, td { border: 1px solid #444; padding: 6px; font-size: 11px; text-align: center; }
+                th { background: #f2f2f2; color: #333; text-transform: uppercase; font-size: 10px; }
+                
+                .badge { padding: 3px 6px; border-radius: 3px; font-weight: bold; color: white; display: inline-block; }
                 .bg-red { background: #dc3545; }
                 .bg-green { background: #28a745; }
-                .bg-yellow { background: #ffc107; color: #212529; } /* Dark text for yellow background */
+                .bg-yellow { background: #ffc107; color: #000; }
+                
+                .student-img { width: 50px; height: 50px; object-fit: cover; border: 1px solid #333; }
+                .print-btn { 
+                    background: #003366; color: white; border: none; padding: 10px 25px; 
+                    border-radius: 4px; cursor: pointer; font-weight: bold; margin: 20px auto; display: block; 
+                }
 
-                .student-img { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; border: 1px solid #003366; }
-                .print-btn { background: #003366; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 30px; }
-                @media print { .print-btn { display: none; } body { background: white; padding: 0; } }
+                /* --- यह हिस्सा पेज को आड़ा (Landscape) करेगा --- */
+                @media print {
+                    @page { 
+                        size: A4 landscape; /* पेज को आड़ा सेट करता है */
+                        margin: 10mm; 
+                    }
+                    body { 
+                        zoom: 90%; /* अगर डेटा फिर भी बाहर जाए, तो इसे 80% कर दें */
+                    }
+                    .print-btn { display: none; } /* प्रिंट में बटन नहीं दिखेगा */
+                    table { width: 100% !important; border: 1px solid #000; }
+                    th, td { border: 1px solid #000 !important; }
+                }
             </style>
         </head>
         <body>
-            <div class="report-card">
-                <div class="header">
-                    <h2 style="margin:0;">MARKSHEET VERIFICATION REPORT</h2>
-                    <p style="margin:5px 0 0 0; opacity:0.8;">Generated on: ${new Date().toLocaleString('hi-IN')}</p>
-                </div>
-                <div class="header-line"></div>
-                <div class="content">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Application No.</th>
-                                <th>Roll Number</th>
-                                <th>Samgra ID</th> 
-                                <th>Session</th>
-                                <th>Student Name</th>
-                                <th>Father's Name</th>
-                                <th>Mother's Name</th>
-                                <th>DOB</th>
-                                <th>Medium</th>
-                                <th>Category</th>
-                                <th>Class</th> 
-                                <th>Gender</th>
-                                <th>Subject</th> 
-                                <th>Photo</th>
-                                <th>Status</th>
-                                <th>Correction</th> 
-                                <th>Reason / Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>${appNo}</strong></td>
-                                <td>${s.roll || '-'}</td>
-                                <td>${s.samgra || '-'}</td>
-                                <td>${s.session || '-'}</td>
-                                <td>${s.name || '-'}</td>
-                                <td>${s.father || '-'}</td>
-                                <td>${s.mother || '-'}</td>
-                                <td>${s.dob || '-'}</td>
-                                <td>${s.medium || '-'}</td>
-                                <td>${s.category || '-'}</td>
-                                <td>${s.class || '-'}</td>
-                                <td>${s.gender || '-'}</td>
-                                <td>${s.subject || '-'}</td>
-                                <td><img src="${s.photoUrl || 'https://via.placeholder.com/60'}" class="student-img"></td>
-                                
-                                <!-- यहाँ क्लास और टेक्स्ट दोनों डायनामिक हैं -->
-                                <td><span class="badge ${statusClass}">${currentStatus}</span></td>
-                                
-                                <td>${s.correction || '-'}</td>
-                                <td style="color:#c0392b; font-weight:bold;">${s.rejectReason || '-'}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <center><button class="print-btn" onclick="window.print()">Print Official Copy</button></center>
-                </div>
+            <div class="header">
+                <h2 style="margin:0;">MARKSHEET VERIFICATION OFFICIAL REPORT</h2>
+                <p style="margin:5px 0 0 0; font-size: 12px;">Generated on: ${new Date().toLocaleString('hi-IN')}</p>
             </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>App No.</th>
+                        <th>Roll No.</th>
+                        <th>Student Name</th>
+                        <th>Father's Name</th>
+                        <th>Mother's Name</th>
+                        <th>DOB</th>
+                        <th>Session</th>
+                        <th>Class</th>
+                        <th>Medium</th>
+                        <th>Category</th>
+                        <th>Photo</th>
+                        <th>Status</th>
+                        <th>Correction Info</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>${appNo}</strong></td>
+                        <td>${s.roll || '-'}</td>
+                        <td>${s.name || '-'}</td>
+                        <td>${s.father || '-'}</td>
+                        <td>${s.mother || '-'}</td>
+                        <td>${s.dob || '-'}</td>
+                        <td>${s.session || '-'}</td>
+                        <td>${s.class || '-'}</td>
+                        <td>${s.medium || '-'}</td>
+                        <td>${s.category || '-'}</td>
+                        <td><img src="${s.photoUrl || ''}" class="student-img"></td>
+                        <td><span class="badge ${statusClass}">${currentStatus}</span></td>
+                        <td>${s.correction || '-'}</td>
+                        <td style="color:red;">${s.rejectReason || '-'}</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button class="print-btn" onclick="window.print()">Print Full Report (Landscape)</button>
         </body>
         </html>
     `);
+    reportWindow.document.close();
 }
 </script>
 
