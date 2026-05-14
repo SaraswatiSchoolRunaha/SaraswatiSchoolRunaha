@@ -243,11 +243,18 @@
         const app = appField.value.trim();
         const roll = rollField.value.trim();
         const userCaptcha = captchaField.value.trim();
-            if(!app || !roll || !userCaptcha) {
-                resultDiv.innerText = "⚠️ कृपया सभी जानकारी भरें!";
-                resultDiv.style.color = "#e67e22";
+          if(!app || !roll || !userCaptcha) {
+            resultDiv.innerText = "⚠️ कृपया सभी जानकारी भरें!";
+            resultDiv.style.color = "#e67e22";
                 return;
             }
+
+        // रोल नंबर सिर्फ नंबर्स में होना चाहिए (Optional)
+            if (isNaN(roll)) {
+            resultDiv.innerText = "⚠️ रोल नंबर सिर्फ अंकों (Numbers) में होना चाहिए!";
+            resultDiv.style.color = "#e67e22";
+            return;
+            
 
         if(userCaptcha.toUpperCase() !== generatedCaptcha) {
             resultDiv.innerText = "❌ गलत कैप्चा कोड!";
