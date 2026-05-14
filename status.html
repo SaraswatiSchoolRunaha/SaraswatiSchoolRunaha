@@ -270,13 +270,20 @@
 
             const result = await response.json();
 
-            if (result.status === "success") {
+        if (result.status === "success") {
                 resultDiv.innerText = "✅ रिकॉर्ड मिल गया!";
-                resultDiv.style.color = "#27ae60";
-                
-                localStorage.setItem("lastAppID", app);
-               openReport(result.data, result.data.appNo || app);
+                    resultDiv.style.color = "#27ae60";
+    
+                    localStorage.setItem("lastAppID", app);
+                    openReport(result.data, result.data.appNo || app);
 
+            // यह हिस्सा अब इनपुट्स को क्लियर कर देगा
+                    appField.value = "";      // Application Number साफ़
+                    rollField.value = "";     // Roll Number साफ़
+                    captchaField.value = "";  // Captcha साफ़
+                    generateCaptcha();        // नया कैप्चा ताकि यूजर दोबारा सर्च कर सके
+            }
+            
                 // --- यहाँ बदलाव किया गया है (सफल होने पर बॉक्स खाली करना) ---
                 appField.value = "";
                 rollField.value = "";
