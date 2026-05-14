@@ -239,92 +239,110 @@
         }
     }
 
-    function openReport(s, appNo) {
-        const reportWindow = window.open('', '_blank');
-        // 'appStatus' चेक करें क्योंकि Apps Script से यही नाम आ रहा है
-        const statusClass = (s.appStatus && s.appStatus.toLowerCase() === 'rejected') ? 'bg-red' : 'bg-green';
-        
-        reportWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Verification Report - ${appNo}</title>
-                <style>
-                    body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; margin: 0; }
-                    .report-card { background: white; width: 100%; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow-x: auto; }
-                    .header { background: #003366; color: white; padding: 20px; text-align: center; }
-                    .content { padding: 20px; }
-                    .header-line { height: 5px; background: #ff9933; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 1200px; }
-                    th { background: #f8f9fa; color: #333; padding: 10px; text-align: center; border: 1px solid #dee2e6; font-size: 11px; text-transform: uppercase; }
-                    td { padding: 10px; border: 1px solid #dee2e6; font-size: 13px; color: #444; text-align: center; vertical-align: middle; }
-                    .badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; text-transform: uppercase; }
-                    .bg-red { background: #dc3545; }
-                    .bg-green { background: #28a745; }
-                    .student-img { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; border: 1px solid #003366; }
-                    .print-btn { background: #003366; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 30px; }
-                    @media print { .print-btn { display: none; } body { background: white; padding: 0; } }
-                </style>
-            </head>
-            <body>
-                <div class="report-card">
-                    <div class="header">
-                        <h2 style="margin:0;">MARKSHEET VERIFICATION REPORT</h2>
-                        <p style="margin:5px 0 0 0; opacity:0.8;">Generated on: ${new Date().toLocaleString('hi-IN')}</p>
-                    </div>
-                    <div class="header-line"></div>
-                    <div class="content">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Application No.</th>
-                                    <th>Roll Number</th>
-                                    <th>Samgra ID</th> 
-                                    <th>Session</th>
-                                    <th>Student Name</th>
-                                    <th>Father's Name</th>
-                                    <th>Mother's Name</th>
-                                    <th>DOB</th>
-                                    <th>Medium</th>
-                                    <th>Category</th>
-                                    <th>Class</th> 
-                                    <th>Gender</th>
-                                    <th>Subject</th> 
-                                    <th>Photo</th>
-                                    <th>Status</th>
-                                    <th>Correction</th> 
-                                    <th>Reason / Remarks</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>${appNo}</strong></td>
-                                    <td>${s.roll || '-'}</td>
-                                    <td>${s.samgra || '-'}</td>
-                                    <td>${s.session || '-'}</td>
-                                    <td>${s.name || '-'}</td>
-                                    <td>${s.father || '-'}</td>
-                                    <td>${s.mother || '-'}</td>
-                                    <td>${s.dob || '-'}</td>
-                                    <td>${s.medium || '-'}</td>
-                                    <td>${s.category || '-'}</td>
-                                    <td>${s.class || '-'}</td>
-                                    <td>${s.gender || '-'}</td>
-                                    <td>${s.subject || '-'}</td>
-                                    <td><img src="${s.photoUrl || 'https://via.placeholder.com/60'}" class="student-img"></td>
-                                    <td><span class="badge ${statusClass}">${s.appStatus || 'Pending'}</span></td>
-                                    <td>${s.correction || '-'}</td>
-                                    <td style="color:#c0392b;">${s.rejectReason || '-'}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <center><button class="print-btn" onclick="window.print()">Print Official Copy</button></center>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `);
+   function openReport(s, appNo) {
+    const reportWindow = window.open('', '_blank');
+    
+    // स्टेटस के हिसाब से रंग (CSS Class) तय करना
+    let statusClass = "bg-yellow"; // Default if something is wrong
+    const currentStatus = (s.appStatus || "Pending").trim();
+    const statusLower = currentStatus.toLowerCase();
+
+    if (statusLower === "approved") {
+        statusClass = "bg-green";
+    } else if (statusLower === "rejected") {
+        statusClass = "bg-red";
+    } else if (statusLower === "pending") {
+        statusClass = "bg-yellow";
     }
+
+    reportWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Verification Report - ${appNo}</title>
+            <style>
+                body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; margin: 0; }
+                .report-card { background: white; width: 100%; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow-x: auto; }
+                .header { background: #003366; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; }
+                .header-line { height: 5px; background: #ff9933; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 1200px; }
+                th { background: #f8f9fa; color: #333; padding: 10px; text-align: center; border: 1px solid #dee2e6; font-size: 11px; text-transform: uppercase; }
+                td { padding: 10px; border: 1px solid #dee2e6; font-size: 13px; color: #444; text-align: center; vertical-align: middle; }
+                
+                /* Status Badge Styles */
+                .badge { padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; text-transform: uppercase; display: inline-block; }
+                .bg-red { background: #dc3545; }
+                .bg-green { background: #28a745; }
+                .bg-yellow { background: #ffc107; color: #212529; } /* Dark text for yellow background */
+
+                .student-img { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; border: 1px solid #003366; }
+                .print-btn { background: #003366; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 30px; }
+                @media print { .print-btn { display: none; } body { background: white; padding: 0; } }
+            </style>
+        </head>
+        <body>
+            <div class="report-card">
+                <div class="header">
+                    <h2 style="margin:0;">MARKSHEET VERIFICATION REPORT</h2>
+                    <p style="margin:5px 0 0 0; opacity:0.8;">Generated on: ${new Date().toLocaleString('hi-IN')}</p>
+                </div>
+                <div class="header-line"></div>
+                <div class="content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Application No.</th>
+                                <th>Roll Number</th>
+                                <th>Samgra ID</th> 
+                                <th>Session</th>
+                                <th>Student Name</th>
+                                <th>Father's Name</th>
+                                <th>Mother's Name</th>
+                                <th>DOB</th>
+                                <th>Medium</th>
+                                <th>Category</th>
+                                <th>Class</th> 
+                                <th>Gender</th>
+                                <th>Subject</th> 
+                                <th>Photo</th>
+                                <th>Status</th>
+                                <th>Correction</th> 
+                                <th>Reason / Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>${appNo}</strong></td>
+                                <td>${s.roll || '-'}</td>
+                                <td>${s.samgra || '-'}</td>
+                                <td>${s.session || '-'}</td>
+                                <td>${s.name || '-'}</td>
+                                <td>${s.father || '-'}</td>
+                                <td>${s.mother || '-'}</td>
+                                <td>${s.dob || '-'}</td>
+                                <td>${s.medium || '-'}</td>
+                                <td>${s.category || '-'}</td>
+                                <td>${s.class || '-'}</td>
+                                <td>${s.gender || '-'}</td>
+                                <td>${s.subject || '-'}</td>
+                                <td><img src="${s.photoUrl || 'https://via.placeholder.com/60'}" class="student-img"></td>
+                                
+                                <!-- यहाँ क्लास और टेक्स्ट दोनों डायनामिक हैं -->
+                                <td><span class="badge ${statusClass}">${currentStatus}</span></td>
+                                
+                                <td>${s.correction || '-'}</td>
+                                <td style="color:#c0392b; font-weight:bold;">${s.rejectReason || '-'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <center><button class="print-btn" onclick="window.print()">Print Official Copy</button></center>
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
+}
 </script>
 
 </body>
