@@ -226,13 +226,15 @@
     }
 
     window.onload = function() {
-        generateCaptcha();
-        const savedAppID = localStorage.getItem("lastAppID");
-        if(savedAppID) {
-            document.getElementById("appNo").value = savedAppID;
-        }
-    };
-
+    generateCaptcha();
+    const savedAppID = localStorage.getItem("lastAppID");
+    if(savedAppID) {
+        document.getElementById("appNo").value = savedAppID;
+        // इसे भरने के बाद तुरंत हटा दें ताकि रिफ्रेश पर दोबारा न आए
+        localStorage.removeItem("lastAppID"); 
+    }
+};
+    
     async function checkStatus() {
         // Elements को variables में सेव करना
         const appField = document.getElementById('appNo');
