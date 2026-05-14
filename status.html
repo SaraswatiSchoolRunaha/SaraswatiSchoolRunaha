@@ -234,7 +234,7 @@
     };
 
     async function checkStatus() {
-        // Elements को variables में सेव करना ताकि बाद में खाली किया जा सके
+        // Elements को variables में सेव करना
         const appField = document.getElementById('appNo');
         const rollField = document.getElementById('rollNo');
         const captchaField = document.getElementById('userCaptcha');
@@ -243,19 +243,22 @@
         const app = appField.value.trim();
         const roll = rollField.value.trim();
         const userCaptcha = captchaField.value.trim();
-          if(!app || !roll || !userCaptcha) {
+
+        // 1. खाली इनपुट चेक
+        if(!app || !roll || !userCaptcha) {
             resultDiv.innerText = "⚠️ कृपया सभी जानकारी भरें!";
             resultDiv.style.color = "#e67e22";
-                return;
-            }
+            return;
+        }
 
-        // रोल नंबर सिर्फ नंबर्स में होना चाहिए (Optional)
-            if (isNaN(roll)) {
+        // 2. रोल नंबर वैलिडेशन
+        if (isNaN(roll)) {
             resultDiv.innerText = "⚠️ रोल नंबर सिर्फ अंकों (Numbers) में होना चाहिए!";
             resultDiv.style.color = "#e67e22";
             return;
-            
+        }
 
+        // 3. कैप्चा चेक
         if(userCaptcha.toUpperCase() !== generatedCaptcha) {
             resultDiv.innerText = "❌ गलत कैप्चा कोड!";
             resultDiv.style.color = "#c0392b";
@@ -270,32 +273,27 @@
         try {
             const response = await fetch(`${WEB_APP_URL}?roll=${roll}&app=${app}`);
             const contentType = response.headers.get("content-type");
+            
             if (!contentType || !contentType.includes("application/json")) {
                 throw new Error("Server Error: Invalid Response Format");
             }
 
             const result = await response.json();
 
-        if (result.status === "success") {
+            if (result.status === "success") {
                 resultDiv.innerText = "✅ रिकॉर्ड मिल गया!";
-                    resultDiv.style.color = "#27ae60";
-    
-                    localStorage.setItem("lastAppID", app);
-                    openReport(result.data, result.data.appNo || app);
+                resultDiv.style.color = "#27ae60";
+                
+                localStorage.setItem("lastAppID", app);
+                
+                // रिपोर्ट विंडो खोलना
+                openReport(result.data, result.data.appNo || app);
 
-            // यह हिस्सा अब इनपुट्स को क्लियर कर देगा
-                    appField.value = "";      // Application Number साफ़
-                    rollField.value = "";     // Roll Number साफ़
-                    captchaField.value = "";  // Captcha साफ़
-                    generateCaptcha();        // नया कैप्चा ताकि यूजर दोबारा सर्च कर सके
-            }
-            
-                // --- यहाँ बदलाव किया गया है (सफल होने पर बॉक्स खाली करना) ---
+                // सफल होने पर बॉक्स खाली करना
                 appField.value = "";
                 rollField.value = "";
                 captchaField.value = "";
-                generateCaptcha(); // नया सर्च करने के लिए नया कैप्चा
-                
+                generateCaptcha();
             } else {
                 resultDiv.innerText = "❌ " + (result.message || "डेटा नहीं मिला");
                 resultDiv.style.color = "#c0392b";
@@ -310,76 +308,76 @@
         }
     }
 
-  function openReport(s, appNo) {
-    const reportWindow = window.open('', '_blank');
-    
-    let statusClass = "bg-yellow"; 
-    const currentStatus = (s.appStatus || "Pending").trim();
-    const statusLower = currentStatus.toLowerCase();
+    function openReport(s, appNo) {
+        const reportWindow = window.open('', '_blank');
+        
+        let statusClass = "bg-yellow"; 
+        const currentStatus = (s.appStatus || "Pending").trim();
+        const statusLower = currentStatus.toLowerCase();
 
-    if (statusLower === "approved") {
-        statusClass = "bg-green";
-    } else if (statusLower === "rejected") {
-        statusClass = "bg-red";
-    } else if (statusLower === "pending") {
-        statusClass = "bg-yellow";
+        if (statusLower === "approved") {
+            statusClass = "bg-green";
+        } else if (statusLower === "rejected") {
+            statusClass = "bg-red";
+        } else if (statusLower === "pending") {
+            statusClass = "bg-yellow";
+        }
+
+        reportWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Verification Report - ${appNo}</title>
+                <style>
+                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; background: #fff; }
+                    .header { background: #003366; color: white; padding: 15px; text-align: center; border-bottom: 4px solid #ff9933; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: auto; }
+                    th, td { border: 1px solid #444; padding: 6px; font-size: 11px; text-align: center; }
+                    th { background: #f2f2f2; color: #333; text-transform: uppercase; font-size: 10px; }
+                    .badge { padding: 3px 6px; border-radius: 3px; font-weight: bold; color: white; display: inline-block; }
+                    .bg-red { background: #dc3545; }
+                    .bg-green { background: #28a745; }
+                    .bg-yellow { background: #ffc107; color: #000; }
+                    .student-img { width: 50px; height: 50px; object-fit: cover; border: 1px solid #333; }
+                    .print-btn { background: #003366; color: white; border: none; padding: 10px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; margin: 20px auto; display: block; }
+                    @media print {
+                        @page { size: A4 landscape; margin: 10mm; }
+                        body { zoom: 90%; }
+                        .print-btn { display: none; }
+                        table { width: 100% !important; border: 1px solid #000; }
+                        th, td { border: 1px solid #000 !important; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2 style="margin:0;">MARKSHEET VERIFICATION OFFICIAL REPORT</h2>
+                    <p style="margin:5px 0 0 0; font-size: 12px;">Generated on: ${new Date().toLocaleString('hi-IN')}</p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>App No.</th><th>Roll No.</th><th>Student Name</th><th>Father's Name</th><th>Mother's Name</th>
+                            <th>DOB</th><th>Session</th><th>Class</th><th>Medium</th><th>Category</th><th>Photo</th>
+                            <th>Status</th><th>Correction Info</th><th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>${appNo}</strong></td>
+                            <td>${s.roll || '-'}</td><td>${s.name || '-'}</td><td>${s.father || '-'}</td><td>${s.mother || '-'}</td>
+                            <td>${s.dob || '-'}</td><td>${s.session || '-'}</td><td>${s.class || '-'}</td><td>${s.medium || '-'}</td>
+                            <td>${s.category || '-'}</td><td><img src="${s.photoUrl || ''}" class="student-img" onerror="this.src='https://via.placeholder.com/50?text=No+Photo'"></td>
+                            <td><span class="badge ${statusClass}">${currentStatus}</span></td><td>${s.correction || '-'}</td><td style="color:red;">${s.rejectReason || '-'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="print-btn" onclick="window.print()">Print Full Report (Landscape)</button>
+            </body>
+            </html>
+        `);
+        reportWindow.document.close();
     }
-
-    reportWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Verification Report - ${appNo}</title>
-            <style>
-                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; background: #fff; }
-                .header { background: #003366; color: white; padding: 15px; text-align: center; border-bottom: 4px solid #ff9933; }
-                table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: auto; }
-                th, td { border: 1px solid #444; padding: 6px; font-size: 11px; text-align: center; }
-                th { background: #f2f2f2; color: #333; text-transform: uppercase; font-size: 10px; }
-                .badge { padding: 3px 6px; border-radius: 3px; font-weight: bold; color: white; display: inline-block; }
-                .bg-red { background: #dc3545; }
-                .bg-green { background: #28a745; }
-                .bg-yellow { background: #ffc107; color: #000; }
-                .student-img { width: 50px; height: 50px; object-fit: cover; border: 1px solid #333; }
-                .print-btn { background: #003366; color: white; border: none; padding: 10px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; margin: 20px auto; display: block; }
-                @media print {
-                    @page { size: A4 landscape; margin: 10mm; }
-                    body { zoom: 90%; }
-                    .print-btn { display: none; }
-                    table { width: 100% !important; border: 1px solid #000; }
-                    th, td { border: 1px solid #000 !important; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h2 style="margin:0;">MARKSHEET VERIFICATION OFFICIAL REPORT</h2>
-                <p style="margin:5px 0 0 0; font-size: 12px;">Generated on: ${new Date().toLocaleString('hi-IN')}</p>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>App No.</th><th>Roll No.</th><th>Student Name</th><th>Father's Name</th><th>Mother's Name</th>
-                        <th>DOB</th><th>Session</th><th>Class</th><th>Medium</th><th>Category</th><th>Photo</th>
-                        <th>Status</th><th>Correction Info</th><th>Remarks</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>${appNo}</strong></td>
-                        <td>${s.roll || '-'}</td><td>${s.name || '-'}</td><td>${s.father || '-'}</td><td>${s.mother || '-'}</td>
-                        <td>${s.dob || '-'}</td><td>${s.session || '-'}</td><td>${s.class || '-'}</td><td>${s.medium || '-'}</td>
-                        <td>${s.category || '-'}</td><td><img src="${s.photoUrl || ''}" class="student-img" onerror="this.src='https://via.placeholder.com/50?text=No+Photo'"></td>
-                        <td><span class="badge ${statusClass}">${currentStatus}</span></td><td>${s.correction || '-'}</td><td style="color:red;">${s.rejectReason || '-'}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="print-btn" onclick="window.print()">Print Full Report (Landscape)</button>
-        </body>
-        </html>
-    `);
-    reportWindow.document.close();
-}
 </script>
 </body>
 </html>
