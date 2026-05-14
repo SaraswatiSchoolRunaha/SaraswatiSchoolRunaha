@@ -284,22 +284,24 @@
                 resultDiv.innerText = "✅ रिकॉर्ड मिल गया!";
                 resultDiv.style.color = "#27ae60";
                 
-                localStorage.setItem("lastAppID", app);
-                
                 // रिपोर्ट विंडो खोलना
                 openReport(result.data, result.data.appNo || app);
 
-                // सफल होने पर बॉक्स खाली करना
-                appField.value = "";
+                // --- बदलाव यहाँ है ---
+                localStorage.removeItem("lastAppID"); // पुरानी ID को मेमोरी से डिलीट करें
+                appField.value = "";                  // अब यह बॉक्स पक्का खाली हो जाएगा
                 rollField.value = "";
                 captchaField.value = "";
                 generateCaptcha();
+                // ---------------------
+
             } else {
                 resultDiv.innerText = "❌ " + (result.message || "डेटा नहीं मिला");
                 resultDiv.style.color = "#c0392b";
                 generateCaptcha();
                 captchaField.value = "";
             }
+            
         } catch (error) {
             resultDiv.innerText = "❌ सिस्टम एरर: " + error.message;
             resultDiv.style.color = "#c0392b";
