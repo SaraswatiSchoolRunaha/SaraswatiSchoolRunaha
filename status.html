@@ -151,14 +151,24 @@
         <label>Roll Number</label>
         <input type="text" id="rollNo" placeholder="Enter Roll Number">
         
-        <label>Verification Code (Captcha)</label>
-        <div class="captcha-container">
-            <div class="captcha-box" id="captchaVal">LOADING</div>
-            <input type="text" id="userCaptcha" placeholder="Type Here" style="margin-bottom: 0; flex: 1;">
-        </div>
-        
-        <button onclick="checkStatus()">View Status & Report</button>
-        <p id="result"></p>
+     <label>Verification Code (Captcha)</label>
+    <div class="captcha-container">
+    <!-- कैप्चा बॉक्स -->
+    <div class="captcha-box" id="captchaVal">LOADING</div>
+    
+    <!-- नया रिफ्रेश बटन (यहाँ बदलाव हुआ है) -->
+    <button type="button" onclick="generateCaptcha()" 
+        style="width: auto; padding: 10px; background: #34495e; color: white; border: none; cursor: pointer; border-radius: 4px; margin-right: 5px; margin-bottom: 0;">
+        ↻
+    </button>
+    
+    <!-- कैप्चा इनपुट -->
+    <input type="text" id="userCaptcha" placeholder="Type Here" style="margin-bottom: 0; flex: 1;">
+    </div>
+
+<!-- स्टेटस चेक बटन -->
+<button onclick="checkStatus()">View Status & Report</button>
+<p id="result"></p>
         
         <div class="footer-text">
             © 2026 Examination Board | Official Verification Portal
