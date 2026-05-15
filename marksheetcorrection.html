@@ -338,18 +338,22 @@ input[type="file"]#photo {
             </td>
         </tr>
         
-        <!-- Photo -->
-        <tr>
-            <td data-label="Edit"><input type="checkbox" onclick="enable('photo')"></td>
-            <td data-label="Field Name"><strong>Student Photo</strong></td>
-            <td data-label="Current Record">
-                <div class="old-data-box" style="text-align:center;">
-                    <img id="old_photo_img" src="https://via.placeholder.com/50" alt="Current Photo" style="border:1px solid #ddd; border-radius:4px;">
-                    <br><small>Current Photo</small>
-                </div>
-            </td>
-            <td data-label="New Information"><input type="file" id="photo" disabled accept="image/*"></td>
-        </tr>
+<!-- Photo Section -->
+<tr>
+    <td data-label="Edit"><input type="checkbox" onclick="enable('photo')"></td>
+    <td data-label="Field Name"><strong>Student Photo</strong></td>
+    <td data-label="Current Record">
+        <div class="old-data-box" style="text-align:center; background: none;">
+            <!-- Placeholder ko hata kar aapka naya styling apply hoga -->
+            <img id="old_photo_img" src="https://via.placeholder.com/120x150?text=No+Photo" alt="Current Photo">
+            <div style="margin-top: 5px; font-size: 11px; color: #003366; font-weight: bold;">CURRENT PHOTO</div>
+        </div>
+    </td>
+    <td data-label="New Information">
+        <input type="file" id="photo" disabled accept="image/*">
+        <p style="font-size: 10px; color: #666; margin-top: 5px;">Max Size: 200KB (JPG/PNG)</p>
+    </td>
+</tr>
         
         <!-- Mobile Number -->
         <tr>
