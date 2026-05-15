@@ -232,11 +232,13 @@ input[type="file"]#photo {
     </div>
 
     <div class="content">
-        <div class="roll-section">
-            <label>ROLL NUMBER:</label>
-            <input type="text" id="roll" readonly>
-        </div>
-
+       <div class="roll-section">
+    <label>ROLL NUMBER:</label>
+    <input type="text" id="roll" placeholder="Enter Roll No">
+    <!-- Naya Search Button -->
+    <button onclick="manualSearch()" style="background:#003366; color:white; border:none; padding:5px 15px; border-radius:4px; cursor:pointer;">SEARCH</button>
+    </div
+        
         <div class="section-title">Correction Details (Compare & Edit)</div>
         
 <table class="comparison-table">
@@ -432,7 +434,20 @@ input[type="file"]#photo {
             fetchStudentDetails(rollNo, studentClass, academicYear);
         }
     };
-    
+
+function manualSearch() {
+    const roll = document.getElementById("roll").value;
+    // Yahan class aur year aap dropdown se ya URL se le sakte hain
+    const sClass = window.searchClass || "10th"; 
+    const year = window.searchYear || "2024";
+
+    if(roll) {
+        fetchStudentDetails(roll, sClass, year);
+    } else {
+        alert("Please enter a Roll Number");
+    }
+}
+
     // Student ki purani details fetch karna
     function fetchStudentDetails(roll, sClass, year) {
         if (!roll) return;
@@ -603,7 +618,8 @@ input[type="file"]#photo {
         currentCaptcha = Math.random().toString(36).substring(2, 8).toUpperCase();
         const display = document.getElementById("captchaDisplay");
         if(display) display.innerText = currentCaptcha;
-    }
+    } 
+    
 // Naye photo ka preview aur size check
 document.getElementById('photo').onchange = function (evt) {
     const file = this.files[0];
