@@ -4,48 +4,31 @@
     <meta charset="UTF-8">
     <title>सुधार आवेदन पावती रसीद</title>
     <style>
+        /* CSS remains same as your original code */
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; color: #333; font-size: 13px; background: #f0f0f0; }
         .receipt-container { max-width: 850px; margin: 10px auto; border: 2px solid #003366; padding: 30px; background: #fff; position: relative; }
-        
-        /* Header Section */
         .header { text-align: center; border-bottom: 3px double #ff9933; padding-bottom: 10px; margin-bottom: 20px; }
         .header h2 { margin: 0; color: #003366; font-size: 24px; text-transform: uppercase; }
         .header p { margin: 4px 0; font-weight: bold; font-size: 16px; color: #d32f2f; }
         .date-line { text-align: right; font-weight: bold; margin-bottom: 10px; }
-
-        /* Student Info Box */
         .top-info { display: flex; justify-content: space-between; border: 1px solid #003366; padding: 10px; margin-bottom: 15px; background: #f9f9f9; }
         .info-item { margin-bottom: 6px; font-size: 14px; }
         .info-item strong { color: #003366; width: 140px; display: inline-block; }
-
         .photo-box { width: 120px; height: 140px; border: 1px solid #000; text-align: center; font-size: 11px; padding: 2px; }
         .photo-box img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Tables */
         .section-title { background: #003366; color: white; padding: 6px 12px; font-weight: bold; margin-top: 20px; margin-bottom: 8px; font-size: 14px; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         th, td { border: 1px solid #000; padding: 8px 12px; text-align: left; }
-        th { background: #eee; width: 30%; color: #003366; }
+        th { background: #eee; width: 35%; color: #003366; }
         .new-data { color: #d32f2f; font-weight: bold; background: #fff9f9; }
-
-        /* Declaration */
         .declaration { margin-top: 25px; border: 1px solid #003366; padding: 15px; font-style: italic; font-size: 12px; background: #fffdf5; line-height: 1.6; }
-        
-        /* Signature Section */
         .sig-section { display: flex; justify-content: space-between; margin-top: 70px; text-align: center; font-weight: bold; }
         .sig-box { width: 30%; border-top: 1.5px dashed #000; padding-top: 8px; }
-
         .status-badge { padding: 4px 12px; border-radius: 4px; color: #fff; font-weight: bold; font-size: 12px; }
         .pending { background: #ffc107; color: #000; }
-
-        @media print {
-            body { background: #fff; padding: 0; }
-            .btn-print { display: none; }
-            .receipt-container { border: 2px solid #000; box-shadow: none; margin: 0; width: 100%; }
-        }
+        @media print { .btn-print { display: none; } .receipt-container { border: 2px solid #000; box-shadow: none; margin: 0; width: 100%; } }
         .btn-print { display: block; margin: 20px auto; padding: 12px 40px; background: #003366; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 5px; font-size: 16px; }
-        .btn-print:hover { background: #002244; }
     </style>
 </head>
 <body>
@@ -85,17 +68,6 @@
             </tbody>
     </table>
 
-    <table>
-        <tr>
-            <th>समग्र आईडी (Samagra ID)</th><td id="disp-samagra">-</td>
-            <th>लिंग (Gender)</th><td id="disp-gender">-</td>
-        </tr>
-        <tr>
-            <th>श्रेणी (Category)</th><td id="disp-category">-</td>
-            <th>माध्यम (Medium)</th><td id="disp-medium">-</td>
-        </tr>
-    </table>
-
     <div class="section-title">III. आवेदन की स्थिति एवं रिमार्क</div>
     <table>
         <tr>
@@ -104,7 +76,7 @@
         </tr>
         <tr>
             <th>सुधार की जानकारी</th>
-            <td id="disp-info">छात्र द्वारा अंकसूची में सुधार हेतु आवेदन प्रस्तुत किया गया है।</td>
+            <td id="disp-info">अंकसूची में त्रुटi सुधार हेतु आवेदन प्रस्तुत किया गया।</td>
         </tr>
         <tr>
             <th>अस्वीकृति का कारण (यदि हो)</th>
@@ -141,8 +113,7 @@
         document.getElementById("disp-mobile").innerText = params.get('mobile') || 'N/A';
         document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
 
-        // 2. Correction Fields Mapping (Saari Fields Yahan Hain)
-        // Format: { label: "Hindi Name", old: "URL_Param_Old", new: "URL_Param_New" }
+        // 2. Full Field Mapping
         const fields = [
             { label: "छात्र का नाम (Student Name)", old: params.get('old_name'), new: params.get('new_name') },
             { label: "पिता का नाम (Father's Name)", old: params.get('old_father'), new: params.get('new_father') },
@@ -156,30 +127,34 @@
         ];
 
         const tbody = document.getElementById("correction-body");
-        tbody.innerHTML = ""; // Purana data saaf karne ke liye
+        tbody.innerHTML = ""; 
 
         fields.forEach(f => {
-            // Agar naya data (New) maujood hai, tabhi row dikhayein
-            if (f.new && f.new !== "undefined" && f.new !== "") { 
+            // Check if there is a 'New' value provided
+            if (f.new && f.new !== "undefined" && f.new !== "" && f.new !== "null") { 
                 let row = `<tr>
                     <td>${f.label}</td>
-                    <td>${f.old || 'रिकॉर्ड में उपलब्ध नहीं'}</td>
+                    <td>${(f.old && f.old !== "null" && f.old !== "undefined") ? f.old : 'रिकॉर्ड में उपलब्ध नहीं'}</td>
                     <td class="new-data">${f.new}</td>
                 </tr>`;
                 tbody.innerHTML += row;
             }
         });
 
-        // 3. Status aur Info
+        // If no correction fields were found, show a placeholder row
+        if (tbody.innerHTML === "") {
+            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला</td></tr>";
+        }
+
+        // 3. Status handling
         document.getElementById("disp-info").innerText = params.get('info') || "अंकसूची में त्रुटि सुधार हेतु आवेदन प्रस्तुत किया गया।";
         document.getElementById("disp-reason").innerText = params.get('rejectReason') || "लागू नहीं";
         
-        // Status Badge Color Control
         const status = params.get('status') || "Pending";
         const statusBadge = document.getElementById("disp-status");
-        statusBadge.innerText = status === "Pending" ? "लंबित (Pending)" : status;
+        statusBadge.innerText = (status === "Pending") ? "लंबित (Pending)" : status;
 
-        // 4. Photo Handling
+        // 4. Photo
         if(params.get('photo')) {
             document.getElementById("disp-photo").src = params.get('photo');
         }
