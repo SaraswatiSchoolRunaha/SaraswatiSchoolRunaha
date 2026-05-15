@@ -596,14 +596,16 @@ input[type="file"]#photo {
         const display = document.getElementById("captchaDisplay");
         if(display) display.innerText = currentCaptcha;
     }
-    // Isse naye photo ka preview dikhega (Optional)
+   // Naye photo ka preview dikhane ke liye logic (Optional enhancement)
 document.getElementById('photo').onchange = function (evt) {
     const [file] = this.files;
     if (file) {
-        // Aap chaho to naye photo ka preview kisi aur <img> tag me dikha sakte hain
-        console.log("New photo selected: " + file.name);
+        // Agar aap chahte hain ki purani photo ki jagah nayi dikhe:
+        document.getElementById('old_photo_img').src = URL.createObjectURL(file);
+        console.log("New photo preview updated.");
     }
 };
+    
 </script>
 </body>
 </html>
