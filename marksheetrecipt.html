@@ -33,6 +33,8 @@
 </head>
 <body>
 
+<// ... baaki CSS wahi rahega ...
+
 <div class="receipt-container">
     <div class="header">
         <h2>विद्यालय परीक्षा बोर्ड</h2>
@@ -50,7 +52,7 @@
             <div class="info-item"><strong>मोबाइल नंबर:</strong> <span id="disp-mobile">-</span></div>
         </div>
         <div class="photo-box">
-            <img src="" id="disp-photo" alt="छात्र का फोटो" onerror="this.src='https://via.placeholder.com/110x130?text=फोटो+नहीं+है'">
+            <img src="" id="disp-photo" alt="छात्र का फोटो" onerror="this.src='https://via.placeholder.com/110x130?text=No+Photo'">
             <br>छात्र का फोटो
         </div>
     </div>
@@ -76,7 +78,7 @@
         </tr>
         <tr>
             <th>सुधार की जानकारी</th>
-            <td id="disp-info">अंकसूची में त्रुटi सुधार हेतु आवेदन प्रस्तुत किया गया।</td>
+            <td id="disp-info">अंकसूची में त्रुटि सुधार हेतु आवेदन प्रस्तुत किया गया।</td>
         </tr>
         <tr>
             <th>अस्वीकृति का कारण (यदि हो)</th>
@@ -86,7 +88,7 @@
 
     <div class="declaration">
         <strong>शपथ पत्र (Declaration):</strong><br>
-        मैं शपथ पूर्वक कथन करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त जानकारी पूर्णतः सत्य एवं सटीक है। मैंने सभी दस्तावेजों की जांच कर ली है। यदि किसी भी स्तर पर दी गई जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो बोर्ड को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा, जिसकी समस्त जिम्मेदारी मेरी होगी।
+        मैं शपथ पूर्वक कथन करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त जानकारी पूर्णतः सत्य एवं सटीक है। मैंने सभी दस्तावेजों की जांच कर li है। यदि किसी भी स्तर पर दी गई जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो बोर्ड को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा, जिसकी समस्त जिम्मेदारी मेरी होगी।
     </div>
 
     <div class="sig-section">
@@ -106,14 +108,14 @@
     window.onload = function() {
         const params = new URLSearchParams(window.location.search);
         
-        // 1. Basic Static Details
+        // 1. Static Details Fill
         document.getElementById("disp-app").innerText = params.get('app') || '-';
         document.getElementById("disp-roll").innerText = params.get('roll') || '-';
         document.getElementById("disp-session").innerText = params.get('year') || '-';
         document.getElementById("disp-mobile").innerText = params.get('mobile') || 'N/A';
         document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
 
-        // 2. Full Field Mapping
+        // 2. Correction Fields Array
         const fields = [
             { label: "छात्र का नाम (Student Name)", old: params.get('old_name'), new: params.get('new_name') },
             { label: "पिता का नाम (Father's Name)", old: params.get('old_father'), new: params.get('new_father') },
@@ -129,8 +131,9 @@
         const tbody = document.getElementById("correction-body");
         tbody.innerHTML = ""; 
 
+        // Loop through all potential correction fields
         fields.forEach(f => {
-            // Check if there is a 'New' value provided
+            // Only show rows where a 'New' value is provided in the URL
             if (f.new && f.new !== "undefined" && f.new !== "" && f.new !== "null") { 
                 let row = `<tr>
                     <td>${f.label}</td>
@@ -141,20 +144,24 @@
             }
         });
 
-        // If no correction fields were found, show a placeholder row
+        // Fallback if no changes were sent
         if (tbody.innerHTML === "") {
             tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला</td></tr>";
         }
 
-        // 3. Status handling
-        document.getElementById("disp-info").innerText = params.get('info') || "अंकसूची में त्रुटि सुधार हेतु आवेदन प्रस्तुत किया गया।";
-        document.getElementById("disp-reason").innerText = params.get('rejectReason') || "लागू नहीं";
+        // 3. Status Mapping
+        if(params.get('info')) document.getElementById("disp-info").innerText = params.get('info');
+        if(params.get('rejectReason')) document.getElementById("disp-reason").innerText = params.get('rejectReason');
         
         const status = params.get('status') || "Pending";
         const statusBadge = document.getElementById("disp-status");
         statusBadge.innerText = (status === "Pending") ? "लंबित (Pending)" : status;
+        
+        // Add color classes if needed
+        if(status.toLowerCase().includes('approve')) statusBadge.style.backgroundColor = '#28a745';
+        if(status.toLowerCase().includes('reject')) statusBadge.style.backgroundColor = '#dc3545';
 
-        // 4. Photo
+        // 4. Student Photo
         if(params.get('photo')) {
             document.getElementById("disp-photo").src = params.get('photo');
         }
