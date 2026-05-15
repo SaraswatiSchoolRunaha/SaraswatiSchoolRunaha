@@ -513,17 +513,16 @@ function manualSearch() {
         // 1. Validation Checks
         if (!rollNo) { alert("⚠️ कृपया Roll Number दर्ज करें।"); return; }
 
-      // Submit function ke andar ye hissa check karein
+      // 1. Mobile Number Validation (Table ke bahar wale input ke liye)
         const mobileInput = document.getElementById("mobile");
-
-        if (!mobileInput.disabled) { // Agar user ne mobile edit tick kiya hai
         const mobValue = mobileInput.value.trim();
-        if (mobValue.length !== 10) {
-        alert("⚠️ Kripya 10 अंकों ka sahi mobile number darj karein.");
-        mobileInput.focus();
-        return; // Submit ruk jayega
+
+    // Ye check karega ki field khali na ho aur poore 10 digits hon
+        if (mobValue === "" || mobValue.length !== 10) {
+        alert("⚠️ कृपया 10 अंकों का सही मोबाइल नंबर दर्ज करें।");
+            mobileInput.focus();
+            return; // Agar galti hai toh submit yahi ruk jayega
         }
-    }
         if (captchaInput.value.toUpperCase() !== currentCaptcha) { 
             alert("❌ गलत कैप्चा कोड!"); generateCaptcha(); return; 
         }
