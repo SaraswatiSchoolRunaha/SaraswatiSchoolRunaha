@@ -450,19 +450,39 @@
         });
     }
 
-    // Form Submit Function
-   async function submitData() {
+   // --- Form Submit Function ---
+async function submitData() {
     const btn = document.querySelector(".btn-submit");
     const captchaInput = document.getElementById("captcha");
     const termsCheck = document.getElementById("acceptTerms");
     const rollNo = document.getElementById("roll").value;
 
+    // 1. Roll Number Check
     if (!rollNo) { alert("⚠️ कृपया Roll Number दर्ज करें।"); return; }
+
+    // ⬇️ YE RAHA AAPKA NAYA MOBILE VALIDATION CODE ⬇️
+    const mobileInput = document.getElementById("mobile");
+    if (!mobileInput.disabled) {
+        const mobValue = mobileInput.value.trim();
+        if (mobValue.length !== 10 || isNaN(mobValue)) {
+            alert("⚠️ कृपया 10 अंकों का सही मोबाइल नंबर दर्ज करें।");
+            return; // Code yahan ruk jayega agar number galat hai
+        }
+    }
+    // ⬆️ MOBILE VALIDATION KHATAM ⬆️
+
+    // 2. Captcha Check
     if (captchaInput.value.toUpperCase() !== currentCaptcha) { 
         alert("❌ गलत कैप्चा कोड!"); generateCaptcha(); return; 
     }
+
+    // 3. Declaration/Terms Check
     if (!termsCheck.checked) { alert("⚠️ कृपया घोषणा पत्र स्वीकार करें।"); return; }
 
+    // --- Baki ka purana code (Application Number Generate karna aur Fetch karna) ---
+    const appNo = "CORR-" + Date.now().toString().slice(-6); 
+    // ... baki process ...
+}
     // --- APPLICATION NUMBER GENERATE KAREIN ---
     const appNo = "CORR-" + Date.now().toString().slice(-6); 
 
