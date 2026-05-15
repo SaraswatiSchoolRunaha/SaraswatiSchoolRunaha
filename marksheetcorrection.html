@@ -596,6 +596,14 @@ input[type="file"]#photo {
         const display = document.getElementById("captchaDisplay");
         if(display) display.innerText = currentCaptcha;
     }
+    // Isse naye photo ka preview dikhega (Optional)
+document.getElementById('photo').onchange = function (evt) {
+    const [file] = this.files;
+    if (file) {
+        // Aap chaho to naye photo ka preview kisi aur <img> tag me dikha sakte hain
+        console.log("New photo selected: " + file.name);
+    }
+};
 </script>
 </body>
 </html>
