@@ -8,14 +8,14 @@
         :root {
             --primary: #004e92;
             --accent: #ff9933;
-            --bg: #eef2f3;
+            --bg: #ffffff; /* यहाँ बैकग्राउंड सफ़ेद किया गया है */
             --white: #ffffff;
             --text: #333;
         }
 
         body {
             font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #000428, #004e92);
+            background-color: var(--bg); /* बैकग्राउंड अब पूरी तरह सफ़ेद है */
             height: 100vh;
             margin: 0;
             display: flex;
@@ -26,10 +26,12 @@
 
         /* कार्ड का डिजाइन */
         .search-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            /* सफ़ेद बैकग्राउंड पर कार्ड दिखने के लिए शैडो और हल्का बॉर्डर */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
             width: 100%;
             max-width: 420px;
             position: relative;
@@ -42,7 +44,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ऊपर की सजावटी पट्टी */
         .search-card::before {
             content: '';
             position: absolute;
@@ -69,7 +70,6 @@
             margin: 5px 0 0;
         }
 
-        /* इनपुट स्टाइल */
         .input-group {
             position: relative;
             margin-bottom: 20px;
@@ -96,12 +96,12 @@
 
         .input-group input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(0,78,146,0.2);
+            box-shadow: 0 0 8px rgba(0,78,146,0.1);
         }
 
         /* कैप्चा सेक्शन */
         .captcha-wrapper {
-            background: #f4f7f9;
+            background: #f9f9f9;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
@@ -128,7 +128,7 @@
             font-style: italic;
             text-decoration: line-through;
             background-image: radial-gradient(#ddd 1px, transparent 0);
-            background-size: 10px 10px; /* कैप्चा ग्रिड इफेक्ट */
+            background-size: 10px 10px;
         }
 
         .refresh-btn {
@@ -138,12 +138,15 @@
             width: 40px; height: 40px;
             border-radius: 50%;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
             transition: transform 0.4s ease;
         }
 
         .refresh-btn:hover { transform: rotate(180deg); }
 
-        /* बटन स्टाइल */
         .btn-submit {
             width: 100%;
             padding: 15px;
@@ -154,27 +157,14 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,78,146,0.3);
+            box-shadow: 0 4px 15px rgba(0,78,146,0.2);
             transition: all 0.3s ease;
         }
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,78,146,0.4);
+            box-shadow: 0 6px 20px rgba(0,78,146,0.3);
         }
-
-        /* एरर मैसेज */
-        #msg-box {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            text-align: center;
-            display: none;
-        }
-
-        .error { background: #fee; color: #c00; border: 1px solid #fcc; }
-        .loading { background: #eef; color: var(--primary); border: 1px solid #ccf; }
     </style>
 </head>
 <body>
@@ -197,15 +187,13 @@
 
     <div class="captcha-wrapper">
         <div class="captcha-row">
-            <div id="captcha-box">XXXXX</div>
+            <div id="captcha-box">लोड हो रहा है...</div>
             <button class="refresh-btn" onclick="generateCaptcha()" title="Reload Captcha">↻</button>
         </div>
         <input type="text" id="capInput" placeholder="ऊपर दिया गया कोड भरें" style="width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; box-sizing: border-box;">
     </div>
 
     <button class="btn-submit" onclick="handleSearch()">SEARCH DATA</button>
-
-    <div id="msg-box"></div>
 </div>
 
 <script>
@@ -221,28 +209,30 @@
         document.getElementById("captcha-box").innerText = currentCap;
     }
 
+    // पेज लोड होते ही कैप्चा जनरेट करें
+    window.onload = generateCaptcha;
+
     // सर्च हैंडल करना
-function handleSearch() {
-    const app = document.getElementById("appNo").value.trim();
-    const roll = document.getElementById("rollNo").value.trim();
-    const input = document.getElementById("capInput").value.trim().toUpperCase();
+    function handleSearch() {
+        const app = document.getElementById("appNo").value.trim();
+        const roll = document.getElementById("rollNo").value.trim();
+        const input = document.getElementById("capInput").value.trim().toUpperCase();
 
-    if (!app || !roll) {
-        alert("कृपया सभी विवरण भरें!");
-        return;
+        if (!app || !roll) {
+            alert("कृपया सभी विवरण भरें!");
+            return;
+        }
+
+        if (input !== currentCap) {
+            alert("कैप्चा कोड गलत है!");
+            generateCaptcha();
+            document.getElementById("capInput").value = "";
+            return;
+        }
+
+        const url = "marksheetrecipt.html?app=" + encodeURIComponent(app) + "&roll=" + encodeURIComponent(roll);
+        window.open(url, "_blank");
     }
-
-    if (input !== currentCap) {
-        alert("कैप्चा कोड गलत है!");
-        generateCaptcha();
-        return;
-    }
-
-    // डेटा को URL के साथ जोड़कर दूसरी फाइल खोलना
-    // मान लें आपकी फाइल का नाम 'marksheetrecipt.html' है
-    const url = "marksheetrecipt.html?app=" + encodeURIComponent(app) + "&roll=" + encodeURIComponent(roll);
-    window.open(url, " _blank");
-}
 </script>
 
 </body>
