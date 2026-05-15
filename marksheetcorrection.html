@@ -222,120 +222,126 @@
 
         <div class="section-title">Correction Details (Compare & Edit)</div>
         
-        <table class="comparison-table">
-            <thead>
-                <tr>
-                    <th width="5%">Edit</th>
-                    <th width="25%">Field Name</th>
-                    <th width="35%">Current Record (Old)</th>
-                    <th width="35%">New Information (Correct)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Student Name -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('name')"></td>
-                    <td><strong>Student Name</strong></td>
-                    <td><span class="old-data-box" id="old_name">Loading...</span></td>
-                    <td><input type="text" id="name" disabled placeholder="Enter Correct Name"></td>
-                </tr>
-                <!-- Father Name -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('father')"></td>
-                    <td><strong>Father's Name</strong></td>
-                    <td><span class="old-data-box" id="old_father">Loading...</span></td>
-                    <td><input type="text" id="father" disabled placeholder="Enter Father's Name"></td>
-                </tr>
-                <!-- Mother Name -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('mother')"></td>
-                    <td><strong>Mother's Name</strong></td>
-                    <td><span class="old-data-box" id="old_mother">Loading...</span></td>
-                    <td><input type="text" id="mother" disabled placeholder="Enter Mother's Name"></td>
-                </tr>
-                <!-- Date of Birth -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('dob')"></td>
-                    <td><strong>Date of Birth</strong></td>
-                    <td><span class="old-data-box" id="old_dob">Loading...</span></td>
-                    <td><input type="date" id="dob" disabled></td>
-                </tr>
-                <!-- Class -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('class')"></td>
-                    <td><strong>Class</strong></td>
-                    <td><span class="old-data-box" id="old_class">Loading...</span></td>
-                    <td>
-                        <select id="class" disabled>
-                            <option value="">--Select Class--</option>
-                            <option value="12th">12th </option>
-                            <option value="11th">11th </option>
-                            <option value="10th">10th </option>
-                            <option value="9th">9th </option>
-                            <option value="8th">8th </option>
-                            <option value="7th">7th </option>
-                            <option value="6th">6th </option>
-                            <option value="5th">5th </option>
-                            <option value="4th">4th </option>
-                            <option value="3rd">3rd </option>
-                            <option value="2nd">2nd </option>
-                            <option value="1st">1st </option>
-                            <option value="KG2">KG2 </option>
-                            <option value="KG1"> KG1 </option>   
-                        </select>
-                    </td>
-                </tr>
-                <!-- Medium -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('medium')"></td>
-                    <td><strong>Medium</strong></td>
-                    <td><span class="old-data-box" id="old_medium">Loading...</span></td>
-                    <td>
-                        <select id="medium" disabled>
-                            <option value="">--Select Medium--</option>
-                            <option value="Hindi">Hindi</option>
-                            <option value="English">English</option>
-                        </select>
-                    </td>
-                </tr>
-                <!-- Category -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('category')"></td>
-                    <td><strong>Category</strong></td>
-                    <td><span class="old-data-box" id="old_category">Loading...</span></td>
-                    <td>
-                        <select id="category" disabled>
-                            <option value="">--Select Category--</option>
-                            <option value="General">General</option>
-                            <option value="OBC">OBC</option>
-                            <option value="SC">SC</option>
-                            <option value="ST">ST</option>
-                        </select>
-                    </td>
-                </tr>
-                <!-- Photo -->
-                <tr>
-                    <td><input type="checkbox" onclick="enable('photo')"></td>
-                    <td><strong>Student Photo</strong></td>
-                    <td>
-                        <div class="old-data-box" style="text-align:center;">
-                            <img id="old_photo_img" src="https://via.placeholder.com/50" alt="Current Photo" style="border:1px solid #ddd; border-radius:4px;">
-                            <br><small>Current Photo</small>
-                        </div>
-                    </td>
-                    <td><input type="file" id="photo" disabled accept="image/*"></td>
-                </tr>
-        
-        <!-- Mobile Number Row -->
-            <tr>
-                <td><input type="checkbox" id="check_mobile" onclick="enable('mobile')"></td>
-                <td><strong>Mobile Number</strong></td>
-                <td><span class="old-data-box">—</span></td> <!-- Yahan show nahi hoga -->
-                <td><input type="text" id="mobile" disabled placeholder="Enter 10 Digit Mobile No." maxlength="10"></td>
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th width="5%">Edit</th>
+            <th width="25%">Field Name</th>
+            <th width="35%">Current Record (Old)</th>
+            <th width="35%">New Information (Correct)</th>
         </tr>
-        </tbody>
-        </table>
+    </thead>
+    <tbody>
+        <!-- Student Name -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('name')"></td>
+            <td data-label="Field Name"><strong>Student Name</strong></td>
+            <td data-label="Current Record"><span class="old-data-box" id="old_name">Loading...</span></td>
+            <td data-label="New Information"><input type="text" id="name" disabled placeholder="Enter Correct Name"></td>
+        </tr>
         
+        <!-- Father Name -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('father')"></td>
+            <td data-label="Field Name"><strong>Father's Name</strong></td>
+            <td data-label="Current Record"><span class="old-data-box" id="old_father">Loading...</span></td>
+            <td data-label="New Information"><input type="text" id="father" disabled placeholder="Enter Father's Name"></td>
+        </tr>
+        
+        <!-- Mother Name -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('mother')"></td>
+            <td data-label="Field Name"><strong>Mother's Name</strong></td>
+            <td data-label="Current Record"><span class="old-data-box" id="old_mother">Loading...</span></td>
+            <td data-label="New Information"><input type="text" id="mother" disabled placeholder="Enter Mother's Name"></td>
+        </tr>
+        
+        <!-- Date of Birth -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('dob')"></td>
+            <td data-label="Field Name"><strong>Date of Birth</strong></td>
+            <td data-label="Current Record"><span class="old-data-box" id="old_dob">Loading...</span></td>
+            <td data-label="New Information"><input type="date" id="dob" disabled></td>
+        </tr>
+        
+        <!-- Class -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('class')"></td>
+            <td data-label="Field Name"><strong>Class</strong></td>
+            <td data-label="Current Record"><span class="old-data-box" id="old_class">Loading...</span></td>
+            <td data-label="New Information">
+                <select id="class" disabled>
+                    <option value="">--Select Class--</option>
+                    <option value="12th">12th</option>
+                    <option value="11th">11th</option>
+                    <option value="10th">10th</option>
+                    <option value="9th">9th</option>
+                    <option value="8th">8th</option>
+                    <option value="7th">7th</option>
+                    <option value="6th">6th</option>
+                    <option value="5th">5th</option>
+                    <option value="4th">4th</option>
+                    <option value="3rd">3rd</option>
+                    <option value="2nd">2nd</option>
+                    <option value="1st">1st</option>
+                    <option value="KG2">KG2</option>
+                    <option value="KG1">KG1</option>    
+                </select>
+            </td>
+        </tr>
+        
+        <!-- Medium -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('medium')"></td>
+            <td data-label="Field Name"><strong>Medium</strong></td>
+            <td data-label="Current Record"><span class="old-data-box" id="old_medium">Loading...</span></td>
+            <td data-label="New Information">
+                <select id="medium" disabled>
+                    <option value="">--Select Medium--</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="English">English</option>
+                </select>
+            </td>
+        </tr>
+        
+        <!-- Category -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('category')"></td>
+            <td data-label="Field Name"><strong>Category</strong></td>
+            <td data-label="Current Record"><span class="old-data-box" id="old_category">Loading...</span></td>
+            <td data-label="New Information">
+                <select id="category" disabled>
+                    <option value="">--Select Category--</option>
+                    <option value="General">General</option>
+                    <option value="OBC">OBC</option>
+                    <option value="SC">SC</option>
+                    <option value="ST">ST</option>
+                </select>
+            </td>
+        </tr>
+        
+        <!-- Photo -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" onclick="enable('photo')"></td>
+            <td data-label="Field Name"><strong>Student Photo</strong></td>
+            <td data-label="Current Record">
+                <div class="old-data-box" style="text-align:center;">
+                    <img id="old_photo_img" src="https://via.placeholder.com/50" alt="Current Photo" style="border:1px solid #ddd; border-radius:4px;">
+                    <br><small>Current Photo</small>
+                </div>
+            </td>
+            <td data-label="New Information"><input type="file" id="photo" disabled accept="image/*"></td>
+        </tr>
+        
+        <!-- Mobile Number -->
+        <tr>
+            <td data-label="Edit"><input type="checkbox" id="check_mobile" onclick="enable('mobile')"></td>
+            <td data-label="Field Name"><strong>Mobile Number</strong></td>
+            <td data-label="Current Record"><span class="old-data-box">—</span></td>
+            <td data-label="New Information"><input type="text" id="mobile" disabled placeholder="Enter 10 Digit Mobile No." maxlength="10"></td>
+        </tr>
+    </tbody>
+</table>        
         <div class="section-title">Required Documents</div>
         <div class="doc-section">
             <div class="field-row">
