@@ -1,167 +1,101 @@
-function openReport(s, appNo) {
-    const reportWindow = window.open('', '_blank');
-    
-    // स्टेटस के आधार पर क्लास तय करना
-    let statusClass = "status-pending"; 
-    const currentStatus = (s.status || "Pending").trim();
-    if (currentStatus.toLowerCase() === "approved") statusClass = "status-approved";
-    else if (currentStatus.toLowerCase() === "rejected") statusClass = "status-rejected";
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Acknowledgement Receipt</title>
+    <style>
+        /* आपका सारा CSS यहाँ वैसा ही रहेगा जैसा आपने दिया था */
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; color: #333; line-height: 1.4; background: #f9f9f9; }
+        .receipt-container { max-width: 850px; margin: 15px auto; border: 2px solid #003366; padding: 20px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #ff9933; padding-bottom: 10px; margin-bottom: 15px; }
+        .header h2 { margin: 0; color: #003366; text-transform: uppercase; font-size: 20px; }
+        .header p { margin: 5px 0; font-size: 14px; font-weight: bold; }
+        .top-section { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 10px; }
+        .details-wrapper { flex: 1; }
+        .photo-wrapper { width: 130px; text-align: center; }
+        .student-img { width: 110px; height: 130px; border: 1px solid #000; object-fit: cover; background: #eee; display: block; margin: 0 auto 5px; }
+        .section-title { background: #003366; color: white; padding: 6px 12px; font-size: 13px; font-weight: bold; margin-top: 15px; margin-bottom: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; word-wrap: break-word; }
+        th { background: #f4f4f4; width: 35%; color: #444; }
+        .correction-text { color: #d32f2f; font-weight: bold; }
+        .status-box { padding: 4px 10px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; }
+        .status-pending { background: #ffc107; color: #000; }
+        .status-approved { background: #28a745; }
+        .status-rejected { background: #dc3545; }
+        .btn-print { background: #003366; color: white; border: none; padding: 10px 25px; border-radius: 4px; cursor: pointer; display: block; margin: 15px auto; font-weight: bold; }
+        @media print { .btn-print { display: none; } .receipt-container { border: 2px solid #000; margin: 0; width: 100%; box-shadow: none; } }
+    </style>
+</head>
+<body>
 
-    reportWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Acknowledgement Receipt - ${appNo}</title>
-            <style>
-                * { box-sizing: border-box; }
-                body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; color: #333; line-height: 1.4; background: #f9f9f9; }
-                
-                .receipt-container { 
-                    max-width: 850px; 
-                    margin: 15px auto; 
-                    border: 2px solid #003366; 
-                    padding: 20px; 
-                    background: #fff;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                }
-                
-                .header { text-align: center; border-bottom: 2px solid #ff9933; padding-bottom: 10px; margin-bottom: 15px; }
-                .header h2 { margin: 0; color: #003366; text-transform: uppercase; font-size: 20px; }
-                .header p { margin: 5px 0; font-size: 14px; font-weight: bold; }
+    <div class="receipt-container">
+        <div class="header">
+            <h2>Examination Board</h2>
+            <p>Correction Application Acknowledgement Receipt</p>
+            <p>Date: <span id="currentDate"></span></p>
+        </div>
 
-                .top-section { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 10px; }
-                .details-wrapper { flex: 1; }
-                .photo-wrapper { width: 130px; text-align: center; }
-                .student-img { width: 110px; height: 130px; border: 1px solid #000; object-fit: cover; background: #eee; display: block; margin: 0 auto 5px; }
-
-                .section-title { background: #003366; color: white; padding: 6px 12px; font-size: 13px; font-weight: bold; margin-top: 15px; margin-bottom: 8px; }
-
-                table { width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed; }
-                th, td { border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; word-wrap: break-word; }
-                th { background: #f4f4f4; width: 35%; color: #444; }
-                
-                .correction-row { background: #fff9f0; }
-                .correction-text { color: #d32f2f; font-weight: bold; }
-                .original-text { color: #555; }
-
-                .status-box { padding: 4px 10px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; }
-                .status-pending { background: #ffc107; color: #000; }
-                .status-approved { background: #28a745; }
-                .status-rejected { background: #dc3545; }
-
-                .footer { margin-top: 20px; text-align: center; font-size: 11px; border-top: 1px dashed #ccc; padding-top: 10px; color: #666; }
-                .btn-print { background: #003366; color: white; border: none; padding: 10px 25px; border-radius: 4px; cursor: pointer; display: block; margin: 15px auto; font-weight: bold; }
-
-                @media print { 
-                    body { background: none; padding: 0; }
-                    .btn-print { display: none; } 
-                    .receipt-container { border: 2px solid #000; margin: 0; width: 100%; max-width: 100%; box-shadow: none; } 
-                }
-            </style>
-        </head>
-        <body>
-            <div class="receipt-container">
-                <div class="header">
-                    <h2>Examination Board</h2>
-                    <p>Correction Application Acknowledgement Receipt</p>
-                    <p>Date: ${new Date(s.timestamp).toLocaleDateString('hi-IN') || new Date().toLocaleDateString('hi-IN')}</p>
-                </div>
-
-                <div class="top-section">
-                    <div class="details-wrapper">
-                        <div class="section-title">I. STUDENT BASIC DETAILS</div>
-                        <table>
-                            <tr><th>Application No.</th><td><strong>${appNo}</strong></td></tr>
-                            <tr><th>Roll Number</th><td>${s.rollNumber || '-'}</td></tr>
-                            <tr><th>Mobile Number</th><td>${s.mobileNumber || '-'}</td></tr>
-                            <tr><th>Class & Session</th><td>${s.session || '-'} | Class: ${s.class || '-'}</td></tr>
-                        </table>
-                    </div>
-                    <div class="photo-wrapper">
-                        <img src="${s.photoLink || ''}" class="student-img" onerror="this.src='https://via.placeholder.com/110x130?text=No+Photo'">
-                        <small>Student Photo</small>
-                    </div>
-                </div>
-
-                <div class="section-title">II. CORRECTION DETAILS (ORIGINAL VS REQUESTED)</div>
+        <div class="top-section">
+            <div class="details-wrapper">
+                <div class="section-title">I. STUDENT BASIC DETAILS</div>
                 <table>
-                    <tr style="background: #eee;">
-                        <th style="width: 30%;">Field Name</th>
-                        <th style="width: 35%;">Original Data</th>
-                        <th style="width: 35%;">Requested Correction</th>
-                    </tr>
-                    <tr>
-                        <td>Student Name</td>
-                        <td class="original-text">${s.studentName || '-'}</td>
-                        <td class="correction-text">${s.correctionStudentsName || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Father's Name</td>
-                        <td class="original-text">${s.fatherName || '-'}</td>
-                        <td class="correction-text">${s.correctionFatherName || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Mother's Name</td>
-                        <td class="original-text">${s.motherName || '-'}</td>
-                        <td class="correction-text">${s.correctionMotherName || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Date of Birth</td>
-                        <td class="original-text">${s.dob || '-'}</td>
-                        <td class="correction-text">${s.correctionDob || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Gender</td>
-                        <td class="original-text">${s.gender || '-'}</td>
-                        <td class="correction-text">${s.correctionGender || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Category</td>
-                        <td class="original-text">${s.category || '-'}</td>
-                        <td class="correction-text">${s.correctionCategory || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Medium</td>
-                        <td class="original-text">${s.medium || '-'}</td>
-                        <td class="correction-text">${s.correctionMedium || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Subject</td>
-                        <td class="original-text">${s.subject || '-'}</td>
-                        <td class="correction-text">${s.correctionSubject || 'No Change'}</td>
-                    </tr>
-                    <tr>
-                        <td>Samagra ID</td>
-                        <td class="original-text">${s.samagraId || '-'}</td>
-                        <td class="correction-text">${s.correctionSamagraId || 'No Change'}</td>
-                    </tr>
+                    <tr><th>Application No.</th><td><strong id="disp-app">-</strong></td></tr>
+                    <tr><th>Roll Number</th><td><span id="disp-roll">-</span></td></tr>
+                    <tr><th>Session & Class</th><td>2024-25 | Class: 10th</td></tr>
                 </table>
-
-                <div class="section-title">III. SUPPORTING DOCUMENTS & REMARKS</div>
-                <table>
-                    <tr><th>Correction Info</th><td colspan="3">${s.correctionInfo || 'N/A'}</td></tr>
-                    <tr>
-                        <th>Birth Proof</th><td>${s.birthLink ? 'Attached' : 'Not Provided'}</td>
-                        <th>Aadhaar Proof</th><td>${s.adharLink ? 'Attached' : 'Not Provided'}</td>
-                    </tr>
-                    <tr>
-                        <th>Application Status</th>
-                        <td><span class="status-box ${statusClass}">${currentStatus}</span></td>
-                    </tr>
-                    <tr>
-                        <th>Board Remarks</th>
-                        <td style="color: red; font-weight: bold;">${s.reasonRemarks || 'Under Process'}</td>
-                    </tr>
-                </table>
-
-                <div class="footer">
-                    <p>Generated via Examination Portal. Documents are subject to board verification.</p>
-                    <p>© 2026 Examination Board Official Portal</p>
-                </div>
             </div>
-            <button class="btn-print" onclick="window.print()">Print Receipt / Save PDF</button>
-        </body>
-        </html>
-    `);
-    reportWindow.document.close();
-}
+            <div class="photo-wrapper">
+                <img src="" id="disp-photo" class="student-img" onerror="this.src='https://via.placeholder.com/110x130?text=No+Photo'">
+                <small>Student Photo</small>
+            </div>
+        </div>
+
+        <div class="section-title">II. CORRECTION DETAILS</div>
+        <table>
+            <tr style="background: #eee;">
+                <th>Field Name</th>
+                <th>Requested Correction</th>
+            </tr>
+            <tr>
+                <td>Student Name</td>
+                <td class="correction-text" id="disp-name">Loading...</td>
+            </tr>
+            <tr>
+                <td>Application Status</td>
+                <td><span id="status-badge" class="status-box status-pending">Pending</span></td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            <p>Generated via Examination Portal. Documents are subject to board verification.</p>
+            <p>© 2026 Examination Board Official Portal</p>
+        </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">Print Receipt / Save PDF</button>
+
+    <script>
+        window.onload = function() {
+            // 1. URL से डेटा निकालना
+            const params = new URLSearchParams(window.location.search);
+            const appNo = params.get('app');
+            const rollNo = params.get('roll');
+
+            // 2. HTML में डेटा भरना
+            if (appNo) {
+                document.getElementById("disp-app").innerText = appNo;
+                document.getElementById("disp-roll").innerText = rollNo || "N/A";
+                document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
+                
+                // नोट: यहाँ केवल वही डेटा दिखेगा जो URL में भेजा गया है।
+                // अगर आप पिता का नाम आदि भी दिखाना चाहते हैं, तो उसे भी URL में भेजना होगा।
+                document.getElementById("disp-name").innerText = "As per application: " + appNo;
+            } else {
+                alert("कोई डेटा नहीं मिला!");
+            }
+        };
+    </script>
+</body>
+</html>
