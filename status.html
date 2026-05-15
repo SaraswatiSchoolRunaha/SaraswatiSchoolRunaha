@@ -177,22 +177,26 @@
             <input type="text" id="rollNo" placeholder="Enter Students Valid Roll No.">
         </div>
         
-        <label>Verification Code</label>
-        <div class="captcha-container">
-            <div class="captcha-box" id="captchaVal">LOADING</div>
-            <button type="button" class="refresh-btn" onclick="generateCaptcha()">↻</button>
-            <input type="text" id="userCaptcha" placeholder="Code" style="margin-bottom: 0; width: 100px; text-align: center;">
+<label>Captcha Code</label>
+        <div class="captcha-area">
+            <div class="captcha-box" id="captchaVal">BFIPAW</div>
+            <button type="button" class="refresh-btn" onclick="generateCaptcha()">
+                🔄 Refresh
+            </button>
         </div>
 
-        <button onclick="checkStatus()">🔍 View Status & Report</button>
+        <input type="text" id="userCaptcha" placeholder="Enter code">
+
+        <button class="btn-submit" onclick="checkStatus()">Submit Request</button>
+        
         <p id="result"></p>
     </div>
 
-    <div class="footer-text">
-        © 2026 Examination Board | Official Verification Gateway <br>
-        Designed for Secure Digital Access
+    <div class="footer-copy">
+        © 2026 Marksheet Portal
     </div>
 </div>
+    
     <script>
     let generatedCaptcha = "";
     // अपनी Google Web App URL यहाँ पेस्ट करें
