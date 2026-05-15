@@ -361,22 +361,21 @@ input[type="file"]#photo {
         Size: Max 200KB | Dimensions: Passport Size
     </p>
 </td>
-        
-<!-- Mobile Number Column -->
-<tr>
-    <td data-label="Edit"><input type="checkbox" id="check_mobile" onclick="enable('mobile')"></td>
-    <td data-label="Field Name"><strong>Mobile Number</strong></td>
-    <td data-label="Current Record"><span class="old-data-box">—</span></td>
-    <td data-label="New Information">
-        <input type="text" id="mobile" disabled 
-               placeholder="Enter 10 Digit Mobile No." 
-               maxlength="10" 
-               oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-    </td>
-</tr>
     </tbody>
-    </table>
-        
+    </table> 
+       
+<!-- Table ke bahar naya section -->
+<div class="section-title">Contact Information (संपर्क विवरण)</div>
+<div class="roll-section" style="border-left-color: #28a745; background: #f0fff4; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+    <label style="color: #28a745; font-size: 14px;">MOBILE NUMBER *</label>
+    <input type="text" id="mobile" 
+           placeholder="Enter 10 Digit Mobile No." 
+           maxlength="10" 
+           style="width: 100%; border: 1px solid #28a745; background: white; padding: 10px; border-radius: 4px;"
+           oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+    <small style="color: #666; font-size: 11px;">(सुधार के संबंध में सूचना इसी नंबर पर दी जाएगी)</small>
+</div>
+       
         <div class="section-title">Required Documents</div>
         <div class="doc-section">
             <div class="field-row">
