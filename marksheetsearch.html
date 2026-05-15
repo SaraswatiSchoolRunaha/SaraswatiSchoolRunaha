@@ -29,7 +29,23 @@
             max-width: 450px; 
             text-align: center;
         }
+            .header-box span {
+            font-size: 45px;
+            display: block;
+            margin-bottom: 5px;
+        }
 
+            header-box {
+            margin-bottom: 25px; /* हेडर और इनपुट के बीच जगह */
+        }
+
+           .header-box span {
+            font-size: 45px; /* टोपी का साइज */
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        
         h2 { 
             color: #1e5ba3; 
             text-align: center; 
@@ -115,9 +131,11 @@
 <body onload="generateCaptcha()">
 
 <div class="search-container">
-     <span>🎓</span> 
-      <div class="title-section">
-    <h2>Student Marksheet Correction Portal </h2>
+    <!-- पुराना span और title-section हटाकर इसे डालें -->
+    <div class="header-box">
+        <span>🎓</span>
+        <h2>Student Marksheet<br>Correction Portal</h2>
+    </div>
 
     <div class="input-group">
         <label>Roll Number</label>
