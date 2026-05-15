@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Student Portal | Search</title>
+    <style>
+        :root {
+            --primary: #004e92;
+            --accent: #ff9933;
+            --bg: #eef2f3;
+            --white: #ffffff;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #000428, #004e92);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text);
+        }
+
+        /* कार्ड का डिजाइन */
+        .search-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ऊपर की सजावटी पट्टी */
+        .search-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .header-box {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-box h2 {
+            margin: 0;
+            color: var(--primary);
+            letter-spacing: 1px;
+            font-size: 26px;
+        }
+
+        .header-box p {
+            font-size: 14px;
+            color: #777;
+            margin: 5px 0 0;
+        }
+
+        /* इनपुट स्टाइल */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(0,78,146,0.2);
+        }
+
+        /* कैप्चा सेक्शन */
+        .captcha-wrapper {
+            background: #f4f7f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .captcha-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        #captcha-box {
+            background: #fff;
+            padding: 8px 20px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #444;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            user-select: none;
+            font-style: italic;
+            text-decoration: line-through;
+            background-image: radial-gradient(#ddd 1px, transparent 0);
+            background-size: 10px 10px; /* कैप्चा ग्रिड इफेक्ट */
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+
+        .refresh-btn:hover { transform: rotate(180deg); }
+
+        /* बटन स्टाइल */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, var(--primary), #0072ff);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,78,146,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,78,146,0.4);
+        }
+
+        /* एरर मैसेज */
+        #msg-box {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+
+        .error { background: #fee; color: #c00; border: 1px solid #fcc; }
+        .loading { background: #eef; color: var(--primary); border: 1px solid #ccf; }
+    </style>
+</head>
+<body>
+
+<div class="search-card">
+    <div class="header-box">
+        <h2>STUDENT PORTAL</h2>
+        <p>अपनी मार्कशीट या रसीद डाउनलोड करें</p>
+    </div>
+
+    <div class="input-group">
+        <label>Application Number</label>
+        <input type="text" id="appNo" placeholder="Eg: APP-2024-001">
+    </div>
+
+    <div class="input-group">
+        <label>Roll Number</label>
+        <input type="text" id="rollNo" placeholder="Eg: 12345678">
+    </div>
+
+    <div class="captcha-wrapper">
+        <div class="captcha-row">
+            <div id="captcha-box">XXXXX</div>
+            <button class="refresh-btn" onclick="generateCaptcha()" title="Reload Captcha">↻</button>
+        </div>
+        <input type="text" id="capInput" placeholder="ऊपर दिया गया कोड भरें" style="width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; box-sizing: border-box;">
+    </div>
+
+    <button class="btn-submit" onclick="handleSearch()">SEARCH DATA</button>
+
+    <div id="msg-box"></div>
+</div>
+
+<script>
+    let currentCap = "";
+
+    // कैप्चा बनाना
+    function generateCaptcha() {
+        const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+        currentCap = "";
+        for(let i=0; i<5; i++) {
+            currentCap += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById("captcha-box").innerText = currentCap;
+    }
+
+    // सर्च हैंडल करना
+    function handleSearch() {
+        const app = document.getElementById("appNo").value.trim();
+        const roll = document.getElementById("rollNo").value.trim();
+        const input = document.getElementById("capInput").value.trim().toUpperCase();
+        const box = document.getElementById("msg-box");
+
+        // वैलिडेशन
+        if(!app || !roll) {
+            showMessage("error", "कृपया सभी विवरण भरें!");
+            return;
+        }
+
+        if(input !== currentCap) {
+            showMessage("error", "सुरक्षा कोड (Captcha) गलत है!");
+            generateCaptcha();
+            return;
+        }
+
+        // सफलता (प्रोसेसिंग)
+        showMessage("loading", "डेटा खोजा जा रहा है... कृपया प्रतीक्षा करें।");
+        
+        // सिमुलेशन (असली काम यहाँ होगा)
+        setTimeout(() => {
+            // यहाँ आप google.script.run वाला कोड डालेंगे
+            console.log("Searching:", app, roll);
+            
+            /* 
+            google.script.run.withSuccessHandler(res => {
+               if(res) openReport(res, app); 
+               else showMessage("error", "रिकॉर्ड नहीं मिला!");
+            }).yourFunction(app, roll);
+            */
+        }, 1500);
+    }
+
+    function showMessage(type, text) {
+        const box = document.getElementById("msg-box");
+        box.innerText = text;
+        box.className = type;
+        box.style.display = "block";
+    }
+
+    // Enter Key Support
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') handleSearch();
+    });
+
+    // लोड पर स्टार्ट
+    window.onload = generateCaptcha;
+</script>
+
+</body>
+</html>
