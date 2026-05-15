@@ -175,11 +175,11 @@
 
 /* Student Photo Styling */
 #old_photo_img {
-    width: 120px;          /* Width fix karne ke liye */
-    height: 150px;         /* Height fix karne ke liye */
+    width: 100px;          /* Width fix karne ke liye */
+    height: 125px;         /* Height fix karne ke liye */
     object-fit: cover;     /* Taki photo ka ratio na bigde */
     border: 2px solid #003366; 
-    border-radius: 8px;
+    border-radius: 6px;
     display: block;
     margin: 0 auto;        /* Center align karne ke liye */
 }
@@ -190,7 +190,6 @@ input[type="file"]#photo {
     font-size: 12px;
 }
        
-
     /* Captcha & Button */
     .captcha-box {
         margin-top: 25px;
@@ -350,10 +349,11 @@ input[type="file"]#photo {
         </div>
     </td>
     <td data-label="New Information">
-        <input type="file" id="photo" disabled accept="image/*">
-        <p style="font-size: 10px; color: #666; margin-top: 5px;">Max Size: 200KB (JPG/PNG)</p>
-    </td>
-</tr>
+    <input type="file" id="photo" disabled accept="image/*">
+    <p style="font-size: 10px; color: #d32f2f; margin-top: 5px; font-weight: bold;">
+        Size: Max 200KB | Dimensions: Passport Size
+    </p>
+</td>
         
         <!-- Mobile Number -->
         <tr>
@@ -596,13 +596,25 @@ input[type="file"]#photo {
         const display = document.getElementById("captchaDisplay");
         if(display) display.innerText = currentCaptcha;
     }
-   // Naye photo ka preview dikhane ke liye logic (Optional enhancement)
+// Naye photo ka preview aur size check
 document.getElementById('photo').onchange = function (evt) {
-    const [file] = this.files;
+    const file = this.files[0];
+    
     if (file) {
-        // Agar aap chahte hain ki purani photo ki jagah nayi dikhe:
-        document.getElementById('old_photo_img').src = URL.createObjectURL(file);
-        console.log("New photo preview updated.");
+        // Check if file is larger than 200KB (200 * 1024 bytes)
+        if (file.size > 200 * 1024) {
+            alert("❌ Photo ka size 200KB se zyada hai! Kripya choti file select karein.");
+            this.value = ""; // Input clear kar dega
+            return;
+        }
+
+        // Preview dikhane ke liye logic
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('old_photo_img').src = e.target.result;
+            console.log("Photo preview updated and size is OK.");
+        };
+        reader.readAsDataURL(file);
     }
 };
     
