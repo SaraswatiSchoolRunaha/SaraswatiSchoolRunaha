@@ -60,22 +60,55 @@
 
     .content { padding: 30px; }
 
-    /* Roll Section Styling */
-    .roll-section {
-        background: #eef2f7;
-        padding: 15px;
-        border-radius: 6px;
-        margin-bottom: 25px;
-        border-left: 5px solid #003366;
-        display: flex;
-        align-items: center;
-        gap: 15px;
+   /* Roll aur Mobile dono ke liye common card design */
+.input-card-box {
+    background: #f0f4f8; /* Professional Blue-Grey tint */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border-left: 5px solid #003366; /* Deep Blue border */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.input-card-box label {
+    font-weight: bold;
+    color: #003366;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+/* Input aur Button ko ek line mein rakhne ke liye */
+.input-row {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.input-card-box input {
+    flex: 1; /* Taki input bachi hui jagah lele */
+    border: 1px solid #003366;
+    background: white !important; /* Transparent se white kar diya */
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Mobile par layout adjustment */
+@media (max-width: 600px) {
+    .input-row {
+        flex-direction: column;
     }
-
-    .roll-section label { font-weight: bold; color: #003366; }
-    .roll-section input { background: transparent; border: none; font-size: 16px; font-weight: bold; color: #333; outline: none; }
-
-    /* Table Design */
+}
+       
+       /* Table Design */
     .comparison-table {
         width: 100%;
         border-collapse: collapse;
@@ -232,17 +265,18 @@ input[type="file"]#photo {
     </div>
 
    <div class="content">
-    <!-- Updated Roll Section with proper closing and styling -->
-    <div class="roll-section">
-        <label>ROLL NUMBER:</label>
-        <input type="text" id="roll" placeholder="Enter Roll No">
-        
-        <!-- Naya Search Button with better padding and font -->
-        <button type="button" onclick="manualSearch()" style="background:#003366; color:white; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:600; transition: 0.3s;">
+    <div class="section-title">Student Identification (पहचान विवरण)</div>
+<div class="input-card-box">
+    <label>ROLL NUMBER *</label>
+    <div class="input-row">
+        <input type="text" id="roll" placeholder="Enter Roll Number">
+        <button type="button" onclick="manualSearch()" style="background:#003366; color:white; border:none; padding:0 25px; border-radius:4px; cursor:pointer; font-weight:600; min-height: 45px;">
             🔍 SEARCH
         </button>
     </div>
-    
+    <small style="color: #666; font-size: 11px;">(अपना सही रोल नंबर दर्ज कर सर्च बटन पर क्लिक करें)</small>
+</div>
+       
     <div class="section-title">Correction Details (Compare & Edit)</div>
     <!-- Iske niche aapki table shuru hogi -->
         
