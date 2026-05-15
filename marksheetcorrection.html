@@ -20,26 +20,25 @@
     width: 100%;
     max-width: 900px;
     background: #ffffff;
-    border-radius: 16px; /* Zyada rounded corners */
+    border-radius: 12px; 
     margin: 30px auto;
     
-    /* Solid border ki jagah halka subtle border */
-    border: 1px solid rgba(0, 51, 102, 0.1); 
+    /* Subtle ki jagah solid border jo saaf dikhe */
+    border: 2px solid #003366; 
     
-    /* High-quality layered shadow */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-                0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    /* Box shadow ko thoda adjust kiya gaya hai */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s ease;
 }
 
-/* Hover karne par card halka sa upar uthega */
+/* Hover effect ko thoda aur clean banaya */
 .main-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
-
+       
 /* Mobile Devices ke liye adjustment */
 @media (max-width: 600px) {
     .main-card {
