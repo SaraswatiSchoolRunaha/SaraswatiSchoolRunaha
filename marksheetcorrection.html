@@ -436,9 +436,11 @@ input[type="file"]#photo {
     };
 
 function manualSearch() {
-    const roll = document.getElementById("roll").value;
-    // Yahan class aur year aap dropdown se ya URL se le sakte hain
-    const sClass = window.searchClass || "10th"; 
+    const roll = document.getElementById("roll").value.trim();
+    
+    // Agar user ne niche dropdown se koi nayi class select ki hai, to wahi uthayega
+    const selectedClass = document.getElementById("class").value;
+    const sClass = selectedClass || window.searchClass || "10th"; 
     const year = window.searchYear || "2024";
 
     if(roll) {
