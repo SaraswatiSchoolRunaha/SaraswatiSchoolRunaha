@@ -355,15 +355,21 @@ input[type="file"]#photo {
     </p>
 </td>
         
-        <!-- Mobile Number -->
-        <tr>
-            <td data-label="Edit"><input type="checkbox" id="check_mobile" onclick="enable('mobile')"></td>
-            <td data-label="Field Name"><strong>Mobile Number</strong></td>
-            <td data-label="Current Record"><span class="old-data-box">—</span></td>
-            <td data-label="New Information"><input type="text" id="mobile" disabled placeholder="Enter 10 Digit Mobile No." maxlength="10"></td>
-        </tr>
+<!-- Mobile Number Column -->
+<tr>
+    <td data-label="Edit"><input type="checkbox" id="check_mobile" onclick="enable('mobile')"></td>
+    <td data-label="Field Name"><strong>Mobile Number</strong></td>
+    <td data-label="Current Record"><span class="old-data-box">—</span></td>
+    <td data-label="New Information">
+        <input type="text" id="mobile" disabled 
+               placeholder="Enter 10 Digit Mobile No." 
+               maxlength="10" 
+               oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+    </td>
+</tr>
     </tbody>
-</table>        
+    </table>
+        
         <div class="section-title">Required Documents</div>
         <div class="doc-section">
             <div class="field-row">
@@ -482,15 +488,17 @@ input[type="file"]#photo {
         // 1. Validation Checks
         if (!rollNo) { alert("⚠️ कृपया Roll Number दर्ज करें।"); return; }
 
+      // Submit function ke andar ye hissa check karein
         const mobileInput = document.getElementById("mobile");
-        if (!mobileInput.disabled) {
-            const mobValue = mobileInput.value.trim();
-            if (mobValue.length !== 10 || isNaN(mobValue)) {
-                alert("⚠️ कृपया 10 अंकों का सही मोबाइल नंबर दर्ज करें।");
-                return;
-            }
-        }
 
+        if (!mobileInput.disabled) { // Agar user ne mobile edit tick kiya hai
+        const mobValue = mobileInput.value.trim();
+        if (mobValue.length !== 10) {
+        alert("⚠️ Kripya 10 अंकों ka sahi mobile number darj karein.");
+        mobileInput.focus();
+        return; // Submit ruk jayega
+        }
+    }
         if (captchaInput.value.toUpperCase() !== currentCaptcha) { 
             alert("❌ गलत कैप्चा कोड!"); generateCaptcha(); return; 
         }
