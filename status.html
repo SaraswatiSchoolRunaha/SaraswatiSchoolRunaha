@@ -5,212 +5,220 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Official Marksheet Status Portal</title>
     <style>
-        /* Official Government Style Theme */
+        /* Modern Glassmorphism & Professional UI */
         body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
-            background-color: #d1d9e6; /* Professional Grey-Blue */
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
         }
 
         .card { 
-            background-color: #ffffff; 
-            width: 400px; 
+            background: #ffffff; 
+            width: 100%;
+            max-width: 420px; 
             padding: 0; 
-            border-radius: 10px; 
-            box-shadow: 0px 15px 35px rgba(0,0,0,0.2); 
+            border-radius: 16px; 
+            box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.1); 
             overflow: hidden;
-            border: 1px solid #003366;
+            border: none;
+            position: relative;
         }
 
-        /* Portal Header */
+        /* 🎓 Official Top Bar */
         .card-header {
-            background-color: #003366; /* Deep Navy Blue */
+            background: #002e5d; /* Darker Navy Blue */
             color: #ffffff;
-            padding: 20px;
+            padding: 25px 20px;
             text-align: center;
+            border-bottom: 5px solid #ff9933;
+        }
+
+        .card-header .topi-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .card-header span {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
             letter-spacing: 1px;
-            border-bottom: 5px solid #ff9933; /* Saffron Line */
             text-transform: uppercase;
+            display: block;
         }
 
         .form-body {
-            padding: 25px;
+            padding: 30px;
+            background: #ffffff;
+        }
+
+        /* Input Styling */
+        .input-group {
+            margin-bottom: 20px;
         }
 
         label { 
-            font-size: 13px; 
-            font-weight: 600; 
+            font-size: 12px; 
+            font-weight: 700; 
             display: block; 
-            margin-bottom: 6px; 
-            color: #2c3e50; 
+            margin-bottom: 8px; 
+            color: #4a5568; 
+            text-transform: uppercase;
         }
 
         input { 
             width: 100%; 
-            padding: 12px; 
-            margin-bottom: 18px; 
-            border: 1px solid #bdc3c7; 
-            border-radius: 4px; 
+            padding: 14px 16px; 
+            border: 2px solid #edf2f7; 
+            border-radius: 10px; 
             box-sizing: border-box; 
-            font-size: 14px; 
-            transition: all 0.3s;
+            font-size: 15px; 
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            color: #2d3748;
         }
 
         input:focus {
-            border-color: #003366;
+            border-color: #002e5d;
+            background-color: #ffffff;
             outline: none;
-            box-shadow: 0 0 5px rgba(0,51,102,0.2);
+            box-shadow: 0 0 0 4px rgba(0, 46, 93, 0.1);
         }
 
-       /* Modern Captcha Styling */
-.captcha-container { 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-    margin-bottom: 22px; 
-    background: #ffffff; /* क्लीन वाइट बैकग्राउंड */
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); /* हल्का सा अंदरूनी शैडो */
-}
+        /* 🔐 Security Captcha Styling */
+        .captcha-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 25px; 
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
 
-.captcha-box { 
-    background: linear-gradient(135deg, #2c3e50 0%, #000000 100%); /* डार्क ग्रेडिएंट */
-    padding: 12px; 
-    font-weight: 800; 
-    letter-spacing: 6px; 
-    border-radius: 6px;
-    flex: 1; 
-    text-align: center; 
-    user-select: none; 
-    color: #00d2ff; /* नियन ब्लू कलर - पढ़ने में आसान */
-    font-family: 'Courier New', monospace;
-    font-size: 22px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    border: 1px solid #444;
-    position: relative;
-    overflow: hidden;
-}
+        .captcha-box { 
+            background: #1a202c; 
+            padding: 12px; 
+            font-weight: bold; 
+            letter-spacing: 5px; 
+            border-radius: 8px;
+            flex: 1.5; 
+            text-align: center; 
+            color: #38bdf8; 
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-/* कैप्चा के ऊपर एक हल्की सी लाइन (Noise effect) के लिए */
-.captcha-box::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: rgba(255,255,255,0.1);
-    transform: rotate(-5deg);
-}
+        .refresh-btn {
+            background: #4a5568;
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.4s ease;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-/* रिफ्रेश बटन स्टाइल */
-.captcha-refresh-btn {
-    background: #34495e;
-    color: white;
-    border: none;
-    padding: 10px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: transform 0.3s, background 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .refresh-btn:hover {
+            background: #2d3748;
+            transform: rotate(180deg);
+        }
 
-.captcha-refresh-btn:hover {
-    background: #2c3e50;
-    transform: rotate(180deg); /* घूमने वाला इफेक्ट */
-}
-        /* Action Button */
-        button { 
+        /* 🚀 Action Button */
+        button[onclick="checkStatus()"] { 
             width: 100%; 
-            padding: 14px; 
-            background-color: #27ae60; /* Success Green */
+            padding: 16px; 
+            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
             color: white; 
             border: none; 
-            border-radius: 4px; 
+            border-radius: 10px; 
             cursor: pointer; 
             font-size: 16px; 
-            font-weight: bold; 
+            font-weight: 700; 
             text-transform: uppercase;
-            transition: 0.3s; 
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(39, 174, 96, 0.3);
         }
 
-        button:hover { 
-            background-color: #219150; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        button[onclick="checkStatus()"]:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(39, 174, 96, 0.4);
+            filter: brightness(1.1);
         }
 
         #result { 
-            margin-top: 15px; 
+            margin-top: 20px; 
             text-align: center; 
             font-size: 14px;
-            font-weight: bold;
-            min-height: 20px;
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 8px;
         }
 
         .footer-text {
             text-align: center;
             font-size: 11px;
-            color: #7f8c8d;
-            margin-top: 10px;
-            padding-bottom: 15px;
+            color: #94a3b8;
+            padding: 20px;
+            border-top: 1px solid #f1f5f9;
+            background: #f8fafc;
         }
-        /* Status Badge Colors */
-        .badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; text-transform: uppercase; }
-        .bg-red { background: #dc3545; }    /* Rejected */
-        .bg-green { background: #28a745; }  /* Approved */
-        .bg-yellow { background: #ffc107; color: #000; } /* Pending - Black text for visibility */
+
+        /* Status Colors */
+        .badge { padding: 4px 10px; border-radius: 20px; color: white; font-weight: bold; font-size: 11px; }
+        .bg-red { background: #ef4444; }
+        .bg-green { background: #10b981; }
+        .bg-yellow { background: #f59e0b; color: white; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <div class="card-header">
-        Marksheet Correction Status
+        <span class="topi-icon">🎓</span>
+        <span>Search Marksheet Status</span>
     </div>
 
     <div class="form-body">
-        <label>Application Number</label>
-        <input type="text" id="appNo" placeholder="Applcation number Enter APP-2026-000">
+        <div class="input-group">
+            <label>Application Number</label>
+            <input type="text" id="appNo" placeholder="e.g. APP-2026-000">
+        </div>
         
-        <label>Roll Number</label>
-        <input type="text" id="rollNo" placeholder="Enter Roll Number">
+        <div class="input-group">
+            <label>Roll Number</label>
+            <input type="text" id="rollNo" placeholder="Enter 10-digit Roll No.">
+        </div>
         
-     <label>Verification Code (Captcha)</label>
-    <div class="captcha-container">
-    <!-- कैप्चा बॉक्स -->
-    <div class="captcha-box" id="captchaVal">LOADING</div>
-    
-    <!-- नया रिफ्रेश बटन (यहाँ बदलाव हुआ है) -->
-    <button type="button" onclick="generateCaptcha()" 
-        style="width: auto; padding: 10px; background: #34495e; color: white; border: none; cursor: pointer; border-radius: 4px; margin-right: 5px; margin-bottom: 0;">
-        ↻
-    </button>
-    
-    <!-- कैप्चा इनपुट -->
-    <input type="text" id="userCaptcha" placeholder="Type Here" style="margin-bottom: 0; flex: 1;">
+        <label>Verification Code</label>
+        <div class="captcha-container">
+            <div class="captcha-box" id="captchaVal">LOADING</div>
+            <button type="button" class="refresh-btn" onclick="generateCaptcha()">↻</button>
+            <input type="text" id="userCaptcha" placeholder="Code" style="margin-bottom: 0; width: 100px; text-align: center;">
+        </div>
+
+        <button onclick="checkStatus()">🔍 View Status & Report</button>
+        <p id="result"></p>
     </div>
 
-<!-- स्टेटस चेक बटन -->
-<button onclick="checkStatus()">View Status & Report</button>
-<p id="result"></p>
-        
-        <div class="footer-text">
-            © 2026 Examination Board | Official Verification Portal
-        </div>
+    <div class="footer-text">
+        © 2026 Examination Board | Official Verification Gateway <br>
+        Designed for Secure Digital Access
     </div>
 </div>
-
-<script>
+    <script>
     let generatedCaptcha = "";
     // अपनी Google Web App URL यहाँ पेस्ट करें
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
