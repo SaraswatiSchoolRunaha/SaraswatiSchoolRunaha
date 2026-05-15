@@ -1,101 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Acknowledgement Receipt</title>
+    <title>Correction Acknowledgement Receipt</title>
     <style>
-        /* आपका सारा CSS यहाँ वैसा ही रहेगा जैसा आपने दिया था */
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; color: #333; line-height: 1.4; background: #f9f9f9; }
-        .receipt-container { max-width: 850px; margin: 15px auto; border: 2px solid #003366; padding: 20px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { text-align: center; border-bottom: 2px solid #ff9933; padding-bottom: 10px; margin-bottom: 15px; }
-        .header h2 { margin: 0; color: #003366; text-transform: uppercase; font-size: 20px; }
-        .header p { margin: 5px 0; font-size: 14px; font-weight: bold; }
-        .top-section { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 10px; }
-        .details-wrapper { flex: 1; }
-        .photo-wrapper { width: 130px; text-align: center; }
-        .student-img { width: 110px; height: 130px; border: 1px solid #000; object-fit: cover; background: #eee; display: block; margin: 0 auto 5px; }
-        .section-title { background: #003366; color: white; padding: 6px 12px; font-size: 13px; font-weight: bold; margin-top: 15px; margin-bottom: 8px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; word-wrap: break-word; }
-        th { background: #f4f4f4; width: 35%; color: #444; }
-        .correction-text { color: #d32f2f; font-weight: bold; }
-        .status-box { padding: 4px 10px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; }
-        .status-pending { background: #ffc107; color: #000; }
-        .status-approved { background: #28a745; }
-        .status-rejected { background: #dc3545; }
-        .btn-print { background: #003366; color: white; border: none; padding: 10px 25px; border-radius: 4px; cursor: pointer; display: block; margin: 15px auto; font-weight: bold; }
-        @media print { .btn-print { display: none; } .receipt-container { border: 2px solid #000; margin: 0; width: 100%; box-shadow: none; } }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; color: #333; font-size: 12px; background: #f0f0f0; }
+        .receipt-container { max-width: 850px; margin: 10px auto; border: 2px solid #003366; padding: 30px; background: #fff; position: relative; }
+        
+        /* Header Section */
+        .header { text-align: center; border-bottom: 3px double #ff9933; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h2 { margin: 0; color: #003366; font-size: 22px; text-transform: uppercase; }
+        .header p { margin: 3px 0; font-weight: bold; }
+
+        /* Student Info Box */
+        .top-info { display: flex; justify-content: space-between; border: 1px solid #003366; padding: 10px; margin-bottom: 15px; background: #f9f9f9; }
+        .info-item { margin-bottom: 5px; }
+        .info-item strong { color: #003366; }
+
+        .photo-box { width: 110px; height: 130px; border: 1px solid #000; text-align: center; font-size: 10px; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Tables */
+        .section-title { background: #003366; color: white; padding: 5px 10px; font-weight: bold; margin-top: 20px; margin-bottom: 5px; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { border: 1px solid #000; padding: 6px 10px; text-align: left; }
+        th { background: #eee; width: 30%; }
+        .new-data { color: #d32f2f; font-weight: bold; } /* Jo change hona hai wo laal dikhega */
+
+        /* Declaration */
+        .declaration { margin-top: 20px; border: 1px solid #ccc; padding: 10px; font-style: italic; font-size: 11px; }
+        
+        /* Signature Section */
+        .sig-section { display: flex; justify-content: space-between; margin-top: 60px; text-align: center; }
+        .sig-box { width: 30%; border-top: 1px solid #000; padding-top: 5px; }
+
+        .status-badge { padding: 3px 8px; border-radius: 3px; color: #fff; font-weight: bold; text-transform: uppercase; }
+        .pending { background: #ffc107; color: #000; }
+
+        @media print {
+            body { background: #fff; }
+            .btn-print { display: none; }
+            .receipt-container { border: 1px solid #000; box-shadow: none; margin: 0; }
+        }
+        .btn-print { display: block; margin: 20px auto; padding: 10px 30px; background: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="receipt-container">
-        <div class="header">
-            <h2>Examination Board</h2>
-            <p>Correction Application Acknowledgement Receipt</p>
-            <p>Date: <span id="currentDate"></span></p>
+<div class="receipt-container">
+    <div class="header">
+        <h2>School Examination Board</h2>
+        <p>Acknowledgement Receipt: Marksheet Correction Request</p>
+        <p>Reg. Date: <span id="currentDate">-</span></p>
+    </div>
+
+    <div class="top-info">
+        <div>
+            <div class="info-item"><strong>Application No:</strong> <span id="disp-app">-</span></div>
+            <div class="info-item"><strong>Roll Number:</strong> <span id="disp-roll">-</span></div>
+            <div class="info-item"><strong>Session:</strong> <span id="disp-session">-</span></div>
+            <div class="info-item"><strong>Mobile:</strong> <span id="disp-mobile">-</span></div>
         </div>
-
-        <div class="top-section">
-            <div class="details-wrapper">
-                <div class="section-title">I. STUDENT BASIC DETAILS</div>
-                <table>
-                    <tr><th>Application No.</th><td><strong id="disp-app">-</strong></td></tr>
-                    <tr><th>Roll Number</th><td><span id="disp-roll">-</span></td></tr>
-                    <tr><th>Session & Class</th><td>2024-25 | Class: 10th</td></tr>
-                </table>
-            </div>
-            <div class="photo-wrapper">
-                <img src="" id="disp-photo" class="student-img" onerror="this.src='https://via.placeholder.com/110x130?text=No+Photo'">
-                <small>Student Photo</small>
-            </div>
-        </div>
-
-        <div class="section-title">II. CORRECTION DETAILS</div>
-        <table>
-            <tr style="background: #eee;">
-                <th>Field Name</th>
-                <th>Requested Correction</th>
-            </tr>
-            <tr>
-                <td>Student Name</td>
-                <td class="correction-text" id="disp-name">Loading...</td>
-            </tr>
-            <tr>
-                <td>Application Status</td>
-                <td><span id="status-badge" class="status-box status-pending">Pending</span></td>
-            </tr>
-        </table>
-
-        <div class="footer">
-            <p>Generated via Examination Portal. Documents are subject to board verification.</p>
-            <p>© 2026 Examination Board Official Portal</p>
+        <div class="photo-box">
+            <img src="" id="disp-photo" alt="Photo" onerror="this.src='https://via.placeholder.com/110x130?text=No+Photo'">
         </div>
     </div>
 
-    <button class="btn-print" onclick="window.print()">Print Receipt / Save PDF</button>
+    <div class="section-title">Correction Request Details (Old vs Requested)</div>
+    <table>
+        <thead>
+            <tr style="background: #f4f4f4;">
+                <th>Field Name</th>
+                <th>Current (Old) Record</th>
+                <th>Requested (New) Correction</th>
+            </tr>
+        </thead>
+        <tbody id="correction-body">
+            </tbody>
+    </table>
 
-    <script>
-        window.onload = function() {
-            // 1. URL से डेटा निकालना
-            const params = new URLSearchParams(window.location.search);
-            const appNo = params.get('app');
-            const rollNo = params.get('roll');
+    <table>
+        <tr>
+            <th>Samagra ID</th><td id="disp-samagra">-</td>
+            <th>Gender</th><td id="disp-gender">-</td>
+        </tr>
+        <tr>
+            <th>Category</th><td id="disp-category">-</td>
+            <th>Medium</th><td id="disp-medium">-</td>
+        </tr>
+    </table>
 
-            // 2. HTML में डेटा भरना
-            if (appNo) {
-                document.getElementById("disp-app").innerText = appNo;
-                document.getElementById("disp-roll").innerText = rollNo || "N/A";
-                document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
-                
-                // नोट: यहाँ केवल वही डेटा दिखेगा जो URL में भेजा गया है।
-                // अगर आप पिता का नाम आदि भी दिखाना चाहते हैं, तो उसे भी URL में भेजना होगा।
-                document.getElementById("disp-name").innerText = "As per application: " + appNo;
-            } else {
-                alert("कोई डेटा नहीं मिला!");
+    <div class="section-title">Application Status</div>
+    <table>
+        <tr>
+            <th>Status</th>
+            <td><span id="disp-status" class="status-badge pending">Pending</span></td>
+        </tr>
+        <tr>
+            <th>Correction Info</th>
+            <td id="disp-info">Correction requested by student for board records.</td>
+        </tr>
+        <tr>
+            <th>Reason (If any)</th>
+            <td id="disp-reason">N/A</td>
+        </tr>
+    </table>
+
+    <div class="declaration">
+        <strong>Sapath Patra (Declaration):</strong><br>
+        Main shapath purvak kathan karta/karti hoon ki mere dwara di gayi uprokt jaankari poornatah satya hai. Yadi kisi bhi star par jaankari galat payi jati hai, toh meri abhyarthita nirast ki ja sakti hai.
+    </div>
+
+    <div class="sig-section">
+        <div class="sig-box">Student Signature</div>
+        <div class="sig-box">Parent/Guardian Signature</div>
+        <div class="sig-box">Principal Signature & Seal</div>
+    </div>
+
+    <p style="font-size: 10px; margin-top: 30px; text-align: center; color: #777;">
+        This is a computer-generated receipt. Physical verification of documents is mandatory.
+    </p>
+</div>
+
+<button class="btn-print" onclick="window.print()">Print Receipt</button>
+
+<script>
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+        
+        // Basic Details
+        document.getElementById("disp-app").innerText = params.get('app') || '-';
+        document.getElementById("disp-roll").innerText = params.get('roll') || '-';
+        document.getElementById("disp-session").innerText = params.get('year') || '-';
+        document.getElementById("disp-mobile").innerText = params.get('mobile') || 'N/A';
+        document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
+
+        // Correction Fields Mapping
+        const fields = [
+            { label: "Student Name", old: params.get('old_name'), new: params.get('new_name') },
+            { label: "Father's Name", old: params.get('old_father'), new: params.get('new_father') },
+            { label: "Mother's Name", old: params.get('old_mother'), new: params.get('new_mother') },
+            { label: "Date of Birth", old: params.get('old_dob'), new: params.get('new_dob') },
+            { label: "Class", old: params.get('old_class'), new: params.get('new_class') }
+        ];
+
+        const tbody = document.getElementById("correction-body");
+        fields.forEach(f => {
+            if(f.new) { // Agar naya data hai tabhi line dikhao
+                let row = `<tr>
+                    <td>${f.label}</td>
+                    <td>${f.old || 'N/A'}</td>
+                    <td class="new-data">${f.new}</td>
+                </tr>`;
+                tbody.innerHTML += row;
             }
-        };
-    </script>
+        });
+
+        // Other details
+        document.getElementById("disp-samagra").innerText = params.get('samagra') || 'N/A';
+        document.getElementById("disp-gender").innerText = params.get('gender') || 'N/A';
+        document.getElementById("disp-category").innerText = params.get('category') || 'N/A';
+        document.getElementById("disp-medium").innerText = params.get('medium') || 'N/A';
+        document.getElementById("disp-reason").innerText = params.get('rejectReason') || 'N/A';
+        
+        if(params.get('photo')) {
+            document.getElementById("disp-photo").src = params.get('photo');
+        }
+    };
+</script>
+
 </body>
 </html>
