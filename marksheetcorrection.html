@@ -173,6 +173,24 @@
         input[type="text"], input[type="date"], select { width: 100%; }
     }
 
+/* Student Photo Styling */
+#old_photo_img {
+    width: 120px;          /* Width fix karne ke liye */
+    height: 150px;         /* Height fix karne ke liye */
+    object-fit: cover;     /* Taki photo ka ratio na bigde */
+    border: 2px solid #003366; 
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;        /* Center align karne ke liye */
+}
+
+/* Jab naya photo upload ho (optional preview styling) */
+input[type="file"]#photo {
+    padding: 5px;
+    font-size: 12px;
+}
+       
+
     /* Captcha & Button */
     .captcha-box {
         margin-top: 25px;
