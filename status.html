@@ -3,194 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Official Marksheet Status Portal</title>
+    <title>Marksheet Correction Portal</title>
     <style>
-        /* Modern Glassmorphism & Professional UI */
+        /* Background matching your image */
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Arial', sans-serif; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            background-color: #f4f7f9;
         }
 
+        /* The Main Card with Blue Border */
         .card { 
             background: #ffffff; 
             width: 100%;
-            max-width: 420px; 
-            padding: 0; 
-            border-radius: 16px; 
-            box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.1); 
-            overflow: hidden;
-            border: none;
-            position: relative;
+            max-width: 450px; 
+            padding: 40px; 
+            border-radius: 8px; 
+            /* Screenshot style blue border */
+            border: 3px solid #0056b3; 
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
         }
 
-        /* 🎓 Official Top Bar */
+        /* Logo and Heading Title */
         .card-header {
-            background: #002e5d; /* Darker Navy Blue */
-            color: #ffffff;
-            padding: 25px 20px;
             text-align: center;
-            border-bottom: 5px solid #ff9933;
-        }
-
-        .card-header .topi-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .card-header span {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: block;
-        }
-
-        .form-body {
-            padding: 30px;
-            background: #ffffff;
-        }
-
-        /* Input Styling */
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label { 
-            font-size: 12px; 
-            font-weight: 700; 
-            display: block; 
-            margin-bottom: 8px; 
-            color: #4a5568; 
-            text-transform: uppercase;
-        }
-
-        input { 
-            width: 100%; 
-            padding: 14px 16px; 
-            border: 2px solid #edf2f7; 
-            border-radius: 10px; 
-            box-sizing: border-box; 
-            font-size: 15px; 
-            transition: all 0.3s ease;
-            background: #f8fafc;
-            color: #2d3748;
-        }
-
-        input:focus {
-            border-color: #002e5d;
-            background-color: #ffffff;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(0, 46, 93, 0.1);
-        }
-
-        /* 🔐 Security Captcha Styling */
-        .captcha-container { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            margin-bottom: 25px; 
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .captcha-box { 
-            background: #1a202c; 
-            padding: 12px; 
-            font-weight: bold; 
-            letter-spacing: 5px; 
-            border-radius: 8px;
-            flex: 1.5; 
-            text-align: center; 
-            color: #38bdf8; 
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 24px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .refresh-btn {
-            background: #4a5568;
-            color: white;
-            border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.4s ease;
-            font-size: 20px;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 12px;
         }
 
-        .refresh-btn:hover {
-            background: #2d3748;
-            transform: rotate(180deg);
+        .card-header img {
+            width: 45px; /* Graduation cap icon size */
         }
 
-        /* 🚀 Action Button */
-        button[onclick="checkStatus()"] { 
+        .card-header span {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a4a8e; /* Blue shade from image */
+            text-transform: uppercase;
+        }
+
+        /* Form Labels matching the screenshot */
+        label { 
+            font-size: 14px; 
+            font-weight: 700; 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #444; 
+            text-transform: uppercase;
+        }
+
+        /* Input field with blue focus border */
+        input[type="text"] { 
             width: 100%; 
-            padding: 16px; 
-            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+            padding: 12px 15px; 
+            border: 2px solid #ccc; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        /* Class & Year Row */
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .row div { flex: 1; }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f1f3f5;
+            cursor: pointer;
+        }
+
+        /* Captcha Section matching the screenshot */
+        .captcha-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .captcha-box { 
+            background: #ffffff; 
+            border: 1px solid #000;
+            padding: 10px 25px; 
+            font-style: italic;
+            font-weight: bold; 
+            letter-spacing: 8px; 
+            font-size: 24px;
+            color: #000;
+            user-select: none;
+        }
+
+        .refresh-btn {
+            background: #ff9800; /* Orange refresh button */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Green Submit Button from Image */
+        .btn-submit { 
+            width: 100%; 
+            padding: 15px; 
+            background-color: #5cb85c; 
             color: white; 
             border: none; 
-            border-radius: 10px; 
+            border-radius: 8px; 
             cursor: pointer; 
-            font-size: 16px; 
-            font-weight: 700; 
+            font-size: 18px; 
+            font-weight: bold; 
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(39, 174, 96, 0.3);
+            transition: 0.3s;
+            margin-top: 10px;
         }
 
-        button[onclick="checkStatus()"]:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(39, 174, 96, 0.4);
-            filter: brightness(1.1);
+        .btn-submit:hover { 
+            background-color: #4cae4c;
         }
 
-        #result { 
-            margin-top: 20px; 
-            text-align: center; 
-            font-size: 14px;
-            font-weight: 600;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .footer-text {
+        .footer-copy {
             text-align: center;
-            font-size: 11px;
-            color: #94a3b8;
-            padding: 20px;
-            border-top: 1px solid #f1f5f9;
-            background: #f8fafc;
+            font-size: 12px;
+            color: #777;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
         }
-
-        /* Status Colors */
-        .badge { padding: 4px 10px; border-radius: 20px; color: white; font-weight: bold; font-size: 11px; }
-        .bg-red { background: #ef4444; }
-        .bg-green { background: #10b981; }
-        .bg-yellow { background: #f59e0b; color: white; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <div class="card-header">
-        <span class="topi-icon">🎓</span>
-        <span>Search Marksheet Status</span>
+        <span style="font-size: 40px;">🎓</span>
+        <span>Marksheet Correction</span>
     </div>
-
+    
     <div class="form-body">
         <div class="input-group">
             <label>Application Number</label>
