@@ -3,27 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Application Receipt System | Search</title>
+<title>Student Portal | Search</title>
 
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f9;
+    background-color: #ffffff; /* बैकग्राउंड पूरी तरह सफ़ेद */
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 30px;
+    padding-top: 50px;
     height: 100vh;
     margin: 0;
   }
 
-  /* मुख्य बॉक्स - जैसा आपने माँगा */
+  /* मुख्य बॉक्स - बॉर्डर वाला डिज़ाइन जैसा आपने माँगा */
   .main-box {
     background: white;
     width: 95%;
     max-width: 600px;
     padding: 40px;
-    border: 3px solid #1e5ba3; 
+    border: 3px solid #1e5ba3; /* गहरा नीला बॉर्डर */
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     border-radius: 4px;
     text-align: center;
@@ -42,15 +42,16 @@
     margin: 0;
     font-size: 26px;
     font-weight: bold;
+    text-transform: uppercase;
   }
 
+  /* इनपुट ग्रुप */
   .input-group {
     margin-bottom: 25px;
   }
 
-  /* इनपुट फील्ड्स स्टाइल */
   input[type="text"] {
-    width: 80%;
+    width: 85%;
     padding: 14px 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -66,7 +67,7 @@
     box-shadow: 0 0 8px rgba(30,91,163,0.2);
   }
 
-  /* कैप्चा कंटेनर */
+  /* कैप्चा सेक्शन */
   .captcha-container {
     display: flex;
     justify-content: center;
@@ -84,13 +85,13 @@
     letter-spacing: 5px;
     border-radius: 6px;
     user-select: none;
-    min-width: 120px;
+    min-width: 130px;
     font-style: italic;
     text-decoration: line-through;
   }
 
   .btn-refresh {
-    background: #ff9800; 
+    background: #ff9800; /* ऑरेंज रिफ्रेश बटन */
     color: white;
     border: none;
     padding: 12px 18px;
@@ -104,7 +105,7 @@
   }
 
   .captcha-input-box {
-    width: 60%;
+    width: 65%;
     margin: 0 auto 30px;
   }
 
@@ -114,7 +115,7 @@
     background-color: #fff;
   }
 
-  /* सबमिट बटन - हरा रंग जैसा आपके डिजाइन में था */
+  /* सबमिट बटन - हरा रंग */
   .btn-submit {
     background: #4caf50; 
     color: white;
@@ -125,6 +126,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
+    text-transform: uppercase;
   }
 
   .btn-submit:hover {
@@ -138,24 +140,25 @@
 <div class="main-box">
   <div class="title-section">
     <span>🎓</span>
-    <h2> Student Portal Search </h2>
+    <h2> Student Portal </h2>
   </div>
 
-  <!-- डेटा फील्ड्स: Application Number और Roll Number -->
+  <!-- इनपुट फ़ील्ड्स (Data वही है) -->
   <div class="input-group">
-    <input type="text" id="appNo" placeholder="Application Number (Eg: APP-2024-001)">
+    <input type="text" id="appNo" placeholder="Application Number">
   </div>
 
   <div class="input-group">
-    <input type="text" id="rollNo" placeholder="Roll Number (Eg: 12345678)">
+    <input type="text" id="rollNo" placeholder="Roll Number">
   </div>
 
-  <!-- कैप्चा सेक्शन -->
+  <!-- कैप्चा एरिया -->
   <div class="captcha-container">
-    <div id="captcha">लोड हो रहा है...</div>
+    <div id="captcha">...</div>
     <button class="btn-refresh" onclick="generateCaptcha()">🔄 Refresh</button>
   </div>
 
+  <!-- कैप्चा इनपुट -->
   <div class="captcha-input-box">
     <input type="text" id="capInput" placeholder="Enter Captcha Code">
   </div>
@@ -166,7 +169,7 @@
 <script>
 let currentCap = "";
 
-// कैप्चा बनाने का फंक्शन
+// कैप्चा जनरेट करने का फंक्शन
 function generateCaptcha() {
     const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
     currentCap = "";
@@ -177,7 +180,7 @@ function generateCaptcha() {
     document.getElementById("capInput").value = "";
 }
 
-// सर्च हैंडल करना
+// सर्च हैंडलर
 function handleSearch() {
     const app = document.getElementById("appNo").value.trim();
     const roll = document.getElementById("rollNo").value.trim();
@@ -194,12 +197,12 @@ function handleSearch() {
         return;
     }
 
-    // डेटा को URL के साथ जोड़कर भेजना
+    // रिजल्ट पेज पर भेजना
     const url = "marksheetrecipt.html?app=" + encodeURIComponent(app) + "&roll=" + encodeURIComponent(roll);
     window.open(url, "_blank");
 }
 
-// पेज लोड होते ही कैप्चा दिखाएँ
+// पेज लोड होते ही कैप्चा लोड करें
 window.onload = generateCaptcha;
 </script>
 
