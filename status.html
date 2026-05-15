@@ -77,24 +77,25 @@
             outline: none;
         }
 
-        /* Class & Year Row */
+      /* Application No aur Roll No ko side-by-side rakhne ke liye */
         .row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
+        display: flex;
+        gap: 15px;
+        margin-bottom: 5px; /* Margin thoda kam kiya hai layout set karne ke liye */
         }
 
-        .row div { flex: 1; }
-
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            background-color: #f1f3f5;
-            cursor: pointer;
+        /* Dono boxes barabar space lein */
+        .row .input-group { 
+        flex: 1; 
         }
 
+        /* Responsive: Mobile par ye wapas upar-neeche ho jayenge */
+        @media (max-width: 480px) {
+        .row {
+        flex-direction: column;
+        gap: 0;
+        }
+    }
         /* Captcha Section matching the screenshot */
         .captcha-area {
             display: flex;
@@ -166,32 +167,34 @@
         <span>Marksheet Correction Status </span>
     </div>
     
-    <div class="form-body">
+<div class="form-body">
+    <div class="row">
         <div class="input-group">
             <label>Application Number</label>
-            <input type="text" id="appNo" placeholder="Enter Application Number APP-2026-000">
+            <input type="text" id="appNo" placeholder="APP-2026-000">
         </div>
         
         <div class="input-group">
             <label>Roll Number</label>
-            <input type="text" id="rollNo" placeholder="Enter Students Valid Roll No.">
+            <input type="text" id="rollNo" placeholder="Roll No.">
         </div>
-        
-<label>Captcha Code</label>
-        <div class="captcha-area">
-            <div class="captcha-box" id="captchaVal">BFIPAW</div>
-            <button type="button" class="refresh-btn" onclick="generateCaptcha()">
-                🔄 Refresh
-            </button>
-        </div>
-
-        <input type="text" id="userCaptcha" placeholder="Enter code">
-
-        <button class="btn-submit" onclick="checkStatus()">Submit Request</button>
-        
-        <p id="result"></p>
+    </div>
+    
+    <label>Captcha Code</label>
+    <div class="captcha-area">
+        <div class="captcha-box" id="captchaVal">BFIPAW</div>
+        <button type="button" class="refresh-btn" onclick="generateCaptcha()">
+            🔄 Refresh
+        </button>
     </div>
 
+    <input type="text" id="userCaptcha" placeholder="Enter code">
+
+    <button class="btn-submit" onclick="checkStatus()">Submit Request</button>
+    
+    <p id="result" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
+</div>
+    
     <div class="footer-copy">
         © 2026 Marksheet Portal
     </div>
