@@ -29,15 +29,18 @@
             max-width: 450px; 
             text-align: center;
         }
-          
-            header-box {
-            margin-bottom: 10px; /* हेडर और इनपुट के बीच जगह */
+          /* टोपी और हेडिंग को एक लाइन में लाने के लिए */
+            .header-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* टोपी और टेक्स्ट के बीच की दूरी */
+            margin-bottom: 20px;
         }
 
-           .header-box span {
-            font-size: 25px; /* टोपी का साइज */
-            display: block;
-            margin-bottom: 5px;
+            .header-box span {
+            font-size: 30px; /* टोपी का साइज */
+            display: inline-block;
         }
 
         
@@ -124,12 +127,10 @@
 
 <body onload="generateCaptcha()">
 
-<div class="search-container">
-    <!-- पुराना span और title-section हटाकर इसे डालें -->
-    <div class="header-box">
-        <span>🎓</span>
-        <h2> Marksheet Correction </h2>
-    </div>
+<div class="header-box">
+    <span>🎓</span>
+    <h2>Marksheet Correction</h2>
+</div>
 
     <div class="input-group">
         <label>Roll Number</label>
