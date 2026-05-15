@@ -464,20 +464,31 @@ input[type="file"]#photo {
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
 
     window.onload = function () {
-        generateCaptcha();
-        const urlParams = new URLSearchParams(window.location.search);
-        const rollNo = urlParams.get('roll');
-        const studentClass = urlParams.get('class');
-        const academicYear = urlParams.get('year');
-        
-        if (rollNo && studentClass && academicYear) {
-            document.getElementById("roll").value = rollNo;
-            window.searchClass = studentClass;
-            window.searchYear = academicYear;
-            fetchStudentDetails(rollNo, studentClass, academicYear);
-        }
-    };
+    generateCaptcha(); // Captcha generate karein
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const rollNo = urlParams.get('roll');
+    const studentClass = urlParams.get('class');
+    const academicYear = urlParams.get('year');
+    const appNo = urlParams.get('app'); // Agar appNo bhi URL se aa raha hai
 
+    if (rollNo && studentClass && academicYear) {
+        // 1. Inputs fill karein
+        document.getElementById("roll").value = rollNo;
+        
+        // 2. Global variables set karein (jo submitData use karega)
+        window.searchClass = studentClass;
+        window.searchYear = academicYear;
+        
+        // Agar appNo URL mein hai toh use set karein, warna roll number ko hi appNo maane
+        window.appNo = appNo || rollNo; 
+
+        // 3. AUTO-FETCH: Button dabane ki zaroorat nahi
+        console.log("Auto-fetching details for Roll:", rollNo);
+        fetchStudentDetails(rollNo, studentClass, academicYear);
+    }
+};
+    
 function manualSearch() {
     const rollInput = document.getElementById("roll");
     const roll = rollInput.value.trim();
