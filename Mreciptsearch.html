@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Student Portal | Search</title>
+    <title>Application Receipt System | Search</title>
     <style>
         :root {
             --primary: #004e92;
             --accent: #ff9933;
-            --bg: #ffffff; /* यहाँ बैकग्राउंड सफ़ेद किया गया है */
+            --bg: #ffffff;
             --white: #ffffff;
             --text: #333;
         }
 
         body {
             font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background-color: var(--bg); /* बैकग्राउंड अब पूरी तरह सफ़ेद है */
+            background-color: var(--bg);
             height: 100vh;
             margin: 0;
             display: flex;
@@ -24,12 +24,11 @@
             color: var(--text);
         }
 
-        /* कार्ड का डिजाइन */
+        /* कार्ड का डिजाइन - Student Portal स्टाइल */
         .search-card {
             background: #ffffff;
             padding: 40px;
             border-radius: 20px;
-            /* सफ़ेद बैकग्राउंड पर कार्ड दिखने के लिए शैडो और हल्का बॉर्डर */
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             border: 1px solid #eee;
             width: 100%;
@@ -44,6 +43,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ऊपर की नीली/नारंगी पट्टी */
         .search-card::before {
             content: '';
             position: absolute;
@@ -61,7 +61,8 @@
             margin: 0;
             color: var(--primary);
             letter-spacing: 1px;
-            font-size: 26px;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .header-box p {
@@ -89,7 +90,7 @@
             border: 2px solid #e1e1e1;
             border-radius: 10px;
             outline: none;
-            font-size: 15px;
+            font-size: 16px;
             transition: all 0.3s ease;
             box-sizing: border-box;
         }
@@ -115,7 +116,7 @@
             margin-bottom: 10px;
         }
 
-        #captcha-box {
+        #captcha {
             background: #fff;
             padding: 8px 20px;
             font-size: 22px;
@@ -171,68 +172,67 @@
 
 <div class="search-card">
     <div class="header-box">
-        <h2>STUDENT PORTAL</h2>
-        <p>अपनी मार्कशीट या रसीद डाउनलोड करें</p>
+        <h2>SEARCH APPLICATION</h2>
+        <p>अपनी जानकारी सुरक्षित रूप से खोजें</p>
     </div>
 
+    <!-- डेटा वही है: mobile1 -->
     <div class="input-group">
-        <label>Application Number</label>
-        <input type="text" id="appNo" placeholder="Eg: APP-2024-001">
-    </div>
-
-    <div class="input-group">
-        <label>Roll Number</label>
-        <input type="text" id="rollNo" placeholder="Eg: 12345678">
+        <label>Registered Mobile Number</label>
+        <input type="text" id="mobile1" placeholder="Registered Mobile Number" maxlength="10" inputmode="numeric">
     </div>
 
     <div class="captcha-wrapper">
         <div class="captcha-row">
-            <div id="captcha-box">लोड हो रहा है...</div>
+            <div id="captcha">...</div>
             <button class="refresh-btn" onclick="generateCaptcha()" title="Reload Captcha">↻</button>
         </div>
-        <input type="text" id="capInput" placeholder="ऊपर दिया गया कोड भरें" style="width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; box-sizing: border-box;">
+        <input type="text" id="captchaInput" placeholder="Enter Captcha Code" style="width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; box-sizing: border-box; outline: none;">
     </div>
 
-    <button class="btn-submit" onclick="handleSearch()">SEARCH DATA</button>
+    <button class="btn-submit" onclick="searchData()">SUBMIT</button>
 </div>
 
 <script>
-    let currentCap = "";
+let currentCaptcha = "";
 
-    // कैप्चा बनाना
-    function generateCaptcha() {
-        const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-        currentCap = "";
-        for(let i=0; i<5; i++) {
-            currentCap += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        document.getElementById("captcha-box").innerText = currentCap;
-    }
+// कैप्चा जनरेट करने का वही फंक्शन
+function generateCaptcha(){
+  let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  currentCaptcha = "";
+  for(let i=0; i<6; i++){
+    currentCaptcha += chars[Math.floor(Math.random()*chars.length)];
+  }
+  document.getElementById("captcha").innerText = currentCaptcha;
+  document.getElementById("captchaInput").value = "";
+}
 
-    // पेज लोड होते ही कैप्चा जनरेट करें
-    window.onload = generateCaptcha;
+// डेटा सर्च लॉजिक - बिल्कुल वही जो आपने दिया था
+function searchData(){
+  let mobile = document.getElementById("mobile1").value.trim();
+  let captchaInput = document.getElementById("captchaInput").value.trim();
 
-    // सर्च हैंडल करना
-    function handleSearch() {
-        const app = document.getElementById("appNo").value.trim();
-        const roll = document.getElementById("rollNo").value.trim();
-        const input = document.getElementById("capInput").value.trim().toUpperCase();
+  if(mobile.length !== 10 || isNaN(mobile)){
+    alert("कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें।");
+    return;
+  }
 
-        if (!app || !roll) {
-            alert("कृपया सभी विवरण भरें!");
-            return;
-        }
+  if(captchaInput === ""){
+    alert("कृपया कैप्चा कोड दर्ज करें।");
+    return;
+  }
 
-        if (input !== currentCap) {
-            alert("कैप्चा कोड गलत है!");
-            generateCaptcha();
-            document.getElementById("capInput").value = "";
-            return;
-        }
+  if(captchaInput.toUpperCase() !== currentCaptcha.toUpperCase()){
+    alert("कैप्चा कोड गलत है।");
+    generateCaptcha();
+    return;
+  }
 
-        const url = "marksheetrecipt.html?app=" + encodeURIComponent(app) + "&roll=" + encodeURIComponent(roll);
-        window.open(url, "_blank");
-    }
+  // वही URL: Listbox.html?mobile1=
+  window.location.href = "Listbox.html?mobile1=" + encodeURIComponent(mobile);
+}
+
+window.onload = generateCaptcha;
 </script>
 
 </body>
