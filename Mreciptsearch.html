@@ -222,66 +222,26 @@
     }
 
     // सर्च हैंडल करना
-    function handleSearch() {
+function handleSearch() {
     const app = document.getElementById("appNo").value.trim();
     const roll = document.getElementById("rollNo").value.trim();
     const input = document.getElementById("capInput").value.trim().toUpperCase();
-    const box = document.getElementById("msg-box");
 
-    // 1. बेसिक वैलिडेशन
     if (!app || !roll) {
-        showMessage("error", "कृपया Application और Roll Number दोनों भरें।");
+        alert("कृपया सभी विवरण भरें!");
         return;
     }
 
-    // 2. कैप्चा वैलिडेशन
     if (input !== currentCap) {
-        showMessage("error", "कैप्चा कोड गलत है! कृपया पुनः प्रयास करें।");
+        alert("कैप्चा कोड गलत है!");
         generateCaptcha();
-        document.getElementById("capInput").value = "";
         return;
     }
 
-    // 3. लोडिंग मैसेज दिखाएँ
-    showMessage("loading", "सर्वर से डेटा खोजा जा रहा है, कृपया प्रतीक्षा करें...");
-
-    // 4. Google Apps Script के जरिए डेटा सर्च करें
-    google.script.run
-        .withSuccessHandler(function(studentData) {
-            if (studentData) {
-                // अगर डेटा मिल गया, तो मैसेज छुपाएं
-                box.style.display = "none";
-                
-                // रसीद वाला पेज (marksheetrecipt.html) नए टैब में खोलें
-                // हम डेटा को 'studentData' के रूप में भेज रहे हैं
-                openReceiptPage(studentData, app);
-            } else {
-                showMessage("error", "कोई रिकॉर्ड नहीं मिला। कृपया अपना विवरण जांचें।");
-                generateCaptcha();
-            }
-        })
-        .withFailureHandler(function(err) {
-            showMessage("error", "सर्वर एरर: " + err.message);
-        })
-        .fetchStudentData(app, roll); // यह फंक्शन आपके Code.gs में होना चाहिए
-}
-
-// रसीद पेज खोलने का फंक्शन
-function openReceiptPage(data, appNo) {
-    // अपनी वेब ऐप का URL यहाँ प्राप्त करें (doGet के माध्यम से)
-    google.script.run.withSuccessHandler(function(url) {
-        // URL पैरामीटर्स के साथ रसीद वाला पेज खोलें
-        // ?page=receipt आपके doGet फंक्शन को बताएगा कि रसीद वाला पेज खोलना है
-        const finalUrl = url + "?page=receipt&appNo=" + appNo + "&rollNo=" + data.rollNumber;
-        window.open(finalUrl, '_blank');
-    }).getScriptUrl(); 
-}
-
-function showMessage(type, text) {
-    const box = document.getElementById("msg-box");
-    box.innerText = text;
-    box.className = type; // CSS classes: error, loading
-    box.style.display = "block";
+    // डेटा को URL के साथ जोड़कर दूसरी फाइल खोलना
+    // मान लें आपकी फाइल का नाम 'marksheetrecipt.html' है
+    const url = "marksheetrecipt.html?app=" + encodeURIComponent(app) + "&roll=" + encodeURIComponent(roll);
+    window.open(url, "_blank");
 }
 </script>
 
