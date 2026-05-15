@@ -134,47 +134,56 @@
     window.onload = function() {
         const params = new URLSearchParams(window.location.search);
         
-        // बुनियादी विवरण भरना
+        // 1. Basic Static Details
         document.getElementById("disp-app").innerText = params.get('app') || '-';
         document.getElementById("disp-roll").innerText = params.get('roll') || '-';
         document.getElementById("disp-session").innerText = params.get('year') || '-';
         document.getElementById("disp-mobile").innerText = params.get('mobile') || 'N/A';
         document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
 
-        // सुधार वाले क्षेत्रों की मैपिंग (Old vs New)
+        // 2. Correction Fields Mapping (Saari Fields Yahan Hain)
+        // Format: { label: "Hindi Name", old: "URL_Param_Old", new: "URL_Param_New" }
         const fields = [
-            { label: "छात्र का नाम", old: params.get('old_name'), new: params.get('new_name') },
-            { label: "पिता का नाम", old: params.get('old_father'), new: params.get('new_father') },
-            { label: "माता का नाम", old: params.get('old_mother'), new: params.get('new_mother') },
-            { label: "जन्म तिथि (DOB)", old: params.get('old_dob'), new: params.get('new_dob') },
-            { label: "कक्षा (Class)", old: params.get('old_class'), new: params.get('new_class') }
+            { label: "छात्र का नाम (Student Name)", old: params.get('old_name'), new: params.get('new_name') },
+            { label: "पिता का नाम (Father's Name)", old: params.get('old_father'), new: params.get('new_father') },
+            { label: "माता का नाम (Mother's Name)", old: params.get('old_mother'), new: params.get('new_mother') },
+            { label: "जन्म तिथि (Date of Birth)", old: params.get('old_dob'), new: params.get('new_dob') },
+            { label: "कक्षा (Class)", old: params.get('old_class'), new: params.get('new_class') },
+            { label: "लिंग (Gender)", old: params.get('old_gender'), new: params.get('new_gender') },
+            { label: "माध्यम (Medium)", old: params.get('old_medium'), new: params.get('new_medium') },
+            { label: "श्रेणी (Category)", old: params.get('old_category'), new: params.get('new_category') },
+            { label: "समग्र आईडी (Samagra ID)", old: params.get('old_samagra'), new: params.get('new_samagra') }
         ];
 
         const tbody = document.getElementById("correction-body");
+        tbody.innerHTML = ""; // Purana data saaf karne ke liye
+
         fields.forEach(f => {
-            if(f.new || f.old) { 
+            // Agar naya data (New) maujood hai, tabhi row dikhayein
+            if (f.new && f.new !== "undefined" && f.new !== "") { 
                 let row = `<tr>
                     <td>${f.label}</td>
-                    <td>${f.old || '-'}</td>
-                    <td class="new-data">${f.new || '-'}</td>
+                    <td>${f.old || 'रिकॉर्ड में उपलब्ध नहीं'}</td>
+                    <td class="new-data">${f.new}</td>
                 </tr>`;
                 tbody.innerHTML += row;
             }
         });
 
-        // अन्य विवरण भरना
-        document.getElementById("disp-samagra").innerText = params.get('samagra') || 'N/A';
-        document.getElementById("disp-gender").innerText = params.get('gender') || 'N/A';
-        document.getElementById("disp-category").innerText = params.get('category') || 'N/A';
-        document.getElementById("disp-medium").innerText = params.get('medium') || 'N/A';
-        document.getElementById("disp-reason").innerText = params.get('rejectReason') || 'लागू नहीं';
+        // 3. Status aur Info
+        document.getElementById("disp-info").innerText = params.get('info') || "अंकसूची में त्रुटि सुधार हेतु आवेदन प्रस्तुत किया गया।";
+        document.getElementById("disp-reason").innerText = params.get('rejectReason') || "लागू नहीं";
         
-        // फोटो लोड करना
+        // Status Badge Color Control
+        const status = params.get('status') || "Pending";
+        const statusBadge = document.getElementById("disp-status");
+        statusBadge.innerText = status === "Pending" ? "लंबित (Pending)" : status;
+
+        // 4. Photo Handling
         if(params.get('photo')) {
             document.getElementById("disp-photo").src = params.get('photo');
         }
     };
 </script>
-
 </body>
 </html>
