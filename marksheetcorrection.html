@@ -475,23 +475,28 @@
         const birthCertData = await getFileData('birthCert');
         const aadharData = await getFileData('aadhar');
 
+       // --- Is hisse ko update karein ---
         const formData = {
-            action: "processCorrection",
-            appNo: appNo, // Ye number backend pe jayega
-            roll: rollNo,
-            oldClass: window.searchClass,
-            oldYear: window.searchYear,
-            newName: getValIfEnabled("name"),
-            newFather: getValIfEnabled("father"),
-            newMother: getValIfEnabled("mother"),
-            newDob: getValIfEnabled("dob"),
-            newClass: getValIfEnabled("class"),
-            newMedium: getValIfEnabled("medium"),
-            newCategory: getValIfEnabled("category"),
-            photo: photoData,
-            birthCert: birthCertData,
-            aadhar: aadharData
-        };
+        action: "processCorrection",
+        appNo: appNo,
+        roll: rollNo,
+        oldClass: window.searchClass,
+        oldYear: window.searchYear,
+        newName: getValIfEnabled("name"),
+        newFather: getValIfEnabled("father"),
+        newMother: getValIfEnabled("mother"),
+        newDob: getValIfEnabled("dob"),
+        newClass: getValIfEnabled("class"),
+        newMedium: getValIfEnabled("medium"),
+        newCategory: getValIfEnabled("category"),
+    
+    // ⬇️ YE NAYI LINE ADD KAREIN
+    newMobile: getValIfEnabled("mobile"), 
+    
+    photo: photoData,
+    birthCert: birthCertData,
+    aadhar: aadharData
+};
 
         await fetch(WEB_APP_URL, {
             method: "POST",
