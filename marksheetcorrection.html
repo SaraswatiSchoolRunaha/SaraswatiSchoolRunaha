@@ -231,15 +231,20 @@ input[type="file"]#photo {
         <h2>Marksheet Correction Portal</h2>
     </div>
 
-    <div class="content">
-       <div class="roll-section">
-    <label>ROLL NUMBER:</label>
-    <input type="text" id="roll" placeholder="Enter Roll No">
-    <!-- Naya Search Button -->
-    <button onclick="manualSearch()" style="background:#003366; color:white; border:none; padding:5px 15px; border-radius:4px; cursor:pointer;">SEARCH</button>
-       </div>
+   <div class="content">
+    <!-- Updated Roll Section with proper closing and styling -->
+    <div class="roll-section">
+        <label>ROLL NUMBER:</label>
+        <input type="text" id="roll" placeholder="Enter Roll No">
         
-        <div class="section-title">Correction Details (Compare & Edit)</div>
+        <!-- Naya Search Button with better padding and font -->
+        <button type="button" onclick="manualSearch()" style="background:#003366; color:white; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:600; transition: 0.3s;">
+            🔍 SEARCH
+        </button>
+    </div>
+    
+    <div class="section-title">Correction Details (Compare & Edit)</div>
+    <!-- Iske niche aapki table shuru hogi -->
         
 <table class="comparison-table">
     <thead>
@@ -436,17 +441,21 @@ input[type="file"]#photo {
     };
 
 function manualSearch() {
-    const roll = document.getElementById("roll").value.trim();
+    const rollInput = document.getElementById("roll");
+    const roll = rollInput.value.trim();
     
-    // Agar user ne niche dropdown se koi nayi class select ki hai, to wahi uthayega
+    // Dropdown se class uthayega, nahi toh URL wali, nahi toh default 10th
     const selectedClass = document.getElementById("class").value;
     const sClass = selectedClass || window.searchClass || "10th"; 
     const year = window.searchYear || "2024";
 
     if(roll) {
+        // User ko batane ke liye ki search ho raha hai
+        console.log("Searching for:", roll, sClass, year);
         fetchStudentDetails(roll, sClass, year);
     } else {
         alert("Please enter a Roll Number");
+        rollInput.focus();
     }
 }
 
