@@ -361,7 +361,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>App No.</th><th>Roll No.</th><th>Student Name</th><th>Father's Name</th><th>Mother's Name</th>
+                            <th>App No.</th><th>Roll No.</th><th>Mobile Numberth><th>Student Name</th><th>Father's Name</th><th>Mother's Name</th>
                             <th>DOB</th><th>Session</th><th>Class</th><th>Medium</th><th>Category</th><th>Photo</th>
                             <th>Status</th><th>Correction Info</th><th>Remarks</th>
                         </tr>
@@ -369,7 +369,7 @@
                     <tbody>
                         <tr>
                             <td><strong>${appNo}</strong></td>
-                            <td>${s.roll || '-'}</td><td>${s.name || '-'}</td><td>${s.father || '-'}</td><td>${s.mother || '-'}</td>
+                            <td>${s.roll || '-'}</td><td>${s.mobile || '-'}</td><td>${s.name || '-'}</td><td>${s.father || '-'}</td><td>${s.mother || '-'}</td>
                             <td>${s.dob || '-'}</td><td>${s.session || '-'}</td><td>${s.class || '-'}</td><td>${s.medium || '-'}</td>
                             <td>${s.category || '-'}</td><td><img src="${s.photoUrl || ''}" class="student-img" onerror="this.src='https://via.placeholder.com/50?text=No+Photo'"></td>
                             <td><span class="badge ${statusClass}">${currentStatus}</span></td><td>${s.correction || '-'}</td><td style="color:red;">${s.rejectReason || '-'}</td>
