@@ -29,30 +29,26 @@
             max-width: 450px; 
             text-align: center;
         }
-          /* टोपी और हेडिंग को एक लाइन में लाने के लिए */
+          /* इसे style टैग के अंदर अपडेट करें */
             .header-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px; /* टोपी और टेक्स्ट के बीच की दूरी */
-            margin-bottom: 20px;
+            display: flex;            /* टोपी को बगल में लाने के लिए */
+            align-items: center;      /* टोपी और टेक्स्ट को ऊपर-नीचे से बराबर करने के लिए */
+            justify-content: center;  /* दोनों को सेंटर में रखने के लिए */
+            gap: 12px;                /* टोपी और टेक्स्ट के बीच गैप */
+            margin-bottom: 25px;      /* नीचे वाले बॉक्स से दूरी */
         }
 
             .header-box span {
-            font-size: 30px; /* टोपी का साइज */
-            display: inline-block;
+            font-size: 32px;          /* टोपी का साइज */
         }
 
-        
-        h2 { 
+            h2 { 
             color: #1e5ba3; 
-            text-align: center; 
-            margin-bottom: 30px; 
             font-weight: 600; 
             text-transform: uppercase; 
-            font-size: 1.4rem; 
+            font-size: 1.3rem;
+            margin: 0;                /* एक्स्ट्रा मार्जिन हटा दें */
         }
-
         .input-group { margin-bottom: 18px; text-align: left; }
 
         label { 
