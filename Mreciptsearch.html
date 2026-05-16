@@ -202,8 +202,24 @@ function handleSearch() {
     window.open(url, "_blank");
 }
 
-// पेज लोड होते ही कैप्चा लोड करें
-window.onload = generateCaptcha;
+// पेज लोड होते ही कैप्चा लोड करें और URL से डेटा फेच करें
+window.onload = function() {
+    generateCaptcha(); // कैप्चा जनरेट करें
+    
+    // URL से app और roll नंबर निकालने के लिए
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlApp = urlParams.get('app');
+    const urlRoll = urlParams.get('roll');
+    
+    // अगर URL में डेटा मौजूद है, तो इनपुट बॉक्स में भर दें
+    if (urlApp) {
+        document.getElementById("appNo").value = urlApp;
+    }
+    if (urlRoll) {
+        document.getElementById("rollNo").value = urlRoll;
+    }
+};
+  
 </script>
 
 </body>
