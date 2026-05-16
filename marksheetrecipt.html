@@ -109,115 +109,164 @@
             document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
 
             const urlParams = new URLSearchParams(window.location.search);
+            const roll = urlParams.get('roll');
+            const appNo = urlParams.get('appNo') || urlParams.get('app');
             
-            if (!urlParams.has('roll') && !urlParams.has('appNo') && !urlParams.has('app')) {
+            if (!roll && !appNo) {
                 document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>URL में कोई डेटा नहीं मिला। कृपया पोर्टल से सही लिंक ओपन करें।</td></tr>";
                 return;
             }
 
-            // दोनों सिस्टम (Submit Form और Status Check) के वैरियेबल्स को एक साथ संभालना
-            const s = {
-                appNo: urlParams.get('appNo') || urlParams.get('app') || "---",
-                roll: urlParams.get('roll') || "---",
-                year: urlParams.get('year') || urlParams.get('session') || "---",
-                mobile: urlParams.get('mobile') || "---",
-                info: urlParams.get('info') || urlParams.get('correction') || "मार्कशीट सुधार अनुरोध दर्ज किया गया।",
-                rejectReason: urlParams.get('rejectReason') || "---",
-                status: urlParams.get('status') || urlParams.get('appStatus') || "Pending",
-                
-                // पुराना डेटा
-                name: urlParams.get('name') || "---",
-                father: urlParams.get('father') || "---",
-                mother: urlParams.get('mother') || "---",
-                dob: urlParams.get('dob') || "---",
-                class: urlParams.get('class') || "---",
-                medium: urlParams.get('medium') || "---",
-                category: urlParams.get('category') || "---",
-                photoUrl: urlParams.get('photoUrl') || "",
-
-                // नया डेटा (सुधार फ़ील्ड्स)
-                newName: urlParams.get('newName') || urlParams.get('new_name') || "---",
-                newFather: urlParams.get('newFather') || urlParams.get('new_father') || "---",
-                newMother: urlParams.get('newMother') || urlParams.get('new_mother') || "---",
-                newDob: urlParams.get('newDob') || urlParams.get('new_dob') || "---",
-                newClass: urlParams.get('newClass') || urlParams.get('new_class') || "---",
-                newMedium: urlParams.get('newMedium') || urlParams.get('new_medium') || "---",
-                newCategory: urlParams.get('newCategory') || urlParams.get('new_category') || "---",
-                newPhoto: urlParams.get('newPhoto') || urlParams.get('photo') || ""
-            };
-
-            // बेसिक स्क्रीन इनफार्मेशन भरना
-            document.getElementById("res-app").innerText = s.appNo;
-            document.getElementById("res-roll").innerText = s.roll;
-            document.getElementById("res-year").innerText = s.year;
-            document.getElementById("res-mobile").innerText = s.mobile;
-            document.getElementById("res-info").innerText = s.info;
-            document.getElementById("res-reject").innerText = s.rejectReason;
-
-            // तालिका डेटा एरे लिस्ट
-            const fields = [
-                { label: "छात्र का नाम (Student Name)", old: s.name, new: s.newName, isPhoto: false },
-                { label: "पिता का नाम (Father's Name)", old: s.father, new: s.newFather, isPhoto: false },
-                { label: "माता का नाम (Mother's Name)", old: s.mother, new: s.newMother, isPhoto: false },
-                { label: "जन्म तिथि (Date of Birth)", old: s.dob, new: s.newDob, isPhoto: false },
-                { label: "कक्षा (Class)", old: s.class, new: s.newClass, isPhoto: false },
-                { label: "माध्यम (Medium)", old: s.medium, new: s.newMedium, isPhoto: false },
-                { label: "श्रेणी (Category)", old: s.category, new: s.newCategory, isPhoto: false },
-                { label: "छात्र का फोटो (Student Photo)", old: s.photoUrl, new: s.newPhoto, isPhoto: true }
-            ];
-
-            const tbody = document.getElementById("correction-body");
-            let tableRowsHtml = ""; 
-
-            fields.forEach(f => {
-                let displayOld = f.old;
-                let displayNew = f.new;
-
-                if (f.isPhoto) {
-                    const oldImg = f.old && f.old !== "---" && f.old !== "null" ? f.old : 'https://via.placeholder.com/90x110?text=No+Photo';
-                    const newImg = f.new && f.new !== "---" && f.new !== "null" ? f.new : oldImg;
-                    displayOld = `<img src="${oldImg}" class="receipt-photo" alt="Old">`;
-                    displayNew = `<img src="${newImg}" class="receipt-photo" alt="New">`;
-                }
-
-                // क्या इस फील्ड में बदलाव हुआ है?
-                const isUpdated = f.new !== "---" && f.new !== "null" && f.new !== f.old;
-                const newTdClass = (isUpdated && !f.isPhoto) ? 'new-data' : '';
-
-                tableRowsHtml += `<tr>
-                    <td>${f.label}</td>
-                    <td>${displayOld}</td>
-                    <td class="${newTdClass}">${displayNew}</td>
-                </tr>`;
-            });
-
-            tbody.innerHTML = tableRowsHtml;
-
-            // स्टेटस का रंग सेट करना
-            const status = s.status.toLowerCase();
-            const statusBadge = document.getElementById("disp-status");
-            
-            if(status.includes('approve') || status.includes('success') || status.includes('स्वीकृत')) {
-                statusBadge.innerText = "स्वीकृत (Approved)";
-                statusBadge.style.backgroundColor = '#28a745';
-                statusBadge.style.color = '#fff';
-            } else if(status.includes('reject') || status.includes('अस्वीकृत')) {
-                statusBadge.innerText = "अस्वीकृत (Rejected)";
-                statusBadge.style.backgroundColor = '#dc3545';
-                statusBadge.style.color = '#fff';
+            // चेक करें कि क्या पूरा डेटा सीधे URL में ही आ गया है (जैसे Option 1: Apply Form से आने पर)
+            if (urlParams.has('name') || urlParams.has('newName')) {
+                const s = {
+                    appNo: appNo || "---",
+                    roll: roll || "---",
+                    year: urlParams.get('year') || urlParams.get('session') || "---",
+                    mobile: urlParams.get('mobile') || "---",
+                    info: urlParams.get('info') || urlParams.get('correction') || "मार्कशीट सुधार अनुरोध दर्ज किया गया।",
+                    rejectReason: urlParams.get('rejectReason') || "---",
+                    status: urlParams.get('status') || urlParams.get('appStatus') || "Pending",
+                    name: urlParams.get('name') || "---",
+                    father: urlParams.get('father') || "---",
+                    mother: urlParams.get('mother') || "---",
+                    dob: urlParams.get('dob') || "---",
+                    class: urlParams.get('class') || "---",
+                    medium: urlParams.get('medium') || "---",
+                    category: urlParams.get('category') || "---",
+                    photoUrl: urlParams.get('photoUrl') || "",
+                    newName: urlParams.get('newName') || urlParams.get('new_name') || "---",
+                    newFather: urlParams.get('newFather') || urlParams.get('new_father') || "---",
+                    newMother: urlParams.get('newMother') || urlParams.get('new_mother') || "---",
+                    newDob: urlParams.get('newDob') || urlParams.get('new_dob') || "---",
+                    newClass: urlParams.get('newClass') || urlParams.get('new_class') || "---",
+                    newMedium: urlParams.get('newMedium') || urlParams.get('new_medium') || "---",
+                    newCategory: urlParams.get('newCategory') || urlParams.get('new_category') || "---",
+                    newPhoto: urlParams.get('newPhoto') || urlParams.get('photo') || ""
+                };
+                renderDataToUI(s);
             } else {
-                statusBadge.innerText = "लंबित (Pending)";
-                statusBadge.style.backgroundColor = '#ffc107';
-                statusBadge.style.color = '#000';
-            }
+                // यदि केवल roll और appNo आया है (Option 2: Download Receipt से आने पर)
+                // यहाँ अपने Google Apps Script Web App का URL पेस्ट करें
+                const scriptUrl = "YOUR_APPS_SCRIPT_WEB_APP_URL?roll=" + encodeURIComponent(roll) + "&app=" + encodeURIComponent(appNo);
 
-            // ऑटो-प्रिंट ट्रिगर
-            setTimeout(() => { window.print(); }, 1000);
+                fetch(scriptUrl)
+                .then(response => response.json())
+                .then(res => {
+                    if(res.status === "success") {
+                        const d = res.data; // गूगल शीट से आया हुआ लाइव डेटा
+                        
+                        const s = {
+                            appNo: d.appNo || appNo,
+                            roll: d.roll || roll,
+                            year: d.session || "---",
+                            mobile: d.mobile || "---",
+                            info: d.correction || "मार्कशीट सुधार अनुरोध दर्ज किया गया।",
+                            rejectReason: d.rejectReason || "---",
+                            status: d.appStatus || "Pending",
+                            name: d.name || "---",
+                            father: d.father || "---",
+                            mother: d.mother || "---",
+                            dob: d.dob || "---",
+                            class: d.class || "---",
+                            medium: d.medium || "---",
+                            category: d.category || "---",
+                            photoUrl: d.photoUrl || "",
+                            newName: d.newName || d.new_name || "---",
+                            newFather: d.newFather || d.new_father || "---",
+                            newMother: d.newMother || d.new_mother || "---",
+                            newDob: d.newDob || d.new_dob || "---",
+                            newClass: d.newClass || d.new_class || "---",
+                            newMedium: d.newMedium || d.new_medium || "---",
+                            newCategory: d.newCategory || d.new_category || "---",
+                            newPhoto: d.newPhoto || d.photo || ""
+                        };
+                        renderDataToUI(s);
+                    } else {
+                        document.getElementById("correction-body").innerHTML = `<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>त्रुटि: ${res.message || "डेटा नहीं मिला।"}</td></tr>`;
+                    }
+                })
+                .catch(err => {
+                    document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>सर्वर से कनेक्ट करने में त्रुटि हुई।</td></tr>";
+                    console.error(err);
+                });
+            }
 
         } catch (err) {
             console.error("URL Load Error: " + err.message);
         }
     };
+
+    // डेटा को टेबल और अन्य एलिमेंट्स में रेंडर करने का मुख्य फ़ंक्शन
+    function renderDataToUI(s) {
+        // बेसिक स्क्रीन इनफार्मेशन भरना
+        document.getElementById("res-app").innerText = s.appNo;
+        document.getElementById("res-roll").innerText = s.roll;
+        document.getElementById("res-year").innerText = s.year;
+        document.getElementById("res-mobile").innerText = s.mobile;
+        document.getElementById("res-info").innerText = s.info;
+        document.getElementById("res-reject").innerText = s.rejectReason;
+
+        // तालिका डेटा एरे लिस्ट (आपकी मूल संरचना के अनुसार)
+        const fields = [
+            { label: "छात्र का नाम (Student Name)", old: s.name, new: s.newName, isPhoto: false },
+            { label: "पिता का नाम (Father's Name)", old: s.father, new: s.newFather, isPhoto: false },
+            { label: "माता का नाम (Mother's Name)", old: s.mother, new: s.newMother, isPhoto: false },
+            { label: "जन्म तिथि (Date of Birth)", old: s.dob, new: s.newDob, isPhoto: false },
+            { label: "कक्षा (Class)", old: s.class, new: s.newClass, isPhoto: false },
+            { label: "माध्यम (Medium)", old: s.medium, new: s.newMedium, isPhoto: false },
+            { label: "श्रेणी (Category)", old: s.category, new: s.newCategory, isPhoto: false },
+            { label: "छात्र का फोटो (Student Photo)", old: s.photoUrl, new: s.newPhoto, isPhoto: true }
+        ];
+
+        const tbody = document.getElementById("correction-body");
+        let tableRowsHtml = ""; 
+
+        fields.forEach(f => {
+            let displayOld = f.old;
+            let displayNew = f.new;
+
+            if (f.isPhoto) {
+                const oldImg = f.old && f.old !== "---" && f.old !== "null" ? f.old : 'https://via.placeholder.com/90x110?text=No+Photo';
+                const newImg = f.new && f.new !== "---" && f.new !== "null" ? f.new : oldImg;
+                displayOld = `<img src="${oldImg}" class="receipt-photo" alt="Old">`;
+                displayNew = `<img src="${newImg}" class="receipt-photo" alt="New">`;
+            }
+
+            // क्या इस फील्ड में बदलाव हुआ है?
+            const isUpdated = f.new !== "---" && f.new !== "null" && f.new !== f.old;
+            const newTdClass = (isUpdated && !f.isPhoto) ? 'new-data' : '';
+
+            tableRowsHtml += `<tr>
+                <td>${f.label}</td>
+                <td>${displayOld}</td>
+                <td class="${newTdClass}">${displayNew}</td>
+            </tr>`;
+        });
+
+        tbody.innerHTML = tableRowsHtml;
+
+        // स्टेटस का रंग सेट करना
+        const status = s.status.toLowerCase();
+        const statusBadge = document.getElementById("disp-status");
+        
+        if(status.includes('approve') || status.includes('success') || status.includes('स्वीकृत')) {
+            statusBadge.innerText = "स्वीकृत (Approved)";
+            statusBadge.style.backgroundColor = '#28a745';
+            statusBadge.style.color = '#fff';
+        } else if(status.includes('reject') || status.includes('अस्वीकृत')) {
+            statusBadge.innerText = "अस्वीकृत (Rejected)";
+            statusBadge.style.backgroundColor = '#dc3545';
+            statusBadge.style.color = '#fff';
+        } else {
+            statusBadge.innerText = "लंबित (Pending)";
+            statusBadge.style.backgroundColor = '#ffc107';
+            statusBadge.style.color = '#000';
+        }
+
+        // ऑटो-प्रिंट ट्रिगर (डेटा लोड होने के 1 सेकंड बाद)
+        setTimeout(() => { window.print(); }, 1000);
+    }
 </script>
 </body>
 </html>
