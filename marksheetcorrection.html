@@ -619,24 +619,24 @@ function manualSearch() {
                 body: JSON.stringify(formData)
             });
 
-           // 6. Success Display (यहाँ बदलें)
-        document.querySelector(".content").innerHTML = `
-    <div style="text-align:center; padding:40px;">
-        <h2 style="color:#28a745;">✅ आवेदन सफल!</h2>
-        <p>आपका आवेदन नंबर (Application No) सुरक्षित कर लें:</p>
-        <h1 style="color:#003366; background:#eef2f7; padding:15px; border-radius:8px; border:2px dashed #003366;">${appNo}</h1>
-        <p style="color:#666; margin-bottom: 20px;">इसे नोट कर लें, सुधार की स्थिति जांचने के लिए इसकी आवश्यकता होगी।</p>
-        
-        <!-- नया प्रिंट बटन -->
-        <button onclick="window.location.href='marksheetreceipt.html?app=' + encodeURIComponent('${appNo}') + '&roll=' + encodeURIComponent('${rollNo}')" 
-                style="padding:10px 20px; background:#28a745; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold; margin-right:10px;">
-            🖨️ PRINT RECEIPT
-        </button>
-        
-        <!-- आपका पुराना बटन -->
-        <button onclick="location.reload()" style="padding:10px 20px; background:#003366; color:white; border:none; border-radius:4px; cursor:pointer;">नया आवेदन करें</button>
-    </div>
-`;
+          // Success UI Display Fix
+            document.querySelector(".content").innerHTML = `
+                <div style="text-align:center; padding:40px;">
+                    <h2 style="color:#28a745;">✅ आवेदन सफल!</h2>
+                    <p>आपका आवेदन नंबर (Application No) सुरक्षित कर लें:</p>
+                    <h1 style="color:#003366; background:#eef2f7; padding:15px; border-radius:8px; border:2px dashed #003366;">${appNo}</h1>
+                    <p style="color:#666; margin-bottom: 20px;">इसे नोट कर लें, सुधार की स्थिति जांचने के लिए इसकी आवश्यकता होगी।</p>
+                    
+                    <!-- प्रिंट रसीद बटन -->
+                    <button onclick="window.location.href='marksheetreceipt.html?app=' + encodeURIComponent('${appNo}') + '&roll=' + encodeURIComponent('${rollNo}')" 
+                            style="padding:10px 20px; background:#28a745; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold; margin-right:10px;">
+                        🖨️ PRINT RECEIPT
+                    </button>
+                    
+                    <!-- नया आवेदन बटन -->
+                    <button onclick="location.reload()" style="padding:10px 20px; background:#003366; color:white; border:none; border-radius:4px; cursor:pointer;">नया आवेदन करें</button>
+                </div>
+            `;
 
         } catch (err) {
             console.error("Submit Error:", err);
@@ -645,7 +645,6 @@ function manualSearch() {
             btn.innerText = originalBtnText;
         }
     }
-
     // Helper: Input enable/disable karna
     function enable(id) {
         const input = document.getElementById(id);
