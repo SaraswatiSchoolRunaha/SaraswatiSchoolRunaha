@@ -148,9 +148,7 @@
             } else {
                 // यदि केवल roll और appNo आया है (Option 2: Download Receipt से आने पर)
                 // यहाँ अपने Google Apps Script Web App का URL पेस्ट करें
-                const scriptUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec" + encodeURIComponent(roll) + "&app=" + encodeURIComponent(appNo);
-
-                fetch(scriptUrl)
+const scriptUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec?roll=" + encodeURIComponent(roll) + "&app=" + encodeURIComponent(appNo);                fetch(scriptUrl)
                 .then(response => response.json())
                 .then(res => {
                     if(res.status === "success") {
