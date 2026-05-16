@@ -16,14 +16,13 @@
             background-color: #f4f7f9;
         }
 
-        /* The Main Card with Blue Border */
+        /* Card styles with custom width */
         .card { 
             background: #ffffff; 
-            width: 100%;
-            max-width: 450px; 
-            padding: 25px; 
+            width: 95%; 
+            max-width: 600px; 
+            padding: 30px; 
             border-radius: 8px; 
-            /* Screenshot style blue border */
             border: 3px solid #0056b3; 
             box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
             box-sizing: border-box;
@@ -39,14 +38,10 @@
             gap: 12px;
         }
 
-        .card-header img {
-            width: 30px; /* Graduation cap icon size */
-        }
-
         .card-header span {
             font-size: 22px;
             font-weight: 800;
-            color: #1a4a8e; /* Blue shade from image */
+            color: #1a4a8e; 
             text-transform: uppercase;
         }
 
@@ -60,58 +55,36 @@
             text-transform: uppercase;
         }
 
-        /* 1. Sabse pehle Card ki width badhayein taaki boxes lambe ho sakein */
-.card { 
-    background: #ffffff; 
-    width: 95%; 
-    max-width: 600px; /* Ise 450px se badha kar 600px kar diya hai */
-    padding: 30px; 
-    border-radius: 8px; 
-    border: 3px solid #0056b3; 
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-}
+        /* Input fields styles */
+        input[type="text"] { 
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #ccc; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
 
-/* 2. Input fields ki height aur font size set karein */
-input[type="text"] { 
-    width: 100%; 
-    padding: 15px; /* Padding badhane se box thoda thick aur professional dikhega */
-    border: 2px solid #ccc; 
-    border-radius: 8px; 
-    box-sizing: border-box; 
-    font-size: 16px; 
-    margin-bottom: 15px;
-    transition: 0.3s;
-}
+        input[type="text"]:focus {
+            border-color: #0056b3;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 86, 179, 0.2); 
+        }
 
-input[type="text"]:focus {
-    border-color: #0056b3;
-    outline: none;
-    box-shadow: 0 0 8px rgba(0, 86, 179, 0.2); /* Focus par glow effect */
-}
+        /* Row configuration */
+        .row {
+            display: flex;
+            gap: 20px; 
+            margin-bottom: 10px;
+        }
 
-/* 3. Row configuration */
-.row {
-    display: flex;
-    gap: 20px; /* Boxes ke beech ka gap thoda badhaya hai */
-    margin-bottom: 10px;
-}
+        .row .input-group { 
+            flex: 1; 
+            min-width: 0; 
+        }
 
-.row .input-group { 
-    flex: 1; /* Dono boxes ko barabar aur poori length lene dega */
-    min-width: 0; /* Flexbox bug prevent karne ke liye */
-}
-
-/* Mobile Responsive */
-@media (max-width: 480px) {
-    .row {
-        flex-direction: column;
-        gap: 0;
-    }
-    .card {
-        padding: 20px;
-    }
-}
         /* Captcha Section matching the screenshot */
         .captcha-area {
             display: flex;
@@ -133,7 +106,7 @@ input[type="text"]:focus {
         }
 
         .refresh-btn {
-            background: #ff9800; /* Orange refresh button */
+            background: #ff9800; 
             color: white;
             border: none;
             padding: 10px 15px;
@@ -173,6 +146,17 @@ input[type="text"]:focus {
             border-top: 1px solid #eee;
             padding-top: 10px;
         }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -180,45 +164,44 @@ input[type="text"]:focus {
 <div class="card">
     <div class="card-header">
         <span style="font-size: 25px;">🎓</span>
-        <span>Marksheet Correction Status </span>
+        <span>Marksheet Correction Status</span>
     </div>
     
-<div class="form-body">
-    <div class="row">
-        <div class="input-group">
-            <label>Application Number</label>
-            <input type="text" id="appNo" placeholder="Enter Application.NO. APP-2026-000">
+    <div class="form-body">
+        <div class="row">
+            <div class="input-group">
+                <label>Application Number</label>
+                <input type="text" id="appNo" placeholder="Enter Application.NO. APP-2026-000">
+            </div>
+            
+            <div class="input-group">
+                <label>Roll Number</label>
+                <input type="text" id="rollNo" placeholder="Enter Roll No.">
+            </div>
         </div>
         
-        <div class="input-group">
-            <label>Roll Number</label>
-            <input type="text" id="rollNo" placeholder="Enter Roll No.">
+        <label>Captcha Code</label>
+        <div class="captcha-area">
+            <div class="captcha-box" id="captchaVal">BFIPAW</div>
+            <button type="button" class="refresh-btn" onclick="generateCaptcha()">
+                🔄 Refresh
+            </button>
         </div>
-    </div>
-    
-    <label>Captcha Code</label>
-    <div class="captcha-area">
-        <div class="captcha-box" id="captchaVal">BFIPAW</div>
-        <button type="button" class="refresh-btn" onclick="generateCaptcha()">
-            🔄 Refresh
-        </button>
-    </div>
 
-    <input type="text" id="userCaptcha" placeholder="Enter code">
+        <input type="text" id="userCaptcha" placeholder="Enter code">
 
-    <button class="btn-submit" onclick="checkStatus()">Submit Request</button>
-    
-    <p id="result" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
-</div>
+        <button class="btn-submit" onclick="checkStatus()">Submit Request</button>
+        
+        <p id="result" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
+    </div>
     
     <div class="footer-copy">
         © 2026 Marksheet Portal
     </div>
 </div>
     
-    <script>
+<script>
     let generatedCaptcha = "";
-    // अपनी Google Web App URL यहाँ पेस्ट करें
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
 
     function generateCaptcha() {
@@ -232,41 +215,37 @@ input[type="text"]:focus {
     }
 
     window.onload = function() {
-    generateCaptcha();
-    const savedAppID = localStorage.getItem("lastAppID");
-    if(savedAppID) {
-        document.getElementById("appNo").value = savedAppID;
-        // इसे भरने के बाद तुरंत हटा दें ताकि रिफ्रेश पर दोबारा न आए
-        localStorage.removeItem("lastAppID"); 
-    }
-};
+        generateCaptcha();
+        const savedAppID = localStorage.getItem("lastAppID");
+        if(savedAppID) {
+            document.getElementById("appNo").value = savedAppID;
+            localStorage.removeItem("lastAppID"); 
+        }
+    };
     
     async function checkStatus() {
-        // Elements को variables में सेव करना
         const appField = document.getElementById('appNo');
         const rollField = document.getElementById('rollNo');
         const captchaField = document.getElementById('userCaptcha');
         const resultDiv = document.getElementById('result');
 
-        const app = appField.value.trim();
+        // इनपुट से खाली जगह हटाना और एप्लीकेशन नंबर को कैपिटल लेटर्स में बदलना
+        const app = appField.value.trim().toUpperCase(); 
         const roll = rollField.value.trim();
         const userCaptcha = captchaField.value.trim();
 
-        // 1. खाली इनपुट चेक
         if(!app || !roll || !userCaptcha) {
             resultDiv.innerText = "⚠️ कृपया सभी जानकारी भरें!";
             resultDiv.style.color = "#e67e22";
             return;
         }
 
-        // 2. रोल नंबर वैलिडेशन
         if (isNaN(roll)) {
             resultDiv.innerText = "⚠️ रोल नंबर सिर्फ अंकों (Numbers) में होना चाहिए!";
             resultDiv.style.color = "#e67e22";
             return;
         }
 
-        // 3. कैप्चा चेक
         if(userCaptcha.toUpperCase() !== generatedCaptcha) {
             resultDiv.innerText = "❌ गलत कैप्चा कोड!";
             resultDiv.style.color = "#c0392b";
@@ -279,7 +258,8 @@ input[type="text"]:focus {
         resultDiv.style.color = "#2980b9";
 
         try {
-            const response = await fetch(`${WEB_APP_URL}?roll=${roll}&app=${app}`);
+            // encodeURIComponent का उपयोग डेटा ट्रांसफर को सुरक्षित और सटीक बनाने के लिए
+            const response = await fetch(`${WEB_APP_URL}?roll=${encodeURIComponent(roll)}&app=${encodeURIComponent(app)}`);
             const contentType = response.headers.get("content-type");
             
             if (!contentType || !contentType.includes("application/json")) {
@@ -292,16 +272,13 @@ input[type="text"]:focus {
                 resultDiv.innerText = "✅ रिकॉर्ड मिल गया!";
                 resultDiv.style.color = "#27ae60";
                 
-                // रिपोर्ट विंडो खोलना
                 openReport(result.data, result.data.appNo || app);
 
-                // --- बदलाव यहाँ है ---
-                localStorage.removeItem("lastAppID"); // पुरानी ID को मेमोरी से डिलीट करें
-                appField.value = "";                  // अब यह बॉक्स पक्का खाली हो जाएगा
+                localStorage.removeItem("lastAppID"); 
+                appField.value = "";                  
                 rollField.value = "";
                 captchaField.value = "";
                 generateCaptcha();
-                // ---------------------
 
             } else {
                 resultDiv.innerText = "❌ " + (result.message || "डेटा नहीं मिला");
@@ -329,8 +306,6 @@ input[type="text"]:focus {
             statusClass = "bg-green";
         } else if (statusLower === "rejected") {
             statusClass = "bg-red";
-        } else if (statusLower === "pending") {
-            statusClass = "bg-yellow";
         }
 
         reportWindow.document.write(`
