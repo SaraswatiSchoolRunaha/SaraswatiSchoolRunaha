@@ -11,14 +11,17 @@
         .header h2 { margin: 0; color: #003366; font-size: 24px; text-transform: uppercase; }
         .header p { margin: 4px 0; font-weight: bold; font-size: 16px; color: #d32f2f; }
         .date-line { text-align: right; font-weight: bold; margin-bottom: 10px; }
-        .top-info { display: flex; justify-content: space-between; border: 1px solid #003366; padding: 10px; margin-bottom: 15px; background: #f9f9f9; }
-        .info-item { margin-bottom: 6px; font-size: 14px; }
+        .top-info { border: 1px solid #003366; padding: 12px 20px; margin-bottom: 15px; background: #f9f9f9; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .info-item { font-size: 14px; }
         .info-item strong { color: #003366; width: 140px; display: inline-block; }
-        .photo-box { width: 120px; height: 140px; border: 1px solid #000; text-align: center; font-size: 11px; padding: 2px; }
-        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* तालिका के अंदर फोटो बॉक्स को व्यवस्थित करने के लिए CSS */
+        .receipt-photo { width: 90px; height: 110px; border: 1px solid #ccc; object-fit: cover; display: block; margin-top: 5px; }
+        
         .section-title { background: #003366; color: white; padding: 6px 12px; font-weight: bold; margin-top: 20px; margin-bottom: 8px; font-size: 14px; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        th, td { border: 1px solid #000; padding: 8px 12px; text-align: left; }
+        th, td { border: 1px solid #000; padding: 8px 12px; text-align: left; vertical-align: top; }
         th { background: #eee; width: 35%; color: #003366; }
         .new-data { color: #d32f2f; font-weight: bold; background: #fff9f9; }
         .declaration { margin-top: 25px; border: 1px solid #003366; padding: 15px; font-style: italic; font-size: 12px; background: #fffdf5; line-height: 1.6; }
@@ -43,16 +46,12 @@
 
     <div class="section-title">I. छात्र का विवरण (Basic Details)</div>
     <div class="top-info">
-        <div>
-            <!-- आवेदन क्रमांक (App No) यहाँ पूरा बिना किसी रुकावट के दिखेगा -->
+        <!-- ऊपर से फोटो बॉक्स पूरी तरह हटाकर ग्रिड लेआउट कर दिया है ताकि स्पेस सही दिखे -->
+        <div class="info-grid">
             <div class="info-item"><strong>आवेदन क्रमांक:</strong> <span id="disp-app">-</span></div>
             <div class="info-item"><strong>अनुक्रमांक (Roll No):</strong> <span id="disp-roll">-</span></div>
             <div class="info-item"><strong>सत्र (Session):</strong> <span id="disp-session">-</span></div>
             <div class="info-item"><strong>मोबाइल नंबर:</strong> <span id="disp-mobile">-</span></div>
-        </div>
-        <div class="photo-box">
-            <img src="" id="disp-photo" alt="छात्र का फोटो" onerror="this.src='https://via.placeholder.com/110x130?text=No+Photo'">
-            <br>छात्र का फोटो
         </div>
     </div>
 
@@ -66,7 +65,7 @@
             </tr>
         </thead>
         <tbody id="correction-body">
-            <!-- डायनामिक कन्टेंट यहाँ लोड होगा -->
+            <!-- डायनामिक कन्टेंट और फोटो यहाँ लोड होंगे -->
         </tbody>
     </table>
 
@@ -108,7 +107,7 @@
     window.onload = function() {
         const params = new URLSearchParams(window.location.search);
         
-        // 1. Static Details Fill (आवेदन क्रमांक पूरा दिखेगा)
+        // 1. Static Details Fill
         document.getElementById("disp-app").innerText = params.get('app') || '-';
         document.getElementById("disp-roll").innerText = params.get('roll') || '-';
         document.getElementById("disp-session").innerText = params.get('year') || '-';
@@ -125,17 +124,19 @@
             return cleanVal;
         };
 
-        // 2. Correction Fields Array
+        // 2. Correction Fields Array (इसमें फोटो का भी लॉजिक जोड़ा गया है)
         const fields = [
-            { label: "छात्र का नाम (Student Name)", old: params.get('old_name'), new: params.get('new_name'), isId: false },
-            { label: "पिता का नाम (Father's Name)", old: params.get('old_father'), new: params.get('new_father'), isId: false },
-            { label: "माता का नाम (Mother's Name)", old: params.get('old_mother'), new: params.get('new_mother'), isId: false },
-            { label: "जन्म तिथि (Date of Birth)", old: params.get('old_dob'), new: params.get('new_dob'), isId: false },
-            { label: "कक्षा (Class)", old: params.get('old_class'), new: params.get('new_class'), isId: false },
-            { label: "लिंग (Gender)", old: params.get('old_gender'), new: params.get('new_gender'), isId: false },
-            { label: "माध्यम (Medium)", old: params.get('old_medium'), new: params.get('new_medium'), isId: false },
-            { label: "श्रेणी (Category)", old: params.get('old_category'), new: params.get('new_category'), isId: false },
-            { label: "समग्र आईडी / पहचान पत्र (ID)", old: params.get('old_samagra'), new: params.get('new_samagra'), isId: true }
+            { label: "छात्र का नाम (Student Name)", old: params.get('old_name'), new: params.get('new_name'), isId: false, isPhoto: false },
+            { label: "पिता का नाम (Father's Name)", old: params.get('old_father'), new: params.get('new_father'), isId: false, isPhoto: false },
+            { label: "माता का नाम (Mother's Name)", old: params.get('old_mother'), new: params.get('new_mother'), isId: false, isPhoto: false },
+            { label: "जन्म तिथि (Date of Birth)", old: params.get('old_dob'), new: params.get('new_dob'), isId: false, isPhoto: false },
+            { label: "कक्षा (Class)", old: params.get('old_class'), new: params.get('new_class'), isId: false, isPhoto: false },
+            { label: "लिंग (Gender)", old: params.get('old_gender'), new: params.get('new_gender'), isId: false, isPhoto: false },
+            { label: "माध्यम (Medium)", old: params.get('old_medium'), new: params.get('new_medium'), isId: false, isPhoto: false },
+            { label: "श्रेणी (Category)", old: params.get('old_category'), new: params.get('new_category'), isId: false, isPhoto: false },
+            { label: "समग्र आईडी / पहचान पत्र (ID)", old: params.get('old_samagra'), new: params.get('new_samagra'), isId: true, isPhoto: false },
+            // फोटो सुधार का डेटा हैंडल करने के लिए (URL में old_photo और new_photo भेजें)
+            { label: "छात्र का फोटो (Student Photo)", old: params.get('old_photo'), new: params.get('new_photo'), isId: false, isPhoto: true }
         ];
 
         const tbody = document.getElementById("correction-body");
@@ -144,17 +145,27 @@
         fields.forEach(f => {
             if (f.new && f.new !== "undefined" && f.new !== "" && f.new !== "null") { 
                 
-                let displayOld = f.isId ? maskSensitiveId(f.old) : f.old;
-                let displayNew = f.isId ? maskSensitiveId(f.new) : f.new;
+                let displayOld = "";
+                let displayNew = "";
 
-                if (!displayOld || displayOld === "null" || displayOld === "undefined") {
-                    displayOld = 'रिकॉर्ड में उपलब्ध नहीं';
+                // अगर फील्ड फोटो प्रकार की है तो इमेज टैग जनरेट करें
+                if (f.isPhoto) {
+                    const oldImgSrc = (f.old && f.old !== "null" && f.old !== "undefined") ? f.old : 'https://via.placeholder.com/90x110?text=No+Photo';
+                    displayOld = `<img src="${oldImgSrc}" class="receipt-photo" alt="Old Photo">`;
+                    displayNew = `<img src="${f.new}" class="receipt-photo" alt="New Photo">`;
+                } else {
+                    displayOld = f.isId ? maskSensitiveId(f.old) : f.old;
+                    displayNew = f.isId ? maskSensitiveId(f.new) : f.new;
+
+                    if (!displayOld || displayOld === "null" || displayOld === "undefined") {
+                        displayOld = 'रिकॉर्ड में उपलब्ध नहीं';
+                    }
                 }
 
                 tableRowsHtml += `<tr>
                     <td>${f.label}</td>
                     <td>${displayOld}</td>
-                    <td class="new-data">${displayNew}</td>
+                    <td class="${f.isPhoto ? '' : 'new-data'}">${displayNew}</td>
                 </tr>`;
             }
         });
@@ -180,11 +191,6 @@
             statusBadge.innerText = "लंबित (Pending)";
             statusBadge.style.backgroundColor = '#ffc107';
             statusBadge.style.color = '#000';
-        }
-
-        // 4. Student Photo
-        if(params.get('photo')) {
-            document.getElementById("disp-photo").src = params.get('photo');
         }
     };
 </script>
