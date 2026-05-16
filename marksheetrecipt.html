@@ -39,7 +39,7 @@
 <div class="receipt-container">
     <div class="header">
         <h2>सरस्वती बाल विद्या मंदिर हाई स्कूल </h2>
-        <p>रुनाहा, बेरसिया, भोपाल</p>
+        <p>रुनाहा, बेरसिया, Bhopal</p>
         <p>अंकसूची सुधार आवेदन - पावती रसीद </p>
     </div>
 
@@ -65,7 +65,7 @@
             </tr>
         </thead>
         <tbody id="correction-body">
-            <!-- डेटा यहाँ लोड होगा -->
+            <!-- डेटा डायनामिक रूप से लोड होगा -->
         </tbody>
     </table>
 
@@ -108,127 +108,100 @@
         try {
             document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
 
-            const maskSensitiveId = (val) => {
-                if (!val || val === "null" || val === "undefined") return "";
-                const cleanVal = val.trim();
-                if (cleanVal.length > 4) { return "XXXX-XXXX-" + cleanVal.slice(-4); }
-                return cleanVal;
-            };
-
-            // URL से पैरामीटर्स (Data) पढ़ना
             const urlParams = new URLSearchParams(window.location.search);
             
-            // अगर URL में रोल नंबर या ऐप नंबर नहीं है, तो एरर दिखाएं
             if (!urlParams.has('roll') && !urlParams.has('appNo')) {
-                document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>URL में कोई डेटा नहीं मिला। कृपया पोर्टल से सही लिंक ओपन करें।</td></tr>";
+                document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>URL में कोई डेटा नहीं मिला।</td></tr>";
                 return;
             }
 
-            // URL से एक-एक करके डेटा निकालना
+            // URL से डेटा को व्यवस्थित ऑब्जेक्ट में सेट करना
             const s = {
-                appNo: urlParams.get('appNo') || urlParams.get('app'),
-                roll: urlParams.get('roll'),
-                year: urlParams.get('year') || urlParams.get('session'),
-                mobile: urlParams.get('mobile'),
-                info: urlParams.get('info') || urlParams.get('correction'),
-                rejectReason: urlParams.get('rejectReason'),
+                appNo: urlParams.get('appNo') || urlParams.get('app') || "---",
+                roll: urlParams.get('roll') || "---",
+                year: urlParams.get('year') || urlParams.get('session') || "---",
+                mobile: urlParams.get('mobile') || "---",
+                info: urlParams.get('info') || urlParams.get('correction') || "मार्कशीट सुधार अनुरोध दर्ज किया गया।",
+                rejectReason: urlParams.get('rejectReason') || "---",
                 status: urlParams.get('status') || urlParams.get('appStatus') || "Pending",
                 
-                // पुराने रिकॉर्ड्स
-                name: urlParams.get('name'),
-                father: urlParams.get('father'),
-                mother: urlParams.get('mother'),
-                dob: urlParams.get('dob'),
-                class: urlParams.get('class'),
-                gender: urlParams.get('gender'),
-                medium: urlParams.get('medium'),
-                category: urlParams.get('category'),
-                samagra: urlParams.get('samagra'),
-                photoUrl: urlParams.get('photoUrl'),
+                // पुराना डेटा
+                name: urlParams.get('name') || "---",
+                father: urlParams.get('father') || "---",
+                mother: urlParams.get('mother') || "---",
+                dob: urlParams.get('dob') || "---",
+                class: urlParams.get('class') || "---",
+                medium: urlParams.get('medium') || "---",
+                category: urlParams.get('category') || "---",
+                photoUrl: urlParams.get('photoUrl') || "",
 
-                // नए रिकॉर्ड्स (सुधार वाले)
-                newName: urlParams.get('newName') || urlParams.get('new_name'),
-                newFather: urlParams.get('newFather') || urlParams.get('new_father'),
-                newMother: urlParams.get('newMother') || urlParams.get('new_mother'),
-                newDob: urlParams.get('newDob') || urlParams.get('new_dob'),
-                newClass: urlParams.get('newClass') || urlParams.get('new_class'),
-                newGender: urlParams.get('newGender') || urlParams.get('new_gender'),
-                newMedium: urlParams.get('newMedium') || urlParams.get('new_medium'),
-                newCategory: urlParams.get('newCategory') || urlParams.get('new_category'),
-                newSamagra: urlParams.get('newSamagra') || urlParams.get('new_samagra'),
-                newPhoto: urlParams.get('photo') || urlParams.get('new_photo')
+                // नया डेटा (यदि मौजूद न हो, तो '-' दिखेगा)
+                newName: urlParams.get('newName') || "---",
+                newFather: urlParams.get('newFather') || "---",
+                newMother: urlParams.get('newMother') || "---",
+                newDob: urlParams.get('newDob') || "---",
+                newClass: urlParams.get('newClass') || "---",
+                newMedium: urlParams.get('newMedium') || "---",
+                newCategory: urlParams.get('newCategory') || "---",
+                newPhoto: urlParams.get('newPhoto') || urlParams.get('photo') || ""
             };
 
-            // बेसिक डिटेल्स स्क्रीन पर सेट करना
-            document.getElementById("res-app").innerText = s.appNo || "---";
-            document.getElementById("res-roll").innerText = s.roll || "---";
-            document.getElementById("res-year").innerText = s.year || "---";
-            document.getElementById("res-mobile").innerText = s.mobile || "---";
-            document.getElementById("res-info").innerText = s.info || "मार्कशीट सुधार अनुरोध दर्ज किया गया।";
-            document.getElementById("res-reject").innerText = s.rejectReason || "---";
+            // बेसिक डिटेल्स सेट करना
+            document.getElementById("res-app").innerText = s.appNo;
+            document.getElementById("res-roll").innerText = s.roll;
+            document.getElementById("res-year").innerText = s.year;
+            document.getElementById("res-mobile").innerText = s.mobile;
+            document.getElementById("res-info").innerText = s.info;
+            document.getElementById("res-reject").innerText = s.rejectReason;
 
-            // तालिका (Table) के लिए डेटा मैपिंग
+            // हमेशा दिखने वाले रिकॉर्ड्स की लिस्ट
             const fields = [
-                { label: "छात्र का नाम (Student Name)", old: s.name, new: s.newName, isId: false, isPhoto: false },
-                { label: "पिता का नाम (Father's Name)", old: s.father, new: s.newFather, isId: false, isPhoto: false },
-                { label: "माता का नाम (Mother's Name)", old: s.mother, new: s.newMother, isId: false, isPhoto: false },
-                { label: "जन्म तिथि (Date of Birth)", old: s.dob, new: s.newDob, isId: false, isPhoto: false },
-                { label: "कक्षा (Class)", old: s.class, new: s.newClass, isId: false, isPhoto: false },
-                { label: "लिंग (Gender)", old: s.gender, new: s.newGender, isId: false, isPhoto: false },
-                { label: "माध्यम (Medium)", old: s.medium, new: s.newMedium, isId: false, isPhoto: false },
-                { label: "श्रेणी (Category)", old: s.category, new: s.newCategory, isId: false, isPhoto: false },
-                { label: "समग्र आईडी / पहचान पत्र (ID)", old: s.samagra, new: s.newSamagra, isId: true, isPhoto: false },
-                { label: "छात्र का फोटो (Student Photo)", old: s.photoUrl, new: s.newPhoto, isId: false, isPhoto: true }
+                { label: "छात्र का नाम (Student Name)", old: s.name, new: s.newName, isPhoto: false },
+                { label: "पिता का नाम (Father's Name)", old: s.father, new: s.newFather, isPhoto: false },
+                { label: "माता का नाम (Mother's Name)", old: s.mother, new: s.newMother, isPhoto: false },
+                { label: "जन्म तिथि (Date of Birth)", old: s.dob, new: s.newDob, isPhoto: false },
+                { label: "कक्षा (Class)", old: s.class, new: s.newClass, isPhoto: false },
+                { label: "माध्यम (Medium)", old: s.medium, new: s.newMedium, isPhoto: false },
+                { label: "श्रेणी (Category)", old: s.category, new: s.newCategory, isPhoto: false },
+                { label: "छात्र का फोटो (Student Photo)", old: s.photoUrl, new: s.newPhoto, isPhoto: true }
             ];
 
             const tbody = document.getElementById("correction-body");
             let tableRowsHtml = ""; 
-            let totalCorrections = 0;
 
             fields.forEach(f => {
-                // अगर URL में नया (सुधार वाला) डेटा भेजा गया है, तो उसे रो में दिखाएं
-                if (f.new && f.new.toString().trim() !== "" && f.new.toString().trim() !== "undefined" && f.new.toString().trim() !== "null") { 
-                    totalCorrections++;
-                    let displayOld = "";
-                    let displayNew = "";
+                let displayOld = f.old;
+                let displayNew = f.new;
 
-                    if (f.isPhoto) {
-                        const oldImgSrc = (f.old && f.old !== "null" && f.old !== "undefined" && f.old.trim() !== "") ? f.old : 'https://via.placeholder.com/90x110?text=No+Photo';
-                        displayOld = `<img src="${oldImgSrc}" class="receipt-photo" alt="Old Photo">`;
-                        displayNew = `<img src="${f.new}" class="receipt-photo" alt="New Photo">`;
-                    } else {
-                        displayOld = f.isId ? maskSensitiveId(f.old) : f.old;
-                        displayNew = f.isId ? maskSensitiveId(f.new) : f.new;
-
-                        if (!displayOld || displayOld === "null" || displayOld === "undefined" || displayOld.toString().trim() === "") {
-                            displayOld = 'रिकॉर्ड में उपलब्ध नहीं';
-                        }
-                    }
-
-                    tableRowsHtml += `<tr>
-                        <td>${f.label}</td>
-                        <td>${displayOld}</td>
-                        <td class="${f.isPhoto ? '' : 'new-data'}">${displayNew}</td>
-                    </tr>`;
+                if (f.isPhoto) {
+                    const oldImg = f.old && f.old !== "---" ? f.old : 'https://via.placeholder.com/90x110?text=No+Photo';
+                    const newImg = f.new && f.new !== "---" ? f.new : oldImg;
+                    displayOld = `<img src="${oldImg}" class="receipt-photo" alt="Old">`;
+                    displayNew = `<img src="${newImg}" class="receipt-photo" alt="New">`;
                 }
+
+                // जिन फ़ील्ड्स में सुधार है उन्हें हाइलाइट क्लास देना
+                const isUpdated = f.new !== "---" && f.new !== f.old;
+                const newTdClass = (isUpdated && !f.isPhoto) ? 'new-data' : '';
+
+                tableRowsHtml += `<tr>
+                    <td>${f.label}</td>
+                    <td>${displayOld}</td>
+                    <td class="${newTdClass}">${displayNew}</td>
+                </tr>`;
             });
 
-            // अगर URL में कोई विशिष्ट सुधार फ़ील्ड्स नहीं हैं, लेकिन बेसिक डेटा है
-            if (totalCorrections === 0 && (s.roll || s.appNo)) {
-                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; font-weight:bold; color:green;'>आवेदन रिकॉर्ड सुरक्षित है। कोई नया सुधार विवरण तालिका में लंबित नहीं है।</td></tr>";
-            } else {
-                tbody.innerHTML = tableRowsHtml || "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला।</td></tr>";
-            }
+            tbody.innerHTML = tableRowsHtml;
 
-            // स्टेटस का रंग बदलना (Pending/Approved/Rejected)
-            const currentStatus = s.status.toLowerCase();
+            // स्टेटस का स्टाइल सेट करना
+            const status = s.status.toLowerCase();
             const statusBadge = document.getElementById("disp-status");
             
-            if(currentStatus.includes('approve') || currentStatus.includes('success') || currentStatus.includes('स्वीकृत')) {
+            if(status.includes('approve') || status.includes('success') || status.includes('स्वीकृत')) {
                 statusBadge.innerText = "स्वीकृत (Approved)";
                 statusBadge.style.backgroundColor = '#28a745';
                 statusBadge.style.color = '#fff';
-            } else if(currentStatus.includes('reject') || currentStatus.includes('अस्वीकृत')) {
+            } else if(status.includes('reject') || status.includes('अस्वीकृत')) {
                 statusBadge.innerText = "अस्वीकृत (Rejected)";
                 statusBadge.style.backgroundColor = '#dc3545';
                 statusBadge.style.color = '#fff';
@@ -238,11 +211,11 @@
                 statusBadge.style.color = '#000';
             }
 
-            // लोड होते ही प्रिंट विंडो खोलना
+            // रसीद ऑटो-प्रिंट शुरू करना
             setTimeout(() => { window.print(); }, 1000);
 
         } catch (err) {
-            console.error("URL Parsing Error: " + err.message);
+            console.error("JS Error: " + err.message);
         }
     };
 </script>
