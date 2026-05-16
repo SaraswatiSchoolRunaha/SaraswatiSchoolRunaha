@@ -25,7 +25,13 @@
         .sig-section { display: flex; justify-content: space-between; margin-top: 70px; text-align: center; font-weight: bold; }
         .sig-box { width: 30%; border-top: 1.5px dashed #000; padding-top: 8px; }
         .status-badge { padding: 4px 12px; border-radius: 4px; color: #fff; font-weight: bold; font-size: 12px; display: inline-block; }
-        @media print { .btn-print { display: none !important; } .receipt-container { border: 2px solid #000; box-shadow: none; margin: 0; width: 100%; } }
+        
+        /* प्रिंट के समय प्रिंट बटन छुप जाएगा और बैकग्राउंड हट जाएगा */
+        @media print { 
+            .btn-print { display: none !important; } 
+            body { background: #fff; padding: 0; }
+            .receipt-container { border: 2px solid #000; box-shadow: none; margin: 0; width: 100%; } 
+        }
         .btn-print { display: block; margin: 20px auto; padding: 12px 40px; background: #003366; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 5px; font-size: 16px; }
     </style>
 </head>
@@ -43,10 +49,10 @@
     <div class="section-title">I. छात्र का विवरण (Basic Details)</div>
     <div class="top-info">
         <div class="info-grid">
-            <div class="info-item"><strong>आवेदन क्रमांक:</strong> <span><?= app ?></span></div>
-            <div class="info-item"><strong>अनुक्रमांक (Roll No):</strong> <span><?= roll ?></span></div>
-            <div class="info-item"><strong>सत्र (Session):</strong> <span><?= year ?></span></div>
-            <div class="info-item"><strong>मोबाइल नंबर:</strong> <span><?= mobile ?></span></div>
+            <div class="info-item"><strong>आवेदन क्रमांक:</strong> <span id="res-app">-</span></div>
+            <div class="info-item"><strong>अनुक्रमांक (Roll No):</strong> <span id="res-roll">-</span></div>
+            <div class="info-item"><strong>सत्र (Session):</strong> <span id="res-year">-</span></div>
+            <div class="info-item"><strong>मोबाइल नंबर:</strong> <span id="res-mobile">-</span></div>
         </div>
     </div>
 
@@ -60,7 +66,7 @@
             </tr>
         </thead>
         <tbody id="correction-body">
-            <!-- डेटा यहाँ इन्सर्ट होगा -->
+            <!-- डेटा डायनामिक रूप से यहाँ इन्सर्ट होगा -->
         </tbody>
     </table>
 
@@ -68,20 +74,20 @@
     <table>
         <tr>
             <th>वर्तमान स्थिति (Status)</th>
-            <td><span id="disp-status" class="status-badge"><?= status ?></span></td>
+            <td><span id="disp-status" class="status-badge">लंबित (Pending)</span></td>
         </tr>
         <tr>
             <th>सुधार की जानकारी</th>
-            <td><?= info ?></td>
+            <td id="res-info">-</td>
         </tr>
         <tr>
             <th>अस्वीकृति का कारण (यदि हो)</th>
-            <td><?= rejectReason ?></td>
+            <td id="res-reject">-</td>
         </tr>
     </table>
 
     <div class="declaration">
-        <strong>शपथ पत्र (Declaration):</strong><br>
+        <strong>शथा पत्र (Declaration):</strong><br>
         मैं शपथ पूर्वक कथन करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त जानकारी पूर्णतः सत्य एवं सटीक है। मैंने सभी दस्तावेजों की जांच कर ली है। यदि किसी भी स्तर पर दी गई जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो बोर्ड को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा, जिसकी समस्त जिम्मेदारी मेरी होगी।
     </div>
 
@@ -96,7 +102,6 @@
     </p>
 </div>
 
-<!-- प्रिंट बटन फंक्शनलिटी को सीधा रखा गया है ताकि रुकावट न आए -->
 <button class="btn-print" onclick="window.print()">रसीद प्रिंट करें / PDF सेव करें</button>
 
 <script>
@@ -111,25 +116,41 @@
                 return cleanVal;
             };
 
-            // सर्वर-साइड डेटा को सुरक्षित रूप से जावास्क्रिप्ट एरे में कनवर्ट करना
+            // लोकल स्टोरेज से सर्वर द्वारा भेजा गया डेटा प्राप्त करना
+            const resData = JSON.parse(localStorage.getItem("receiptData"));
+            
+            if (!resData) {
+                document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>कोई डेटा उपलब्ध नहीं है। कृपया पोर्टल से दोबारा प्रयास करें।</td></tr>";
+                return;
+            }
+
+            // बेसिक डिटेल्स सेट करना
+            document.getElementById("res-app").innerText = resData.appNo || "---";
+            document.getElementById("res-roll").innerText = resData.rollNo || "---";
+            document.getElementById("res-year").innerText = resData.year || "---";
+            document.getElementById("res-mobile").innerText = resData.mobile || "---";
+            document.getElementById("res-info").innerText = resData.info || "मार्कशीट सुधार अनुरोध दर्ज किया गया।";
+            document.getElementById("res-reject").innerText = resData.rejectReason || "---";
+
+            // पुराना और नया डेटा एरे मैपिंग
             const fields = [
-                { label: "छात्र का नाम (Student Name)", old: `<?= old_name ?>`, new: `<?= new_name ?>`, isId: false, isPhoto: false },
-                { label: "पिता का नाम (Father's Name)", old: `<?= old_father ?>`, new: `<?= new_father ?>`, isId: false, isPhoto: false },
-                { label: "माता का नाम (Mother's Name)", old: `<?= old_mother ?>`, new: `<?= new_mother ?>`, isId: false, isPhoto: false },
-                { label: "जन्म तिथि (Date of Birth)", old: `<?= old_dob ?>`, new: `<?= new_dob ?>`, isId: false, isPhoto: false },
-                { label: "कक्षा (Class)", old: `<?= old_class ?>`, new: `<?= new_class ?>`, isId: false, isPhoto: false },
-                { label: "लिंग (Gender)", old: `<?= old_gender ?>`, new: `<?= new_gender ?>`, isId: false, isPhoto: false },
-                { label: "माध्यम (Medium)", old: `<?= old_medium ?>`, new: `<?= new_medium ?>`, isId: false, isPhoto: false },
-                { label: "श्रेणी (Category)", old: `<?= old_category ?>`, new: `<?= new_category ?>`, isId: false, isPhoto: false },
-                { label: "समग्र आईडी / पहचान पत्र (ID)", old: `<?= old_samagra ?>`, new: `<?= new_samagra ?>`, isId: true, isPhoto: false },
-                { label: "छात्र का फोटो (Student Photo)", old: `<?= old_photo ?>`, new: `<?= new_photo ?>`, isId: false, isPhoto: true }
+                { label: "छात्र का नाम (Student Name)", old: resData.old_name, new: resData.new_name, isId: false, isPhoto: false },
+                { label: "पिता का नाम (Father's Name)", old: resData.old_father, new: resData.new_father, isId: false, isPhoto: false },
+                { label: "माता का नाम (Mother's Name)", old: resData.old_mother, new: resData.new_mother, isId: false, isPhoto: false },
+                { label: "जन्म तिथि (Date of Birth)", old: resData.old_dob, new: resData.new_dob, isId: false, isPhoto: false },
+                { label: "कक्षा (Class)", old: resData.old_class, new: resData.new_class, isId: false, isPhoto: false },
+                { label: "लिंग (Gender)", old: resData.old_gender, new: resData.new_gender, isId: false, isPhoto: false },
+                { label: "माध्यम (Medium)", old: resData.old_medium, new: resData.new_medium, isId: false, isPhoto: false },
+                { label: "श्रेणी (Category)", old: resData.old_category, new: resData.new_category, isId: false, isPhoto: false },
+                { label: "समग्र आईडी / पहचान पत्र (ID)", old: resData.old_samagra, new: resData.new_samagra, isId: true, isPhoto: false },
+                { label: "छात्र का फोटो (Student Photo)", old: resData.old_photo, new: resData.new_photo, isId: false, isPhoto: true }
             ];
 
             const tbody = document.getElementById("correction-body");
             let tableRowsHtml = ""; 
 
             fields.forEach(f => {
-                // चेक करें कि नया डेटा मौजूद है या नहीं
+                // केवल उन्हीं फ़ील्ड्स को रसीद की टेबल में दिखाना जिसमें सुधार (New Data) माँगा गया है
                 if (f.new && f.new.toString().trim() !== "" && f.new.toString().trim() !== "undefined" && f.new.toString().trim() !== "null") { 
                     let displayOld = "";
                     let displayNew = "";
@@ -157,8 +178,8 @@
 
             tbody.innerHTML = tableRowsHtml || "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला</td></tr>";
 
-            // स्टेटस बैज का बैकग्राउंड कलर सेट करना
-            const status = `<?= status ?>`.toLowerCase();
+            // स्टेटस बैज सेटिंग्स
+            const status = (resData.studentStatus || "Pending").toLowerCase();
             const statusBadge = document.getElementById("disp-status");
             
             if(status.includes('approve') || status.includes('success') || status.includes('स्वीकृत')) {
@@ -174,6 +195,10 @@
                 statusBadge.style.backgroundColor = '#ffc107';
                 statusBadge.style.color = '#000';
             }
+
+            // ऑटोमैटिक प्रिंट विंडो ट्रिगर करना
+            setTimeout(() => { window.print(); }, 800);
+
         } catch (err) {
             console.error("JS Error: " + err.message);
         }
