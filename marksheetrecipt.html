@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>सुधार आवेदन पावती रसीद</title>
     <style>
-        /* CSS remains same as your original code */
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; color: #333; font-size: 13px; background: #f0f0f0; }
         .receipt-container { max-width: 850px; margin: 10px auto; border: 2px solid #003366; padding: 30px; background: #fff; position: relative; }
@@ -33,8 +32,6 @@
 </head>
 <body>
 
-<// ... baaki CSS wahi rahega ...
-
 <div class="receipt-container">
     <div class="header">
         <h2>विद्यालय परीक्षा बोर्ड</h2>
@@ -46,6 +43,7 @@
     <div class="section-title">I. छात्र का विवरण (Basic Details)</div>
     <div class="top-info">
         <div>
+            <!-- आवेदन क्रमांक (App No) यहाँ पूरा बिना किसी रुकावट के दिखेगा -->
             <div class="info-item"><strong>आवेदन क्रमांक:</strong> <span id="disp-app">-</span></div>
             <div class="info-item"><strong>अनुक्रमांक (Roll No):</strong> <span id="disp-roll">-</span></div>
             <div class="info-item"><strong>सत्र (Session):</strong> <span id="disp-session">-</span></div>
@@ -67,7 +65,8 @@
             </tr>
         </thead>
         <tbody id="correction-body">
-            </tbody>
+            <!-- डायनामिक कन्टेंट यहाँ लोड होगा -->
+        </tbody>
     </table>
 
     <div class="section-title">III. आवेदन की स्थिति एवं रिमार्क</div>
@@ -88,7 +87,7 @@
 
     <div class="declaration">
         <strong>शपथ पत्र (Declaration):</strong><br>
-        मैं शपथ पूर्वक कथन करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त जानकारी पूर्णतः सत्य एवं सटीक है। मैंने सभी दस्तावेजों की जांच कर li है। यदि किसी भी स्तर पर दी गई जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो बोर्ड को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा, जिसकी समस्त जिम्मेदारी मेरी होगी।
+        मैं शपथ पूर्वक कथन करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त जानकारी पूर्णतः सत्य एवं सटीक है। मैंने सभी दस्तावेजों की जांच कर ली है। यदि किसी भी स्तर पर दी गई जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो बोर्ड को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा, जिसकी समस्त जिम्मेदारी मेरी होगी।
     </div>
 
     <div class="sig-section">
@@ -108,46 +107,58 @@
     window.onload = function() {
         const params = new URLSearchParams(window.location.search);
         
-        // 1. Static Details Fill
+        // 1. Static Details Fill (आवेदन क्रमांक पूरा दिखेगा)
         document.getElementById("disp-app").innerText = params.get('app') || '-';
         document.getElementById("disp-roll").innerText = params.get('roll') || '-';
         document.getElementById("disp-session").innerText = params.get('year') || '-';
         document.getElementById("disp-mobile").innerText = params.get('mobile') || 'N/A';
         document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
 
+        // केवल संवेदनशील आईडी को मास्क करने के लिए हेल्पर
+        const maskSensitiveId = (val) => {
+            if (!val || val === "null" || val === "undefined") return "";
+            const cleanVal = val.trim();
+            if (cleanVal.length > 4) {
+                return "XXXX-XXXX-" + cleanVal.slice(-4);
+            }
+            return cleanVal;
+        };
+
         // 2. Correction Fields Array
         const fields = [
-            { label: "छात्र का नाम (Student Name)", old: params.get('old_name'), new: params.get('new_name') },
-            { label: "पिता का नाम (Father's Name)", old: params.get('old_father'), new: params.get('new_father') },
-            { label: "माता का नाम (Mother's Name)", old: params.get('old_mother'), new: params.get('new_mother') },
-            { label: "जन्म तिथि (Date of Birth)", old: params.get('old_dob'), new: params.get('new_dob') },
-            { label: "कक्षा (Class)", old: params.get('old_class'), new: params.get('new_class') },
-            { label: "लिंग (Gender)", old: params.get('old_gender'), new: params.get('new_gender') },
-            { label: "माध्यम (Medium)", old: params.get('old_medium'), new: params.get('new_medium') },
-            { label: "श्रेणी (Category)", old: params.get('old_category'), new: params.get('new_category') },
-            { label: "समग्र आईडी (Samagra ID)", old: params.get('old_samagra'), new: params.get('new_samagra') }
+            { label: "छात्र का नाम (Student Name)", old: params.get('old_name'), new: params.get('new_name'), isId: false },
+            { label: "पिता का नाम (Father's Name)", old: params.get('old_father'), new: params.get('new_father'), isId: false },
+            { label: "माता का नाम (Mother's Name)", old: params.get('old_mother'), new: params.get('new_mother'), isId: false },
+            { label: "जन्म तिथि (Date of Birth)", old: params.get('old_dob'), new: params.get('new_dob'), isId: false },
+            { label: "कक्षा (Class)", old: params.get('old_class'), new: params.get('new_class'), isId: false },
+            { label: "लिंग (Gender)", old: params.get('old_gender'), new: params.get('new_gender'), isId: false },
+            { label: "माध्यम (Medium)", old: params.get('old_medium'), new: params.get('new_medium'), isId: false },
+            { label: "श्रेणी (Category)", old: params.get('old_category'), new: params.get('new_category'), isId: false },
+            { label: "समग्र आईडी / पहचान पत्र (ID)", old: params.get('old_samagra'), new: params.get('new_samagra'), isId: true }
         ];
 
         const tbody = document.getElementById("correction-body");
-        tbody.innerHTML = ""; 
+        let tableRowsHtml = ""; 
 
-        // Loop through all potential correction fields
         fields.forEach(f => {
-            // Only show rows where a 'New' value is provided in the URL
             if (f.new && f.new !== "undefined" && f.new !== "" && f.new !== "null") { 
-                let row = `<tr>
+                
+                let displayOld = f.isId ? maskSensitiveId(f.old) : f.old;
+                let displayNew = f.isId ? maskSensitiveId(f.new) : f.new;
+
+                if (!displayOld || displayOld === "null" || displayOld === "undefined") {
+                    displayOld = 'रिकॉर्ड में उपलब्ध नहीं';
+                }
+
+                tableRowsHtml += `<tr>
                     <td>${f.label}</td>
-                    <td>${(f.old && f.old !== "null" && f.old !== "undefined") ? f.old : 'रिकॉर्ड में उपलब्ध नहीं'}</td>
-                    <td class="new-data">${f.new}</td>
+                    <td>${displayOld}</td>
+                    <td class="new-data">${displayNew}</td>
                 </tr>`;
-                tbody.innerHTML += row;
             }
         });
 
-        // Fallback if no changes were sent
-        if (tbody.innerHTML === "") {
-            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला</td></tr>";
-        }
+        tbody.innerHTML = tableRowsHtml || "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला</td></tr>";
 
         // 3. Status Mapping
         if(params.get('info')) document.getElementById("disp-info").innerText = params.get('info');
@@ -155,11 +166,20 @@
         
         const status = params.get('status') || "Pending";
         const statusBadge = document.getElementById("disp-status");
-        statusBadge.innerText = (status === "Pending") ? "लंबित (Pending)" : status;
         
-        // Add color classes if needed
-        if(status.toLowerCase().includes('approve')) statusBadge.style.backgroundColor = '#28a745';
-        if(status.toLowerCase().includes('reject')) statusBadge.style.backgroundColor = '#dc3545';
+        if(status.toLowerCase().includes('approve') || status.toLowerCase().includes('success')) {
+            statusBadge.innerText = "स्वीकृत (Approved)";
+            statusBadge.style.backgroundColor = '#28a745';
+            statusBadge.style.color = '#fff';
+        } else if(status.toLowerCase().includes('reject')) {
+            statusBadge.innerText = "अस्वीकृत (Rejected)";
+            statusBadge.style.backgroundColor = '#dc3545';
+            statusBadge.style.color = '#fff';
+        } else {
+            statusBadge.innerText = "लंबित (Pending)";
+            statusBadge.style.backgroundColor = '#ffc107';
+            statusBadge.style.color = '#000';
+        }
 
         // 4. Student Photo
         if(params.get('photo')) {
