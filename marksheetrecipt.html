@@ -26,7 +26,6 @@
         .sig-box { width: 30%; border-top: 1.5px dashed #000; padding-top: 8px; }
         .status-badge { padding: 4px 12px; border-radius: 4px; color: #fff; font-weight: bold; font-size: 12px; display: inline-block; }
         
-        /* प्रिंट के समय प्रिंट बटन छुप जाएगा और बैकग्राउंड हट जाएगा */
         @media print { 
             .btn-print { display: none !important; } 
             body { background: #fff; padding: 0; }
@@ -66,7 +65,7 @@
             </tr>
         </thead>
         <tbody id="correction-body">
-            <!-- डेटा डायनामिक रूप से यहाँ इन्सर्ट होगा -->
+            <!-- डेटा यहाँ इन्सर्ट होगा -->
         </tbody>
     </table>
 
@@ -87,7 +86,7 @@
     </table>
 
     <div class="declaration">
-        <strong>शथा पत्र (Declaration):</strong><br>
+        <strong>शपथ पत्र (Declaration):</strong><br>
         मैं शपथ पूर्वक कथन करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त जानकारी पूर्णतः सत्य एवं सटीक है। मैंने सभी दस्तावेजों की जांच कर ली है। यदि किसी भी स्तर पर दी गई जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो बोर्ड को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा, जिसकी समस्त जिम्मेदारी मेरी होगी।
     </div>
 
@@ -98,7 +97,7 @@
     </div>
 
     <p style="font-size: 11px; margin-top: 30px; text-align: center; color: #666; border-top: 1px solid #eee; padding-top: 10px;">
-        यह एक कंप्यूटर जनित रसीद है। बोर्ड द्वारा मूल दस्तावेजों के सत्यापन के बाद ही सुधार मान्य होगा।
+        यह एक computer जनित रसीद है। बोर्ड द्वारा मूल दस्तावेजों के सत्यापन के बाद ही सुधार मान्य होगा।
     </p>
 </div>
 
@@ -116,49 +115,55 @@
                 return cleanVal;
             };
 
-            // लोकल स्टोरेज से सर्वर द्वारा भेजा गया डेटा प्राप्त करना
-            const resData = JSON.parse(localStorage.getItem("receiptData"));
-            
+            // लोकल स्टोरेज से रिस्पॉन्स डेटा निकालना
+            let resData = localStorage.getItem("receiptData");
             if (!resData) {
                 document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>कोई डेटा उपलब्ध नहीं है। कृपया पोर्टल से दोबारा प्रयास करें।</td></tr>";
                 return;
             }
 
-            // बेसिक डिटेल्स सेट करना
-            document.getElementById("res-app").innerText = resData.appNo || "---";
-            document.getElementById("res-roll").innerText = resData.rollNo || "---";
-            document.getElementById("res-year").innerText = resData.year || "---";
-            document.getElementById("res-mobile").innerText = resData.mobile || "---";
-            document.getElementById("res-info").innerText = resData.info || "मार्कशीट सुधार अनुरोध दर्ज किया गया।";
-            document.getElementById("res-reject").innerText = resData.rejectReason || "---";
+            let parsed = JSON.parse(resData);
+            
+            // अगर डेटा सीधे "data" ऑब्जेक्ट के अंदर लपेटा हुआ है (Search Portal रिस्पॉन्स)
+            let s = parsed.data ? parsed.data : parsed;
 
-            // पुराना और नया डेटा एरे मैपिंग
+            // बेसिक डिटेल्स सेट करना (Code.gs की कीज के अनुसार मैपिंग)
+            document.getElementById("res-app").innerText = s.appNo || parsed.appNo || "---";
+            document.getElementById("res-roll").innerText = s.roll || parsed.roll || "---";
+            document.getElementById("res-year").innerText = s.session || s.year || "---";
+            document.getElementById("res-mobile").innerText = s.mobile || "---";
+            document.getElementById("res-info").innerText = s.correction || "मार्कशीट सुधार अनुरोध दर्ज किया गया।";
+            document.getElementById("res-reject").innerText = s.rejectReason || "---";
+
+            // पुराना और नया डेटा एरे मैपिंग (Code.gs की वास्तविक कीज के आधार पर)
             const fields = [
-                { label: "छात्र का नाम (Student Name)", old: resData.old_name, new: resData.new_name, isId: false, isPhoto: false },
-                { label: "पिता का नाम (Father's Name)", old: resData.old_father, new: resData.new_father, isId: false, isPhoto: false },
-                { label: "माता का नाम (Mother's Name)", old: resData.old_mother, new: resData.new_mother, isId: false, isPhoto: false },
-                { label: "जन्म तिथि (Date of Birth)", old: resData.old_dob, new: resData.new_dob, isId: false, isPhoto: false },
-                { label: "कक्षा (Class)", old: resData.old_class, new: resData.new_class, isId: false, isPhoto: false },
-                { label: "लिंग (Gender)", old: resData.old_gender, new: resData.new_gender, isId: false, isPhoto: false },
-                { label: "माध्यम (Medium)", old: resData.old_medium, new: resData.new_medium, isId: false, isPhoto: false },
-                { label: "श्रेणी (Category)", old: resData.old_category, new: resData.new_category, isId: false, isPhoto: false },
-                { label: "समग्र आईडी / पहचान पत्र (ID)", old: resData.old_samagra, new: resData.new_samagra, isId: true, isPhoto: false },
-                { label: "छात्र का फोटो (Student Photo)", old: resData.old_photo, new: resData.new_photo, isId: false, isPhoto: true }
+                { label: "छात्र का नाम (Student Name)", old: s.name, new: s.newName || s.new_name, isId: false, isPhoto: false },
+                { label: "पिता का नाम (Father's Name)", old: s.father, new: s.newFather || s.new_father, isId: false, isPhoto: false },
+                { label: "माता का नाम (Mother's Name)", old: s.mother, new: s.newMother || s.new_mother, isId: false, isPhoto: false },
+                { label: "जन्म तिथि (Date of Birth)", old: s.dob, new: s.newDob || s.new_dob, isId: false, isPhoto: false },
+                { label: "कक्षा (Class)", old: s.class, new: s.newClass || s.new_class, isId: false, isPhoto: false },
+                { label: "लिंग (Gender)", old: s.gender, new: s.newGender || s.new_gender, isId: false, isPhoto: false },
+                { label: "माध्यम (Medium)", old: s.medium, new: s.newMedium || s.new_medium, isId: false, isPhoto: false },
+                { label: "श्रेणी (Category)", old: s.category, new: s.newCategory || s.new_category, isId: false, isPhoto: false },
+                { label: "समग्र आईडी / पहचान पत्र (ID)", old: s.samagra, new: s.newSamagra || s.new_samagra, isId: true, isPhoto: false },
+                { label: "छात्र का फोटो (Student Photo)", old: s.photoUrl, new: s.photo || s.new_photo, isId: false, isPhoto: true }
             ];
 
             const tbody = document.getElementById("correction-body");
             let tableRowsHtml = ""; 
+            let totalCorrections = 0;
 
             fields.forEach(f => {
-                // केवल उन्हीं फ़ील्ड्स को रसीद की टेबल में दिखाना जिसमें सुधार (New Data) माँगा गया है
+                // अगर नया डेटा मौजूद है तो रो (Row) दिखाएं
                 if (f.new && f.new.toString().trim() !== "" && f.new.toString().trim() !== "undefined" && f.new.toString().trim() !== "null") { 
+                    totalCorrections++;
                     let displayOld = "";
                     let displayNew = "";
 
                     if (f.isPhoto) {
                         const oldImgSrc = (f.old && f.old !== "null" && f.old !== "undefined" && f.old.trim() !== "") ? f.old : 'https://via.placeholder.com/90x110?text=No+Photo';
                         displayOld = `<img src="${oldImgSrc}" class="receipt-photo" alt="Old Photo">`;
-                        displayNew = `<img src="${f.new}" class="receipt-photo" alt="New Photo">`;
+                        displayNew = `<img src="${f.new.base64 ? 'data:' + f.new.type + ';base64,' + f.new.base64 : f.new}" class="receipt-photo" alt="New Photo">`;
                     } else {
                         displayOld = f.isId ? maskSensitiveId(f.old) : f.old;
                         displayNew = f.isId ? maskSensitiveId(f.new) : f.new;
@@ -176,10 +181,16 @@
                 }
             });
 
-            tbody.innerHTML = tableRowsHtml || "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला</td></tr>";
+            // अगर नया डेटा सबमिशन से आ रहा है और तत्काल 'पुराना डेटा' ऑब्जेक्ट में नहीं है
+            if (totalCorrections === 0 && (s.newName || s.newFather || s.newMother || s.newDob)) {
+                // यह ब्लॉक फॉर्म सबमिट होते ही तुरंत रसीद जनरेट करने में मदद करेगा
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; font-weight:bold; color:green;'>सुधार डेटा सफलता पूर्वक सुरक्षित किया गया। स्थिति ट्रैक करने के लिए सर्च पोर्टल का उपयोग करें।</td></tr>";
+            } else {
+                tbody.innerHTML = tableRowsHtml || "<tr><td colspan='3' style='text-align:center;'>कोई सुधार विवरण नहीं मिला या रिकॉर्ड सुरक्षित है।</td></tr>";
+            }
 
-            // स्टेटस बैज सेटिंग्स
-            const status = (resData.studentStatus || "Pending").toLowerCase();
+            // स्टेटस हैंडलिंग
+            const status = (s.appStatus || parsed.status || "Pending").toLowerCase();
             const statusBadge = document.getElementById("disp-status");
             
             if(status.includes('approve') || status.includes('success') || status.includes('स्वीकृत')) {
@@ -196,8 +207,8 @@
                 statusBadge.style.color = '#000';
             }
 
-            // ऑटोमैटिक प्रिंट विंडो ट्रिगर करना
-            setTimeout(() => { window.print(); }, 800);
+            // ऑटोमैटिक प्रिंट ट्रिगर
+            setTimeout(() => { window.print(); }, 1000);
 
         } catch (err) {
             console.error("JS Error: " + err.message);
