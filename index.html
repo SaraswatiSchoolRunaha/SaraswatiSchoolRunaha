@@ -178,11 +178,81 @@ font-weight:600;
 }
 
 /* BOXES */
+/* मुख्य कंटेनर जो बॉक्स और लंबे बॉक्स को अगल-बगल रखेगा */
+.main-content-wrapper {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    margin: 10px;
+}
+
+/* अब बॉक्स की चौड़ाई कंप्यूटर पर 3-3 की लाइन में सेट होगी */
 .box-section{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
-gap:10px;
-padding:10px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr); 
+    gap:15px;
+    flex: 3; 
+}
+
+/* नए लंबे बॉक्स (Sidebar) की स्टाइलिंग */
+.side-info-box {
+    flex: 1; 
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    border-top: 5px solid #e91e63; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    height: auto;
+}
+
+.side-info-box h3 {
+    color: #0b3c5d;
+    font-size: 19px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #002366;
+    padding-bottom: 8px;
+}
+
+.side-info-box p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.side-links-list {
+    list-style: none;
+    padding: 0;
+}
+
+.side-links-list li {
+    margin: 12px 0;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 8px;
+}
+
+.side-links-list li a {
+    color: #002366;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    transition: 0.2s;
+}
+
+.side-links-list li a:hover {
+    color: #ff5722;
+    padding-left: 5px;
+}
+
+/* मोबाइल और टैबलेट के लिए ऑटो-एडजस्ट सेटिंग */
+@media (max-width: 1024px) {
+    .main-content-wrapper { flex-direction: column; }
+    .box-section { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .box-section { grid-template-columns: 1fr; }
 }
 
 .box{
