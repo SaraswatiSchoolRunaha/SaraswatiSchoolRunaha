@@ -902,21 +902,39 @@ Gallary
 </footer>
 <script>
   
-  // =========================================================================
+ // =========================================================================
 // 🌐 PORTAL CONTROL (पोर्टल बंद/चालू करने का बटन)
 // जब काम करना हो तो true करें, चालू रखने के लिए false रखें।
 // =========================================================================
-  const isPortalClosed = false;
+const isPortalClosed = false; // 👈 इसे true करते ही मेंटेनेंस स्क्रीन चालू हो जाएगी
 
 // 1. Credentials Configuration
 const credentials = {
     teacher: { id: "teacher", pass: "teacher@123" },
     principal: { id: "principal", pass: "principal@123" },
-    admin: { id: "admin", pass: "admin@123" } // 👈 Naya Admin account
+    admin: { id: "admin", pass: "admin@123" } 
 };
-// 2. Initial Setup: Page load par permissions set karna
+
+// 2. Initial Setup: Page load par check aur configuration
 document.addEventListener('DOMContentLoaded', () => {
+    // 🛠️ यहाँ मेंटेनेंस चेक करने का लॉजिक फिक्स कर दिया गया है
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDeveloper = urlParams.get('dev') === 'true';
+
+    if (isPortalClosed && !isDeveloper) {
+        document.getElementById('maintenanceScreen').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // स्क्रॉलिंग बंद
+        return; // आगे का कोई कोड रन नहीं होगा, पूरा पेज छिप जाएगा
+    }
+
+    // अगर पोर्टल चालू है तो सामान्य रूप से परमिशन लागू करें
     applyPermissions('student');
+
+    // Welcome Popup को 0.8 सेकंड बाद लोड करना
+    setTimeout(() => {
+        const welcome = document.getElementById('welcomePopup');
+        if(welcome) welcome.style.display = 'flex';
+    }, 800);
 });
 
 // 3. Popup Controls
