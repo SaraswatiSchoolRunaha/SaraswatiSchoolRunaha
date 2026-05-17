@@ -505,12 +505,45 @@ padding:15px;
     from { transform: scale(0.7); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
- 
+
+  /* 💻 🔴 MAINTENANCE SCREEN CSS */
+#maintenanceScreen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #002366;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999; 
+    text-align: center;
+    padding: 20px;
+}
+
 </style>
 
 </head>
 
 <body>
+<!-- 🛠️ 🔴 MAINTENANCE OVERLAY BOX (यहाँ जुड़ गया समय और तारीख बदलने वाला बॉक्स) -->
+<div id="maintenanceScreen" style="display: none;">
+    <img src="https://i.ibb.co/YF1dc4CH/Logo-page-0001.jpg" style="width:110px; height:110px; border-radius:50%; margin-bottom:20px; border: 3px solid #ffcc00;">
+    <h2 style="font-size:30px;">🔧 आवश्यक रखरखाव कार्य (Under Maintenance)</h2>
+    <p style="margin-top:15px; font-size:18px; color:#e3f2fd; max-width: 650px; line-height: 1.6;">
+        पोर्टल पर नया अपडेट और तकनीकी सुधार का कार्य चल रहा है। असुविधा के लिए हमें खेद है।
+    </p>
+    
+    <!-- 📅 समय और तारीख बदलने का बॉक्स -->
+    <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 12px; margin-top: 25px; border: 1px dashed #ffcc00; min-width:350px;">
+        <p style="font-size: 17px; color: #ffcc00; font-weight:bold;">🚫 पोर्टल बंद होने का समय:</p>
+        <p style="font-size: 16px; color: #fff; margin-bottom:15px;">आज सुबह 09:00 बजे से</p>
+        <p style="font-size: 17px; color: #28a745; font-weight:bold;">🔄 वापस चालू होने का समय:</p>
+        <p style="font-size: 16px; color: #fff;">आज शाम 05:00 बजे तक</p>
+    </div>
+    
+    <p style="margin-top:30px; font-size:14px; color:#bbb;">Saraswati Bal Vidhya Mandir Management Team</p>
+</div>
 
 <header>
 
@@ -868,6 +901,13 @@ Gallary
 © 2026 Saraswati Bal Vidhya Mandir High School Runaha
 </footer>
 <script>
+  
+  // =========================================================================
+// 🌐 PORTAL CONTROL (पोर्टल बंद/चालू करने का बटन)
+// जब काम करना हो तो true करें, चालू रखने के लिए false रखें।
+// =========================================================================
+  const isPortalClosed = false;
+
 // 1. Credentials Configuration
 const credentials = {
     teacher: { id: "teacher", pass: "teacher@123" },
