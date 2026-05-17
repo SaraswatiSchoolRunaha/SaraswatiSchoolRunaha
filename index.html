@@ -7,7 +7,12 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:#f4f4f4}
+body {
+  background: #f4f4f4;
+  width: 1320px;       /* बॉक्स को नीचे जाने से रोकने के लिए फिक्स चौड़ाई */
+  min-width: 1320px;   /* मोबाइल पर डेस्कटॉप व्यू दिखाने के लिए मजबूर करेगा */
+  margin: 0 auto;
+}
 
 /* HEADER */
 header{background:#002366;color:white;padding:10px 20px}
@@ -243,16 +248,6 @@ font-weight:600;
 .side-links-list li a:hover {
     color: #ff5722;
     padding-left: 5px;
-}
-
-/* मोबाइल और टैबलेट के लिए ऑटो-एडजस्ट सेटिंग */
-@media (max-width: 1024px) {
-    .main-content-wrapper { flex-direction: column; }
-    .box-section { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 600px) {
-    .box-section { grid-template-columns: 1fr; }
 }
 
 .box{
