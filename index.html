@@ -920,17 +920,20 @@ const credentials = {
 
 // 2. Initial Setup: Page load par check aur configuration
 document.addEventListener('DOMContentLoaded', () => {
-    // 🛠️ यहाँ मेंटेनेंस चेक करने का लॉजिक फिक्स कर दिया गया है
     const urlParams = new URLSearchParams(window.location.search);
     const isDeveloper = urlParams.get('dev') === 'true';
+    const enteredPin = urlParams.get('pin'); // 👈 यूआरएल से पिन निकालने के लिए लाइन जोड़ी
 
-    if (isPortalClosed && !isDeveloper) {
-        document.getElementById('maintenanceScreen').style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // स्क्रॉलिंग बंद
-        return; // आगे का कोई कोड रन नहीं होगा, पूरा पेज छिप जाएगा
+    // 🔒 मजबूत सुरक्षा लॉजिक: पोर्टल बंद होने पर dev=true और सही PIN दोनों होना ज़रूरी है
+    if (isPortalClosed) {
+        if (!isDeveloper || enteredPin !== DEV_SECRET_PIN) {
+            document.getElementById('maintenanceScreen').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // स्क्रॉलिंग बंद
+            return; // आगे का कोई कोड रन नहीं होगा
+        }
     }
 
-    // अगर पोर्टल चालू है तो सामान्य रूप से परमिशन लागू करें
+    // अगर पोर्टल खुला है या सही पिन डाल दिया गया है, तो नॉर्मल वेबसाइट लोड होगी
     applyPermissions('student');
 
     // Welcome Popup को 0.8 सेकंड बाद लोड करना
@@ -939,7 +942,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(welcome) welcome.style.display = 'flex';
     }, 800);
 });
-
+  
 // 3. Popup Controls
 function openLogin() { 
     const popup = document.getElementById('loginPopup');
