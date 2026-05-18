@@ -32,7 +32,18 @@
                     Check Status
                 </button>
             </div>
-            <div id="statusResult" class="mt-4 hidden p-4 rounded-xl text-sm font-semibold border transition-all"></div>
+          <div id="statusResult" class="mt-4 hidden p-4 rounded-xl text-sm font-semibold border transition-all"></div>
+        </div> <div class="w-full mb-8 bg-blue-50 border border-blue-200 p-4 rounded-xl flex items-center justify-between shadow-sm animate-fade-in">
+            <div class="flex items-center gap-2">
+                <span class="text-blue-700 text-lg">📅</span>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Current Submission Year</p>
+                    <p class="text-sm font-bold text-slate-800">फॉर्म जमा करने का वर्ष</p>
+                </div>
+            </div>
+            <div class="bg-blue-700 text-white font-mono font-bold text-base px-4 py-1.5 rounded-lg shadow-sm" id="submissionYearBox">
+                <script>document.write(new Date().getFullYear());</script>
+            </div>
         </div>
 
         <div id="formContainer" class="w-full bg-white rounded-none overflow-hidden">
