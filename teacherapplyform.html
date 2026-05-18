@@ -255,20 +255,20 @@
                     </div>
                 </div>
 
-                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 max-w-sm mx-auto shadow-inner space-y-4">
-                    <label class="block text-center text-xs font-bold text-slate-600 uppercase tracking-wider">Security Verification *</label>
-                    <div class="flex items-center justify-center gap-3">
-                       <div id="captchaBox" class="bg-white text-slate-900 font-mono text-xl tracking-widest font-bold px-6 py-1.5 rounded-lg select-none border border-slate-900 shadow-sm min-w-[200px] text-center">
-                            XXXX
-
-                        </div>
-                        <button type="button" onclick="generateCaptcha()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium px-4 py-2 rounded-lg transition-all flex items-center gap-1 cursor-pointer shadow-sm">
-                            🔄 Refresh
-                        </button>
-                    </div>
-                    <input type="text" id="captchaInput" required placeholder="Enter Captcha" class="w-full px-4 py-2 border border-blue-500 rounded-lg focus:outline-none text-sm text-center bg-white font-medium placeholder-slate-400">
-                </div>
-
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 w-full shadow-inner space-y-4">
+    <label class="block text-center text-xs font-bold text-slate-600 uppercase tracking-wider">Security Verification *</label>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div id="captchaBox" class="bg-white text-slate-900 font-mono text-xl tracking-widest font-bold px-6 py-1.5 rounded-lg select-none border border-slate-900 shadow-sm w-full sm:w-64 text-center">
+            XXXX
+        </div>
+        <button type="button" onclick="generateCaptcha()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium px-4 py-2 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm w-full sm:w-auto">
+            🔄 Refresh
+        </button>
+    </div>
+    <div class="max-w-md mx-auto">
+        <input type="text" id="captchaInput" required placeholder="Enter Captcha" class="w-full px-4 py-2 border border-blue-500 rounded-lg focus:outline-none text-sm text-center bg-white font-medium placeholder-slate-400">
+    </div>
+</div>
                 <div class="text-center pt-4 border-t border-slate-100">
                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-12 rounded-lg transition-all text-sm tracking-wide cursor-pointer shadow-md">
                         Submit
