@@ -985,11 +985,19 @@ function handleLogin() {
 
 // 5. Menu Visibility Logic (Naya Updated Version)
 function applyPermissions(role) {
+    
+    // 👇 यहाँ पर डालना है यह कोड (इसके ठीक नीचे) 👇
+    if (isPortalClosed && role === 'student') {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('dev') !== 'true' || urlParams.get('pin') !== DEV_SECRET_PIN) return;
+    }
+    // 👆 यहाँ तक 👆
+
     const allMenus = document.querySelectorAll('nav .dropdown, nav > a');
     
     // Permission Lists: Kaun kya dekhega
     const studentAllowed = ["Home", "Gallery", "Contact"];
-
+  
    // teacher  ke liye Limited Access (Yahan se Fees/TC/Promotion hata diya hai)
      const teacherAllowed = ["Home", "Attendance", "Result Upd", "Gallery", "Contact"];
   
@@ -1055,14 +1063,6 @@ function checkResult(){
     }
 }
   
-// Website load hote hi popup dikhane ke liye logic
-window.addEventListener('load', function() {
-    setTimeout(() => {
-        const welcome = document.getElementById('welcomePopup');
-        if(welcome) welcome.style.display = 'flex';
-    }, 800); // 0.8 second baad popup aayega
-});
-
 // Welcome popup band karne ka function
 function closeWelcomePopup() {
     const welcome = document.getElementById('welcomePopup');
