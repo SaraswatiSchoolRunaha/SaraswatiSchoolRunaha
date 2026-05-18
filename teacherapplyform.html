@@ -316,25 +316,54 @@
             document.getElementById("captchaBox").innerText = currentCaptcha;
         }
 
-        // 2. Form Submission Handler
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            
-            const userInput = document.getElementById("captchaInput").value.trim();
-            
-            if (userInput !== currentCaptcha) {
-                alert("❌ गलत कैप्चा कोड! कृपया सही कोड दर्ज करें। (Incorrect Captcha)");
-                generateCaptcha();
-                document.getElementById("captchaInput").value = "";
-                return;
-            }
+       async function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    // 1. कैप्चा जांच
+    const userInput = document.getElementById("captchaInput").value.trim();
+    if (userInput !== currentCaptcha) {
+        alert("❌ गलत कैप्चा कोड! कृपया सही कोड दर्ज करें।");
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        return;
+    }
 
-            const randomNum = Math.floor(1000 + Math.random() * 9000);
-            const appNo = `SCH-2026-${randomNum}`;
+    // 2. फॉर्म डेटा इकट्ठा करें
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    // रसीद नंबर जोड़ें
+    const appNo = `SCH-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    data.appNo = appNo; // यह डेटा के साथ शीट में जाएगा
 
-            document.getElementById("generatedAppNo").innerText = appNo;
-            document.getElementById("successModal").style.display = "flex";
-        }
+    // 3. अपना वेब ऐप URL यहाँ डालें (Deploy करने के बाद मिलता है)
+    const scriptURL = "YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE"; 
+
+    // सबमिट बटन को 'Sending...' दिखाएं
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerText = "Submitting...";
+
+    try {
+        await fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors', // Google Sheet के लिए जरूरी है
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        // सफलता पर रसीद दिखाएं
+        document.getElementById("generatedAppNo").innerText = appNo;
+        document.getElementById("successModal").style.display = "flex";
+        form.reset(); // फॉर्म खाली करें
+    } catch (err) {
+        alert("डेटा भेजने में एरर आया। कृपया दोबारा कोशिश करें।");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Submit";
+    }
+}
 
         // 3. Close Success Modal and Reset Form
         function closeModal() {
