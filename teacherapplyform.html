@@ -400,18 +400,46 @@
         document.getElementById("captchaBox").innerText = currentCaptcha;
     }
 
-    // 2. Form Submission Handler (Improved)
-    function handleFormSubmit(e) {
-        e.preventDefault();
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const userInput = document.getElementById("captchaInput").value.trim();
+   // 2. Form Submission Handler (Google Sheets के साथ)
+function handleFormSubmit(e) {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const userInput = document.getElementById("captchaInput").value.trim();
+    
+    if (userInput !== currentCaptcha) {
+        alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        return;
+    }
+
+    submitBtn.innerText = "Submitting...";
+    submitBtn.disabled = true;
+
+    // यहाँ अपनी Web App URL पेस्ट करें (जो आपको Apps Script से मिलेगी)
+    const scriptURL = "YOUR_WEB_APP_URL_HERE"; 
+
+    // डेटा Google Sheet में भेजें
+    fetch(scriptURL, { 
+        method: 'POST', 
+        body: new FormData(e.target) 
+    })
+    .then(response => {
+        // ID Generate करें और Modal दिखाएं
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const appNo = `TECH-2026-${randomNum}`;
+        document.getElementById("generatedAppNo").innerText = appNo;
+        document.getElementById("successModal").style.display = "flex";
         
-        if (userInput !== currentCaptcha) {
-            alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
-            generateCaptcha();
-            document.getElementById("captchaInput").value = "";
-            return;
-        }
+        submitBtn.innerText = "Submit";
+        submitBtn.disabled = false;
+    })
+    .catch(error => {
+        alert("Error! Try again.");
+        submitBtn.innerText = "Submit";
+        submitBtn.disabled = false;
+    });
+}
 
         // Button Loading State
         submitBtn.innerText = "Submitting...";
