@@ -455,7 +455,9 @@ function handleFormSubmit(e) {
         submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
     });
 }
-    // 3. Eligibility Checkbox Logic
+
+     
+     // 3. Eligibility Checkbox Logic
     document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             if (this.value === 'None' && this.checked) {
