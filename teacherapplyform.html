@@ -403,7 +403,7 @@
         document.getElementById("captchaBox").innerText = currentCaptcha;
     }
 
-    // 2. Form Submission Handler
+ // 2. Form Submission Handler
 function handleFormSubmit(e) {
     e.preventDefault();
     const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -417,12 +417,11 @@ function handleFormSubmit(e) {
         return;
     }
 
-    // ID जनरेट करें (सबमिट करने से पहले)
+    // ID जनरेट करें
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     const appNo = `TECH-2026-${randomNum}`;
     
-    // ID को hidden input में सेट करें (ताकि यह शीट में जाए)
-    // सुनिश्चित करें कि आपके HTML में <input type="hidden" name="appNumber" id="appNumberHidden"> मौजूद है
+    // ID को hidden input में सेट करें (नाम 'appNo' रखें जैसा आपकी शीट में है)
     document.getElementById("appNumberHidden").value = appNo;
     
     // बटन को डिसेबल करें
@@ -438,12 +437,21 @@ function handleFormSubmit(e) {
         body: new FormData(e.target) 
     })
     .then(response => {
-        // Modal में ID दिखाएं
+        // 1. Success Modal दिखाएं
         document.getElementById("generatedAppNo").innerText = appNo;
-        
-        // Success Modal दिखाएं
         document.getElementById("successModal").style.display = "flex";
         
+        // 2. फॉर्म क्लियर करें
+        e.target.reset(); 
+        
+        // 3. कैप्चा रिफ्रेश करें
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        
+        // 4. प्रोग्रेस बार रिसेट (अगर इस्तेमाल कर रहे हैं)
+        document.getElementById("formProgress").style.width = "0%";
+        
+        // 5. बटन वापस सही करें
         submitBtn.innerText = "Submit";
         submitBtn.disabled = false;
         submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
@@ -455,7 +463,6 @@ function handleFormSubmit(e) {
         submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
     });
 }
-
      
      // 3. Eligibility Checkbox Logic
     document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
