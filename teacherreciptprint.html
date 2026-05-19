@@ -4,11 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Teacher Receipt</title>
+<title>Teacher Application Receipt</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 <style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f1f5f9;
+}
+
+/* PRINT */
 
 @media print{
 
@@ -21,8 +28,8 @@
     }
 
     #receiptArea{
-        box-shadow:none !important;
         border:none !important;
+        box-shadow:none !important;
     }
 
 }
@@ -31,15 +38,18 @@
 
 </head>
 
-<body class="bg-slate-100 p-6">
+<body class="p-4 md:p-8">
+
+<!-- MAIN RECEIPT -->
 
 <div id="receiptArea"
-class="max-w-5xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2xl p-8">
+class="max-w-6xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2xl p-6 md:p-10">
 
     <!-- HEADER -->
+
     <div class="text-center border-b-4 border-blue-700 pb-5 mb-8">
 
-        <h1 class="text-4xl font-extrabold text-blue-800 uppercase">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 uppercase">
             🎓 Saraswati Bal Vidhya Mandir School
         </h1>
 
@@ -50,6 +60,7 @@ class="max-w-5xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2x
     </div>
 
     <!-- TOP -->
+
     <div class="grid md:grid-cols-2 gap-4 mb-6">
 
         <div class="bg-slate-50 border rounded-2xl p-4">
@@ -79,6 +90,7 @@ class="max-w-5xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2x
     </div>
 
     <!-- PERSONAL -->
+
     <div class="border rounded-2xl p-5 mb-5">
 
         <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
@@ -100,6 +112,7 @@ class="max-w-5xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2x
     </div>
 
     <!-- CONTACT -->
+
     <div class="border rounded-2xl p-5 mb-5">
 
         <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
@@ -121,7 +134,100 @@ class="max-w-5xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2x
 
     </div>
 
+    <!-- JOB -->
+
+    <div class="border rounded-2xl p-5 mb-5">
+
+        <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
+            Job Preference
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-3 text-sm">
+
+            <p><b>Post Applied :</b> <span id="r_postApplied"></span></p>
+
+            <p><b>Medium :</b> <span id="r_medium"></span></p>
+
+            <p><b>Main Subject 1 :</b> <span id="r_mainSubject1"></span></p>
+
+            <p><b>Main Subject 2 :</b> <span id="r_mainSubject2"></span></p>
+
+            <p><b>Other Skill :</b> <span id="r_otherSkill"></span></p>
+
+        </div>
+
+    </div>
+
+    <!-- QUALIFICATION -->
+
+    <div class="border rounded-2xl p-5 mb-5">
+
+        <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
+            Qualification
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-3 text-sm">
+
+            <p><b>Highest Qualification :</b> <span id="r_highQual"></span></p>
+
+            <p><b>Graduation :</b> <span id="r_graduation"></span></p>
+
+            <p><b>Post Graduation :</b> <span id="r_postGraduation"></span></p>
+
+            <p><b>Professional Degree :</b> <span id="r_professionalDeg"></span></p>
+
+            <p><b>TET Details :</b> <span id="r_tetDetails"></span></p>
+
+        </div>
+
+    </div>
+
+    <!-- EXPERIENCE -->
+
+    <div class="border rounded-2xl p-5 mb-5">
+
+        <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
+            Experience & Salary
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-3 text-sm">
+
+            <p><b>Experience :</b> <span id="r_experience"></span></p>
+
+            <p><b>Expected Salary :</b> <span id="r_expectedSalary"></span></p>
+
+            <p><b>Notice Period :</b> <span id="r_noticePeriod"></span></p>
+
+        </div>
+
+    </div>
+
+    <!-- STATUS -->
+
+    <div class="border rounded-2xl p-5 mb-5 bg-yellow-50">
+
+        <h2 class="font-bold text-yellow-700 mb-4 uppercase text-lg">
+            Application Status
+        </h2>
+
+        <p class="text-lg font-bold text-yellow-800">
+            <span id="r_status"></span>
+        </p>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="text-center mt-10 border-t pt-4">
+
+        <p class="text-xs text-slate-500">
+            This is a computer generated receipt.
+        </p>
+
+    </div>
+
     <!-- PRINT -->
+
     <div class="mt-8 print-hide">
 
         <button onclick="window.print()"
@@ -138,9 +244,9 @@ class="max-w-5xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2x
 <script>
 
 /*
-=================================
-YAHAN APNA DATA SET KARO
-=================================
+====================================
+SEARCH PAGE SE DATA AAYEGA
+====================================
 */
 
 const data = {
@@ -155,38 +261,104 @@ const data = {
 
     mobile: "9876543210",
     whatsapp: "9876543210",
-    email: "rahul@gmail.com"
+    email: "rahul@gmail.com",
+
+    postApplied: "PGT",
+    medium: "English",
+
+    mainSubject1: "Mathematics",
+    mainSubject2: "Physics",
+
+    otherSkill: "Computer",
+
+    highQual: "Post-Graduate",
+    graduation: "B.Sc",
+    postGraduation: "M.Sc",
+
+    professionalDeg: "B.Ed",
+
+    tetDetails: "CTET Paper 2",
+
+    experience: "3-5 Years",
+
+    expectedSalary: "35000",
+
+    noticePeriod: "15 Days",
+
+    applicationStatus: "Pending"
 
 };
 
 /* AUTO FILL */
 
 document.getElementById("r_appNo").innerText =
-data.appNo;
+data.appNo || "";
 
 document.getElementById("r_session").innerText =
-data.session;
+data.session || "";
 
 document.getElementById("r_fullName").innerText =
-data.fullName;
+data.fullName || "";
 
 document.getElementById("r_fatherName").innerText =
-data.fatherName;
+data.fatherName || "";
 
 document.getElementById("r_dob").innerText =
-data.dob;
+data.dob || "";
 
 document.getElementById("r_gender").innerText =
-data.gender;
+data.gender || "";
 
 document.getElementById("r_mobile").innerText =
-data.mobile;
+data.mobile || "";
 
 document.getElementById("r_whatsapp").innerText =
-data.whatsapp;
+data.whatsapp || "";
 
 document.getElementById("r_email").innerText =
-data.email;
+data.email || "";
+
+document.getElementById("r_postApplied").innerText =
+data.postApplied || "";
+
+document.getElementById("r_medium").innerText =
+data.medium || "";
+
+document.getElementById("r_mainSubject1").innerText =
+data.mainSubject1 || "";
+
+document.getElementById("r_mainSubject2").innerText =
+data.mainSubject2 || "";
+
+document.getElementById("r_otherSkill").innerText =
+data.otherSkill || "";
+
+document.getElementById("r_highQual").innerText =
+data.highQual || "";
+
+document.getElementById("r_graduation").innerText =
+data.graduation || "";
+
+document.getElementById("r_postGraduation").innerText =
+data.postGraduation || "";
+
+document.getElementById("r_professionalDeg").innerText =
+data.professionalDeg || "";
+
+document.getElementById("r_tetDetails").innerText =
+data.tetDetails || "";
+
+document.getElementById("r_experience").innerText =
+data.experience || "";
+
+document.getElementById("r_expectedSalary").innerText =
+data.expectedSalary || "";
+
+document.getElementById("r_noticePeriod").innerText =
+data.noticePeriod || "";
+
+document.getElementById("r_status").innerText =
+data.applicationStatus || "";
 
 </script>
 
