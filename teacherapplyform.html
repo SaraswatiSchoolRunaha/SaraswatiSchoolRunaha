@@ -387,27 +387,40 @@
         document.getElementById("captchaBox").innerText = currentCaptcha;
     }
 
-    // 2. Form Submission Handler
-    function handleFormSubmit(e) {
-        e.preventDefault();
-        
-        const userInput = document.getElementById("captchaInput").value.trim();
-        
-        if (userInput !== currentCaptcha) {
-            alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
-            generateCaptcha();
-            document.getElementById("captchaInput").value = "";
-            return;
-        }
-
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        const appNo = `TECH-2026-${randomNum}`;
-
-        document.getElementById("generatedAppNo").innerText = appNo;
-        document.getElementById("successModal").style.display = "flex";
+    // 2. Form Submission Handler (Updated)
+function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const userInput = document.getElementById("captchaInput").value.trim();
+    
+    // Captcha Validation
+    if (userInput !== currentCaptcha) {
+        alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        return;
     }
 
-    // 3. Close Success Modal and Reset Form
+    // Button Loading State
+    submitBtn.innerText = "Submitting...";
+    submitBtn.disabled = true;
+    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+    // Generate Random ID
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const appNo = `TECH-2026-${randomNum}`;
+
+    // Update Modal
+    document.getElementById("generatedAppNo").innerText = appNo;
+    document.getElementById("successModal").style.display = "flex";
+
+    // Reset Button State after a short delay (or keep it locked)
+    submitBtn.innerText = "Submit";
+    submitBtn.disabled = false;
+    submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+}
+        // 3. Close Success Modal and Reset Form
     function closeModal() {
         document.getElementById("successModal").style.display = "none";
         document.getElementById("teacherForm").reset();
