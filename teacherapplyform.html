@@ -415,29 +415,29 @@
         generateCaptcha();
     }
 
-    // 4. Mock Status Checking System
-    function checkStatus() {
-        const inputVal = document.getElementById("statusAppNo").value.trim();
-        const resultDiv = document.getElementById("statusResult");
+    // 4. Mock Status Checking System (Updated)
+function checkStatus() {
+    const inputVal = document.getElementById("statusAppNo").value.trim();
+    const resultDiv = document.getElementById("statusResult");
 
-        if (!inputVal) {
-            alert("कृपया अपना एप्लीकेशन नंबर दर्ज करें!");
-            return;
-        }
-
-        resultDiv.className = "mt-4 hidden p-4 rounded-xl text-sm font-semibold border transition-all";
-        
-        if (inputVal.startsWith("SCH-2026-")) {
-            resultDiv.innerText = `📄 Status for ${inputVal}: Under Review (आपका फॉर्म जांच के अधीन है। विद्यालय प्रबंधन जल्द ही आपसे संपर्क करेगा।)`;
-            resultDiv.classList.add("bg-yellow-50", "text-yellow-800", "border-yellow-200");
-            resultDiv.classList.remove("hidden");
-        } else {
-            resultDiv.innerText = `❌ Error: Application Number ${inputVal} नहीं मिला।`;
-            resultDiv.classList.add("bg-red-50", "text-red-800", "border-red-200");
-            resultDiv.classList.remove("hidden");
-        }
+    if (!inputVal) {
+        alert("कृपया अपनी Registration ID दर्ज करें!");
+        return;
     }
 
+    resultDiv.className = "mt-4 hidden p-4 rounded-xl text-sm font-semibold border transition-all";
+    
+    // अब यह TECH-2026- के साथ मैच करेगा
+    if (inputVal.startsWith("TECH-2026-")) {
+        resultDiv.innerText = `📄 Status for ${inputVal}: Under Review (आपका फॉर्म जांच के अधीन है। विद्यालय प्रबंधन जल्द ही आपसे संपर्क करेगा।)`;
+        resultDiv.classList.add("bg-yellow-50", "text-yellow-800", "border-yellow-200");
+        resultDiv.classList.remove("hidden");
+    } else {
+        resultDiv.innerText = `❌ Error: Registration ID ${inputVal} नहीं मिली। कृपया सही आईडी दर्ज करें।`;
+        resultDiv.classList.add("bg-red-50", "text-red-800", "border-red-200");
+        resultDiv.classList.remove("hidden");
+    }
+}
     // 5. Progress Bar Calculation
     function updateProgress() {
         const formInputs = document.querySelectorAll("#teacherForm input[required], #teacherForm select[required]");
