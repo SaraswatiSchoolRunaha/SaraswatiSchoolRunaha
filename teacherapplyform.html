@@ -400,60 +400,54 @@
         document.getElementById("captchaBox").innerText = currentCaptcha;
     }
 
-   // 2. Form Submission Handler (Google Sheets के साथ)
-function handleFormSubmit(e) {
-    e.preventDefault();
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const userInput = document.getElementById("captchaInput").value.trim();
-    
-    if (userInput !== currentCaptcha) {
-        alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
-        generateCaptcha();
-        document.getElementById("captchaInput").value = "";
-        return;
-    }
-
-    submitBtn.innerText = "Submitting...";
-    submitBtn.disabled = true;
-
-    // यहाँ अपनी Web App URL पेस्ट करें (जो आपको Apps Script से मिलेगी)
-    const scriptURL = "YOUR_WEB_APP_URL_HERE"; 
-
-    // डेटा Google Sheet में भेजें
-    fetch(scriptURL, { 
-        method: 'POST', 
-        body: new FormData(e.target) 
-    })
-    .then(response => {
-        // ID Generate करें और Modal दिखाएं
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        const appNo = `TECH-2026-${randomNum}`;
-        document.getElementById("generatedAppNo").innerText = appNo;
-        document.getElementById("successModal").style.display = "flex";
+    // 2. Form Submission Handler
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const userInput = document.getElementById("captchaInput").value.trim();
         
-        submitBtn.innerText = "Submit";
-        submitBtn.disabled = false;
-    })
-    .catch(error => {
-        alert("Error! Try again.");
-        submitBtn.innerText = "Submit";
-        submitBtn.disabled = false;
-    });
-}
+        // कैप्चा वेरिफिकेशन
+        if (userInput !== currentCaptcha) {
+            alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
+            generateCaptcha();
+            document.getElementById("captchaInput").value = "";
+            return;
+        }
 
-        // Button Loading State
+        // बटन को डिसेबल करें
         submitBtn.innerText = "Submitting...";
         submitBtn.disabled = true;
         submitBtn.classList.add("opacity-50", "cursor-not-allowed");
 
-        // Generate ID
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        const appNo = `TECH-2026-${randomNum}`;
-        document.getElementById("generatedAppNo").innerText = appNo;
-        document.getElementById("successModal").style.display = "flex";
+        const scriptURL = "YOUR_WEB_APP_URL_HERE"; 
+
+        // डेटा भेजें
+        fetch(scriptURL, { 
+            method: 'POST', 
+            body: new FormData(e.target) 
+        })
+        .then(response => {
+            // ID Generate करें
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            const appNo = `TECH-2026-${randomNum}`;
+            document.getElementById("generatedAppNo").innerText = appNo;
+            
+            // Success Modal दिखाएं
+            document.getElementById("successModal").style.display = "flex";
+            
+            submitBtn.innerText = "Submit";
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        })
+        .catch(error => {
+            alert("Error! Try again.");
+            submitBtn.innerText = "Submit";
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        });
     }
 
-    // 3. New: Eligibility Checkbox Logic
+    // 3. Eligibility Checkbox Logic
     document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             if (this.value === 'None' && this.checked) {
@@ -466,41 +460,32 @@ function handleFormSubmit(e) {
         });
     });
 
-  // इसे अपनी पुरानी copyMobile स्क्रिप्ट की जगह रखें
-function copyMobile(chk) {
-    const mobile = document.getElementById("mobileInput").value;
-    const whatsapp = document.getElementsByName("WhatsApp_Number")[0];
-    if(chk.checked) {
-        whatsapp.value = mobile;
+    // 4. Mobile & WhatsApp Sync
+    function copyMobile(chk) {
+        const mobile = document.getElementById("mobileInput").value;
+        const whatsapp = document.getElementsByName("WhatsApp_Number")[0];
+        if(chk.checked) { whatsapp.value = mobile; }
     }
-}
 
-// मोबाइल नंबर बदलते ही WhatsApp नंबर अपडेट करने के लिए
-document.getElementById("mobileInput").addEventListener('input', function() {
-    const chk = document.querySelector('input[onchange="copyMobile(this)"]');
-    if(chk.checked) {
-        document.getElementsByName("WhatsApp_Number")[0].value = this.value;
-    }
-    
-    // मोबाइल नंबर 10 डिजिट का है या नहीं, ये चेक करने के लिए
-    const errorMsg = document.getElementById("mobileError");
-    if(this.value.length !== 10) {
-        errorMsg.classList.remove("hidden");
-    } else {
-        errorMsg.classList.add("hidden");
-    }
-});
+    document.getElementById("mobileInput").addEventListener('input', function() {
+        const chk = document.querySelector('input[onchange="copyMobile(this)"]');
+        if(chk.checked) { document.getElementsByName("WhatsApp_Number")[0].value = this.value; }
+        
+        const errorMsg = document.getElementById("mobileError");
+        errorMsg.classList.toggle("hidden", this.value.length === 10);
+    });
 
     // 5. Close & Reset
     function closeModal() {
         document.getElementById("successModal").style.display = "none";
-        location.reload(); // पेज रिफ्रेश करना सबसे सुरक्षित है
+        location.reload();
     }
 
-    // 6. Status Check & Progress
+    // 6. Status Check
     function checkStatus() {
         const inputVal = document.getElementById("statusAppNo").value.trim();
         const resultDiv = document.getElementById("statusResult");
+        resultDiv.classList.remove("hidden");
         if (inputVal.startsWith("TECH-2026-")) {
             resultDiv.innerHTML = `📄 <b>Status for ${inputVal}:</b> Under Review.`;
             resultDiv.className = "mt-4 p-4 rounded-xl text-sm font-semibold border bg-yellow-50 text-yellow-800 border-yellow-200";
@@ -510,32 +495,19 @@ document.getElementById("mobileInput").addEventListener('input', function() {
         }
     }
 
- // 7. Improved Progress Bar Logic
-function updateProgress() {
-    const form = document.getElementById("teacherForm");
-    // सभी required inputs और selects को लें
-    const formInputs = form.querySelectorAll("input[required], select[required]");
-    let filledCount = 0;
-    
-    formInputs.forEach(input => {
-        // अगर वैल्यू खाली नहीं है (ट्रिम करने के बाद)
-        if (input.value.trim() !== "") {
-            filledCount++;
-        }
-    });
-    
-    // प्रतिशत निकालें और प्रोग्रेस बार की चौड़ाई अपडेट करें
-    const percentage = (filledCount / formInputs.length) * 100;
-    document.getElementById("formProgress").style.width = percentage + "%";
-}
+    // 7. Progress Bar
+    function updateProgress() {
+        const form = document.getElementById("teacherForm");
+        const formInputs = form.querySelectorAll("input[required], select[required]");
+        let filledCount = 0;
+        formInputs.forEach(input => { if (input.value.trim() !== "") filledCount++; });
+        document.getElementById("formProgress").style.width = (filledCount / formInputs.length) * 100 + "%";
+    }
 
-// Event Listeners: 'input' टाइपिंग के लिए और 'change' ड्रॉपडाउन के लिए
-document.getElementById("teacherForm").addEventListener("input", updateProgress);
-document.getElementById("teacherForm").addEventListener("change", updateProgress);
+    document.getElementById("teacherForm").addEventListener("input", updateProgress);
+    document.getElementById("teacherForm").addEventListener("change", updateProgress);
 
-// पेज लोड होते ही कैप्चा जनरेट करें
-window.onload = generateCaptcha;
-      
+    window.onload = generateCaptcha;
 </script>
 </body>
 </html>
