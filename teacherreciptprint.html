@@ -4,40 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Teacher Receipt Search & Print</title>
+<title>Teacher Receipt</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 <style>
 
-body{
-    font-family: Arial, sans-serif;
-    background:#f1f5f9;
-}
-
-/* PRINT DESIGN */
 @media print{
-
-    body *{
-        visibility:hidden;
-    }
-    
-    #receiptArea,
-    #receiptArea *{
-        visibility:visible;
-    }
-
-    #receiptArea{
-        position:absolute;
-        left:0;
-        top:0;
-        width:100%;
-        box-shadow:none !important;
-        border:none !important;
-    }
 
     .print-hide{
         display:none !important;
+    }
+
+    body{
+        background:white;
+    }
+
+    #receiptArea{
+        box-shadow:none !important;
+        border:none !important;
     }
 
 }
@@ -46,260 +31,105 @@ body{
 
 </head>
 
-<body class="p-4 md:p-8">
+<body class="bg-slate-100 p-6">
 
-<!-- =========================
-MAIN CONTAINER
-========================= -->
+<div id="receiptArea"
+class="max-w-5xl mx-auto bg-white border-4 border-blue-700 rounded-3xl shadow-2xl p-8">
 
-<div class="max-w-6xl mx-auto">
+    <!-- HEADER -->
+    <div class="text-center border-b-4 border-blue-700 pb-5 mb-8">
 
-    <!-- SEARCH BOX -->
-    <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-200">
+        <h1 class="text-4xl font-extrabold text-blue-800 uppercase">
+            🎓 Saraswati Bal Vidhya Mandir School
+        </h1>
 
-        <!-- HEADER -->
-        <div class="text-center mb-8">
+        <p class="text-slate-500 mt-2 font-semibold">
+            Teacher Application Receipt
+        </p>
 
-            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 uppercase">
-                🎓 Saraswati Bal Vidhya Mandir School
-            </h1>
+    </div>
 
-            <p class="text-slate-500 mt-2 font-semibold">
-                Teacher Receipt Search & Print Portal
+    <!-- TOP -->
+    <div class="grid md:grid-cols-2 gap-4 mb-6">
+
+        <div class="bg-slate-50 border rounded-2xl p-4">
+
+            <p class="text-xs text-slate-500 font-bold uppercase">
+                Registration ID
+            </p>
+
+            <p id="r_appNo"
+            class="text-2xl font-black text-blue-700 font-mono">
             </p>
 
         </div>
 
-        <!-- SEARCH FORM -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-50 border rounded-2xl p-4">
 
-            <!-- APP NO -->
-            <div>
+            <p class="text-xs text-slate-500 font-bold uppercase">
+                Academic Session
+            </p>
 
-                <label class="block text-sm font-bold text-slate-700 mb-2">
-                    Registration ID
-                </label>
-
-                <input type="text"
-                    id="searchAppNo"
-                    placeholder="TECH-2026-1234"
-                    class="w-full border-2 border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
-
-            </div>
-
-            <!-- MOBILE -->
-            <div>
-
-                <label class="block text-sm font-bold text-slate-700 mb-2">
-                    Mobile Number
-                </label>
-
-                <input type="text"
-                    id="searchMobile"
-                    placeholder="9876543210"
-                    class="w-full border-2 border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
-
-            </div>
-
-            <!-- BUTTON -->
-            <div class="flex items-end">
-
-                <button onclick="searchReceipt()"
-                    class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg transition-all">
-
-                    🔍 Search Receipt
-
-                </button>
-
-            </div>
+            <p id="r_session"
+            class="font-bold text-slate-800 text-lg">
+            </p>
 
         </div>
 
     </div>
 
-    <!-- =========================
-    RECEIPT AREA
-    ========================= -->
+    <!-- PERSONAL -->
+    <div class="border rounded-2xl p-5 mb-5">
 
-    <div id="receiptArea"
-    class="hidden bg-white rounded-3xl shadow-2xl border-4 border-blue-700 mt-8 p-6 md:p-10">
+        <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
+            Personal Information
+        </h2>
 
-        <!-- HEADER -->
-        <div class="text-center border-b-4 border-blue-700 pb-5 mb-8">
+        <div class="grid md:grid-cols-2 gap-3 text-sm">
 
-            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 uppercase">
-                🎓 Saraswati Bal Vidhya Mandir School
-            </h1>
+            <p><b>Full Name :</b> <span id="r_fullName"></span></p>
 
-            <p class="text-slate-500 mt-2 font-semibold">
-                Teacher Application Receipt
+            <p><b>Father Name :</b> <span id="r_fatherName"></span></p>
+
+            <p><b>Date of Birth :</b> <span id="r_dob"></span></p>
+
+            <p><b>Gender :</b> <span id="r_gender"></span></p>
+
+        </div>
+
+    </div>
+
+    <!-- CONTACT -->
+    <div class="border rounded-2xl p-5 mb-5">
+
+        <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
+            Contact Details
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-3 text-sm">
+
+            <p><b>Mobile :</b> <span id="r_mobile"></span></p>
+
+            <p><b>WhatsApp :</b> <span id="r_whatsapp"></span></p>
+
+            <p class="md:col-span-2">
+                <b>Email :</b>
+                <span id="r_email"></span>
             </p>
 
         </div>
 
-        <!-- TOP INFO -->
-        <div class="grid md:grid-cols-2 gap-4 mb-6">
+    </div>
 
-            <div class="bg-slate-50 border rounded-2xl p-4">
+    <!-- PRINT -->
+    <div class="mt-8 print-hide">
 
-                <p class="text-xs text-slate-500 font-bold uppercase">
-                    Registration ID
-                </p>
+        <button onclick="window.print()"
+        class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl shadow-xl text-lg">
 
-                <p id="r_appNo"
-                class="text-2xl font-black text-blue-700 font-mono">
-                </p>
+            🖨️ Print Receipt
 
-            </div>
-
-            <div class="bg-slate-50 border rounded-2xl p-4">
-
-                <p class="text-xs text-slate-500 font-bold uppercase">
-                    Academic Session
-                </p>
-
-                <p id="r_session"
-                class="font-bold text-slate-800 text-lg">
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- PERSONAL -->
-        <div class="border rounded-2xl p-5 mb-5">
-
-            <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
-                Personal Information
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-3 text-sm">
-
-                <p><b>Full Name :</b> <span id="r_fullName"></span></p>
-
-                <p><b>Father Name :</b> <span id="r_fatherName"></span></p>
-
-                <p><b>Date of Birth :</b> <span id="r_dob"></span></p>
-
-                <p><b>Gender :</b> <span id="r_gender"></span></p>
-
-            </div>
-
-        </div>
-
-        <!-- CONTACT -->
-        <div class="border rounded-2xl p-5 mb-5">
-
-            <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
-                Contact Details
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-3 text-sm">
-
-                <p><b>Mobile :</b> <span id="r_mobile"></span></p>
-
-                <p><b>WhatsApp :</b> <span id="r_whatsapp"></span></p>
-
-                <p class="md:col-span-2">
-                    <b>Email :</b>
-                    <span id="r_email"></span>
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- JOB -->
-        <div class="border rounded-2xl p-5 mb-5">
-
-            <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
-                Job Preference
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-3 text-sm">
-
-                <p><b>Post Applied :</b> <span id="r_post"></span></p>
-
-                <p><b>Medium :</b> <span id="r_medium"></span></p>
-
-                <p><b>Main Subject 1 :</b> <span id="r_subject1"></span></p>
-
-                <p><b>Main Subject 2 :</b> <span id="r_subject2"></span></p>
-
-                <p class="md:col-span-2">
-                    <b>Other Skill :</b>
-                    <span id="r_skill"></span>
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- QUALIFICATION -->
-        <div class="border rounded-2xl p-5 mb-5">
-
-            <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
-                Qualification
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-3 text-sm">
-
-                <p><b>Highest Qualification :</b> <span id="r_highQual"></span></p>
-
-                <p><b>Graduation :</b> <span id="r_graduation"></span></p>
-
-                <p><b>Post Graduation :</b> <span id="r_postGraduation"></span></p>
-
-                <p><b>Professional Degree :</b> <span id="r_professionalDeg"></span></p>
-
-                <p class="md:col-span-2">
-                    <b>TET Details :</b>
-                    <span id="r_tet"></span>
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- EXPERIENCE -->
-        <div class="border rounded-2xl p-5 mb-5">
-
-            <h2 class="font-bold text-blue-700 mb-4 uppercase text-lg">
-                Experience & Salary
-            </h2>
-
-            <div class="grid md:grid-cols-3 gap-3 text-sm">
-
-                <p><b>Experience :</b> <span id="r_experience"></span></p>
-
-                <p><b>Expected Salary :</b> <span id="r_salary"></span></p>
-
-                <p><b>Notice Period :</b> <span id="r_notice"></span></p>
-
-            </div>
-
-        </div>
-
-        <!-- FOOTER -->
-        <div class="text-center mt-10 border-t pt-4">
-
-            <p class="text-xs text-slate-500">
-                This is a computer generated receipt.
-            </p>
-
-        </div>
-
-        <!-- PRINT BUTTON -->
-        <div class="mt-8 print-hide">
-
-            <button onclick="window.print()"
-            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl shadow-xl text-lg">
-
-                🖨️ Print Receipt
-
-            </button>
-
-        </div>
+        </button>
 
     </div>
 
@@ -307,158 +137,58 @@ MAIN CONTAINER
 
 <script>
 
-/* =========================
-SEARCH RECEIPT
-========================= */
+/*
+=================================
+YAHAN APNA DATA SET KARO
+=================================
+*/
 
-function searchReceipt(){
+const data = {
 
-    const appNo =
-    document.getElementById("searchAppNo").value.trim();
+    appNo: "TECH-2026-1234",
+    session: "2026-27",
 
-    const mobile =
-    document.getElementById("searchMobile").value.trim();
+    fullName: "Rahul Sharma",
+    fatherName: "Ramesh Sharma",
+    dob: "10/05/2000",
+    gender: "Male",
 
-    if(appNo === "" || mobile === ""){
+    mobile: "9876543210",
+    whatsapp: "9876543210",
+    email: "rahul@gmail.com"
 
-        alert("Please Enter Registration ID & Mobile Number");
+};
 
-        return;
+/* AUTO FILL */
 
-    }
+document.getElementById("r_appNo").innerText =
+data.appNo;
 
-    /*
-    =========================================
-    GOOGLE APPS SCRIPT WEB APP URL
-    =========================================
-    */
+document.getElementById("r_session").innerText =
+data.session;
 
-    const scriptURL =
-    "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec"
-    + "?appNo=" + encodeURIComponent(appNo)
-    + "&mobile=" + encodeURIComponent(mobile);
+document.getElementById("r_fullName").innerText =
+data.fullName;
 
-    fetch(scriptURL)
+document.getElementById("r_fatherName").innerText =
+data.fatherName;
 
-    .then(response => response.json())
+document.getElementById("r_dob").innerText =
+data.dob;
 
-    .then(data => {
+document.getElementById("r_gender").innerText =
+data.gender;
 
-        if(data.status === "success"){
+document.getElementById("r_mobile").innerText =
+data.mobile;
 
-            showReceipt(data);
+document.getElementById("r_whatsapp").innerText =
+data.whatsapp;
 
-        }else{
-
-            alert("Receipt Not Found");
-
-            document.getElementById("receiptArea")
-            .classList.add("hidden");
-
-        }
-
-    })
-
-    .catch(error => {
-
-        console.log(error);
-
-        alert("Server Error");
-
-    });
-
-}
-
-/* =========================
-SHOW RECEIPT
-========================= */
-
-function showReceipt(data){
-
-    document.getElementById("receiptArea")
-    .classList.remove("hidden");
-
-    /* BASIC */
-
-    document.getElementById("r_appNo").innerText =
-    data.appNo || "";
-
-    document.getElementById("r_session").innerText =
-    data.session || "";
-
-    /* PERSONAL */
-
-    document.getElementById("r_fullName").innerText =
-    data.fullName || "";
-
-    document.getElementById("r_fatherName").innerText =
-    data.fatherName || "";
-
-    document.getElementById("r_dob").innerText =
-    data.dob || "";
-
-    document.getElementById("r_gender").innerText =
-    data.gender || "";
-
-    /* CONTACT */
-
-    document.getElementById("r_mobile").innerText =
-    data.mobile || "";
-
-    document.getElementById("r_whatsapp").innerText =
-    data.whatsapp || "";
-
-    document.getElementById("r_email").innerText =
-    data.email || "";
-
-    /* JOB */
-
-    document.getElementById("r_post").innerText =
-    data.postApplied || "";
-
-    document.getElementById("r_medium").innerText =
-    data.medium || "";
-
-    document.getElementById("r_subject1").innerText =
-    data.mainSubject1 || "";
-
-    document.getElementById("r_subject2").innerText =
-    data.mainSubject2 || "";
-
-    document.getElementById("r_skill").innerText =
-    data.otherSkill || "";
-
-    /* QUALIFICATION */
-
-    document.getElementById("r_highQual").innerText =
-    data.highQual || "";
-
-    document.getElementById("r_graduation").innerText =
-    data.graduation || "";
-
-    document.getElementById("r_postGraduation").innerText =
-    data.postGraduation || "";
-
-    document.getElementById("r_professionalDeg").innerText =
-    data.professionalDeg || "";
-
-    document.getElementById("r_tet").innerText =
-    data.tetDetails || "";
-
-    /* EXPERIENCE */
-
-    document.getElementById("r_experience").innerText =
-    data.experience || "";
-
-    document.getElementById("r_salary").innerText =
-    data.expectedSalary || "";
-
-    document.getElementById("r_notice").innerText =
-    data.noticePeriod || "";
-
-}
+document.getElementById("r_email").innerText =
+data.email;
 
 </script>
+
 </body>
 </html>
-
