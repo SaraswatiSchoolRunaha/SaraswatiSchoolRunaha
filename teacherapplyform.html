@@ -290,9 +290,9 @@
                             <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Notice Period *</label>
                             <select required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 text-sm cursor-pointer">
                                 <option value="Immediate">Immediate Join</option>
-                                <option value="15 Days">2 Days</option>
-                                 <option value="15 Days">5 Days</option>
-                                 <option value="15 Days">10 Days</option>
+                                <option value="2 Days">2 Days</option>
+                                 <option value="5 Days">5 Days</option>
+                                 <option value="10 Days">10 Days</option>
                                 <option value="15 Days">15 Days</option>
                                 <option value="1 Month">1 Month</option>
                             </select>
@@ -430,12 +430,30 @@
         });
     });
 
-    // 4. New: Copy Mobile to WhatsApp
-    function copyMobile(chk) {
-        const mobile = document.getElementById("mobileInput").value;
-        const whatsapp = document.getElementsByName("WhatsApp_Number")[0];
-        if(chk.checked) whatsapp.value = mobile;
+  // इसे अपनी पुरानी copyMobile स्क्रिप्ट की जगह रखें
+function copyMobile(chk) {
+    const mobile = document.getElementById("mobileInput").value;
+    const whatsapp = document.getElementsByName("WhatsApp_Number")[0];
+    if(chk.checked) {
+        whatsapp.value = mobile;
     }
+}
+
+// मोबाइल नंबर बदलते ही WhatsApp नंबर अपडेट करने के लिए
+document.getElementById("mobileInput").addEventListener('input', function() {
+    const chk = document.querySelector('input[onchange="copyMobile(this)"]');
+    if(chk.checked) {
+        document.getElementsByName("WhatsApp_Number")[0].value = this.value;
+    }
+    
+    // मोबाइल नंबर 10 डिजिट का है या नहीं, ये चेक करने के लिए
+    const errorMsg = document.getElementById("mobileError");
+    if(this.value.length !== 10) {
+        errorMsg.classList.remove("hidden");
+    } else {
+        errorMsg.classList.add("hidden");
+    }
+});
 
     // 5. Close & Reset
     function closeModal() {
