@@ -19,7 +19,7 @@
 
         <div class="text-center mb-8">
             <h1 class="text-2xl md:text-3xl font-bold text-[#1e61c7] flex items-center justify-center gap-2">
-                <span>🎓</span> Teacher Receipt Print
+                <span>🎓</span> Teacher Receipt Print Application 
             </h1>
         </div>
 
@@ -55,35 +55,6 @@
                 </button>
             </div>
         </form>
-
-        <div id="resultContainer" class="hidden w-full mt-6 border-t border-slate-200 pt-6 animate-fade-in">
-            
-            <div class="overflow-x-auto w-full border border-slate-200 rounded-md shadow-sm hidden" id="tableWrapper">
-                <table class="w-full text-left border-collapse bg-white">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-700 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider">
-                            <th class="px-4 py-3.5">Mobile</th>
-                            <th class="px-4 py-3.5">Student Name</th>
-                            <th class="px-4 py-3.5">Father's Name</th>
-                            <th class="px-4 py-3.5">Mother's Name</th>
-                            <th class="px-3 py-3.5 text-center">DOB</th>
-                            <th class="px-3 py-3.5 text-center">Class</th>
-                            <th class="px-3 py-3.5 text-center">Medium</th>
-                            <th class="px-3 py-3.5 text-center">Gender</th>
-                            <th class="px-3 py-3.5 text-center">Category</th>
-                            <th class="px-4 py-3.5 text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableDataBody" class="text-xs text-slate-700 divide-y divide-slate-100 font-medium">
-                        </tbody>
-                </table>
-            </div>
-
-            <div id="errorCard" class="hidden p-4 rounded-md bg-red-50 border border-red-200 text-red-800 text-sm font-medium text-center max-w-xl mx-auto">
-                ❌ दर्ज किया गया एप्लीकेशन नंबर या मोबाइल नंबर रिकॉर्ड में नहीं मिला। कृपया पुनः प्रयास करें।
-            </div>
-        </div>
-
     </div>
 
     <script>
@@ -151,22 +122,7 @@
                         statusBadge = `<span class="bg-yellow-100 text-yellow-800 px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wide block text-center">⏳ Under Review</span>`;
                     }
 
-                    // Inserting Row Data (App No Column removed as requested)
-                    tableBody.innerHTML = `
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="px-4 py-4 font-mono">${response.mobile}</td>
-                            <td class="px-4 py-4 font-bold text-slate-900 uppercase">${response.studentName}</td>
-                            <td class="px-4 py-4 uppercase">${response.fatherName}</td>
-                            <td class="px-4 py-4 uppercase">${response.motherName}</td>
-                            <td class="px-3 py-4 text-center whitespace-nowrap">${response.dob}</td>
-                            <td class="px-3 py-4 text-center">${response.studentClass}</td>
-                            <td class="px-3 py-4 text-center uppercase">${response.medium}</td>
-                            <td class="px-3 py-4 text-center uppercase">${response.gender}</td>
-                            <td class="px-3 py-4 text-center uppercase">${response.category}</td>
-                            <td class="px-4 py-4 text-center">${statusBadge}</td>
-                        </tr>
-                    `;
-                } else {
+                    else {
                     errorCard.classList.remove("hidden");
                 }
 
