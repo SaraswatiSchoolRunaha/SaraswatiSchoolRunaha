@@ -51,11 +51,12 @@
 <!-- Academic Session Selection -->
 <div class="mb-6 bg-blue-50 p-4 rounded-xl border border-blue-200">
     <label class="block text-[11px] font-bold text-blue-800 uppercase tracking-wider mb-2">Select Academic Session (सत्र चुनें) *</label>
-    <select id="session" required class="w-full px-4 py-2 border border-blue-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500">
+    <!-- यहाँ 'name="session"' जोड़ दिया गया है -->
+    <select id="session" name="session" required class="w-full px-4 py-2 border border-blue-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500">
         <option value="">-- Choose Session --</option>
         <option value="2026-27">2026-27</option>
         <option value="2027-28">2027-28</option>
-       <option value="2028-29">2028-29</option>
+        <option value="2028-29">2028-29</option>
         <option value="2029-30">2029-30</option>
     </select>
 </div>
@@ -97,12 +98,12 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
             <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Mobile Number *</label>
-            <input type="tel" name="Mobile_Number" id="mobileInput" required pattern="[0-9]{10}" placeholder="10 Digit Number" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+            <input type="tel" name="mobile" id="mobileInput" required pattern="[0-9]{10}" placeholder="10 Digit Number" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
             <span id="mobileError" class="text-xs text-red-500 mt-1 hidden block">Please enter a valid 10-digit number</span>
         </div>
         <div>
             <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">WhatsApp Number *</label>
-            <input type="tel" name="WhatsApp_Number" required pattern="[0-9]{10}" placeholder="10 Digit Number" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+            <input type="tel" name="whatsapp" required pattern="[0-9]{10}" placeholder="10 Digit Number" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
             
             <!-- यहाँ Checkbox जोड़ा गया है -->
             <label class="flex items-center gap-2 text-[10px] font-bold text-blue-700 cursor-pointer mt-1">
@@ -111,7 +112,7 @@
         </div>
         <div>
             <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Email ID *</label>
-            <input type="email" name="Email_ID" required placeholder="example@gmail.com" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+            <input type="email" name="email" required placeholder="example@gmail.com" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
         </div>
     </div>
 </div>
@@ -194,10 +195,6 @@
                 <option value="Post-Graduate">Post-Graduate</option>
                 <option value="B.Ed">B.Ed</option>
                 <option value="Ph.D">Ph.D</option>
-            
-            
-            
-            
             </select>
         </div>
 
