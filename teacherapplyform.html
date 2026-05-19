@@ -404,52 +404,57 @@
     }
 
     // 2. Form Submission Handler
-    function handleFormSubmit(e) {
-        e.preventDefault();
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const userInput = document.getElementById("captchaInput").value.trim();
-        
-        // कैप्चा वेरिफिकेशन
-        if (userInput !== currentCaptcha) {
-            alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
-            generateCaptcha();
-            document.getElementById("captchaInput").value = "";
-            return;
-        }
-
-        // बटन को डिसेबल करें
-        submitBtn.innerText = "Submitting...";
-        submitBtn.disabled = true;
-        submitBtn.classList.add("opacity-50", "cursor-not-allowed");
-
-        const scriptURL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec"; 
-
-        // डेटा भेजें
-        fetch(scriptURL, { 
-            method: 'POST', 
-            body: new FormData(e.target) 
-        })
-        .then(response => {
-            // ID Generate करें
-            const randomNum = Math.floor(1000 + Math.random() * 9000);
-            const appNo = `TECH-2026-${randomNum}`;
-            document.getElementById("generatedAppNo").innerText = appNo;
-            
-            // Success Modal दिखाएं
-            document.getElementById("successModal").style.display = "flex";
-            
-            submitBtn.innerText = "Submit";
-            submitBtn.disabled = false;
-            submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-        })
-        .catch(error => {
-            alert("Error! Try again.");
-            submitBtn.innerText = "Submit";
-            submitBtn.disabled = false;
-            submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-        });
+function handleFormSubmit(e) {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const userInput = document.getElementById("captchaInput").value.trim();
+    
+    // कैप्चा वेरिफिकेशन
+    if (userInput !== currentCaptcha) {
+        alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        return;
     }
 
+    // ID जनरेट करें (सबमिट करने से पहले)
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const appNo = `TECH-2026-${randomNum}`;
+    
+    // ID को hidden input में सेट करें (ताकि यह शीट में जाए)
+    // सुनिश्चित करें कि आपके HTML में <input type="hidden" name="appNumber" id="appNumberHidden"> मौजूद है
+    document.getElementById("appNumberHidden").value = appNo;
+    
+    // बटन को डिसेबल करें
+    submitBtn.innerText = "Submitting...";
+    submitBtn.disabled = true;
+    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec"; 
+
+    // डेटा भेजें
+    fetch(scriptURL, { 
+        method: 'POST', 
+        body: new FormData(e.target) 
+    })
+    .then(response => {
+        // Modal में ID दिखाएं
+        document.getElementById("generatedAppNo").innerText = appNo;
+        
+        // Success Modal दिखाएं
+        document.getElementById("successModal").style.display = "flex";
+        
+        submitBtn.innerText = "Submit";
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+    })
+    .catch(error => {
+        alert("Error! Try again.");
+        submitBtn.innerText = "Submit";
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+    });
+}
     // 3. Eligibility Checkbox Logic
     document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
