@@ -1,1 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Receipt System - Saraswati School</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.35s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-100 p-4 md:p-8 flex flex-col items-center justify-center min-h-screen font-sans antialiased">
+
+    <div class="w-full max-w-5xl border-2 border-blue-600 bg-white rounded-none p-6 md:p-10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] animate-fade-in min-h-[420px] flex flex-col justify-center">
+
+        <div class="text-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-[#1e61c7] flex items-center justify-center gap-2">
+                <span>🎓</span> Application Receipt System
+            </h1>
+        </div>
+
+        <form id="statusForm" onsubmit="handleStatusCheck(event)" class="space-y-5 max-w-3xl mx-auto w-full mb-2">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <input type="text" id="appNoInput" required placeholder="Application Number" class="w-full px-4 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 placeholder-slate-400 font-medium">
+                </div>
+
+                <div>
+                    <input type="tel" id="mobileInput" required pattern="[0-9]{10}" placeholder="Mobile Number" class="w-full px-4 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 placeholder-slate-400 font-medium">
+                    <span id="mobileError" class="text-xs text-red-500 mt-1 hidden block">Please enter a valid 10-digit number</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-3">
+                <div id="captchaBox" class="bg-white text-slate-900 font-mono text-xl tracking-widest font-bold px-6 py-1.5 rounded-md select-none border border-slate-900 shadow-sm min-w-[140px] text-center uppercase">
+                    XXXXXX
+                </div>
+                <button type="button" onclick="generateCaptcha()" class="bg-[#ff9800] hover:bg-orange-600 text-white text-xs font-semibold px-4 py-2 rounded-md transition-all flex items-center gap-1 cursor-pointer shadow-sm">
+                    🔄 Refresh
+                </button>
+            </div>
+
+            <div class="max-w-md mx-auto">
+                <input type="text" id="captchaInput" required placeholder="Enter Captcha" class="w-full px-4 py-1.5 border border-blue-400 rounded-md focus:outline-none text-sm text-center bg-white placeholder-slate-400 font-medium">
+            </div>
+
+            <div class="text-center pt-2">
+                <button type="submit" id="submitBtn" class="bg-[#4caf50] hover:bg-green-600 text-white font-bold py-2 px-12 rounded-md transition-all text-sm tracking-wide cursor-pointer shadow-md">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+        <div id="resultContainer" class="hidden w-full mt-6 border-t border-slate-200 pt-6 animate-fade-in">
+            
+            <div class="overflow-x-auto w-full border border-slate-200 rounded-md shadow-sm hidden" id="tableWrapper">
+                <table class="w-full text-left border-collapse bg-white">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-700 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider">
+                            <th class="px-4 py-3.5">Mobile</th>
+                            <th class="px-4 py-3.5">Student Name</th>
+                            <th class="px-4 py-3.5">Father's Name</th>
+                            <th class="px-4 py-3.5">Mother's Name</th>
+                            <th class="px-3 py-3.5 text-center">DOB</th>
+                            <th class="px-3 py-3.5 text-center">Class</th>
+                            <th class="px-3 py-3.5 text-center">Medium</th>
+                            <th class="px-3 py-3.5 text-center">Gender</th>
+                            <th class="px-3 py-3.5 text-center">Category</th>
+                            <th class="px-4 py-3.5 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableDataBody" class="text-xs text-slate-700 divide-y divide-slate-100 font-medium">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="errorCard" class="hidden p-4 rounded-md bg-red-50 border border-red-200 text-red-800 text-sm font-medium text-center max-w-xl mx-auto">
+                ❌ दर्ज किया गया एप्लीकेशन नंबर या मोबाइल नंबर रिकॉर्ड में नहीं मिला। कृपया पुनः प्रयास करें।
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 🛠️ यहाँ अपना GOOGLE APPS SCRIPT WEB APP URL पेस्ट करें:
+        const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+        let currentCaptcha = "";
+
+        // 1. Captcha Generator (6 Letters)
+        function generateCaptcha() {
+            const chars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghkmnpqrstuvwxyz23456789";
+            let result = "";
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentCaptcha = result;
+            document.getElementById("captchaBox").innerText = currentCaptcha;
+        }
+
+        // 2. Submit & Fetch Status Logic
+        function handleStatusCheck(e) {
+            e.preventDefault();
+
+            const appNo = document.getElementById("appNoInput").value.trim().toUpperCase();
+            const mobile = document.getElementById("mobileInput").value.trim();
+            const captchaUser = document.getElementById("captchaInput").value.trim();
+            
+            const resultContainer = document.getElementById("resultContainer");
+            const tableBody = document.getElementById("tableDataBody");
+            const errorCard = document.getElementById("errorCard");
+            const tableWrapper = document.getElementById("tableWrapper");
+            const submitBtn = document.getElementById("submitBtn");
+
+            // Captcha Verification
+            if (captchaUser !== currentCaptcha) {
+                alert("❌ गलत कैप्चา कोड! कृपया सही कोड दर्ज करें।");
+                generateCaptcha();
+                document.getElementById("captchaInput").value = "";
+                return;
+            }
+
+            // Loading State Setting
+            submitBtn.innerText = "Searching...";
+            submitBtn.disabled = true;
+            resultContainer.classList.add("hidden");
+            tableWrapper.classList.add("hidden");
+            errorCard.classList.add("hidden");
+
+            // JSONP callback function to avoid CORS issues
+            const callbackName = "handleSheetsResponse";
+            window[callbackName] = function(response) {
+                
+                submitBtn.innerText = "Submit";
+                submitBtn.disabled = false;
+                resultContainer.classList.remove("hidden");
+
+                if (response && response.found) {
+                    tableWrapper.classList.remove("hidden");
+                    
+                    // Status Badge Styling
+                    let statusBadge = "";
+                    if (response.status.toLowerCase() === "approved" || response.status.toLowerCase() === "shortlisted") {
+                        statusBadge = `<span class="bg-green-100 text-green-800 px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wide block text-center">✅ Approved</span>`;
+                    } else {
+                        statusBadge = `<span class="bg-yellow-100 text-yellow-800 px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wide block text-center">⏳ Under Review</span>`;
+                    }
+
+                    // Inserting Row Data (App No Column removed as requested)
+                    tableBody.innerHTML = `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-4 py-4 font-mono">${response.mobile}</td>
+                            <td class="px-4 py-4 font-bold text-slate-900 uppercase">${response.studentName}</td>
+                            <td class="px-4 py-4 uppercase">${response.fatherName}</td>
+                            <td class="px-4 py-4 uppercase">${response.motherName}</td>
+                            <td class="px-3 py-4 text-center whitespace-nowrap">${response.dob}</td>
+                            <td class="px-3 py-4 text-center">${response.studentClass}</td>
+                            <td class="px-3 py-4 text-center uppercase">${response.medium}</td>
+                            <td class="px-3 py-4 text-center uppercase">${response.gender}</td>
+                            <td class="px-3 py-4 text-center uppercase">${response.category}</td>
+                            <td class="px-4 py-4 text-center">${statusBadge}</td>
+                        </tr>
+                    `;
+                } else {
+                    errorCard.classList.remove("hidden");
+                }
+
+                // Dynamic Script Cleanup
+                document.getElementById('jsonpScript').remove();
+                delete window[callbackName];
+            };
+
+            // Injecting Script for JSONP Request
+            const script = document.createElement('script');
+            script.id = 'jsonpScript';
+            script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
+            document.body.appendChild(script);
+
+            // Resetting Captcha input
+            generateCaptcha();
+            document.getElementById("captchaInput").value = "";
+        }
+
+        // Live Mobile Validator Feedback
+        document.getElementById("mobileInput").addEventListener("input", function() {
+            const errorSpan = document.getElementById("mobileError");
+            if (this.validity.patternMismatch) {
+                errorSpan.classList.remove("hidden");
+            } else {
+                errorSpan.classList.add("hidden");
+            }
+        });
+
+        window.onload = generateCaptcha;
+    </script>
+</body>
+</html>
 
