@@ -112,6 +112,7 @@
                     </div>
                 </div>
 
+                
                 <div class="form-section">
                     <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
                         <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
@@ -260,18 +261,29 @@
                     </div>
                 </div>
 
-                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 max-w-sm mx-auto shadow-inner space-y-4">
-                    <label class="block text-center text-xs font-bold text-slate-600 uppercase tracking-wider">Security Verification *</label>
-                    <div class="flex items-center justify-center gap-3">
-                        <div id="captchaBox" class="bg-white text-slate-900 font-mono text-xl tracking-widest font-bold px-6 py-1.5 rounded-lg select-none border border-slate-900 shadow-sm min-w-[130px] text-center">
-                            XXXX
-                        </div>
-                        <button type="button" onclick="generateCaptcha()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium px-4 py-2 rounded-lg transition-all flex items-center gap-1 cursor-pointer shadow-sm">
-                            🔄 Refresh
-                        </button>
-                    </div>
-                    <input type="text" id="captchaInput" required placeholder="Enter Captcha" class="w-full px-4 py-2 border border-blue-500 rounded-lg focus:outline-none text-sm text-center bg-white font-medium placeholder-slate-400">
-                </div>
+               <!-- Updated Security Verification Section -->
+<div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm w-full">
+    <h2 class="text-xs font-bold text-slate-800 mb-4 flex items-center gap-2 uppercase tracking-wide">
+        <span>🛡️</span> 6. Security Verification (सुरक्षा जांच) *
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <!-- Left Side: Captcha Display & Refresh -->
+        <div class="flex items-center gap-3">
+            <div id="captchaBox" class="flex-1 bg-white text-slate-900 font-mono text-2xl tracking-[0.2em] font-bold py-3 rounded-lg select-none border border-slate-300 shadow-inner text-center">
+                XXXX
+            </div>
+            <button type="button" onclick="generateCaptcha()" class="bg-blue-800 hover:bg-blue-900 text-white text-sm font-bold px-6 py-3 rounded-lg transition-all cursor-pointer shadow-md">
+                🔄 Refresh
+            </button>
+        </div>
+        
+        <!-- Right Side: Input -->
+        <div>
+            <input type="text" id="captchaInput" required placeholder="Enter Verification Code" class="w-full px-4 py-3 border border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 text-sm bg-white font-medium placeholder-slate-400">
+        </div>
+    </div>
+</div>
 
                 <div class="text-center pt-4 border-t border-slate-100">
                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-12 rounded-lg transition-all text-sm tracking-wide cursor-pointer shadow-md">
