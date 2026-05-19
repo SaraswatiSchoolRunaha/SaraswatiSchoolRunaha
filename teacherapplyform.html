@@ -228,16 +228,40 @@
             </select>
         </div>
 
-        <!-- CTET / STET Status -->
-        <div class="md:col-span-2">
-            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">CTET / STET Qualified? *</label>
-            <select required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm">
-                <option value="No">No</option>
-                <option value="Paper1">Yes - Paper 1</option>
-                <option value="Paper2">Yes - Paper 2</option>
-                <option value="Both">Yes - Both Papers</option>
-            </select>
-        </div>
+       <!-- Teaching Eligibility Status (Checkbox Approach) -->
+<div class="md:col-span-2">
+    <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Teaching Eligibility Test Qualified (Select all that apply) *</label>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-white p-3 border border-slate-200 rounded-lg">
+        <!-- CTET Options -->
+        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
+            <input type="checkbox" name="eligibility" value="CTET-P1" class="h-4 w-4 text-blue-600">
+            <span>CTET Paper 1</span>
+        </label>
+        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
+            <input type="checkbox" name="eligibility" value="CTET-P2" class="h-4 w-4 text-blue-600">
+            <span>CTET Paper 2</span>
+        </label>
+        
+        <!-- MP TET Options -->
+        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
+            <input type="checkbox" name="eligibility" value="MP-Varg1" class="h-4 w-4 text-blue-600">
+            <span>MP TET Varg 1</span>
+        </label>
+        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
+            <input type="checkbox" name="eligibility" value="MP-Varg2" class="h-4 w-4 text-blue-600">
+            <span>MP TET Varg 2</span>
+        </label>
+        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
+            <input type="checkbox" name="eligibility" value="MP-Varg3" class="h-4 w-4 text-blue-600">
+            <span>MP TET Varg 3</span>
+        </label>
+        
+        <!-- None Option -->
+        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
+            <input type="checkbox" name="eligibility" value="None" class="h-4 w-4 text-slate-400">
+            <span class="font-bold text-slate-500">None</span>
+        </label>
     </div>
 </div>
                 <div class="form-section">
