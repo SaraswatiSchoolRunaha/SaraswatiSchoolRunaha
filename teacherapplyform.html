@@ -171,8 +171,7 @@
         </div>
     </div>
 </div>      
-
-                <div class="form-section">
+<div class="form-section mb-6">
     <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
         <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
         4. Educational & Professional Qualifications (योग्यता)
@@ -180,17 +179,17 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-      <!-- Highest Qualification -->
-<div>
-    <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Highest Qualification *</label>
-    <select required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
-        <option value="">Select Qualification</option>
-        <option value="10th">10th Pass</option>
-        <option value="12th">12th Pass</option>
-    </select>
-</div>
+        <!-- Highest Qualification -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Highest Qualification *</label>
+            <select required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">Select Qualification</option>
+                <option value="10th">10th Pass</option>
+                <option value="12th">12th Pass</option>
+            </select>
+        </div>
 
-        <!-- Graduation -->
+        <!-- Graduation Details -->
         <div>
             <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Graduation Details *</label>
             <select required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm">
@@ -224,47 +223,44 @@
                 <option value="DElEd">D.El.Ed / BTC</option>
                 <option value="NTT">NTT</option>
                 <option value="MEd">M.Ed.</option>
-                <option value="MEd">othe</option>
+                <option value="Other">Other</option>
             </select>
         </div>
 
-       <!-- Teaching Eligibility Status (Checkbox Approach) -->
-<div class="md:col-span-2">
-    <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Teaching Eligibility Test Qualified (Select all that apply) *</label>
-    
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-white p-3 border border-slate-200 rounded-lg">
-        <!-- CTET Options -->
-        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
-            <input type="checkbox" name="eligibility" value="CTET-P1" class="h-4 w-4 text-blue-600">
-            <span>CTET Paper 1</span>
-        </label>
-        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
-            <input type="checkbox" name="eligibility" value="CTET-P2" class="h-4 w-4 text-blue-600">
-            <span>CTET Paper 2</span>
-        </label>
-        
-        <!-- MP TET Options -->
-        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
-            <input type="checkbox" name="eligibility" value="MP-Varg1" class="h-4 w-4 text-blue-600">
-            <span>MP TET Varg 1</span>
-        </label>
-        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
-            <input type="checkbox" name="eligibility" value="MP-Varg2" class="h-4 w-4 text-blue-600">
-            <span>MP TET Varg 2</span>
-        </label>
-        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
-            <input type="checkbox" name="eligibility" value="MP-Varg3" class="h-4 w-4 text-blue-600">
-            <span>MP TET Varg 3</span>
-        </label>
-        
-        <!-- None Option -->
-        <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer">
-            <input type="checkbox" name="eligibility" value="None" class="h-4 w-4 text-slate-400">
-            <span class="font-bold text-slate-500">None</span>
-        </label>
+        <!-- Teaching Eligibility Status -->
+        <div class="md:col-span-2">
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Teaching Eligibility Test Qualified (Select all that apply) *</label>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-white p-3 border border-slate-200 rounded-lg">
+                <!-- Helper classes 'flex-shrink-0' and 'truncate' to keep layout intact -->
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="eligibility" value="CTET-P1" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">CTET Paper 1</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="eligibility" value="CTET-P2" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">CTET Paper 2</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="eligibility" value="MP-Varg1" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">MP TET Varg 1</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="eligibility" value="MP-Varg2" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">MP TET Varg 2</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="eligibility" value="MP-Varg3" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">MP TET Varg 3</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="eligibility" value="None" class="h-4 w-4 text-slate-400 flex-shrink-0">
+                    <span class="font-bold text-slate-500 truncate">None</span>
+                </label>
+            </div>
+        </div>
     </div>
-</div>
-                <div class="form-section">
+</div>                <div class="form-section">
                     <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
                         <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
                         5. Teaching Experience & Salary Details (अनुभव)
