@@ -373,7 +373,7 @@
         </button>
     </div>
 </div>
-    <script>
+  <script>
     let currentCaptcha = "";
 
     // 1. Generate Captcha Code
@@ -387,105 +387,81 @@
         document.getElementById("captchaBox").innerText = currentCaptcha;
     }
 
-    // 2. Form Submission Handler (Updated)
-function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const userInput = document.getElementById("captchaInput").value.trim();
-    
-    // Captcha Validation
-    if (userInput !== currentCaptcha) {
-        alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
-        generateCaptcha();
-        document.getElementById("captchaInput").value = "";
-        return;
+    // 2. Form Submission Handler (Improved)
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const userInput = document.getElementById("captchaInput").value.trim();
+        
+        if (userInput !== currentCaptcha) {
+            alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
+            generateCaptcha();
+            document.getElementById("captchaInput").value = "";
+            return;
+        }
+
+        // Button Loading State
+        submitBtn.innerText = "Submitting...";
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+        // Generate ID
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const appNo = `TECH-2026-${randomNum}`;
+        document.getElementById("generatedAppNo").innerText = appNo;
+        document.getElementById("successModal").style.display = "flex";
     }
 
-    // Button Loading State
-    submitBtn.innerText = "Submitting...";
-    submitBtn.disabled = true;
-    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+    // 3. New: Eligibility Checkbox Logic
+    document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.value === 'None' && this.checked) {
+                document.querySelectorAll('input[name="eligibility"]').forEach(cb => {
+                    if (cb.value !== 'None') cb.checked = false;
+                });
+            } else if (this.checked) {
+                document.querySelector('input[value="None"]').checked = false;
+            }
+        });
+    });
 
-    // Generate Random ID
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const appNo = `TECH-2026-${randomNum}`;
+    // 4. New: Copy Mobile to WhatsApp
+    function copyMobile(chk) {
+        const mobile = document.getElementById("mobileInput").value;
+        const whatsapp = document.getElementsByName("WhatsApp_Number")[0];
+        if(chk.checked) whatsapp.value = mobile;
+    }
 
-    // Update Modal
-    document.getElementById("generatedAppNo").innerText = appNo;
-    document.getElementById("successModal").style.display = "flex";
-
-    // Reset Button State after a short delay (or keep it locked)
-    submitBtn.innerText = "Submit";
-    submitBtn.disabled = false;
-    submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-}
-        // 3. Close Success Modal and Reset Form
+    // 5. Close & Reset
     function closeModal() {
         document.getElementById("successModal").style.display = "none";
-        document.getElementById("teacherForm").reset();
-        updateProgress();
-        generateCaptcha();
+        location.reload(); // पेज रिफ्रेश करना सबसे सुरक्षित है
     }
 
-    // 4. Mock Status Checking System (Updated)
-function checkStatus() {
-    const inputVal = document.getElementById("statusAppNo").value.trim();
-    const resultDiv = document.getElementById("statusResult");
-
-    if (!inputVal) {
-        alert("कृपया अपनी Registration ID दर्ज करें!");
-        return;
+    // 6. Status Check & Progress
+    function checkStatus() {
+        const inputVal = document.getElementById("statusAppNo").value.trim();
+        const resultDiv = document.getElementById("statusResult");
+        if (inputVal.startsWith("TECH-2026-")) {
+            resultDiv.innerHTML = `📄 <b>Status for ${inputVal}:</b> Under Review.`;
+            resultDiv.className = "mt-4 p-4 rounded-xl text-sm font-semibold border bg-yellow-50 text-yellow-800 border-yellow-200";
+        } else {
+            resultDiv.innerHTML = `❌ <b>Error:</b> Registration ID not found.`;
+            resultDiv.className = "mt-4 p-4 rounded-xl text-sm font-semibold border bg-red-50 text-red-800 border-red-200";
+        }
     }
 
-    resultDiv.className = "mt-4 hidden p-4 rounded-xl text-sm font-semibold border transition-all";
-    
-    // अब यह TECH-2026- के साथ मैच करेगा
-    if (inputVal.startsWith("TECH-2026-")) {
-        resultDiv.innerText = `📄 Status for ${inputVal}: Under Review (आपका फॉर्म जांच के अधीन है। विद्यालय प्रबंधन जल्द ही आपसे संपर्क करेगा।)`;
-        resultDiv.classList.add("bg-yellow-50", "text-yellow-800", "border-yellow-200");
-        resultDiv.classList.remove("hidden");
-    } else {
-        resultDiv.innerText = `❌ Error: Registration ID ${inputVal} नहीं मिली। कृपया सही आईडी दर्ज करें।`;
-        resultDiv.classList.add("bg-red-50", "text-red-800", "border-red-200");
-        resultDiv.classList.remove("hidden");
-    }
-}
-    // 5. Progress Bar Calculation
     function updateProgress() {
         const formInputs = document.querySelectorAll("#teacherForm input[required], #teacherForm select[required]");
         let filledCount = 0;
-        
         formInputs.forEach(input => {
-            if (input.type === "checkbox") {
-                if (input.checked) filledCount++;
-            } else {
-                if (input.value.trim() !== "") filledCount++;
-            }
+            if (input.value.trim() !== "") filledCount++;
         });
-
-        const percentage = (filledCount / formInputs.length) * 100;
-        document.getElementById("formProgress").style.width = percentage + "%";
+        document.getElementById("formProgress").style.width = (filledCount / formInputs.length) * 100 + "%";
     }
 
-    // 6. Input Validation Alert for Mobile
-    document.getElementById("mobileInput").addEventListener("input", function() {
-        const errorSpan = document.getElementById("mobileError");
-        if (this.validity.patternMismatch) {
-            errorSpan.classList.remove("hidden");
-        } else {
-            errorSpan.classList.add("hidden");
-        }
-    });
-
-    // Attach updateProgress to form changes
     document.getElementById("teacherForm").addEventListener("input", updateProgress);
-    document.getElementById("teacherForm").addEventListener("change", updateProgress);
-
-    window.onload = function() {
-        generateCaptcha();
-        updateProgress();
-    };
+    window.onload = generateCaptcha;
 </script>
 </body>
 </html>
