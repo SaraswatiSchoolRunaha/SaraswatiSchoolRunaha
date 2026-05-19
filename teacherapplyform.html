@@ -343,29 +343,37 @@
         </div>
     </div>
 
-    <div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50 transition-all">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center border border-slate-100 transform transition-all scale-100 animate-fade-in">
-            <div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-black border border-green-200 shadow-sm">
-                ✓
-            </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-1">Application Submitted Successfully!</h2>
-            <p class="text-xs text-slate-500 mb-5">आपका आवेदन सफलता पूर्वक स्वीकार कर लिया गया है।</p>
-            
-            <div class="bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-4 mb-5 shadow-inner">
-                <span class="text-xs text-slate-400 block uppercase tracking-wider font-bold mb-1">Your Application Number</span>
-                <span id="generatedAppNo" class="text-2xl font-mono font-black text-blue-800 tracking-widest">SCH-2026-0000</span>
-            </div>
-
-            <p class="text-xs text-amber-600 mb-6 font-semibold flex items-center justify-center gap-1">
-                <span>⚠️</span> कृपया इस नंबर को नोट कर लें, इसी से आप अपना स्टेटस चेक कर पाएंगे।
-            </p>
-            
-            <button onclick="closeModal()" class="w-full bg-blue-800 text-white font-bold py-3 rounded-xl hover:bg-blue-950 active:scale-98 transition-all shadow-md shadow-blue-800/10 cursor-pointer">
-                Close & Done
-            </button>
+   <!-- Improved Success Modal -->
+<div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center border-t-8 border-green-600 animate-fade-in">
+        
+        <!-- Success Icon -->
+        <div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-green-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
         </div>
-    </div>
 
+        <h2 class="text-xl font-bold text-slate-800 mb-1">Application Submitted!</h2>
+        <p class="text-xs text-slate-500 mb-6 font-medium">आपका आवेदन सफलतापूर्वक प्राप्त हो गया है।</p>
+
+        <!-- Application Number Display -->
+        <div class="bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 mb-6 shadow-inner">
+            <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Your Application Number</p>
+            <p id="generatedAppNo" class="text-2xl font-mono font-black text-blue-800 tracking-wider">SCH-2026-0000</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
+            <p class="text-[10px] text-amber-800 font-bold leading-tight">
+                ⚠️ कृपया इस नंबर का स्क्रीनशॉट ले लें, स्टेटस चेक करने के लिए इसकी जरूरत होगी।
+            </p>
+        </div>
+        
+        <button onclick="closeModal()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-blue-500/30">
+            Close & Continue
+        </button>
+    </div>
+</div>
     <script>
     let currentCaptcha = "";
 
