@@ -460,13 +460,13 @@
     // 4. Mobile & WhatsApp Sync
     function copyMobile(chk) {
         const mobile = document.getElementById("mobileInput").value;
-        const whatsapp = document.getElementsByName("WhatsApp_Number")[0];
+        const whatsapp = document.getElementsByName("whatsapp")[0];
         if(chk.checked) { whatsapp.value = mobile; }
     }
 
     document.getElementById("mobileInput").addEventListener('input', function() {
         const chk = document.querySelector('input[onchange="copyMobile(this)"]');
-        if(chk.checked) { document.getElementsByName("WhatsApp_Number")[0].value = this.value; }
+        if(chk.checked) { document.getElementsByName("whatsapp")[0].value = this.value; }
         
         const errorMsg = document.getElementById("mobileError");
         errorMsg.classList.toggle("hidden", this.value.length === 10);
