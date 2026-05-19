@@ -482,17 +482,32 @@ document.getElementById("mobileInput").addEventListener('input', function() {
         }
     }
 
-    function updateProgress() {
-        const formInputs = document.querySelectorAll("#teacherForm input[required], #teacherForm select[required]");
-        let filledCount = 0;
-        formInputs.forEach(input => {
-            if (input.value.trim() !== "") filledCount++;
-        });
-        document.getElementById("formProgress").style.width = (filledCount / formInputs.length) * 100 + "%";
-    }
+ // 7. Improved Progress Bar Logic
+function updateProgress() {
+    const form = document.getElementById("teacherForm");
+    // सभी required inputs और selects को लें
+    const formInputs = form.querySelectorAll("input[required], select[required]");
+    let filledCount = 0;
+    
+    formInputs.forEach(input => {
+        // अगर वैल्यू खाली नहीं है (ट्रिम करने के बाद)
+        if (input.value.trim() !== "") {
+            filledCount++;
+        }
+    });
+    
+    // प्रतिशत निकालें और प्रोग्रेस बार की चौड़ाई अपडेट करें
+    const percentage = (filledCount / formInputs.length) * 100;
+    document.getElementById("formProgress").style.width = percentage + "%";
+}
 
-    document.getElementById("teacherForm").addEventListener("input", updateProgress);
-    window.onload = generateCaptcha;
+// Event Listeners: 'input' टाइपिंग के लिए और 'change' ड्रॉपडाउन के लिए
+document.getElementById("teacherForm").addEventListener("input", updateProgress);
+document.getElementById("teacherForm").addEventListener("change", updateProgress);
+
+// पेज लोड होते ही कैप्चा जनरेट करें
+window.onload = generateCaptcha;
+      
 </script>
 </body>
 </html>
