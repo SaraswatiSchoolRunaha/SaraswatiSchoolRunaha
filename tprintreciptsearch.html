@@ -88,8 +88,11 @@
                 return;
             }
 
+            // सर्च शुरू होने से पहले टेबल साफ़ करें
+            document.getElementById("tableDataBody").innerHTML = "";
             document.getElementById("submitBtn").innerText = "Searching...";
             const callbackName = "handleSheetsResponse";
+            
             window[callbackName] = function(response) {
                 document.getElementById("submitBtn").innerText = "Submit";
                 document.getElementById("resultContainer").classList.remove("hidden");
