@@ -340,7 +340,7 @@ function searchReceipt(){
 
     fetch(scriptURL)
 
-    .then(res => res.json())
+    .then(response => response.json())
 
     .then(data => {
 
@@ -352,15 +352,18 @@ function searchReceipt(){
 
             alert("Receipt Not Found");
 
+            document.getElementById("receiptArea")
+            .classList.add("hidden");
+
         }
 
     })
 
     .catch(error => {
 
-        alert("Error Loading Receipt");
-
         console.log(error);
+
+        alert("Server Error");
 
     });
 
@@ -375,11 +378,15 @@ function showReceipt(data){
     document.getElementById("receiptArea")
     .classList.remove("hidden");
 
+    /* BASIC */
+
     document.getElementById("r_appNo").innerText =
     data.appNo || "";
 
     document.getElementById("r_session").innerText =
     data.session || "";
+
+    /* PERSONAL */
 
     document.getElementById("r_fullName").innerText =
     data.fullName || "";
@@ -393,6 +400,8 @@ function showReceipt(data){
     document.getElementById("r_gender").innerText =
     data.gender || "";
 
+    /* CONTACT */
+
     document.getElementById("r_mobile").innerText =
     data.mobile || "";
 
@@ -401,6 +410,8 @@ function showReceipt(data){
 
     document.getElementById("r_email").innerText =
     data.email || "";
+
+    /* JOB */
 
     document.getElementById("r_post").innerText =
     data.postApplied || "";
@@ -417,6 +428,8 @@ function showReceipt(data){
     document.getElementById("r_skill").innerText =
     data.otherSkill || "";
 
+    /* QUALIFICATION */
+
     document.getElementById("r_highQual").innerText =
     data.highQual || "";
 
@@ -432,6 +445,8 @@ function showReceipt(data){
     document.getElementById("r_tet").innerText =
     data.tetDetails || "";
 
+    /* EXPERIENCE */
+
     document.getElementById("r_experience").innerText =
     data.experience || "";
 
@@ -444,6 +459,5 @@ function showReceipt(data){
 }
 
 </script>
-
 </body>
 </html>
