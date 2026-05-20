@@ -1,1 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Application Receipt</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+body{
+    background:#f1f5f9;
+    font-family:Arial,sans-serif;
+}
+
+/* A4 PRINT SIZE */
+@page{
+    size:A4;
+    margin:8mm;
+}
+
+@media print{
+
+    html,body{
+        width:210mm;
+        height:297mm;
+        background:#fff !important;
+    }
+
+    body{
+        padding:0 !important;
+        margin:0 !important;
+    }
+
+    .print-hide{
+        display:none !important;
+    }
+
+    #receiptArea{
+        width:100% !important;
+        max-width:100% !important;
+        border:2px solid #1e3a8a !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+        overflow:hidden;
+        page-break-inside:avoid;
+    }
+
+    *{
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+
+}
+
+.compact p{
+    line-height:1.2;
+}
+
+</style>
+
+</head>
+
+<body class="p-3 md:p-5">
+
+<!-- MAIN RECEIPT -->
+
+<div id="receiptArea"
+class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-800 rounded-2xl shadow-2xl overflow-hidden">
+
+<!-- HEADER -->
+
+<div class="bg-gradient-to-r from-blue-900 via-blue-800 to-sky-700 text-white px-5 py-4 md:px-7 md:py-4 relative overflow-hidden">
+
+    <!-- DESIGN -->
+    <div class="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full -translate-y-12 translate-x-12"></div>
+    <div class="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-6 -translate-x-6"></div>
+
+    <div class="relative z-10">
+
+        <!-- SCHOOL INFO -->
+        <div class="flex items-center gap-3">
+
+            <!-- LOGO -->
+            <div class="bg-white rounded-full p-1.5 border-4 border-blue-200 shadow-lg">
+
+                <img
+                src="https://upload.wikimedia.org/wikipedia/commons/e/e0/School_logo_template.svg"
+                class="w-11 h-11 object-cover">
+
+            </div>
+
+            <!-- SCHOOL TEXT -->
+            <div class="flex-1">
+
+                <h1 class="text-lg md:text-2xl font-black uppercase tracking-wide leading-tight">
+
+                    Saraswati Bal Vidhya Mandir
+
+                </h1>
+
+                <p class="text-blue-100 text-[11px] md:text-xs font-medium mt-0.5">
+
+                    Runaha | Teacher Recruitment Portal
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- STATUS BAR -->
+
+<div class="bg-blue-50 border-b border-blue-200 px-4 py-3">
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
+
+        <div>
+            <p class="text-slate-500 font-bold uppercase">
+                Session
+            </p>
+
+            <p id="r_session"
+            class="font-bold text-slate-800 mt-1">
+            </p>
+        </div>
+
+        <div>
+            <p class="text-slate-500 font-bold uppercase">
+                Application No.
+            </p>
+
+            <p id="r_appNo"
+            class="font-black text-blue-900 mt-1 font-mono tracking-wide">
+            </p>
+        </div>
+
+        <div>
+            <p class="text-slate-500 font-bold uppercase">
+                Status
+            </p>
+
+            <p id="r_status"
+            class="font-black text-blue-800 mt-1">
+            </p>
+        </div>
+
+        <div>
+            <p class="text-slate-500 font-bold uppercase">
+                Post Applied
+            </p>
+
+            <p id="r_postApplied"
+            class="font-bold text-slate-800 mt-1">
+            </p>
+        </div>
+
+    </div>
+
+</div>
+        <!-- PERSONAL -->
+
+        <div class="border rounded-xl p-3">
+
+            <h2 class="font-bold text-blue-800 text-[12px] uppercase mb-2">
+                Personal Information
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-2 text-[11px]">
+
+                <div>
+                    <p class="text-slate-500 font-bold">FULL NAME</p>
+                    <p id="r_fullName" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">FATHER NAME</p>
+                    <p id="r_fatherName" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">DATE OF BIRTH</p>
+                    <p id="r_dob" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">GENDER</p>
+                    <p id="r_gender" class="font-semibold mt-1"></p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CONTACT -->
+
+        <div class="border rounded-xl p-3">
+
+            <h2 class="font-bold text-blue-800 text-[12px] uppercase mb-2">
+                Contact Details
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-2 text-[11px]">
+
+                <div>
+                    <p class="text-slate-500 font-bold">MOBILE</p>
+                    <p id="r_mobile" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">WHATSAPP</p>
+                    <p id="r_whatsapp" class="font-semibold mt-1"></p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <p class="text-slate-500 font-bold">EMAIL</p>
+                    <p id="r_email" class="font-semibold mt-1 break-all"></p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- JOB DETAILS -->
+
+        <div class="border rounded-xl p-3">
+
+            <h2 class="font-bold text-blue-800 text-[12px] uppercase mb-2">
+                Job & Subject Details
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-2 text-[11px]">
+
+                <div>
+                    <p class="text-slate-500 font-bold">MEDIUM</p>
+                    <p id="r_medium" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">OTHER SKILL</p>
+                    <p id="r_otherSkill" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">MAIN SUBJECT 1</p>
+                    <p id="r_mainSubject1" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">MAIN SUBJECT 2</p>
+                    <p id="r_mainSubject2" class="font-semibold mt-1"></p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- EDUCATION -->
+
+        <div class="border rounded-xl p-3">
+
+            <h2 class="font-bold text-blue-800 text-[12px] uppercase mb-2">
+                Qualification Details
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-2 text-[11px]">
+
+                <div>
+                    <p class="text-slate-500 font-bold">HIGHEST QUALIFICATION</p>
+                    <p id="r_highQual" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">GRADUATION</p>
+                    <p id="r_graduation" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">POST GRADUATION</p>
+                    <p id="r_postGraduation" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">PROFESSIONAL DEGREE</p>
+                    <p id="r_professionalDeg" class="font-semibold mt-1"></p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <p class="text-slate-500 font-bold">TET DETAILS</p>
+                    <p id="r_tetDetails" class="font-semibold mt-1"></p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- EXPERIENCE -->
+
+        <div class="border rounded-xl p-3">
+
+            <h2 class="font-bold text-blue-800 text-[12px] uppercase mb-2">
+                Experience & Salary
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-2 text-[11px]">
+
+                <div>
+                    <p class="text-slate-500 font-bold">EXPERIENCE</p>
+                    <p id="r_experience" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">EXPECTED SALARY</p>
+                    <p id="r_expectedSalary" class="font-semibold mt-1"></p>
+                </div>
+
+                <div>
+                    <p class="text-slate-500 font-bold">NOTICE PERIOD</p>
+                    <p id="r_noticePeriod" class="font-semibold mt-1"></p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DECLARATION -->
+
+        <div class="bg-slate-50 border rounded-xl p-3">
+
+            <h2 class="font-bold text-blue-800 text-[12px] uppercase mb-2">
+                Declaration / शपथ पत्र
+            </h2>
+
+            <p class="text-[10px] text-slate-700 leading-relaxed">
+
+                मैं यह शपथ पूर्वक घोषणा करता/करती हूँ कि आवेदन फॉर्म में मेरे द्वारा दी गई सभी जानकारी सत्य एवं सही है।
+                यदि भविष्य में कोई जानकारी गलत पाई जाती है तो विद्यालय प्रबंधन को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा।
+
+            </p>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="text-center border-t pt-3">
+
+            <p class="text-[10px] text-slate-500">
+
+                This is a computer generated receipt.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PRINT BUTTON -->
+
+<div class="max-w-5xl mx-auto mt-5 print-hide text-center">
+
+    <button onclick="window.print()"
+    class="bg-green-600 hover:bg-green-700 text-white font-bold px-10 py-3 rounded-xl shadow-xl">
+
+        🖨️ Print Receipt
+
+    </button>
+
+</div>
+
+<script>
+
+/* SAMPLE DATA */
+
+const data = {
+
+    appNo: "TECH-2026-1234",
+
+    session: "2026-27",
+
+    status: "Pending",
+
+    fullName: "Rahul Sharma",
+
+    fatherName: "Ramesh Sharma",
+
+    dob: "10/05/2000",
+
+    gender: "Male",
+
+    mobile: "9876543210",
+
+    whatsapp: "9876543210",
+
+    email: "rahul@gmail.com",
+
+    postApplied: "PGT",
+
+    medium: "English",
+
+    mainSubject1: "Mathematics",
+
+    mainSubject2: "Physics",
+
+    otherSkill: "Computer",
+
+    highQual: "Post Graduate",
+
+    graduation: "B.Sc",
+
+    postGraduation: "M.Sc",
+
+    professionalDeg: "B.Ed",
+
+    tetDetails: "CTET Paper 2",
+
+    experience: "3 Years",
+
+    expectedSalary: "25000",
+
+    noticePeriod: "15 Days"
+
+};
+
+/* AUTO FILL */
+
+Object.keys(data).forEach(key => {
+
+    const el = document.getElementById("r_" + key);
+
+    if(el){
+
+        el.innerText = data[key];
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
+
 
