@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1350">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Saraswati Bal Vidhya Mandir High School Runaha</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body {
+ body {
   background: #f4f4f4;
-  width: 1320px;       /* बॉक्स को नीचे जाने से रोकने के लिए फिक्स चौड़ाई */
-  min-width: 1320px;   /* मोबाइल पर डेस्कटॉप व्यू दिखाने के लिए मजबूर करेगा */
+  width: 100%;         /* अब यह कंप्यूटर और मोबाइल दोनों स्क्रीन के हिसाब से खुद को सेट कर लेगा */
   margin: 0 auto;
 }
   
@@ -288,7 +287,6 @@ display:block;
 color:#e91e63;
 padding-left:5px;
 }
-
 /* GALLERY */
 .gallery{
 display:grid;
@@ -524,6 +522,84 @@ padding:15px;
     z-index: 999999; 
     text-align: center;
     padding: 20px;
+}
+ /* ==========================================================
+   📱 मोबाइल और टैबलेट के लिए स्पेशल रिस्पॉन्सिव कोड 
+   ========================================================== */
+@media screen and (max-width: 768px) {
+    
+    /* 1. बॉडी की फिक्स चौड़ाई को हटाकर मोबाइल स्क्रीन के बराबर करना */
+    body {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* 2. मुख्य कंटेनर को Flex से हटाकर कॉलम में करेंगे ताकि साइडबार नीचे आ जाए */
+    .main-content-wrapper {
+        flex-direction: column;
+        gap: 15px;
+        margin: 5px;
+        padding: 5px;
+    }
+
+    /* 3. कंप्यूटर के 3 कॉलम ग्रिड को बदलकर 1 कॉलम करना ताकि बॉक्स पिचकें नहीं */
+    .box-section {
+        grid-template-columns: 1fr; 
+        gap: 12px;
+    }
+    
+    /* 4. मोबाइल पर बॉक्स की पैडिंग थोड़ी कम करना ताकि स्क्रीन पर जगह बचे */
+    .box, .side-info-box {
+        padding: 15px;
+    }
+
+    /* 5. महत्वपूर्ण वेबसाइट्स वाले ग्रिड को भी मोबाइल पर 1 कॉलम करना */
+    .links-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* 6. गैलरी ग्रिड को मोबाइल पर एक लाइन में 2 फोटो सेट करना */
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 7. हेडर और स्कूल के नाम को मोबाइल के हिसाब से छोटा और सेंटर करना */
+    .main-header {
+        align-items: center;
+        text-align: center;
+    }
+    .logo {
+        flex-direction: column;
+        gap: 5px;
+    }
+    #schoolName {
+        font-size: 20px;
+    }
+    #schoolName small {
+        font-size: 13px;
+    }
+
+    /* 8. नेविगेशन मेनू के बटन्स को मोबाइल पर सही से सेट करना */
+    nav {
+        text-align: center;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    nav a {
+        margin: 5px 10px;
+        font-size: 14px;
+    }
+
+    /* 9. स्लाइडर की हाइट मोबाइल पर कम करना */
+    .slider {
+        height: 250px;
+    }
+    .update-box {
+        width: 95%;
+        top: 30px;
+    }
 }
 
 </style>
