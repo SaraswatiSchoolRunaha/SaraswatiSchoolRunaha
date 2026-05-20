@@ -1,162 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teacher Search Status Check - Saraswati School</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-<style>
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in { animation: fadeIn 0.35s ease-out forwards; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Status Check Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+    </style>
 </head>
+<body class="bg-slate-100 p-4 md:p-8 flex flex-col items-center min-h-screen font-sans">
 
-<body class="bg-slate-100 p-4 md:p-8 flex flex-col items-center justify-center min-h-screen font-sans antialiased">
+<div class="w-full max-w-6xl border-4 border-blue-700 bg-white p-6 md:p-8 shadow-xl mt-10 animate-fade-in">
 
-<div class="w-full max-w-5xl border-2 border-blue-600 bg-white p-6 md:p-10 shadow-lg animate-fade-in">
-
-    <!-- TITLE -->
-    <div class="text-center mb-8">
-        <h1 class="text-2xl md:text-3xl font-bold text-blue-700">
-            🎓 Teacher Status Check
-        </h1>
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h2 class="text-xl font-bold text-blue-700">📋 Verification Result / सत्यापन परिणाम</h2>
+        <a href="StatusSearch.html" class="bg-slate-600 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-700">← Back</a>
     </div>
 
-    <!-- FORM -->
-    <form id="statusForm" class="space-y-5">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <input type="text" id="appNoInput" required
-                placeholder="Application Number"
-                class="w-full px-4 py-2 border rounded-md">
-
-            <input type="tel" id="mobileInput" required pattern="[0-9]{10}"
-                placeholder="Mobile Number"
-                class="w-full px-4 py-2 border rounded-md">
-
-        </div>
-
-     <!-- CAPTCHA SECTION -->
-<div class="max-w-xs mx-auto space-y-3">
-    
-    <div class="flex items-center justify-center gap-3">
-        <div id="captchaBox"
-            class="font-mono text-lg font-bold border px-4 py-2 min-w-[120px] text-center bg-gray-50">
-            ------
-        </div>
-
-        <button type="button" onclick="generateCaptcha()"
-            class="bg-orange-500 text-white px-3 py-2 rounded text-sm">
-            Refresh
-        </button>
+    <!-- TABLE -->
+    <div class="overflow-x-auto border rounded-md shadow-sm">
+        <table class="w-full text-left bg-white border-collapse">
+            <thead>
+                <tr class="bg-slate-50 text-xs font-bold uppercase border-b">
+                    <th class="px-4 py-3">App No</th>
+                    <th class="px-4 py-3">Session</th>
+                    <th class="px-4 py-3">Mobile</th>
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Father</th>
+                    <th class="px-4 py-3 text-center">Sub 1</th>
+                    <th class="px-4 py-3 text-center">Sub 2</th>
+                    <th class="px-4 py-3 text-center">Skill</th>
+                    <th class="px-4 py-3 text-center">Highest Qual</th>
+                    <th class="px-4 py-3 text-center">Grad</th>
+                    <th class="px-4 py-3 text-center">Post Grad</th>
+                    <th class="px-4 py-3 text-center">Prof Deg</th>
+                    <th class="px-4 py-3 text-center">Exp</th>
+                    <th class="px-4 py-3 text-center">Salary</th>
+                    <th class="px-4 py-3 text-center">Status</th>
+                    <th class="px-4 py-3 text-center">Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="tableDataBody">
+                <tr id="statusRow">
+                    <td colspan="16" class="text-center py-10 text-blue-500 font-bold">⏳ Loading...</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <input type="text" id="captchaInput" required
-        placeholder="Enter Captcha"
-        class="w-full px-4 py-2 border rounded-md text-center text-sm">
-        
-</div>
-
-        <!-- SUBMIT -->
-        <div class="text-center">
-            <button type="submit" id="submitBtn"
-                class="bg-green-600 text-white px-10 py-2 rounded-md font-bold">
-                Submit
-            </button>
-        </div>
-
-    </form>
-
+    <div id="errorCard" class="hidden mt-4 p-4 bg-red-50 border border-red-200 text-red-700 text-center rounded">
+        ❌ रिकॉर्ड नहीं मिला! <br><br>
+        <button onclick="location.href='StatusSearch.html'" class="bg-blue-600 text-white px-4 py-1 rounded mt-2">Try Again</button>
+    </div>
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec";
+window.onload = function () {
+    const tableBody = document.getElementById("tableDataBody");
+    const statusRow = document.getElementById("statusRow");
+    
+    // localStorage से डेटा निकालना
+    const keys = ["appNo", "session", "mobile", "studentName", "fatherName", "mainSubject1", "mainSubject2", "otherSkill", "highQual", "graduation", "postGraduation", "professionalDeg", "experience", "expectedSalary", "status", "remarks"];
+    const response = {};
+    
+    keys.forEach(key => {
+        response[key] = localStorage.getItem("saved_" + key);
+    });
 
-let currentCaptcha = "";
-
-/* ================= CAPTCHA ================= */
-function generateCaptcha() {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let res = "";
-
-    for (let i = 0; i < 6; i++) {
-        res += chars[Math.floor(Math.random() * chars.length)];
-    }
-
-    currentCaptcha = res;
-    document.getElementById("captchaBox").innerText = res;
-}
-
-/* ================= FORM SUBMIT ================= */
-document.getElementById("statusForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const appNo = document.getElementById("appNoInput").value.trim().toUpperCase();
-    const mobile = document.getElementById("mobileInput").value.trim();
-    const captchaUser = document.getElementById("captchaInput").value.trim();
-    const btn = document.getElementById("submitBtn");
-
-    /* validation */
-    if (captchaUser !== currentCaptcha) {
-        alert("❌ गलत कैप्चा!");
-        generateCaptcha();
+    // अगर appNo नहीं मिला, तो एरर दिखाएं
+    if (!response.appNo) {
+        statusRow.innerHTML = `<td colspan="16" class="text-center text-red-600 font-bold py-6">❌ Invalid Request</td>`;
         return;
     }
 
-    if (!/^[0-9]{10}$/.test(mobile)) {
-        alert("❌ Invalid mobile number");
-        return;
-    }
+    // डेटा को टेबल में डालना
+    statusRow.remove();
+    const status = (response.status || "").toLowerCase();
+    let statusBadge = status === "approved" 
+        ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Approved</span>`
+        : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Under Review</span>`;
 
-    /* UI lock */
-    btn.disabled = true;
-    btn.innerText = "Searching...";
-
-    const callbackName = "handleSheetsResponse";
-
-    window[callbackName] = function(response) {
-
-        btn.disabled = false;
-        btn.innerText = "Submit";
-
-        if (response && response.found) {
-
-            /* save data */
-            Object.keys(response).forEach(key => {
-                localStorage.setItem("saved_" + key, response[key]);
-            });
-
-            /* go to result page */
-            window.location.href = "StatusCheck.html";
-
-        } else {
-            alert("❌ Record not found!");
-        }
-
-        /* cleanup */
-        if (document.getElementById("jsonpScript")) {
-            document.getElementById("jsonpScript").remove();
-        }
-
-        delete window[callbackName];
-    };
-
-    /* API CALL */
-    const script = document.createElement("script");
-    script.id = "jsonpScript";
-    script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
-    document.body.appendChild(script);
-});
-
-/* init */
-window.onload = generateCaptcha;
+    tableBody.innerHTML = `
+    <tr class="hover:bg-slate-50 animate-fade-in text-sm">
+        <td class="px-4 py-3 font-mono">${response.appNo || "-"}</td>
+        <td class="px-4 py-3">${response.session || "-"}</td>
+        <td class="px-4 py-3">${response.mobile || "-"}</td>
+        <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
+        <td class="px-4 py-3">${response.fatherName || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.mainSubject1 || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.mainSubject2 || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.otherSkill || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.highQual || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.graduation || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.postGraduation || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.professionalDeg || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.experience || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.expectedSalary || "-"}</td>
+        <td class="px-4 py-3 text-center">${statusBadge}</td>
+        <td class="px-4 py-3">${response.remarks || "-"}</td>
+    </tr>`;
+};
 </script>
-
 </body>
 </html>
