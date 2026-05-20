@@ -497,8 +497,13 @@ padding:15px;
 
 /* Welcome Popup Special Style */
 #welcomePopup .popup-box {
-    border-top: 5px solid #28a745; /* Green color for welcome */
+    border-top: 5px solid #28a745;
     animation: popIn 0.5s ease;
+    
+    /* Yahan size add karein */
+    width: 600px; /* Aap apni zaroorat ke hisaab se value change kar sakte hain */
+    max-width: 90%; /* Mobile screens ke liye safe rakhne ke liye */
+    padding: 30px; /* Andar ka space badhane ke liye */
 }
 
 @keyframes popIn {
