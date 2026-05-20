@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TC Application Receipt | प्रिंट रसीद</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 🖼️ पूरे पन्ने पर डबल बॉर्डर */
+        .receipt-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            padding: 35px;
+            border: 4px double #111;
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .school-header {
+            text-align: center;
+            border-bottom: 3px double #333;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .school-header h1 {
+            font-size: 24px;
+            color: #111;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .school-header p {
+            font-size: 13px;
+            color: #444;
+            margin-top: 4px;
+        }
+
+        .receipt-title-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .receipt-title {
+            background-color: #333;
+            color: #fff;
+            padding: 6px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-info-table {
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .section-heading {
+            font-size: 13px;
+            font-weight: bold;
+            color: #111;
+            border-bottom: 1px solid #333;
+            padding-bottom: 4px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #333;
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 13.5px;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            width: 38%;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            text-transform: uppercase; /* शीट का डेटा हमेशा साफ़ और कैपिटल दिखेगा */
+        }
+
+        .affidavit-box {
+            border: 1px solid #333;
+            background-color: #fff;
+            padding: 12px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .affidavit-title {
+            font-size: 12.5px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: underline;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .affidavit-text {
+            font-size: 11.5px;
+            color: #222;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .receipt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 25px;
+        }
+
+        .note-box {
+            font-size: 11px;
+            color: #555;
+            max-width: 55%;
+            line-height: 1.5;
+        }
+
+        .signatures-wrapper {
+            display: flex;
+            gap: 40px;
+            justify-content: flex-end;
+            width: 45%;
+        }
+
+        .signature-section {
+            text-align: center;
+            font-size: 12.5px;
+            font-weight: bold;
+            border-top: 1px dashed #333;
+            padding-top: 4px;
+            width: 140px;
+            white-space: nowrap;
+        }
+
+        .action-container {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-print {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .receipt-card { border: 4px double #111 !important; padding: 25px; width: 100%; max-width: 100%; }
+            .action-container { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="receipt-card">
+    
+    <!-- School Header -->
+    <div class="school-header">
+        <h1>SARASWATI BAL VIDHYA MANDIR HIGH SCHOOL</h1>
+        <p>RUNAHA, MADHYA PRADESH | SCHOOL CODE: 541002</p>
+    </div>
+
+    <div class="receipt-title-box">
+        <div class="receipt-title">TC Application Acknowledgment & Affidavit</div>
+    </div>
+
+    <!-- Meta Info -->
+    <table class="meta-info-table">
+        <tr>
+            <td><strong>Application No:</strong> <span id="lblAppNo">--</span></td>
+            <td style="text-align: right;"><strong>Submission Date:</strong> <span id="lblDate">--</span></td>
+        </tr>
+    </table>
+
+    <!-- Section 1: Applicant Details -->
+    <div class="section-heading">1. Applicant Details / आवेदक का विवरण</div>
+    <table class="data-table">
+        <tr>
+            <th>Applicant Name / आवेदक का नाम</th>
+            <td id="lblApplicantName">--</td>
+        </tr>
+        <tr>
+            <th>Relation with Student / छात्र से संबंध</th>
+            <td id="lblRelation">--</td>
+        </tr>
+    </table>
+
+    <!-- Section 2: Student Personal Details -->
+    <div class="section-heading">2. Student Personal Details / छात्र का व्यक्तिगत विवरण</div>
+    <table class="data-table">
+        <tr>
+            <th>Student Full Name</th>
+            <td id="lblStudentName">--</td>
+        </tr>
+        <tr>
+            <th>Father's Name</th>
+            <td id="lblFatherName">--</td>
+        </tr>
+        <tr>
+            <th>Mother's Name</th>
+            <td id="lblMotherName">--</td>
+        </tr>
+        <tr>
+            <th>Date of Birth (DOB)</th>
+            <td id="lblDOB">--</td>
+        </tr>
+        <tr>
+            <th>Gender / Category</th>
+            <td><span id="lblGender">--</span> / <span id="lblCategory">--</span></td>
+        </tr>
+        <tr>
+            <th>Samagra SSSM ID</th>
+            <td id="lblSssmId">--</td>
+        </tr>
+        <tr>
+            <th>Aadhaar Number</th>
+            <td id="lblAadhaar">--</td>
+        </tr>
+        <tr>
+            <th>School UDISE Code / डाइस कोड</th>
+            <td id="lblUdiseCode">--</td>
+        </tr>
+        <tr>
+            <th>APAAR ID / छात्र शैक्षणिक खाता आईडी</th>
+            <td id="lblApaarId">--</td>
+        </tr>
+        <tr>
+            <th>Registered Mobile No.</th>
+            <td id="lblMobile">--</td>
+        </tr>
+    </table>
+
+    <!-- Section 3: Academic & TC Details -->
+    <div class="section-heading">3. Academic & TC Details / अकादमिक एवं टीसी विवरण</div>
+    <table class="data-table">
+        <tr>
+            <th>Scholar / Admission No.</th>
+            <td id="lblScholarNo">--</td>
+        </tr>
+        <tr>
+            <th>Admission Date in School</th>
+            <td id="lblAdmissionDate">--</td>
+        </tr>
+        <tr>
+            <th>Last Class Studied & Session</th>
+            <td><span id="lblClass">--</span> (<span id="lblSession">--</span>)</td>
+        </tr>
+        <tr>
+            <th>Reason for Leaving School (TC Reason)</th>
+            <td id="lblTcReason">--</td>
+        </tr>
+        <tr>
+            <th>Expected TC Issue Date / संभावित टीसी तिथि</th>
+            <td id="lblTcIssueDate" style="font-weight: bold; color: #1a73e8;">--</td>
+        </tr>
+    </table>
+
+    <!-- Section 4: Sapat Patra -->
+    <div class="section-heading">4. Affidavit & Self-Declaration / शपथ पत्र एवं स्व-घोषणा</div>
+    <div class="affidavit-box">
+        <div class="affidavit-title">शपथ पत्र / घोषणा-पत्र (अभिभावक/आवेदक द्वारा)</div>
+        <div class="affidavit-text">
+            मैं, <span id="lblAffidavitApplicant" style="font-weight: bold; text-decoration: underline;">--</span> एतद्द्वारा शपथ पूर्वक घोषणा करता/करती हूँ कि इस टीसी आवेदन फॉर्म में मेरे द्वारा दी गई सभी प्रविष्टियाँ, जैसे छात्र का नाम, माता-पिता का नाम, जन्म तिथि, समग्र आईडी, आधार नंबर, डाइस कोड एवं अपार आईडी पूर्णतः सत्य और मेरे सर्वोत्तम ज्ञान के अनुसार सही हैं। संस्था के रिकॉर्ड और मेरे द्वारा दी गई जानकारी में कोई विसंगति नहीं है। मैं यह भी पुष्टि करता हूँ कि संस्था के प्रति मेरा कोई बकाया शेष नहीं है। भविष्य में यदि कोई भी जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो स्थानांतरण प्रमाण पत्र (TC) निरस्त करने का पूरा अधिकार स्कूल प्रशासन को होगा।
+            <br><br>
+            <strong style="text-transform: uppercase; font-size: 11px; color: #28a745;">[✓ OTP Verified & Electronically Signed via Mobile: <span id="lblAffidavitMobile">XXXXXXXXXX</span>]</strong>
+        </div>
+    </div>
+
+    <!-- Footer Signatures -->
+    <div class="receipt-footer">
+        <div class="note-box">
+            <strong>महत्वपूर्ण निर्देश / Note:</strong><br>
+            1. यह एक कंप्यूटर जनित पावती सह शपथ-पत्र रसीद है।<br>
+            2. संस्था द्वारा रिकॉर्ड का मिलान करने के बाद ही आधिकारिक टीसी जारी की जाएगी।
+        </div>
+        <div class="signatures-wrapper">
+            <div class="signature-section" style="margin-right: 15px;">Applicant Signature</div>
+            <div class="signature-section">Principal / Admin Sign</div>
+        </div>
+    </div>
+
+</div>
+
+<div class="action-container">
+    <button onclick="window.print()" class="btn btn-print">Print Receipt / रसीद प्रिंट करें</button>
+</div>
+
+<script>
+    // 💡 Google Apps Script / Google Sheet से आने वाले डेटा को हैंडल करने का स्पेशल फंक्शन
+    window.onload = function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        
+        // सुरक्षा और क्लीन डेटा के लिए हेल्पर फंक्शन (यदि शीट में डेटा खाली हो तो '--' दिखाए)
+        function getCleanData(paramName) {
+            var val = urlParams.get(paramName);
+            if (!val || val === "null" || val === "undefined" || val.trim() === "") {
+                return "--";
+            }
+            return val.toUpperCase(); // शीट का डेटा हमेशा साफ़ और कैपिटल दिखेगा
+        }
+
+        // यदि यूआरएल में एप्लीकेशन नंबर या छात्र का नाम मौजूद है
+        if(urlParams.has('appNo') || urlParams.has('studentName')) {
+            
+            // Meta Info
+            document.getElementById('lblAppNo').innerText = getCleanData('appNo');
+            document.getElementById('lblDate').innerText = getCleanData('applyDate');
+            
+            // Section 1: Applicant Details
+            var appName = getCleanData('applicantName');
+            document.getElementById('lblApplicantName').innerText = appName;
+            document.getElementById('lblRelation').innerText = getCleanData('relation');
+            document.getElementById('lblAffidavitApplicant').innerText = appName; // शपथ पत्र में नाम फीडिंग
+            
+            // Section 2: Student Personal Details
+            document.getElementById('lblStudentName').innerText = getCleanData('studentName');
+            document.getElementById('lblFatherName').innerText = getCleanData('fatherName');
+            document.getElementById('lblMotherName').innerText = getCleanData('motherName');
+            document.getElementById('lblDOB').innerText = getCleanData('dob');
+            document.getElementById('lblGender').innerText = getCleanData('gender');
+            document.getElementById('lblCategory').innerText = getCleanData('category');
+            document.getElementById('lblSssmId').innerText = getCleanData('sssmId');
+            document.getElementById('lblAadhaar').innerText = getCleanData('aadhaar');
+            document.getElementById('lblUdiseCode').innerText = getCleanData('udiseCode');
+            document.getElementById('lblApaarId').innerText = getCleanData('apaarId');
+            
+            var mob = getCleanData('mobile');
+            document.getElementById('lblMobile').innerText = mob;
+            document.getElementById('lblAffidavitMobile').innerText = mob;
+            
+            // Section 3: Academic & TC Details
+            document.getElementById('lblScholarNo').innerText = getCleanData('scholarNo');
+            document.getElementById('lblAdmissionDate').innerText = getCleanData('admissionDate');
+            document.getElementById('lblClass').innerText = getCleanData('lastClass');
+            document.getElementById('lblSession').innerText = getCleanData('session');
+            document.getElementById('lblTcReason').innerText = getCleanData('tcReason');
+            document.getElementById('lblTcIssueDate').innerText = getCleanData('tcIssueDate');
+        }
+    }
+</script>
+
+</body>
+</html>
