@@ -535,7 +535,7 @@
     function handleFormSubmit(event) {
         event.preventDefault(); 
         
-        // फॉर्म सबमिट होते ही बैकएंड डेटा को असली UPPERCASE में बदलने के लिए लॉजिक
+        // 1. फॉर्म इनपुट्स को UPPERCASE में बदलना
         var textInputs = document.querySelectorAll('#tcForm input[type="text"], #tcForm textarea');
         textInputs.forEach(function(input) {
             input.value = input.value.toUpperCase().trim();
@@ -546,14 +546,47 @@
             emailInput.value = emailInput.value.toUpperCase().trim();
         }
 
-        // रैंडम नंबर जनरेशन लॉजिक
+        // 2. एप्लीकेशन नंबर जनरेशन लॉजिक
         var randomNum = Math.floor(1000 + Math.random() * 9000);
         var currentYear = new Date().getFullYear();
         var applicationNo = "TC-" + currentYear + "-" + randomNum;
 
-        document.getElementById('formWrapper').style.display = 'none';
-        document.getElementById('successWrapper').style.display = 'block';
-        document.getElementById('appNumberDisplay').innerText = applicationNo;
+        // 3. बैकएंड कनेक्शन लॉजिक (Google Apps Script Web App URL)
+        // यहाँ अपना असली वेब ऐप URL पेस्ट करें
+        var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
+
+        // फॉर्म का सारा डेटा इकट्ठा करना
+        var formData = new FormData(document.getElementById('tcForm'));
+        formData.append('applicationNo', applicationNo); // जेनरेटेड नंबर भी भेजें
+
+        // सबमिट बटन को डिसेबल करना (ताकि यूजर दोबारा क्लिक न करे)
+        var submitBtn = document.querySelector('.submit-btn');
+        if(submitBtn) {
+            submitBtn.innerText = "Submitting... / सबमिट हो रहा है...";
+            submitBtn.disabled = true;
+        }
+
+        // 4. fetch() द्वारा बैकएंड पर डेटा पोस्ट करना
+        fetch(webAppUrl, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            // डेटा सफलतापूर्वक सेव होने के बाद ही स्क्रीन बदलें
+            document.getElementById('formWrapper').style.display = 'none';
+            document.getElementById('successWrapper').style.display = 'block';
+            document.getElementById('appNumberDisplay').innerText = applicationNo;
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            alert('डेटा सेव करने में कुछ समस्या आई। कृपया इंटरनेट चेक करें और दोबारा प्रयास करें।');
+            
+            // गड़बड़ होने पर बटन को वापस ठीक करना
+            if(submitBtn) {
+                submitBtn.innerText = "Submit Application / आवेदन सबमिट करें";
+                submitBtn.disabled = false;
+            }
+        });
     }
 </script>
 
