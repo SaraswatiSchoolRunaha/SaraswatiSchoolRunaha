@@ -15,10 +15,14 @@ body{
     font-family:Arial,sans-serif;
 }
 
+/* A4 PAGE */
+
 @page{
     size:A4;
-    margin:8mm;
+    margin:5mm;
 }
+
+/* PRINT SETTINGS */
 
 @media print{
 
@@ -29,8 +33,8 @@ body{
     }
 
     body{
-        padding:0 !important;
         margin:0 !important;
+        padding:0 !important;
     }
 
     .print-hide{
@@ -42,21 +46,52 @@ body{
         max-width:100% !important;
         border-radius:0 !important;
         box-shadow:none !important;
-        page-break-inside:avoid;
+        overflow:hidden !important;
+        page-break-inside:avoid !important;
+        transform:scale(0.96);
+        transform-origin:top center;
+    }
+
+    /* GRID FIX */
+
+    .grid{
+        display:block !important;
+    }
+
+    .grid > div{
+        width:100% !important;
+        margin-bottom:8px !important;
+    }
+
+    .info-box{
+        page-break-inside:avoid !important;
+        break-inside:avoid !important;
+        margin-bottom:8px !important;
+        padding:10px !important;
+    }
+
+    p{
+        white-space:normal !important;
+        word-break:break-word !important;
     }
 
     *{
         -webkit-print-color-adjust:exact !important;
         print-color-adjust:exact !important;
     }
+
 }
+
+/* CARD */
 
 .info-box{
     border:1px solid #dbeafe;
     border-radius:14px;
-    padding:14px;
+    padding:12px;
     background:#fff;
 }
+
+/* LABEL */
 
 .label{
     font-size:10px;
@@ -65,33 +100,37 @@ body{
     text-transform:uppercase;
 }
 
+/* VALUE */
+
 .value{
-    font-size:12px;
+    font-size:11px;
     font-weight:600;
     color:#0f172a;
-    margin-top:4px;
+    margin-top:3px;
     word-break:break-word;
+    line-height:1.3;
 }
 
 </style>
 
 </head>
 
-<body class="p-3 md:p-5">
+<body class="p-2 md:p-4">
 
-<!-- MAIN RECEIPT -->
+<!-- RECEIPT -->
 
 <div id="receiptArea"
-class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl shadow-2xl overflow-hidden">
+class="max-w-[900px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl shadow-2xl overflow-hidden">
 
 <!-- HEADER -->
 
-<div class="bg-gradient-to-r from-blue-900 via-blue-800 to-sky-700 text-white px-5 py-5 relative overflow-hidden">
+<div class="bg-gradient-to-r from-blue-900 via-blue-800 to-sky-700 text-white px-4 py-4 relative overflow-hidden">
 
     <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-14 translate-x-14"></div>
+
     <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-8 -translate-x-8"></div>
 
-    <div class="relative z-10 flex items-center gap-4">
+    <div class="relative z-10 flex items-center gap-3">
 
         <!-- LOGO -->
 
@@ -99,21 +138,21 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
             <img
             src="https://upload.wikimedia.org/wikipedia/commons/e/e0/School_logo_template.svg"
-            class="w-14 h-14 object-cover">
+            class="w-12 h-12 object-cover">
 
         </div>
 
-        <!-- SCHOOL INFO -->
+        <!-- SCHOOL -->
 
         <div class="flex-1">
 
-            <h1 class="text-xl md:text-3xl font-black uppercase tracking-wide">
+            <h1 class="text-lg md:text-2xl font-black uppercase tracking-wide leading-tight">
 
                 Saraswati Bal Vidhya Mandir
 
             </h1>
 
-            <p class="text-blue-100 text-xs md:text-sm mt-1 font-medium">
+            <p class="text-blue-100 text-[11px] md:text-xs mt-1 font-medium">
 
                 Runaha | Teacher Recruitment Portal
 
@@ -127,9 +166,9 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
 <!-- STATUS -->
 
-<div class="bg-blue-50 border-b border-blue-200 px-5 py-4">
+<div class="bg-blue-50 border-b border-blue-200 px-4 py-3">
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 
         <div>
             <p class="label">Session</p>
@@ -146,7 +185,7 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
             <p class="label">Status</p>
 
             <p id="r_status"
-            class="inline-block px-3 py-1 rounded-full text-white bg-green-600 text-[11px] font-bold mt-1">
+            class="inline-block px-3 py-1 rounded-full text-white bg-green-600 text-[10px] font-bold mt-1">
             </p>
         </div>
 
@@ -161,17 +200,17 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
 <!-- CONTENT -->
 
-<div class="p-4 md:p-5 space-y-4">
+<div class="p-3 md:p-4 space-y-3">
 
     <!-- PERSONAL -->
 
     <div class="info-box">
 
-        <h2 class="text-blue-800 font-bold text-sm uppercase mb-3">
+        <h2 class="text-blue-800 font-bold text-[12px] uppercase mb-2">
             Personal Information
         </h2>
 
-        <div class="grid md:grid-cols-2 gap-3">
+        <div class="grid md:grid-cols-2 gap-2">
 
             <div>
                 <p class="label">Full Name</p>
@@ -201,11 +240,11 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
     <div class="info-box">
 
-        <h2 class="text-blue-800 font-bold text-sm uppercase mb-3">
+        <h2 class="text-blue-800 font-bold text-[12px] uppercase mb-2">
             Contact Details
         </h2>
 
-        <div class="grid md:grid-cols-2 gap-3">
+        <div class="grid md:grid-cols-2 gap-2">
 
             <div>
                 <p class="label">Mobile Number</p>
@@ -230,11 +269,11 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
     <div class="info-box">
 
-        <h2 class="text-blue-800 font-bold text-sm uppercase mb-3">
+        <h2 class="text-blue-800 font-bold text-[12px] uppercase mb-2">
             Job & Subject Details
         </h2>
 
-        <div class="grid md:grid-cols-2 gap-3">
+        <div class="grid md:grid-cols-2 gap-2">
 
             <div>
                 <p class="label">Medium</p>
@@ -264,11 +303,11 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
     <div class="info-box">
 
-        <h2 class="text-blue-800 font-bold text-sm uppercase mb-3">
+        <h2 class="text-blue-800 font-bold text-[12px] uppercase mb-2">
             Qualification Details
         </h2>
 
-        <div class="grid md:grid-cols-2 gap-3">
+        <div class="grid md:grid-cols-2 gap-2">
 
             <div>
                 <p class="label">Highest Qualification</p>
@@ -290,7 +329,7 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
                 <p id="r_professionalDeg" class="value"></p>
             </div>
 
-            <div class="md:col-span-2">
+            <div>
                 <p class="label">TET Details</p>
                 <p id="r_tetDetails" class="value"></p>
             </div>
@@ -303,11 +342,11 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
     <div class="info-box">
 
-        <h2 class="text-blue-800 font-bold text-sm uppercase mb-3">
+        <h2 class="text-blue-800 font-bold text-[12px] uppercase mb-2">
             Experience & Salary
         </h2>
 
-        <div class="grid md:grid-cols-3 gap-3">
+        <div class="grid md:grid-cols-3 gap-2">
 
             <div>
                 <p class="label">Experience</p>
@@ -330,16 +369,16 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
     <!-- DECLARATION -->
 
-    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
 
-        <h2 class="text-blue-800 font-bold text-sm uppercase mb-2">
+        <h2 class="text-blue-800 font-bold text-[12px] uppercase mb-2">
             Declaration / शपथ पत्र
         </h2>
 
-        <p class="text-[11px] text-slate-700 leading-relaxed">
+        <p class="text-[10px] text-slate-700 leading-relaxed">
 
             मैं यह घोषणा करता/करती हूँ कि आवेदन फॉर्म में दी गई सभी जानकारी सत्य एवं सही है।
-            भविष्य में कोई जानकारी गलत पाए जाने पर विद्यालय प्रबंधन को आवेदन निरस्त करने का पूर्ण अधिकार होगा।
+            यदि भविष्य में कोई जानकारी गलत पाई जाती है तो विद्यालय प्रबंधन को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा।
 
         </p>
 
@@ -349,7 +388,7 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
     <div class="border-t pt-3 text-center">
 
-        <p class="text-[11px] text-slate-500">
+        <p class="text-[10px] text-slate-500">
 
             This is a computer generated receipt.
 
@@ -363,16 +402,18 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-900 rounded-2xl s
 
 <!-- BUTTON -->
 
-<div class="max-w-5xl mx-auto mt-5 text-center print-hide">
+<div class="max-w-5xl mx-auto mt-4 text-center print-hide">
 
 <button onclick="printReceipt()"
-class="bg-green-600 hover:bg-green-700 text-white font-bold px-10 py-3 rounded-xl shadow-xl">
+class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-xl shadow-xl">
 
 🖨️ Print Receipt
 
 </button>
 
 </div>
+
+<!-- SCRIPT -->
 
 <script>
 
@@ -418,7 +459,7 @@ window.onload = function(){
 
     ];
 
-    // सुरक्षा जांच
+    // SECURITY CHECK
 
     if(!localStorage.getItem("savedAppNo")){
 
@@ -429,7 +470,7 @@ window.onload = function(){
         return;
     }
 
-    // डेटा भरें
+    // LOAD DATA
 
     fields.forEach(field => {
 
