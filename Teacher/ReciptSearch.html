@@ -93,21 +93,45 @@
             document.getElementById("submitBtn").innerText = "Searching...";
             const callbackName = "handleSheetsResponse";
             
-            window[callbackName] = function(response) {
-                document.getElementById("submitBtn").innerText = "Submit";
-                document.getElementById("resultContainer").classList.remove("hidden");
-                
-                if (response && response.found) {
-                    document.getElementById("tableWrapper").classList.remove("hidden");
-                    document.getElementById("errorCard").classList.add("hidden");
-                    let statusBadge = response.status.toLowerCase() === "approved" ? "✅ Approved" : "⏳ Under Review";
-                    document.getElementById("tableDataBody").innerHTML = `<tr><td class="px-4 py-4">${response.studentName}</td><td class="px-4 py-4">${response.fatherName}</td><td class="px-4 py-4 text-center">${statusBadge}</td></tr>`;
-                } else {
-                    document.getElementById("tableWrapper").classList.add("hidden");
-                    document.getElementById("errorCard").classList.remove("hidden");
-                }
-                document.getElementById('jsonpScript').remove();
-            };
+           window[callbackName] = function(response) {
+    document.getElementById("submitBtn").innerText = "Submit";
+    
+    if (response && response.found) {
+        // 1. रिस्पॉन्स से सारा डेटा localStorage में डालें
+        localStorage.setItem("savedAppNo", response.appNo);
+        localStorage.setItem("savedFullName", response.studentName);
+        localStorage.setItem("savedFatherName", response.fatherName);
+        localStorage.setItem("savedStatus", response.status);
+        localStorage.setItem("savedSession", response.session);
+        localStorage.setItem("savedPostApplied", response.postApplied);
+        localStorage.setItem("savedDob", response.dob);
+        localStorage.setItem("savedGender", response.gender);
+        localStorage.setItem("savedMobile", response.mobile);
+        localStorage.setItem("savedWhatsapp", response.whatsapp);
+        localStorage.setItem("savedEmail", response.email);
+        localStorage.setItem("savedMedium", response.medium);
+        localStorage.setItem("savedMainSubject1", response.mainSubject1);
+        localStorage.setItem("savedMainSubject2", response.mainSubject2);
+        localStorage.setItem("savedOtherSkill", response.otherSkill);
+        localStorage.setItem("savedHighQual", response.highQual);
+        localStorage.setItem("savedGraduation", response.graduation);
+        localStorage.setItem("savedPostGraduation", response.postGraduation);
+        localStorage.setItem("savedProfessionalDeg", response.professionalDeg);
+        localStorage.setItem("savedTetDetails", response.tetDetails);
+        localStorage.setItem("savedExperience", response.experience);
+        localStorage.setItem("savedExpectedSalary", response.expectedSalary);
+        localStorage.setItem("savedNoticePeriod", response.noticePeriod);
+
+        // 2. रसीद पेज पर भेजें
+        window.location.href = "ReceiptPrint.html";
+    } else {
+        // अगर रिकॉर्ड नहीं मिला, तो एरर दिखाएं
+        document.getElementById("resultContainer").classList.remove("hidden");
+        document.getElementById("tableWrapper").classList.add("hidden");
+        document.getElementById("errorCard").classList.remove("hidden");
+    }
+    document.getElementById('jsonpScript').remove();
+};
 
             const script = document.createElement('script');
             script.id = 'jsonpScript';
