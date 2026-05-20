@@ -4,17 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Application Status Check Details</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
-}
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 </style>
 </head>
 
@@ -24,160 +17,110 @@
 
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-6 border-b pb-4">
-        <h2 class="text-xl font-bold text-blue-700">
-            📋 Verification Result / सत्यापन परिणाम
-        </h2>
-
-        <a href="StatusSearch.html"
-           class="bg-slate-600 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-700">
-           ← Back
-        </a>
+        <h2 class="text-xl font-bold text-blue-700">📋 Verification Result / सत्यापन परिणाम</h2>
+        <a href="StatusSearch.html" class="bg-slate-600 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-700">← Back</a>
     </div>
 
     <!-- TABLE -->
     <div class="overflow-x-auto border rounded-md shadow-sm">
         <table class="w-full text-left bg-white border-collapse">
-
             <thead>
                 <tr class="bg-slate-50 text-xs font-bold uppercase border-b">
-                    <th class="px-4 py-3">Application Number </th>
-                    <th class="px-4 py-3">Session/Year </th>
+                    <th class="px-4 py-3">App No</th>
+                    <th class="px-4 py-3">Session</th>
                     <th class="px-4 py-3">Mobile</th>
-                    <th class="px-4 py-3">Student Name</th>
-                    <th class="px-4 py-3">Father Name</th>
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Father</th>
                     <th class="px-4 py-3 text-center">DOB</th>
                     <th class="px-4 py-3 text-center">Gender</th>
-                    <th class="px-4 py-3 text-center">Main Subject 1</th>
-                    <th class="px-4 py-3 text-center">Main Subject 2</th>
-                    <th class="px-4 py-3 text-center">Other Skill</th>
-                    <th class="px-4 py-3 text-center">Highest Qualification</th>
-                    <th class="px-4 py-3 text-center">Graduation </th>
-                    <th class="px-4 py-3 text-center">Post Graduation</th>
-                    <th class="px-4 py-3 text-center">Professional Degree</th>
-                    <th class="px-4 py-3 text-center">Total Experience</th>
-                    <th class="px-4 py-3 text-center">Expected Salary</th>
+                    <th class="px-4 py-3 text-center">Sub 1</th>
+                    <th class="px-4 py-3 text-center">Sub 2</th>
+                    <th class="px-4 py-3 text-center">Skill</th>
+                    <th class="px-4 py-3 text-center">Highest Qual</th>
+                    <th class="px-4 py-3 text-center">Grad</th>
+                    <th class="px-4 py-3 text-center">Post Grad</th>
+                    <th class="px-4 py-3 text-center">Prof Deg</th>
+                    <th class="px-4 py-3 text-center">Exp</th>
+                    <th class="px-4 py-3 text-center">Salary</th>
                     <th class="px-4 py-3 text-center">Status</th>
-                    <th class="px-4 py-3 text-center">Reason / Remarks</th>
-                
-                
-                
+                    <th class="px-4 py-3 text-center">Remarks</th>
                 </tr>
             </thead>
-
             <tbody id="tableDataBody">
                 <tr id="statusRow">
-                    <td colspan="10" class="text-center py-10 text-blue-500 font-bold">
-                        ⏳ Loading data...
-                    </td>
+                    <!-- यहाँ colspan 18 कर दिया है ताकि पूरी टेबल कवर हो -->
+                    <td colspan="18" class="text-center py-10 text-blue-500 font-bold">⏳ Loading data...</td>
                 </tr>
             </tbody>
-
         </table>
     </div>
 
     <!-- ERROR -->
-    <div id="errorCard"
-         class="hidden mt-4 p-4 bg-red-50 border border-red-200 text-red-700 text-center rounded">
-        ❌ रिकॉर्ड नहीं मिला! कृपया सही जानकारी दर्ज करें।
-        <br><br>
-        <button onclick="location.href='StatusSearch.html'"
-            class="bg-blue-600 text-white px-4 py-1 rounded mt-2">
-            Try Again
-        </button>
+    <div id="errorCard" class="hidden mt-4 p-4 bg-red-50 border border-red-200 text-red-700 text-center rounded">
+        ❌ रिकॉर्ड नहीं मिला! कृपया सही जानकारी दर्ज करें।<br><br>
+        <button onclick="location.href='StatusSearch.html'" class="bg-blue-600 text-white px-4 py-1 rounded mt-2">Try Again</button>
     </div>
-
 </div>
 
 <script>
-
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec";
 
 window.onload = function () {
-
     const params = new URLSearchParams(window.location.search);
     const appNo = params.get("appNo");
     const mobile = params.get("mobile");
-
     const tableBody = document.getElementById("tableDataBody");
     const statusRow = document.getElementById("statusRow");
 
     if (!appNo || !mobile) {
-        statusRow.innerHTML = `
-            <td colspan="10" class="text-center text-red-600 font-bold py-6">
-                ❌ Invalid Request (Missing Parameters)
-            </td>`;
+        statusRow.innerHTML = `<td colspan="18" class="text-center text-red-600 font-bold py-6">❌ Invalid Request</td>`;
         return;
     }
 
     const callbackName = "handleSheetsResponse";
-
     window[callbackName] = function (response) {
-
-        // cleanup safely
-        const oldScript = document.getElementById("jsonpScript");
-        if (oldScript) oldScript.remove();
-
+        if (document.getElementById("jsonpScript")) document.getElementById("jsonpScript").remove();
         delete window[callbackName];
-
         statusRow.remove();
 
         if (response && response.found) {
-
             const status = (response.status || "").toLowerCase();
+            let statusBadge = status === "approved" 
+                ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Approved</span>`
+                : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Under Review</span>`;
 
-            let statusBadge =
-                status === "approved"
-                    ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Approved</span>`
-                    : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Under Review</span>`;
-
-          tableBody.innerHTML = `
-<tr class="hover:bg-slate-50 animate-fade-in">
-
-    <td class="px-4 py-3 font-mono">${response.appNo || "-"}</td>
-    <td class="px-4 py-3">${response.session || "-"}</td>
-    <td class="px-4 py-3">${response.mobile || "-"}</td>
-
-    <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
-    <td class="px-4 py-3">${response.fatherName || "-"}</td>
-    <td class="px-4 py-3">${response.dob || "-"}</td>
-    <td class="px-4 py-3 text-center">${response.gender || "-"}</td>
-
-    <td class="px-4 py-3">${response.mainSubject1 || "-"}</td>
-    <td class="px-4 py-3">${response.mainSubject2 || "-"}</td>
-    <td class="px-4 py-3">${response.otherSkill || "-"}</td>
-
-    <td class="px-4 py-3">${response.highQual || "-"}</td>
-    <td class="px-4 py-3">${response.graduation || "-"}</td>
-    <td class="px-4 py-3">${response.postGraduation || "-"}</td>
-    <td class="px-4 py-3">${response.professionalDeg || "-"}</td>
-
-    <td class="px-4 py-3 text-center">${response.experience || "-"}</td>
-    <td class="px-4 py-3 text-center">${response.expectedSalary || "-"}</td>
-
-    <td class="px-4 py-3 text-center">${statusBadge}</td>
-    <td class="px-4 py-3">${response.remarks || "-"}</td>
-
-</tr>
-`;
-
-        } else {
             tableBody.innerHTML = `
-                <tr>
-                    <td colspan="10" class="text-center py-6 text-gray-500">
-                        No data found
-                    </td>
-                </tr>`;
+            <tr class="hover:bg-slate-50 animate-fade-in text-sm">
+                <td class="px-4 py-3 font-mono">${response.appNo || "-"}</td>
+                <td class="px-4 py-3">${response.session || "-"}</td>
+                <td class="px-4 py-3">${response.mobile || "-"}</td>
+                <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
+                <td class="px-4 py-3">${response.fatherName || "-"}</td>
+                <td class="px-4 py-3">${response.dob || "-"}</td>
+                <td class="px-4 py-3 text-center">${response.gender || "-"}</td>
+                <td class="px-4 py-3">${response.mainSubject1 || "-"}</td>
+                <td class="px-4 py-3">${response.mainSubject2 || "-"}</td>
+                <td class="px-4 py-3">${response.otherSkill || "-"}</td>
+                <td class="px-4 py-3">${response.highQual || "-"}</td>
+                <td class="px-4 py-3">${response.graduation || "-"}</td>
+                <td class="px-4 py-3">${response.postGraduation || "-"}</td>
+                <td class="px-4 py-3">${response.professionalDeg || "-"}</td>
+                <td class="px-4 py-3 text-center">${response.experience || "-"}</td>
+                <td class="px-4 py-3 text-center">${response.expectedSalary || "-"}</td>
+                <td class="px-4 py-3 text-center">${statusBadge}</td>
+                <td class="px-4 py-3">${response.remarks || "-"}</td>
+            </tr>`;
+        } else {
+            tableBody.innerHTML = `<tr><td colspan="18" class="text-center py-6 text-gray-500">No data found</td></tr>`;
             document.getElementById("errorCard").classList.remove("hidden");
         }
     };
 
-    // API CALL
     const script = document.createElement("script");
     script.id = "jsonpScript";
-   script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&key=12345&callback=${callbackName}`;
+    script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&key=12345&callback=${callbackName}`;
     document.body.appendChild(script);
 };
-
 </script>
 </body>
 </html>
