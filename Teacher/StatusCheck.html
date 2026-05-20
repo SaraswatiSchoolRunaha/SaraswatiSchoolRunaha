@@ -83,42 +83,48 @@ window.onload = function () {
         delete window[callbackName];
         statusRow.remove();
 
-        if (response && response.found) {
-            const status = (response.status || "").toLowerCase();
-            let statusBadge = status === "approved" 
-                ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Approved</span>`
-                : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Under Review</span>`;
+      // ... (ऊपर का कोड वैसे ही रहने दें)
 
-            tableBody.innerHTML = `
-            <tr class="hover:bg-slate-50 animate-fade-in text-sm">
-                <td class="px-4 py-3 font-mono">${response.appNo || "-"}</td>
-                <td class="px-4 py-3">${response.session || "-"}</td>
-                <td class="px-4 py-3">${response.mobile || "-"}</td>
-                <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
-                <td class="px-4 py-3">${response.fatherName || "-"}</td>
-                <td class="px-4 py-3">${response.mainSubject1 || "-"}</td>
-                <td class="px-4 py-3">${response.mainSubject2 || "-"}</td>
-                <td class="px-4 py-3">${response.otherSkill || "-"}</td>
-                <td class="px-4 py-3">${response.highQual || "-"}</td>
-                <td class="px-4 py-3">${response.graduation || "-"}</td>
-                <td class="px-4 py-3">${response.postGraduation || "-"}</td>
-                <td class="px-4 py-3">${response.professionalDeg || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.experience || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.expectedSalary || "-"}</td>
-                <td class="px-4 py-3 text-center">${statusBadge}</td>
-                <td class="px-4 py-3">${response.remarks || "-"}</td>
-            </tr>`;
+if (response && response.found) {
+    const status = (response.status || "").toLowerCase();
+    let statusBadge = status === "approved" 
+        ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Approved</span>`
+        : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Under Review</span>`;
+
+    tableBody.innerHTML = `
+    <tr class="hover:bg-slate-50 animate-fade-in text-sm">
+        <td class="px-4 py-3 font-mono">${response.appNo || "-"}</td>
+        <td class="px-4 py-3">${response.session || "-"}</td>
+        <td class="px-4 py-3">${response.mobile || "-"}</td>
+        <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
+        <td class="px-4 py-3">${response.fatherName || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.mainSubject1 || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.mainSubject2 || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.otherSkill || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.highQual || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.graduation || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.postGraduation || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.professionalDeg || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.experience || "-"}</td>
+        <td class="px-4 py-3 text-center">${response.expectedSalary || "-"}</td>
+        <td class="px-4 py-3 text-center">${statusBadge}</td>
+        <td class="px-4 py-3">${response.remarks || "-"}</td>
+        </tr>`;
         } else {
-            tableBody.innerHTML = `<tr><td colspan="18" class="text-center py-6 text-gray-500">No data found</td></tr>`;
-            document.getElementById("errorCard").classList.remove("hidden");
+        // यहाँ भी colspan 16 कर दें
+        tableBody.innerHTML = `<tr><td colspan="16" class="text-center py-6 text-gray-500">No data found</td></tr>`;
+        document.getElementById("errorCard").classList.remove("hidden");
         }
-    };
+
+    // ... (बाकी का कोड)
 
     const script = document.createElement("script");
     script.id = "jsonpScript";
     script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
     document.body.appendChild(script);
 };
+
+    
 </script>
 </body>
 </html>
