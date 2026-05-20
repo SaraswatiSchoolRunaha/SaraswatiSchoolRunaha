@@ -1,158 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teacher Search Status Check - Saraswati School</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
+<title>शिक्षक स्थिति जाँच - सरस्वती बाल विद्या मंदिर</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in { animation: fadeIn 0.35s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
 </style>
 </head>
 
-<body class="bg-slate-100 p-4 md:p-8 flex flex-col items-center justify-center min-h-screen font-sans antialiased">
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
 
-<div class="w-full max-w-5xl border-2 border-blue-600 bg-white p-6 md:p-10 shadow-lg animate-fade-in">
+<div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-600 animate-fade-in">
 
     <!-- TITLE -->
-    <div class="text-center mb-8">
-        <h1 class="text-2xl md:text-3xl font-bold text-blue-700">
-            🎓 Teacher Status Check
-        </h1>
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">शिक्षक स्थिति जाँच</h1>
+        <p class="text-sm text-gray-500 mt-1">सरस्वती बाल विद्या मंदिर, रुन्हा</p>
     </div>
 
     <!-- FORM -->
     <form id="statusForm" class="space-y-5">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <input type="text" id="appNoInput" required
-                placeholder="Application Number"
-                class="w-full px-4 py-2 border rounded-md">
-
+        <!-- Mobile Number -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">मोबाइल नंबर</label>
             <input type="tel" id="mobileInput" required pattern="[0-9]{10}"
-                placeholder="Mobile Number"
-                class="w-full px-4 py-2 border rounded-md">
-
+                placeholder="अपना 10 अंकों का नंबर लिखें"
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
 
         <!-- CAPTCHA -->
-        <div class="flex items-center justify-center gap-3">
-            <div id="captchaBox"
-                class="font-mono text-xl font-bold border px-6 py-2 min-w-[140px] text-center">
+        <div class="bg-gray-100 p-4 rounded-lg text-center">
+            <div id="captchaBox" class="font-mono text-3xl font-bold tracking-widest text-blue-800 mb-3 select-none">
                 ------
             </div>
-
-            <button type="button" onclick="generateCaptcha()"
-                class="bg-orange-500 text-white px-4 py-2 rounded">
-                Refresh
+            <button type="button" onclick="generateCaptcha()" class="text-sm text-blue-600 hover:underline">
+                कैप्चा बदलें (Refresh)
             </button>
         </div>
 
         <input type="text" id="captchaInput" required
-            placeholder="Enter Captcha"
-            class="w-full px-4 py-2 border rounded-md text-center">
+            placeholder="ऊपर दिया गया कोड यहाँ लिखें"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-center outline-none focus:ring-2 focus:ring-blue-500">
 
         <!-- SUBMIT -->
-        <div class="text-center">
-            <button type="submit" id="submitBtn"
-                class="bg-green-600 text-white px-10 py-2 rounded-md font-bold">
-                Submit
-            </button>
-        </div>
-
+        <button type="submit" id="submitBtn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200">
+            खोजें (Search)
+        </button>
     </form>
-
 </div>
 
 <script>
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec";
-
 let currentCaptcha = "";
 
-/* ================= CAPTCHA ================= */
 function generateCaptcha() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let res = "";
-
-    for (let i = 0; i < 6; i++) {
-        res += chars[Math.floor(Math.random() * chars.length)];
-    }
-
+    for (let i = 0; i < 6; i++) { res += chars[Math.floor(Math.random() * chars.length)]; }
     currentCaptcha = res;
     document.getElementById("captchaBox").innerText = res;
 }
 
-/* ================= FORM SUBMIT ================= */
 document.getElementById("statusForm").addEventListener("submit", function(e) {
     e.preventDefault();
-
-    const appNo = document.getElementById("appNoInput").value.trim().toUpperCase();
     const mobile = document.getElementById("mobileInput").value.trim();
     const captchaUser = document.getElementById("captchaInput").value.trim();
     const btn = document.getElementById("submitBtn");
 
-    /* validation */
     if (captchaUser !== currentCaptcha) {
-        alert("❌ गलत कैप्चा!");
+        alert("❌ गलत कैप्चा! कृपया पुनः प्रयास करें।");
         generateCaptcha();
         return;
     }
 
-    if (!/^[0-9]{10}$/.test(mobile)) {
-        alert("❌ Invalid mobile number");
-        return;
-    }
-
-    /* UI lock */
     btn.disabled = true;
-    btn.innerText = "Searching...";
+    btn.innerText = "खोज रहे हैं...";
 
     const callbackName = "handleSheetsResponse";
-
     window[callbackName] = function(response) {
-
         btn.disabled = false;
-        btn.innerText = "Submit";
-
+        btn.innerText = "खोजें (Search)";
         if (response && response.found) {
-
-            /* save data */
-            Object.keys(response).forEach(key => {
-                localStorage.setItem("saved_" + key, response[key]);
-            });
-
-            /* go to result page */
+            Object.keys(response).forEach(key => localStorage.setItem("saved_" + key, response[key]));
             window.location.href = "StatusCheck.html";
-
         } else {
-            alert("❌ Record not found!");
+            alert("❌ रिकॉर्ड नहीं मिला!");
         }
-
-        /* cleanup */
-        if (document.getElementById("jsonpScript")) {
-            document.getElementById("jsonpScript").remove();
-        }
-
+        if (document.getElementById("jsonpScript")) document.getElementById("jsonpScript").remove();
         delete window[callbackName];
     };
 
-    /* API CALL */
     const script = document.createElement("script");
     script.id = "jsonpScript";
-    script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
+    // Note: यहाँ से appNo हटा दिया गया है क्योंकि आपने उसे हटाने को कहा था
+    script.src = `${WEB_APP_URL}?mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
     document.body.appendChild(script);
 });
 
-/* init */
 window.onload = generateCaptcha;
 </script>
-
 </body>
 </html>
