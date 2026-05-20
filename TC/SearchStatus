@@ -82,16 +82,27 @@
         <thead>
             <tr>
                 <th>App No.</th>
+                <th>Session</th> 
+                <th>Scholar </th> 
                 <th>Mobile</th>
                 <th>Student Name</th>
                 <th>Father's Name</th>
                 <th>Mother's Name</th>
                 <th>DOB</th>
-                <th>Class</th>
-                <th>Session</th> 
                 <th>Gender</th>
                 <th>Category</th>
-                <th>Action</th>
+                <th>Samgra Id</th>
+                 <th>Pen Number</th>
+                 <th>Apaar Id</th>
+                 <th>Aadhar No</th>
+                 <th>Aadhar No</th>
+                <th>reason</th> 
+                <th>otherReason</th>
+                 <th>duesFees</th>
+                 <th>duesLibrary</th>
+                 <th>duesSports</th>
+                <th>Status</th> 
+                <th>Reason / Remarks</th>
             </tr>
         </thead>
         <tbody id="tableBody">
