@@ -493,15 +493,17 @@ padding:15px;
     border-radius: 20px !important;
 }
 
-/* Welcome Popup Special Style */
+/* Welcome Popup Special Style - न्यू अपडेट बॉक्स के पास सेट किया गया */
 #welcomePopup .popup-box {
     border-top: 5px solid #28a745;
     animation: popIn 0.5s ease;
     
-    /* Yahan size add karein */
-    width: 600px; /* Aap apni zaroorat ke hisaab se value change kar sakte hain */
-    max-width: 90%; /* Mobile screens ke liye safe rakhne ke liye */
-    padding: 30px; /* Andar ka space badhane ke liye */
+    width: 600px; 
+    max-width: 90%; 
+    padding: 30px; 
+    
+    /* 👈 पॉपअप को सेंटर से हटाकर न्यू अपडेट बॉक्स के लेवल पर लाने के लिए */
+    margin-top: -100px; 
 }
 
 @keyframes popIn {
@@ -509,6 +511,21 @@ padding:15px;
     to { transform: scale(1); opacity: 1; }
 }
 
+/* 🌐 वेलकम पॉपअप के काले बैकग्राउंड कंटेनर को ऊपर से अलाइन करने के लिए */
+#welcomePopup {
+    align-items: flex-start; 
+    padding-top: 150px; /* 💻 कंप्यूटर स्क्रीन पर स्लाइडर के अपडेट बॉक्स का सही लेवल */
+}
+
+/* 📱 मोबाइल स्क्रीन के लिए स्पेशल रिस्पॉन्सिव सेटिंग */
+@media screen and (max-width: 768px) {
+    #welcomePopup {
+        padding-top: 80px; /* मोबाइल पर स्लाइडर छोटा होता है, इसलिए ऊपर से कम दूरी */
+    }
+    #welcomePopup .popup-box {
+        margin-top: 0px; /* मोबाइल पर मार्जिन जीरो रहेगा ताकि स्क्रीन से बाहर न जाए */
+    }
+}
   /* 💻 🔴 MAINTENANCE SCREEN CSS */
 #maintenanceScreen {
     position: fixed;
