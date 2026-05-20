@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Application Status Check Details</title>
+    <!-- यह रही Tailwind की लाइन जो आप ढूंढ रहे थे -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -45,73 +46,62 @@
             </thead>
             <tbody id="tableDataBody">
                 <tr id="statusRow">
-                    <td colspan="16" class="text-center py-10 text-blue-500 font-bold">⏳ Loading data...</td>
+                    <td colspan="16" class="text-center py-10 text-blue-500 font-bold">⏳ Loading...</td>
                 </tr>
             </tbody>
         </table>
     </div>
-
-    <!-- ERROR -->
-    <div id="errorCard" class="hidden mt-4 p-4 bg-red-50 border border-red-200 text-red-700 text-center rounded">
-        ❌ रिकॉर्ड नहीं मिला! कृपया सही जानकारी दर्ज करें।<br><br>
-        <button onclick="location.href='StatusSearch.html'" class="bg-blue-600 text-white px-4 py-1 rounded mt-2">Try Again</button>
-    </div>
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec";
-
 window.onload = function () {
+    // 1. URL से पैरामीटर लें
     const params = new URLSearchParams(window.location.search);
     const appNo = params.get("appNo");
     const mobile = params.get("mobile");
     const tableBody = document.getElementById("tableDataBody");
-    const statusRow = document.getElementById("statusRow");
 
     if (!appNo || !mobile) {
-        statusRow.innerHTML = `<td colspan="16" class="text-center text-red-600 font-bold py-6">❌ Invalid Request</td>`;
+        document.getElementById("statusRow").innerHTML = `<td colspan="16" class="text-center text-red-600 font-bold py-6">❌ Invalid Request</td>`;
         return;
     }
 
-    const callbackName = "handleSheetsResponse";
-    window[callbackName] = function (response) {
-        if (document.getElementById("jsonpScript")) document.getElementById("jsonpScript").remove();
-        delete window[callbackName];
-        statusRow.remove();
+    // 2. Google Script को कॉल करें
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec";
+    const callbackName = "cb" + Math.floor(Math.random() * 10000);
 
-        if (response && response.found) {
-            const status = (response.status || "").toLowerCase();
+    window[callbackName] = function (res) {
+        if (res && res.found) {
+            const status = (res.status || "").toLowerCase();
             let statusBadge = status === "approved" 
                 ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Approved</span>`
                 : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Under Review</span>`;
-
+            
             tableBody.innerHTML = `
             <tr class="hover:bg-slate-50 animate-fade-in text-sm">
-                <td class="px-4 py-3 font-mono">${response.appNo || "-"}</td>
-                <td class="px-4 py-3">${response.session || "-"}</td>
-                <td class="px-4 py-3">${response.mobile || "-"}</td>
-                <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
-                <td class="px-4 py-3">${response.fatherName || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.mainSubject1 || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.mainSubject2 || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.otherSkill || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.highQual || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.graduation || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.postGraduation || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.professionalDeg || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.experience || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.expectedSalary || "-"}</td>
+                <td class="px-4 py-3 font-mono">${res.appNo || "-"}</td>
+                <td class="px-4 py-3">${res.session || "-"}</td>
+                <td class="px-4 py-3">${res.mobile || "-"}</td>
+                <td class="px-4 py-3 font-bold">${res.studentName || "-"}</td>
+                <td class="px-4 py-3">${res.fatherName || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.mainSubject1 || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.mainSubject2 || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.otherSkill || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.highQual || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.graduation || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.postGraduation || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.professionalDeg || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.experience || "-"}</td>
+                <td class="px-4 py-3 text-center">${res.expectedSalary || "-"}</td>
                 <td class="px-4 py-3 text-center">${statusBadge}</td>
-                <td class="px-4 py-3">${response.remarks || "-"}</td>
+                <td class="px-4 py-3">${res.remarks || "-"}</td>
             </tr>`;
         } else {
-            tableBody.innerHTML = `<tr><td colspan="16" class="text-center py-6 text-gray-500">No data found</td></tr>`;
-            document.getElementById("errorCard").classList.remove("hidden");
+            tableBody.innerHTML = `<tr><td colspan="16" class="text-center py-10 font-bold text-red-600">❌ Record not found!</td></tr>`;
         }
     };
 
     const script = document.createElement("script");
-    script.id = "jsonpScript";
     script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
     document.body.appendChild(script);
 };
