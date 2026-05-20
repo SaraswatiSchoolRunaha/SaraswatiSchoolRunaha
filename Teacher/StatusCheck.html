@@ -150,7 +150,7 @@ window.onload = function () {
     // API CALL
     const script = document.createElement("script");
     script.id = "jsonpScript";
-    script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
+   script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&key=12345&callback=${callbackName}`;
     document.body.appendChild(script);
 };
 
