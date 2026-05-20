@@ -18,7 +18,7 @@
 
     @page{
         size:A4;
-        margin:4mm;
+        margin:5mm;
     }
 
     html,body{
@@ -30,7 +30,7 @@
     body{
         margin:0 !important;
         padding:0 !important;
-        zoom:0.92;
+        zoom:0.94;
     }
 
     .print-hide{
@@ -43,12 +43,10 @@
         border-radius:0 !important;
         box-shadow:none !important;
         overflow:hidden !important;
-        page-break-inside:avoid !important;
-        break-inside:avoid !important;
     }
 
     /* =========================
-       GRID FIX
+       GRID (KEEP 2 COLUMN SAFE)
     ========================= */
 
     .grid{
@@ -62,71 +60,70 @@
     }
 
     .grid.md\:grid-cols-3 > div{
-        width:31% !important;
+        width:32% !important;
     }
 
     /* =========================
-       BOX FIX
+       BOX
     ========================= */
 
     .info-box{
         page-break-inside:avoid !important;
         break-inside:avoid !important;
         margin-bottom:6px !important;
-        padding:8px !important;
+        padding:9px !important;
     }
 
     /* =========================
-       FONT FIX
+       FONT (BALANCED - NOT TOO SMALL)
     ========================= */
 
     .label{
-        font-size:8px !important;
+        font-size:9px !important;
     }
 
     .value{
-        font-size:9px !important;
-        line-height:1.2 !important;
-        margin-top:1px !important;
+        font-size:11px !important;
+        line-height:1.25 !important;
+        margin-top:2px !important;
     }
 
     h1{
-        font-size:18px !important;
-        line-height:1.1 !important;
+        font-size:19px !important;
+        line-height:1.2 !important;
     }
 
     h2{
-        font-size:11px !important;
-        margin-bottom:4px !important;
+        font-size:12px !important;
+        margin-bottom:5px !important;
     }
 
     p{
-        white-space:normal !important;
-        word-break:break-word !important;
         margin:0 !important;
+        word-break:break-word !important;
     }
 
     img{
-        width:38px !important;
-        height:38px !important;
+        width:42px !important;
+        height:42px !important;
     }
 
     .space-y-3 > * + *{
-        margin-top:6px !important;
+        margin-top:7px !important;
     }
 
     .p-3{
-        padding:8px !important;
+        padding:9px !important;
     }
 
     .py-4{
-        padding-top:8px !important;
-        padding-bottom:8px !important;
+        padding-top:9px !important;
+        padding-bottom:9px !important;
     }
 
     .px-4{
-        padding-left:8px !important;
-        padding-right:8px !important;
+        padding-left:9px !important;
+        padding-right:9px !important;
     }
 
     *{
@@ -135,8 +132,7 @@
     }
 
 }
-
-/* =========================
+   /* =========================
    CARD
 ========================= */
 
