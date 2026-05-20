@@ -31,8 +31,6 @@
                     <th class="px-4 py-3">Mobile</th>
                     <th class="px-4 py-3">Name</th>
                     <th class="px-4 py-3">Father</th>
-                    <th class="px-4 py-3 text-center">DOB</th>
-                    <th class="px-4 py-3 text-center">Gender</th>
                     <th class="px-4 py-3 text-center">Sub 1</th>
                     <th class="px-4 py-3 text-center">Sub 2</th>
                     <th class="px-4 py-3 text-center">Skill</th>
@@ -44,6 +42,8 @@
                     <th class="px-4 py-3 text-center">Salary</th>
                     <th class="px-4 py-3 text-center">Status</th>
                     <th class="px-4 py-3 text-center">Remarks</th>
+             
+                
                 </tr>
             </thead>
             <tbody id="tableDataBody">
@@ -96,8 +96,6 @@ window.onload = function () {
                 <td class="px-4 py-3">${response.mobile || "-"}</td>
                 <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
                 <td class="px-4 py-3">${response.fatherName || "-"}</td>
-                <td class="px-4 py-3">${response.dob || "-"}</td>
-                <td class="px-4 py-3 text-center">${response.gender || "-"}</td>
                 <td class="px-4 py-3">${response.mainSubject1 || "-"}</td>
                 <td class="px-4 py-3">${response.mainSubject2 || "-"}</td>
                 <td class="px-4 py-3">${response.otherSkill || "-"}</td>
@@ -118,7 +116,7 @@ window.onload = function () {
 
     const script = document.createElement("script");
     script.id = "jsonpScript";
-    script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&key=12345&callback=${callbackName}`;
+    script.src = `${WEB_APP_URL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobile)}&callback=${callbackName}`;
     document.body.appendChild(script);
 };
 </script>
