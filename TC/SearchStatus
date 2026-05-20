@@ -32,7 +32,7 @@
                      font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; }
         .btn-search:hover { background-color: #004085; }
 
-        /* 📊 डेटा टेबल डिजाइन (आपकी इमेज के अनुसार) */
+        /* 📊 डेटा टेबल डिजाइन */
         .result-container { background-color: #fff; width: 100%; max-width: 1200px; border-radius: 6px; 
                            box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto; display: none; 
                            border-top: 4px solid #0056b3; }
@@ -88,18 +88,23 @@
                 <th>Mother's Name</th>
                 <th>DOB</th>
                 <th>Class</th>
-                <th>Session</th> <th>Gender</th>
+                <th>Session</th> 
+                <th>Gender</th>
                 <th>Category</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody id="tableBody">
-            </tbody>
+            <!-- Google Sheet का डेटा यहाँ आकर लोड होगा -->
+        </tbody>
     </table>
 </div>
 
 <script>
     var currentCaptcha = "";
+    
+    // 💡 यहाँ अपना Google Apps Script का Web App URL डालें
+    var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
     // 🔒 नया कैप्चा कोड जनरेट करने का फंक्शन
     function generateCaptcha() {
@@ -109,4 +114,122 @@
             code += chars.charAt(Math.floor(Math.random() * chars.length));
         }
         currentCaptcha = code;
-        document.getElementById
+        document.getElementById('captchaCode').innerText = currentCaptcha;
+        document.getElementById('txtCaptchaInput').value = ""; // पुराना इनपुट साफ करें
+    }
+
+    // पेज लोड होते ही चलने वाला लॉजिक
+    window.onload = function() {
+        generateCaptcha();
+
+        // 🔀 पिछले पेज से आए URL Parameters (appNo या mobile) को पढ़ना
+        var urlParams = new URLSearchParams(window.location.search);
+        var appNo = urlParams.get('appNo');
+        var mobile = urlParams.get('mobile');
+
+        // अगर पिछले पेज से डेटा मिला है, तो इनपुट में ऑटो-फिल करें
+        if (appNo) {
+            document.getElementById('txtSearch').value = appNo;
+        } else if (mobile) {
+            document.getElementById('txtSearch').value = mobile;
+        }
+    };
+
+    // 🔍 Google Sheet से डेटा खोजने का मुख्य फंक्शन
+    function searchData() {
+        var searchInput = document.getElementById('txtSearch').value.trim();
+        var captchaInput = document.getElementById('txtCaptchaInput').value.trim().toUpperCase();
+        var errorMsg = document.getElementById('errorMsg');
+        var loadingMsg = document.getElementById('loadingMsg');
+        var resultContainer = document.getElementById('resultContainer');
+        var tableBody = document.getElementById('tableBody');
+
+        // पुराने मैसेजेस छिपाना
+        errorMsg.style.display = "none";
+        resultContainer.style.display = "none";
+        tableBody.innerHTML = "";
+
+        // वैलीडेशन
+        if (searchInput === "") {
+            showError("कृपया Application Number या Mobile Number दर्ज करें।");
+            return;
+        }
+
+        if (captchaInput !== currentCaptcha) {
+            showError("गलत कैप्चा कोड! कृपया सही कोड दर्ज करें।");
+            generateCaptcha(); // सुरक्षा के लिए कैप्चा रीसेट करें
+            return;
+        }
+
+        // लोडिंग मैसेज चालू करना
+        loadingMsg.style.display = "block";
+
+        // API URL तैयार करना (App No या Mobile दोनों में से किसी भी एक से खोजने के लिए)
+        var finalUrl = webAppUrl + "?searchQuery=" + encodeURIComponent(searchInput);
+
+        // Fetch के जरिए बैकएंड से जुड़ना
+        fetch(finalUrl)
+            .then(response => response.json())
+            .then(data => {
+                loadingMsg.style.display = "none";
+
+                if (data.status === "SUCCESS" && data.records && data.records.length > 0) {
+                    
+                    // रिकॉर्ड मिलने पर टेबल रो (Row) तैयार करना
+                    data.records.forEach(row => {
+                        var tr = document.createElement('tr');
+                        
+                        // यूआरएल लिंक बनाना ताकि इस बटन को दबाकर रसीद प्रिंट की जा सके
+                        var receiptLink = "receipt.html?appNo=" + encodeURIComponent(row.appNo) + 
+                                           "&mobile=" + encodeURIComponent(row.mobile);
+
+                        tr.innerHTML = `
+                            <td>${clean(row.appNo)}</td>
+                            <td>${clean(row.mobile)}</td>
+                            <td>${clean(row.studentName)}</td>
+                            <td>${clean(row.fatherName)}</td>
+                            <td>${clean(row.motherName)}</td>
+                            <td>${clean(row.dob)}</td>
+                            <td>${clean(row.lastClass)}</td>
+                            <td>${clean(row.session)}</td>
+                            <td>${clean(row.gender)}</td>
+                            <td>${clean(row.category)}</td>
+                            <td><a href="${receiptLink}" target="_blank" class="btn-action">Print Receipt</a></td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+
+                    // रिजल्ट कंटेनर दिखाना
+                    resultContainer.style.display = "block";
+
+                } else {
+                    showError("कोई रिकॉर्ड नहीं मिला! कृपया सही एप्लीकेशन नंबर या मोबाइल नंबर जांचें।");
+                }
+                generateCaptcha(); // नया सर्च करने के लिए कैप्चा बदलें
+            })
+            .catch(error => {
+                loadingMsg.style.display = "none";
+                console.error("Error searching data:", error);
+                showError("सर्वर से जुड़ने में असमर्थ। कृपया इंटरनेट कनेक्शन की जांच करें।");
+                generateCaptcha();
+            });
+    }
+
+    // एरर दिखाने का हेल्पर फंक्शन
+    function showError(msg) {
+        var errorMsg = document.getElementById('errorMsg');
+        errorMsg.innerText = msg;
+        errorMsg.style.display = "block";
+    }
+
+    // खाली या अनडिफाइंड डेटा को साफ करने का हेल्पर फंक्शन
+    function clean(val) {
+        if (!val || val === "null" || val === "undefined" || String(val).trim() === "") {
+            return "--";
+        }
+        return String(val).toUpperCase().trim();
+    }
+</script>
+
+</body>
+</html>
