@@ -15,23 +15,17 @@
 ========================= */
 
 @media print {
-
     @page {
         size: A4;
-        margin: 4mm;
+        margin: 5mm; /* Margin thoda adjust kiya */
     }
 
     html, body {
-        width: 210mm;
-        min-height: 297mm;
+        width: 100%;
+        height: 100%;
         background: #fff !important;
-    }
-
-    body {
         margin: 0 !important;
         padding: 0 !important;
-        transform: scale(0.98);
-        transform-origin: top center;
     }
 
     .print-hide {
@@ -42,14 +36,16 @@
         width: 100% !important;
         max-width: 100% !important;
         box-shadow: none !important;
-        border-radius: 0 !important;
+        border: 2px solid #1e3a8a !important; /* Border patla kiya */
+        margin: 0 !important;
+        padding: 5px !important;
     }
 
-    /* GRID SAFE */
+    /* GRID KO EK PAGE ME FIT KARNE KE LIYE */
     .grid {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 6px !important;
+        gap: 4px !important;
     }
 
     .grid > div {
@@ -60,44 +56,32 @@
         width: 32% !important;
     }
 
-    /* BOX */
+    /* BOX SPACING KAM KI */
     .info-box {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
-        margin-bottom: 6px !important;
-        padding: 10px !important;
+        margin-bottom: 3px !important;
+        padding: 5px !important;
     }
 
-    /* 🔥 BIG FONT (CLEAR READABLE) */
-
+    /* FONT SIZE ADJUSTMENT */
     .label {
-        font-size: 12px !important;
+        font-size: 10px !important; /* Thoda chota kiya */
         font-weight: 700 !important;
     }
 
     .value {
-        font-size: 14px !important;
+        font-size: 12px !important; /* Thoda chota kiya */
         font-weight: 600 !important;
-        line-height: 1.3 !important;
     }
 
-    h1 {
-        font-size: 22px !important;
-    }
-
-    h2 {
-        font-size: 14px !important;
-    }
-
-    p {
-        font-size: 13px !important;
-        margin: 0 !important;
-        word-break: break-word !important;
-    }
+    h1 { font-size: 18px !important; }
+    h2 { font-size: 12px !important; margin-bottom: 2px !important; }
+    p { font-size: 11px !important; }
 
     img {
-        width: 45px !important;
-        height: 45px !important;
+        width: 35px !important;
+        height: 35px !important;
     }
 
     * {
