@@ -70,7 +70,6 @@
             transition: all 0.3s ease;
         }
 
-        /* इनपुट को टाइप करते समय ही UPPERCASE में दिखाने के लिए */
         input[type="text"] {
             text-transform: uppercase;
         }
@@ -101,7 +100,6 @@
         .or-divider::before { left: 0; }
         .or-divider::after { right: 0; }
 
-        /* 🔒 Chapter Code (Captcha) Section Styles */
         .captcha-section {
             background-color: #f8f9fa;
             border: 1px solid #e2e8f0;
@@ -163,6 +161,12 @@
             background-color: #1557b0;
         }
 
+        .search-btn:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         .error-message {
             color: #d93025;
             font-size: 13px;
@@ -197,7 +201,7 @@
             <input type="tel" id="mobileNo" pattern="[0-9]{10}" placeholder="10-DIGIT MOBILE NUMBER">
         </div>
 
-        <!-- 🔒 Chapter Code (Captcha) Field -->
+        <!-- Chapter Code (Captcha) Field -->
         <div class="captcha-section">
             <label for="captchaInput">Verification Code / चैप्टर कोड <span style="color: #d93025;">*</span></label>
             <div class="captcha-container">
@@ -210,31 +214,29 @@
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="search-btn">Search & Print / खोजें और प्रिंट करें</button>
+        <button type="submit" id="searchBtn" class="search-btn">Search & Print / खोजें और प्रिंट करें</button>
         
         <!-- Error Display Messages -->
         <div id="errorMsg" class="error-message">कृपया खोजने के लिए कोई एक विकल्प भरें!</div>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
     var generatedCode = "";
 
-    // 💡 पेज लोड होते ही चैप्टर कोड (Captcha) जनरेट करने के लिए
     window.onload = function() {
         generateCaptcha();
     };
 
-    // रैंडम 6 अंकों का अल्फ़ान्यूमेरिक चैप्टर कोड बनाने का फंक्शन
     function generateCaptcha() {
-        var characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // भ्रम से बचने के लिए O, I, 0, 1 हटा दिए हैं
+        var characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
         var result = '';
         for (var i = 0; i < 6; i++) {
             result += characters.charAt(Math.floor(Math.random() * characters.length));
         }
         generatedCode = result;
         document.getElementById('captchaDisplay').innerText = generatedCode;
-        document.getElementById('captchaInput').value = ""; // पिछला इनपुट साफ़ करें
+        document.getElementById('captchaInput').value = ""; 
     }
 
     function executeSearch(event) {
@@ -244,42 +246,63 @@
         var mobileNo = document.getElementById('mobileNo').value.trim();
         var userInputCaptcha = document.getElementById('captchaInput').value.toUpperCase().trim();
         var errorMsg = document.getElementById('errorMsg');
+        var searchBtn = document.getElementById('searchBtn');
 
-        // 1. जाँचें कि दोनों में से कम से कम एक फ़ील्ड भरी हो
+        // 1. इनपुट वैलिडेशन
         if (!appNo && !mobileNo) {
             errorMsg.innerText = "कृपया खोजने के लिए कोई एक विकल्प (Application No या Mobile) भरें!";
             errorMsg.style.display = 'block';
             return;
         }
 
-        // 2. चैप्टर कोड (Captcha) का सत्यापन
+        // 2. चैप्टर कोड (Captcha) वैलिडेशन
         if (userInputCaptcha !== generatedCode) {
             errorMsg.innerText = "गलत चैप्टर कोड! कृपया दोबारा देखकर सही कोड भरें।";
             errorMsg.style.display = 'block';
-            generateCaptcha(); // सुरक्षा के लिए गलत एंट्री पर कोड बदलें
+            generateCaptcha(); 
             return;
         }
         
         errorMsg.style.display = 'none';
-
-        // डेमो के लिए ट्रांसफर होने वाला डमी डेटा
-        var dummyData = {
-            appNo: appNo || "TC-2026-4582",
-            studentName: "RAHUL KUMAR GUPTA",
-            scholarNo: "2024/1042",
-            fatherName: "RAMESH KUMAR GUPTA",
-            motherName: "SUNITA DEVI",
-            lastClass: "CLASS 12",
-            session: "2024-25",
-            mobile: mobileNo || "9876543210",
-            applyDate: new Date().toLocaleDateString('en-GB')
-        };
-
-        // डेटा को URL पैरामीटर्स में सुरक्षित ट्रांसफर करना
-        var queryParams = new URLSearchParams(dummyData).toString();
         
-        // प्रिंट पेज (`receiptprint.html`) पर रीडायरेक्ट करना
-        window.location.href = "receiptprint.html?" + queryParams;
+        // बटन को डिसेबल करना ताकि सर्चिंग के दौरान दोबारा क्लिक न हो
+        searchBtn.innerText = "Searching Record... / खोज रहे हैं...";
+        searchBtn.disabled = true;
+
+        // 3. --- गूगल ऐप्स स्क्रिप्ट कनेक्शन ---
+        // यहाँ अपनी Google Apps Script का Web App URL डालें
+        var webAppUrl = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+        // URL पैरामीटर्स तैयार करना (ताकि बैकएंड को पता चले कि क्या खोजना है)
+        var searchParams = new URLSearchParams();
+        if (appNo) searchParams.append('appNo', appNo);
+        if (mobileNo) searchParams.append('mobileNo', mobileNo);
+
+        // Fetch API के ज़रिए Google Sheet से डेटा माँगना
+        fetch(webAppUrl + "?" + searchParams.toString())
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "SUCCESS") {
+                // अगर डेटा मिल गया, तो उसे प्रिंट वाले पेज पर रीडायरेक्ट कर दें
+                var queryParams = new URLSearchParams(data.record).toString();
+                window.location.href = "receiptprint.html?" + queryParams;
+            } else {
+                // अगर रिकॉर्ड नहीं मिला
+                errorMsg.innerText = "कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।";
+                errorMsg.style.display = 'block';
+                searchBtn.innerText = "Search & Print / खोजें और प्रिंट करें";
+                searchBtn.disabled = false;
+                generateCaptcha();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            errorMsg.innerText = "सर्वर से कनेक्ट करने में त्रुटि आई! कृपया दोबारा प्रयास करें।";
+            errorMsg.style.display = 'block';
+            searchBtn.innerText = "Search & Print / खोजें और प्रिंट करें";
+            searchBtn.disabled = false;
+            generateCaptcha();
+        });
     }
 </script>
 
