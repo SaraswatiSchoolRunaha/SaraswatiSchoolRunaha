@@ -1,1 +1,270 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>सुधार आवेदन पावती रसीद</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; color: #333; font-size: 13px; background: #f0f0f0; }
+        .receipt-container { max-width: 850px; margin: 10px auto; border: 2px solid #003366; padding: 30px; background: #fff; position: relative; }
+        .header { text-align: center; border-bottom: 3px double #ff9933; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h2 { margin: 0; color: #003366; font-size: 24px; text-transform: uppercase; }
+        .header p { margin: 4px 0; font-weight: bold; font-size: 16px; color: #d32f2f; }
+        .date-line { text-align: right; font-weight: bold; margin-bottom: 10px; }
+        .top-info { border: 1px solid #003366; padding: 12px 20px; margin-bottom: 15px; background: #f9f9f9; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .info-item { font-size: 14px; }
+        .info-item strong { color: #003366; width: 140px; display: inline-block; }
+        .receipt-photo { width: 90px; height: 110px; border: 1px solid #ccc; object-fit: cover; display: block; margin-top: 5px; }
+        .section-title { background: #003366; color: white; padding: 6px 12px; font-weight: bold; margin-top: 20px; margin-bottom: 8px; font-size: 14px; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { border: 1px solid #000; padding: 8px 12px; text-align: left; vertical-align: top; }
+        th { background: #eee; width: 35%; color: #003366; }
+        .new-data { color: #d32f2f; font-weight: bold; background: #fff9f9; }
+        .declaration { margin-top: 25px; border: 1px solid #003366; padding: 15px; font-style: italic; font-size: 12px; background: #fffdf5; line-height: 1.6; }
+        .sig-section { display: flex; justify-content: space-between; margin-top: 70px; text-align: center; font-weight: bold; }
+        .sig-box { width: 30%; border-top: 1.5px dashed #000; padding-top: 8px; }
+        .status-badge { padding: 4px 12px; border-radius: 4px; color: #fff; font-weight: bold; font-size: 12px; display: inline-block; }
+        
+        @media print { 
+            .btn-print { display: none !important; } 
+            body { background: #fff; padding: 0; }
+            .receipt-container { border: 2px solid #000; box-shadow: none; margin: 0; width: 100%; } 
+        }
+        .btn-print { display: block; margin: 20px auto; padding: 12px 40px; background: #003366; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 5px; font-size: 16px; }
+    </style>
+</head>
+<body>
 
+<div class="receipt-container">
+    <div class="header">
+        <h2>सरस्वती बाल विद्या मंदिर हाई स्कूल </h2>
+        <p>रुनाहा, बेरसिया, भोपाल</p>
+        <p>अंकसूची सुधार आवेदन - पावती रसीद </p>
+    </div>
+
+    <div class="date-line">दिनांक: <span id="currentDate">-</span></div>
+
+    <div class="section-title">I. छात्र का विवरण (Basic Details)</div>
+    <div class="top-info">
+        <div class="info-grid">
+            <div class="info-item"><strong>आवेदन क्रमांक:</strong> <span id="res-app">-</span></div>
+            <div class="info-item"><strong>अनुक्रमांक (Roll No):</strong> <span id="res-roll">-</span></div>
+            <div class="info-item"><strong>सत्र (Session):</strong> <span id="res-year">-</span></div>
+            <div class="info-item"><strong>मोबाइल नंबर:</strong> <span id="res-mobile">-</span></div>
+        </div>
+    </div>
+
+    <div class="section-title">II. सुधार हेतु प्रस्तावित विवरण (Old vs New)</div>
+    <table>
+        <thead>
+            <tr style="background: #f4f4f4;">
+                <th>विवरण का नाम</th>
+                <th>वर्तमान रिकॉर्ड (पुराना)</th>
+                <th>प्रस्तावित सुधार (नया)</th>
+            </tr>
+        </thead>
+        <tbody id="correction-body">
+            <!-- डेटा यहाँ लोड होगा -->
+        </tbody>
+    </table>
+
+    <div class="section-title">III. आवेदन की स्थिति एवं रिमार्क</div>
+    <table>
+        <tr>
+            <th>वर्तमान स्थिति (Status)</th>
+            <td><span id="disp-status" class="status-badge">लंबित (Pending)</span></td>
+        </tr>
+        <tr>
+            <th>सुधार की जानकारी</th>
+            <td id="res-info">-</td>
+        </tr>
+        <tr>
+            <th>अस्वीकृति का कारण (यदि हो)</th>
+            <td id="res-reject">-</td>
+        </tr>
+    </table>
+
+    <div class="declaration">
+        <strong>शपथ पत्र (Declaration):</strong><br>
+        मैं शपथ पूर्वक कथन करता/करती हूँ कि मेरे द्वारा दी गई उपरोक्त जानकारी पूर्णतः सत्य एवं सटीक है। मैंने सभी दस्तावेजों की जांच कर ली है। यदि किसी भी स्तर पर दी गई जानकारी असत्य या त्रुटिपूर्ण पाई जाती है, तो बोर्ड को मेरा आवेदन निरस्त करने का पूर्ण अधिकार होगा, जिसकी समस्त जिम्मेदारी मेरी होगी।
+    </div>
+
+    <div class="sig-section">
+        <div class="sig-box">छात्र / छात्रा के हस्ताक्षर</div>
+        <div class="sig-box">अभिभावक के हस्ताक्षर</div>
+        <div class="sig-box">प्राचार्य के हस्ताक्षर एवं पदमुद्रा</div>
+    </div>
+
+    <p style="font-size: 11px; margin-top: 30px; text-align: center; color: #666; border-top: 1px solid #eee; padding-top: 10px;">
+        यह एक कंप्यूटर जनित रसीद है। बोर्ड द्वारा मूल दस्तावेजों के सत्यापन के बाद ही सुधार मान्य होगा।
+    </p>
+</div>
+
+<button class="btn-print" onclick="window.print()">रसीद प्रिंट करें / PDF सेव करें</button>
+
+<script>
+    window.onload = function() {
+        try {
+            document.getElementById("currentDate").innerText = new Date().toLocaleDateString('hi-IN');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const roll = urlParams.get('roll');
+            const appNo = urlParams.get('appNo') || urlParams.get('app');
+            
+            if (!roll && !appNo) {
+                document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>URL में कोई डेटा नहीं मिला। कृपया पोर्टल से सही लिंक ओपन करें।</td></tr>";
+                return;
+            }
+
+            // चेक करें कि क्या पूरा डेटा सीधे URL में ही आ गया है (जैसे Option 1: Apply Form से आने पर)
+            if (urlParams.has('name') || urlParams.has('newName')) {
+                const s = {
+                    appNo: appNo || "---",
+                    roll: roll || "---",
+                    year: urlParams.get('year') || urlParams.get('session') || "---",
+                    mobile: urlParams.get('mobile') || "---",
+                    info: urlParams.get('info') || urlParams.get('correction') || "मार्कशीट सुधार अनुरोध दर्ज किया गया।",
+                    rejectReason: urlParams.get('rejectReason') || "---",
+                    status: urlParams.get('status') || urlParams.get('appStatus') || "Pending",
+                    name: urlParams.get('name') || "---",
+                    father: urlParams.get('father') || "---",
+                    mother: urlParams.get('mother') || "---",
+                    dob: urlParams.get('dob') || "---",
+                    class: urlParams.get('class') || "---",
+                    medium: urlParams.get('medium') || "---",
+                    category: urlParams.get('category') || "---",
+                    photoUrl: urlParams.get('photoUrl') || "",
+                    newName: urlParams.get('newName') || urlParams.get('new_name') || "---",
+                    newFather: urlParams.get('newFather') || urlParams.get('new_father') || "---",
+                    newMother: urlParams.get('newMother') || urlParams.get('new_mother') || "---",
+                    newDob: urlParams.get('newDob') || urlParams.get('new_dob') || "---",
+                    newClass: urlParams.get('newClass') || urlParams.get('new_class') || "---",
+                    newMedium: urlParams.get('newMedium') || urlParams.get('new_medium') || "---",
+                    newCategory: urlParams.get('newCategory') || urlParams.get('new_category') || "---",
+                    newPhoto: urlParams.get('newPhoto') || urlParams.get('photo') || ""
+                };
+                renderDataToUI(s);
+            } else {
+                // यदि केवल roll और appNo आया है (Option 2: Download Receipt से आने पर)
+                // यहाँ अपने Google Apps Script Web App का URL पेस्ट करें
+const scriptUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec?roll=" + encodeURIComponent(roll) + "&app=" + encodeURIComponent(appNo);                fetch(scriptUrl)
+                .then(response => response.json())
+                .then(res => {
+                    if(res.status === "success") {
+                        const d = res.data; // गूगल शीट से आया हुआ लाइव डेटा
+                        
+                        const s = {
+                            appNo: d.appNo || appNo,
+                            roll: d.roll || roll,
+                            year: d.session || "---",
+                            mobile: d.mobile || "---",
+                            info: d.correction || "मार्कशीट सुधार अनुरोध दर्ज किया गया।",
+                            rejectReason: d.rejectReason || "---",
+                            status: d.appStatus || "Pending",
+                            name: d.name || "---",
+                            father: d.father || "---",
+                            mother: d.mother || "---",
+                            dob: d.dob || "---",
+                            class: d.class || "---",
+                            medium: d.medium || "---",
+                            category: d.category || "---",
+                            photoUrl: d.photoUrl || "",
+                            newName: d.newName || d.new_name || "---",
+                            newFather: d.newFather || d.new_father || "---",
+                            newMother: d.newMother || d.new_mother || "---",
+                            newDob: d.newDob || d.new_dob || "---",
+                            newClass: d.newClass || d.new_class || "---",
+                            newMedium: d.newMedium || d.new_medium || "---",
+                            newCategory: d.newCategory || d.new_category || "---",
+                            newPhoto: d.newPhoto || d.photo || ""
+                        };
+                        renderDataToUI(s);
+                    } else {
+                        document.getElementById("correction-body").innerHTML = `<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>त्रुटि: ${res.message || "डेटा नहीं मिला।"}</td></tr>`;
+                    }
+                })
+                .catch(err => {
+                    document.getElementById("correction-body").innerHTML = "<tr><td colspan='3' style='text-align:center; color:red; font-weight:bold;'>सर्वर से कनेक्ट करने में त्रुटि हुई।</td></tr>";
+                    console.error(err);
+                });
+            }
+
+        } catch (err) {
+            console.error("URL Load Error: " + err.message);
+        }
+    };
+
+    // डेटा को टेबल और अन्य एलिमेंट्स में रेंडर करने का मुख्य फ़ंक्शन
+    function renderDataToUI(s) {
+        // बेसिक स्क्रीन इनफार्मेशन भरना
+        document.getElementById("res-app").innerText = s.appNo;
+        document.getElementById("res-roll").innerText = s.roll;
+        document.getElementById("res-year").innerText = s.year;
+        document.getElementById("res-mobile").innerText = s.mobile;
+        document.getElementById("res-info").innerText = s.info;
+        document.getElementById("res-reject").innerText = s.rejectReason;
+
+        // तालिका डेटा एरे लिस्ट (आपकी मूल संरचना के अनुसार)
+        const fields = [
+            { label: "छात्र का नाम (Student Name)", old: s.name, new: s.newName, isPhoto: false },
+            { label: "पिता का नाम (Father's Name)", old: s.father, new: s.newFather, isPhoto: false },
+            { label: "माता का नाम (Mother's Name)", old: s.mother, new: s.newMother, isPhoto: false },
+            { label: "जन्म तिथि (Date of Birth)", old: s.dob, new: s.newDob, isPhoto: false },
+            { label: "कक्षा (Class)", old: s.class, new: s.newClass, isPhoto: false },
+            { label: "माध्यम (Medium)", old: s.medium, new: s.newMedium, isPhoto: false },
+            { label: "श्रेणी (Category)", old: s.category, new: s.newCategory, isPhoto: false },
+            { label: "छात्र का फोटो (Student Photo)", old: s.photoUrl, new: s.newPhoto, isPhoto: true }
+        ];
+
+        const tbody = document.getElementById("correction-body");
+        let tableRowsHtml = ""; 
+
+        fields.forEach(f => {
+            let displayOld = f.old;
+            let displayNew = f.new;
+
+            if (f.isPhoto) {
+                const oldImg = f.old && f.old !== "---" && f.old !== "null" ? f.old : 'https://via.placeholder.com/90x110?text=No+Photo';
+                const newImg = f.new && f.new !== "---" && f.new !== "null" ? f.new : oldImg;
+                displayOld = `<img src="${oldImg}" class="receipt-photo" alt="Old">`;
+                displayNew = `<img src="${newImg}" class="receipt-photo" alt="New">`;
+            }
+
+            // क्या इस फील्ड में बदलाव हुआ है?
+            const isUpdated = f.new !== "---" && f.new !== "null" && f.new !== f.old;
+            const newTdClass = (isUpdated && !f.isPhoto) ? 'new-data' : '';
+
+            tableRowsHtml += `<tr>
+                <td>${f.label}</td>
+                <td>${displayOld}</td>
+                <td class="${newTdClass}">${displayNew}</td>
+            </tr>`;
+        });
+
+        tbody.innerHTML = tableRowsHtml;
+
+        // स्टेटस का रंग सेट करना
+        const status = s.status.toLowerCase();
+        const statusBadge = document.getElementById("disp-status");
+        
+        if(status.includes('approve') || status.includes('success') || status.includes('स्वीकृत')) {
+            statusBadge.innerText = "स्वीकृत (Approved)";
+            statusBadge.style.backgroundColor = '#28a745';
+            statusBadge.style.color = '#fff';
+        } else if(status.includes('reject') || status.includes('अस्वीकृत')) {
+            statusBadge.innerText = "अस्वीकृत (Rejected)";
+            statusBadge.style.backgroundColor = '#dc3545';
+            statusBadge.style.color = '#fff';
+        } else {
+            statusBadge.innerText = "लंबित (Pending)";
+            statusBadge.style.backgroundColor = '#ffc107';
+            statusBadge.style.color = '#000';
+        }
+
+        // ऑटो-प्रिंट ट्रिगर (डेटा लोड होने के 1 सेकंड बाद)
+        setTimeout(() => { window.print(); }, 1000);
+    }
+</script>
+</body>
+</html>
