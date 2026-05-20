@@ -1,1 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Search Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* डिजाइन में बदलाव - डाटा और लॉजिक वही रहेगा */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f4f7f9; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
 
+        /* मुख्य बॉक्स - जैसा आपने मांगा था */
+        .search-container { 
+            background: #ffffff; 
+            padding: 40px; 
+            border-radius: 4px; 
+            border: 3px solid #1e5ba3; /* गहरा नीला बॉर्डर */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+            width: 95%; 
+            max-width: 450px; 
+            text-align: center;
+        }
+          /* इसे style टैग के अंदर अपडेट करें */
+            .header-box {
+            display: flex;            /* टोपी को बगल में लाने के लिए */
+            align-items: center;      /* टोपी और टेक्स्ट को ऊपर-नीचे से बराबर करने के लिए */
+            justify-content: center;  /* दोनों को सेंटर में रखने के लिए */
+            gap: 12px;                /* टोपी और टेक्स्ट के बीच गैप */
+            margin-bottom: 25px;      /* नीचे वाले बॉक्स से दूरी */
+        }
+
+            .header-box span {
+            font-size: 32px;          /* टोपी का साइज */
+        }
+
+            h2 { 
+            color: #1e5ba3; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            font-size: 1.3rem;
+            margin: 0;                /* एक्स्ट्रा मार्जिन हटा दें */
+        }
+        .input-group { margin-bottom: 18px; text-align: left; }
+
+        label { 
+            display: block; 
+            font-size: 15px; 
+            color: #444; 
+            margin-bottom: 5px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+        }
+
+        input[type="text"], select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            text-align: center; /* टेक्स्ट सेंटर में */
+        }
+
+        /* कैप्चा सेक्शन डिजाइन */
+        .captcha-row { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 10px; 
+        }
+
+        #captchaValue { 
+            background: #fff; 
+            padding: 10px 20px; 
+            font-weight: bold; 
+            border: 1px solid #000; 
+            color: #000; 
+            font-size: 22px; 
+            letter-spacing: 5px; 
+            font-style: italic;
+            user-select: none;
+        }
+
+        .refresh-btn { 
+            cursor: pointer; 
+            background: #ff9800; 
+            color: white; 
+            border: none; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            font-weight: bold;
+        }
+
+        /* सबमिट बटन - हरा जैसा माँगा गया था */
+        button.submit-btn { 
+            width: 100%; 
+            padding: 15px; 
+            background-color: #4caf50; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            text-transform: uppercase;
+        }
+
+        button.submit-btn:hover { background-color: #43a047; }
+
+        .footer-text { text-align: center; font-size: 11px; color: #777; margin-top: 25px; border-top: 1px solid #eee; padding-top: 7px; }
+    </style>
+</head>
+
+<body onload="generateCaptcha()">
+
+<div class="search-container">
+    <div class="header-box">
+        <span>🎓</span>
+        <h2>Marksheet Correction</h2>
+    </div>
+
+
+    <div class="input-group">
+        <label>Roll Number</label>
+        <input type="text" id="roll" placeholder=" Enter Valid Students Roll No. 0000000 " autofocus>
+    </div>
+
+    <div class="input-group" style="display: flex; gap: 15px;">
+        <div style="flex: 1;">
+            <label>Class</label>
+            <select id="class">
+                <option value="">--Select--</option>
+                <option value="12th">12th</option>
+                <option value="11th">11th</option>
+                <option value="10th">10th</option>
+                <option value="9th">9th</option>
+                <option value="8th">8th</option>
+                <option value="7th">7th</option>
+                <option value="6th">6th</option>
+                <option value="5th">5th</option>
+                <option value="4th">4th</option>
+                <option value="3rd">3rd</option>
+                <option value="2nd">2nd</option>
+                <option value="1st">1st</option>
+                <option value="KG2">KG2</option>
+                <option value="KG1">KG1</option>
+            </select>
+        </div>
+        <div style="flex: 1;">
+            <label>Year</label>
+            <select id="year">
+                <option value="">--Select--</option>
+                <option value="2026-27">2026-27</option>
+                <option value="2025-26">2025-26</option>
+                <option value="2024-25">2024-25</option>
+                <option value="2023-24">2023-24</option>
+                <option value="2022-23">2022-23</option>
+                <option value="2021-22">2021-22</option>
+                <option value="2020-21">2020-21</option>
+                <option value="2019-20">2019-20</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="input-group">
+        <label>Captcha Code</label>
+        <div class="captcha-row">
+            <div id="captchaValue"></div>
+            <button type="button" class="refresh-btn" onclick="generateCaptcha()">🔄Refresh </button>
+        </div>
+        <input type="text" id="captchaInput" placeholder="Enter code">
+    </div>
+
+    <button class="submit-btn" onclick="validateAndGo()">SUBMIT REQUEST</button>
+
+    <div class="footer-text">&copy; 2026 Marksheet Portal</div>
+</div>
+    
+<script>
+let generatedCode = "";
+
+function generateCaptcha() {
+    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let code = "";
+    for (let i = 0; i < 6; i++) {
+        code += chars[Math.floor(Math.random() * chars.length)];
+    }
+    generatedCode = code;
+    document.getElementById("captchaValue").innerText = code;
+    document.getElementById("captchaInput").value = "";
+}
+
+function resetButton(btn) {
+    btn.innerText = "SUBMIT REQUEST";
+    btn.disabled = false;
+    generateCaptcha();
+}
+
+function validateAndGo() {
+    const roll = document.getElementById("roll").value.trim();
+    const sClass = document.getElementById("class").value;
+    const year = document.getElementById("year").value;
+    const userInput = document.getElementById("captchaInput").value.trim();
+
+    if (!roll || !sClass || !year) {
+        alert("⚠️ कृपया रोल नंबर, कक्षा और वर्ष का चयन करें!");
+        return;
+    }
+
+    if (userInput.toUpperCase() !== generatedCode) {
+        alert("❌ गलत कैप्चा कोड! कृपया दोबारा प्रयास करें।");
+        generateCaptcha();
+        return;
+    }
+
+    const btn = document.querySelector(".submit-btn");
+    btn.innerText = "⌛ SEARCHING...";
+    btn.disabled = true;
+
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbz4RgKYHBK6nJXlNrfdvlu4Gq4MWKbeV1YOkGi87RKkPzDQW9BeBMAKfBVO1IXVdLGThA/exec";
+
+    fetch(`${webAppUrl}?roll=${roll}&class=${sClass}&year=${year}`)
+        .then(response => response.json())
+        .then(response => {
+            if (response && response.status === "success") {
+                // APNE CORRECTION PAGE KA SAHI FILENAME YA URL YAHAN DAALEIN
+                // Agar aapka correction page 'correction.html' hai toh:
+                const nextPath = "marksheetcorrection.html"; 
+                
+                // URL Parameters ke saath redirect karein
+                window.location.href = `${nextPath}?roll=${encodeURIComponent(roll)}&class=${encodeURIComponent(sClass)}&year=${encodeURIComponent(year)}`;
+            } else {
+                alert("ℹ️ " + (response.message || "Record not found!"));
+                resetButton(btn);
+            }
+        })
+        .catch(err => {
+            console.error("Fetch Error:", err);
+            alert("❌ System Error: Connection failed!");
+            resetButton(btn);
+        });
+}
+</script>
+</body>
+</html>
