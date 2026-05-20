@@ -1,1 +1,561 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online TC Application Form | ऑनलाइन टीसी आवेदन पत्र</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 750px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-top: 6px solid #1a73e8;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eef2f3;
+        }
+
+        .form-header h2 {
+            color: #1a73e8;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .form-header h3 {
+            color: #5f6368;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .form-header p {
+            font-size: 13px;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: #1a73e8;
+            background-color: #e8f0fe;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 600px) {
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        .required {
+            color: #d93025;
+            margin-left: 3px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="tel"],
+        input[type="email"],
+        select,
+        textarea {
+            padding: 10px 14px;
+            border: 1.5px solid #dadce0;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        /* टेक्स्ट इनपुट को UPPERCASE में दिखाने के लिए */
+        input[type="text"], 
+        input[type="email"], 
+        textarea {
+            text-transform: uppercase;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
+        }
+
+        /* Checkbox wrapper styles */
+        .dues-checkbox-container {
+            background-color: #fff9e6; 
+            border: 1px solid #ffe0b2; 
+            padding: 15px; 
+            border-radius: 6px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px;
+        }
+
+        .checkbox-row {
+            display: flex; 
+            align-items: flex-start; 
+            gap: 10px;
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .checkbox-row label {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #444;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .declaration-group {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 10px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px dashed #ccc;
+        }
+
+        .declaration-group input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .declaration-group label {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .submit-btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 4px 6px rgba(26,115,232,0.2);
+        }
+
+        .submit-btn:hover {
+            background-color: #1557b0;
+        }
+
+        .hidden-group {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-box h2 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .app-number-display {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 20px 0;
+            border: 2px dashed #28a745;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    
+    <!-- Form Content Wrapper -->
+    <div id="formWrapper">
+        <div class="form-header">
+            <h2>Online TC Application Form</h2>
+            <h3>ऑनलाइन टीसी आवेदन पत्र</h3>
+            <p>Please fill all fields accurately. / कृपया सभी फ़ील्ड ध्यानपूर्वक भरें।</p>
+        </div>
+
+        <form id="tcForm" onsubmit="handleFormSubmit(event)">
+            
+            <!-- Section 1: Student Information -->
+            <div class="form-section">
+                <div class="section-title">1. Student Details / छात्र का विवरण</div>
+                <div class="form-grid">
+                    
+                    <div class="form-group">
+                        <label for="studentName">Student Full Name / छात्र का पूरा नाम <span class="required">*</span></label>
+                        <input type="text" id="studentName" name="studentName" required placeholder="E.G. RAHUL KUMAR">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scholarNo">Scholar / Admission Number (स्कॉलर नंबर) <span class="required">*</span></label>
+                        <input type="text" id="scholarNo" name="scholarNo" required placeholder="E.G. 2024/1042">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="penNumber">UDISE PEN Number / स्थायी शिक्षा नंबर</label>
+                        <input type="text" id="penNumber" name="penNumber" placeholder="E.G. P1234567890">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apaarId">APAAR ID Number / अपार आईडी नंबर</label>
+                        <input type="text" id="apaarId" name="apaarId" placeholder="12 DIGIT APAAR ID NUMBER">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fatherName">Father's Name / पिता का नाम <span class="required">*</span></label>
+                        <input type="text" id="fatherName" name="fatherName" required placeholder="E.G. RAMESH KUMAR">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motherName">Mother's Name / माता का नाम <span class="required">*</span></label>
+                        <input type="text" id="motherName" name="motherName" required placeholder="E.G. SUNITA DEVI">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob">Date of Birth / जन्म तिथि <span class="required">*</span></label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Gender / लिंग <span class="required">*</span></label>
+                        <select id="gender" name="gender" required>
+                            <option value="" disabled selected>Select / चुनें</option>
+                            <option value="Male">Male / छात्र</option>
+                            <option value="Female">Female / छात्रा</option>
+                            <option value="Other">Other / अन्य</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category / जाति वर्ग <span class="required">*</span></label>
+                        <select id="category" name="category" required>
+                            <option value="" disabled selected>Select / चुनें</option>
+                            <option value="General">General / सामान्य</option>
+                            <option value="OBC">OBC / अन्य पिछड़ा वर्ग</option>
+                            <option value="SC">SC / अनुसूचित जाति</option>
+                            <option value="ST">ST / अनुसूचित जनजाति</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentId">Student Unique ID / SRN / समग्र आईडी</label>
+                        <input type="text" id="studentId" name="studentId" placeholder="E.G. 123456789">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="aadharNo">Aadhaar Number / आधार नंबर</label>
+                        <input type="text" id="aadharNo" name="aadharNo" pattern="[0-9]{12}" placeholder="12 DIGIT AADHAAR NUMBER">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Section 2: Academic Details -->
+            <div class="form-section">
+                <div class="section-title">2. Academic Details / शैक्षणिक विवरण</div>
+                <div class="form-grid">
+                    
+                    <div class="form-group">
+                        <label for="lastClass">Last Class Studied / अंतिम कक्षा जिसमें पढ़ा <span class="required">*</span></label>
+                        <select id="lastClass" name="lastClass" required onchange="toggleBoardFields(this.value)">
+                            <option value="" disabled selected>Select Class / कक्षा चुनें</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="facultyWrapper" style="display: none;">
+                        <label for="faculty">Faculty / संकाय (Stream) <span class="required">*</span></label>
+                        <select id="faculty" name="faculty">
+                            <option value="" disabled selected>Select Stream / संकाय चुनें</option>
+                            <option value="Science">Science / विज्ञान</option>
+                            <option value="Arts">Arts / कला</option>
+                            <option value="Commerce">Commerce / वाणिज्य</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="boardRollWrapper" style="display: none;">
+                        <label for="boardRoll">Board Exam Roll No. / बोर्ड रोल नंबर</label>
+                        <input type="text" id="boardRoll" name="boardRoll" placeholder="ENTER BOARD ROLL NUMBER">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="session">Academic Session / शैक्षणिक सत्र <span class="required">*</span></label>
+                        <select id="session" name="session" required>
+                            <option value="" disabled selected>Select Session / सत्र चुनें</option>
+                            <option value="2024-25">2024-25</option>
+                            <option value="2025-26">2025-26</option>
+                            <option value="2026-27">2026-27</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="examResult">Last Exam Result / अंतिम परीक्षा का परिणाम <span class="required">*</span></label>
+                        <select id="examResult" name="examResult" required>
+                            <option value="" disabled selected>Select / चुनें</option>
+                            <option value="Passed">Passed / उत्तीर्ण</option>
+                            <option value="Failed">Failed / अनुत्तीर्ण</option>
+                            <option value="Studying">Studying / अध्ययनरत</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="nextSchool">Name of the School where Admission is sought / आगामी स्कूल का नाम जिसमें प्रवेश लेना है <span class="required">*</span></label>
+                        <input type="text" id="nextSchool" name="nextSchool" required placeholder="E.G. GOVT HIGHER SECONDARY SCHOOL, RUNAHA">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="reason">Reason for Leaving School / टीसी लेने का कारण <span class="required">*</span></label> 
+                        <select id="reason" name="reason" required onchange="checkReason(this.value)">
+                            <option value="" disabled selected>Select Reason / कारण चुनें</option>
+                            <option value="Higher Studies">Higher Studies / उच्च शिक्षा के लिए</option>
+                            <option value="Parent Transfer">Parent's Transfer / माता-पिता का स्थानांतरण</option>
+                            <option value="Admission in Another School">Admission in Another School / दूसरे स्कूल में प्रवेश के लिए</option>
+                            <option value="Relocating to Another City">Relocating to Another City / दूसरे शहर में बसने के कारण</option>
+                            <option value="Course Completed">Course Completed / कक्षा पूर्ण होने पर</option>
+                            <option value="Other">Other / अन्य कारण</option> 
+                        </select>
+                        
+                        <div id="otherReasonWrapper" class="hidden-group">
+                            <label for="otherReason">Specify Reason / कारण स्पष्ट करें <span class="required">*</span></label>
+                            <input type="text" id="otherReason" name="otherReason" placeholder="WRITE YOUR REASON HERE...">
+                        </div>
+                    </div>
+                </div> 
+            </div>
+
+            <!-- Section 3: Contact & Clearances -->
+            <div class="form-section">
+                <div class="section-title">3. Contact & Clearances / संपर्क और सत्यापन</div>
+                <div class="form-grid">
+                    
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number / मोबाइल नंबर <span class="required">*</span></label>
+                        <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" required placeholder="10 DIGIT MOBILE NUMBER">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email ID / ईमेल आईडी</label>
+                        <input type="email" id="email" name="email" placeholder="EXAMPLE@GMAIL.COM">
+                    </div>
+
+                    <!-- अपडेटेड: डिजिटल नो-ड्यूज चेकबॉक्स सिस्टम -->
+                    <div class="form-group full-width">
+                        <label>No Dues Verification / नो-ड्यूज डिजिटल सत्यापन <span class="required">*</span></label>
+                        <div class="dues-checkbox-container">
+                            
+                            <div class="checkbox-row">
+                                <input type="checkbox" id="duesFees" name="duesFees" required>
+                                <label for="duesFees">
+                                    <strong>Account & Fees Counter:</strong> स्कूल की पूरी फीस जमा है और कोई भी शिक्षण शुल्क बकाया नहीं है।
+                                </label>
+                            </div>
+
+                            <div class="checkbox-row">
+                                <input type="checkbox" id="duesLibrary" name="duesLibrary" required>
+                                <label for="duesLibrary">
+                                    <strong>Library Department:</strong> पुस्तकालय (Library) से ली गई सभी किताबें सुरक्षित जमा कर दी गई हैं।
+                                </label>
+                            </div>
+
+                            <div class="checkbox-row">
+                                <input type="checkbox" id="duesSports" name="duesSports" required>
+                                <label for="duesSports">
+                                    <strong>Sports & Laboratory:</strong> खेलकूद विभाग या प्रयोगशाला (Lab) का कोई भी सामान बकाया नहीं है।
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Shapath Patra Checkbox -->
+                    <div class="form-group full-width declaration-group">
+                        <input type="checkbox" id="declaration" name="declaration" required>
+                        <label for="declaration">
+                            <strong>Declaration / शपथ पत्र:</strong> मैं यह प्रमाणित करता/करती हूँ कि इस आवेदन में दी गई सभी जानकारी मेरी सर्वोत्तम जानकारी और विश्वास के अनुसार पूरी तरह सत्य और सही है। यदि कोई जानकारी असत्य पाई जाती है, तो इसकी जिम्मेदारी मेरी होगी।<br>
+                            I hereby declare that all the information provided in this application is true and correct to the best of my knowledge.
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="btn-container">
+                <button type="submit" class="submit-btn">Submit Application / आवेदन सबमिट करें</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Success & Application Number Section -->
+    <div id="successWrapper" class="success-box">
+        <h2>🎉 Application Submitted Successfully!</h2>
+        <h3>आपका आवेदन सफलतापूर्वक स्वीकार कर लिया गया है।</h3>
+        <p style="margin-top: 15px; color: #555;">Please note down your Application Number for future reference:</p>
+        
+        <div class="app-number-display" id="appNumberDisplay">TC-2026-XXXX</div>
+        
+        <p style="color: #666; font-size: 14px;">The school administration will verify your details and process your Transfer Certificate soon.</p>
+    </div>
+
+</div>
+
+<script>
+    function toggleBoardFields(className) {
+        var facultyBox = document.getElementById('facultyWrapper');
+        var facultySelect = document.getElementById('faculty');
+        var boardRollBox = document.getElementById('boardRollWrapper');
+
+        if (className === 'Class 11' || className === 'Class 12') {
+            facultyBox.style.display = 'block';
+            facultySelect.required = true;
+        } else {
+            facultyBox.style.display = 'none';
+            facultySelect.required = false;
+            facultySelect.value = '';
+        }
+
+        if (className === 'Class 10' || className === 'Class 12') {
+            boardRollBox.style.display = 'block';
+        } else {
+            boardRollBox.style.display = 'none';
+            document.getElementById('boardRoll').value = '';
+        }
+    }
+
+    function checkReason(value) {
+        var otherBox = document.getElementById('otherReasonWrapper');
+        var otherInput = document.getElementById('otherReason');
+        if(value === 'Other') {
+            otherBox.style.display = 'block';
+            otherInput.required = true;
+        } else {
+            otherBox.style.display = 'none';
+            otherInput.required = false;
+            otherInput.value = '';
+        }
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault(); 
+        
+        // फॉर्म सबमिट होते ही बैकएंड डेटा को असली UPPERCASE में बदलने के लिए लॉजिक
+        var textInputs = document.querySelectorAll('#tcForm input[type="text"], #tcForm textarea');
+        textInputs.forEach(function(input) {
+            input.value = input.value.toUpperCase().trim();
+        });
+
+        var emailInput = document.getElementById('email');
+        if(emailInput.value) {
+            emailInput.value = emailInput.value.toUpperCase().trim();
+        }
+
+        // रैंडम नंबर जनरेशन लॉजिक
+        var randomNum = Math.floor(1000 + Math.random() * 9000);
+        var currentYear = new Date().getFullYear();
+        var applicationNo = "TC-" + currentYear + "-" + randomNum;
+
+        document.getElementById('formWrapper').style.display = 'none';
+        document.getElementById('successWrapper').style.display = 'block';
+        document.getElementById('appNumberDisplay').innerText = applicationNo;
+    }
+</script>
+
+</body>
+</html>
