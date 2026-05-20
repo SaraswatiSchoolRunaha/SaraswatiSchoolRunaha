@@ -376,75 +376,36 @@ class="max-w-[950px] mx-auto bg-white border-[3px] border-blue-800 rounded-2xl s
 </div>
 
 <script>
+    window.onload = function() {
+        // उन सभी फील्ड्स की लिस्ट जो हमें रसीद में दिखानी हैं
+        const fields = [
+            "appNo", "session", "status", "postApplied", "fullName", "fatherName", 
+            "dob", "gender", "mobile", "whatsapp", "email", "medium", 
+            "mainSubject1", "mainSubject2", "otherSkill", "highQual", "graduation", 
+            "postGraduation", "professionalDeg", "tetDetails", "experience", 
+            "expectedSalary", "noticePeriod"
+        ];
 
-/* SAMPLE DATA */
+        // localStorage से डेटा निकालें और रसीद में भरें
+        fields.forEach(field => {
+            // localStorage में हमने 'saved' नाम से डेटा सेव किया था
+            const storageKey = "saved" + field.charAt(0).toUpperCase() + field.slice(1);
+            const value = localStorage.getItem(storageKey);
+            
+            const el = document.getElementById("r_" + field);
+            if (el) {
+                // अगर डेटा है तो दिखाएं, वरना 'N/A' लिखें
+                el.innerText = value || "N/A";
+            }
+        });
 
-const data = {
-
-    appNo: "TECH-2026-1234",
-
-    session: "2026-27",
-
-    status: "Pending",
-
-    fullName: "Rahul Sharma",
-
-    fatherName: "Ramesh Sharma",
-
-    dob: "10/05/2000",
-
-    gender: "Male",
-
-    mobile: "9876543210",
-
-    whatsapp: "9876543210",
-
-    email: "rahul@gmail.com",
-
-    postApplied: "PGT",
-
-    medium: "English",
-
-    mainSubject1: "Mathematics",
-
-    mainSubject2: "Physics",
-
-    otherSkill: "Computer",
-
-    highQual: "Post Graduate",
-
-    graduation: "B.Sc",
-
-    postGraduation: "M.Sc",
-
-    professionalDeg: "B.Ed",
-
-    tetDetails: "CTET Paper 2",
-
-    experience: "3 Years",
-
-    expectedSalary: "25000",
-
-    noticePeriod: "15 Days"
-
-};
-
-/* AUTO FILL */
-
-Object.keys(data).forEach(key => {
-
-    const el = document.getElementById("r_" + key);
-
-    if(el){
-
-        el.innerText = data[key];
-
-    }
-
-});
-
+        // सुरक्षा जांच: अगर कोई बिना सर्च किए सीधे ये पेज खोले
+        if (!localStorage.getItem("savedAppNo")) {
+            alert("डेटा उपलब्ध नहीं है, कृपया सर्च पेज का उपयोग करें।");
+            window.location.href = "ReciptSearch.html";
+        }
+    };
 </script>
-
 </body>
 </html>
 
