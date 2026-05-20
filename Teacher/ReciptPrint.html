@@ -10,21 +10,16 @@
 
 <style>
 
-body{
-    background:#f1f5f9;
-    font-family:Arial,sans-serif;
-}
-
-/* A4 PAGE */
-
-@page{
-    size:A4;
-    margin:5mm;
-}
-
-/* PRINT SETTINGS */
+/* =========================
+   PRINT SETTINGS
+========================= */
 
 @media print{
+
+    @page{
+        size:A4;
+        margin:4mm;
+    }
 
     html,body{
         width:210mm;
@@ -35,6 +30,7 @@ body{
     body{
         margin:0 !important;
         padding:0 !important;
+        zoom:0.92;
     }
 
     .print-hide{
@@ -48,31 +44,89 @@ body{
         box-shadow:none !important;
         overflow:hidden !important;
         page-break-inside:avoid !important;
-        transform:scale(0.96);
-        transform-origin:top center;
+        break-inside:avoid !important;
     }
 
-    /* GRID FIX */
+    /* =========================
+       GRID FIX
+    ========================= */
 
     .grid{
-        display:block !important;
+        display:flex !important;
+        flex-wrap:wrap !important;
+        gap:6px !important;
     }
 
     .grid > div{
-        width:100% !important;
-        margin-bottom:8px !important;
+        width:48% !important;
     }
+
+    .grid.md\:grid-cols-3 > div{
+        width:31% !important;
+    }
+
+    /* =========================
+       BOX FIX
+    ========================= */
 
     .info-box{
         page-break-inside:avoid !important;
         break-inside:avoid !important;
-        margin-bottom:8px !important;
-        padding:10px !important;
+        margin-bottom:6px !important;
+        padding:8px !important;
+    }
+
+    /* =========================
+       FONT FIX
+    ========================= */
+
+    .label{
+        font-size:8px !important;
+    }
+
+    .value{
+        font-size:9px !important;
+        line-height:1.2 !important;
+        margin-top:1px !important;
+    }
+
+    h1{
+        font-size:18px !important;
+        line-height:1.1 !important;
+    }
+
+    h2{
+        font-size:11px !important;
+        margin-bottom:4px !important;
     }
 
     p{
         white-space:normal !important;
         word-break:break-word !important;
+        margin:0 !important;
+    }
+
+    img{
+        width:38px !important;
+        height:38px !important;
+    }
+
+    .space-y-3 > * + *{
+        margin-top:6px !important;
+    }
+
+    .p-3{
+        padding:8px !important;
+    }
+
+    .py-4{
+        padding-top:8px !important;
+        padding-bottom:8px !important;
+    }
+
+    .px-4{
+        padding-left:8px !important;
+        padding-right:8px !important;
     }
 
     *{
@@ -82,16 +136,20 @@ body{
 
 }
 
-/* CARD */
+/* =========================
+   CARD
+========================= */
 
 .info-box{
     border:1px solid #dbeafe;
     border-radius:14px;
-    padding:12px;
+    padding:10px;
     background:#fff;
 }
 
-/* LABEL */
+/* =========================
+   LABEL
+========================= */
 
 .label{
     font-size:10px;
@@ -100,19 +158,20 @@ body{
     text-transform:uppercase;
 }
 
-/* VALUE */
+/* =========================
+   VALUE
+========================= */
 
 .value{
     font-size:11px;
     font-weight:600;
     color:#0f172a;
     margin-top:3px;
-    word-break:break-word;
     line-height:1.3;
+    word-break:break-word;
 }
 
 </style>
-
 </head>
 
 <body class="p-2 md:p-4">
