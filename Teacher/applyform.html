@@ -437,21 +437,29 @@ function handleFormSubmit(e) {
         body: new FormData(e.target) 
     })
     .then(response => {
-        // 1. Success Modal दिखाएं
+        // 1. डेटा को ब्राउज़र में सेव करें (ताकि रसीद पेज इसे पढ़ सके)
+        localStorage.setItem("savedAppNo", appNo);
+        localStorage.setItem("savedMobile", e.target.querySelector('[name="mobile"]').value);
+        localStorage.setItem("savedName", e.target.querySelector('[name="fullName"]').value); // अगर नाम भी दिखाना हो
+
+        // 2. Success Modal दिखाएं
         document.getElementById("generatedAppNo").innerText = appNo;
         document.getElementById("successModal").style.display = "flex";
         
-        // 2. फॉर्म क्लियर करें
+        // 3. बटन के व्यवहार को बदलें (रिडायरेक्ट करने के लिए)
+        const modalBtn = document.querySelector("#successModal button");
+        modalBtn.innerText = "Print Receipt / रसीद देखें";
+        modalBtn.onclick = function() {
+            window.location.href = "ReceiptPrint.html";
+        };
+
+        // 4. फॉर्म और अन्य चीजें रिसेट करें
         e.target.reset(); 
-        
-        // 3. कैप्चा रिफ्रेश करें
         generateCaptcha();
         document.getElementById("captchaInput").value = "";
-        
-        // 4. प्रोग्रेस बार रिसेट (अगर इस्तेमाल कर रहे हैं)
         document.getElementById("formProgress").style.width = "0%";
         
-        // 5. बटन वापस सही करें
+        // 5. बटन को वापस सामान्य करें
         submitBtn.innerText = "Submit";
         submitBtn.disabled = false;
         submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
@@ -462,7 +470,6 @@ function handleFormSubmit(e) {
         submitBtn.disabled = false;
         submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
     });
-}
      
      // 3. Eligibility Checkbox Logic
     document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
