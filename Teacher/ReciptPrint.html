@@ -18,19 +18,21 @@
 
     @page{
         size:A4;
-        margin:5mm;
+        margin:4mm;
     }
 
     html,body{
         width:210mm;
         height:297mm;
         background:#fff !important;
+        overflow:hidden !important;
     }
 
     body{
         margin:0 !important;
         padding:0 !important;
-        zoom:0.94;
+        zoom:0.92;
+        transform-origin:top center;
     }
 
     .print-hide{
@@ -45,57 +47,53 @@
         overflow:hidden !important;
     }
 
-    /* =========================
-       GRID (KEEP 2 COLUMN SAFE)
-    ========================= */
+    /* ================= GRID FIX ================= */
 
     .grid{
         display:flex !important;
         flex-wrap:wrap !important;
-        gap:6px !important;
+        gap:5px !important;
     }
 
     .grid > div{
-        width:48% !important;
+        width:49% !important;
     }
 
     .grid.md\:grid-cols-3 > div{
         width:32% !important;
     }
 
-    /* =========================
-       BOX
-    ========================= */
+    /* ================= BOX ================= */
 
     .info-box{
         page-break-inside:avoid !important;
         break-inside:avoid !important;
-        margin-bottom:6px !important;
-        padding:9px !important;
+        margin-bottom:5px !important;
+        padding:8px !important;
     }
 
-    /* =========================
-       FONT (BALANCED - NOT TOO SMALL)
-    ========================= */
+    /* ================= FONT (BIGGER BUT CONTROLLED) ================= */
 
     .label{
-        font-size:9px !important;
+        font-size:10px !important;
+        font-weight:700 !important;
     }
 
     .value{
-        font-size:11px !important;
+        font-size:12px !important;
         line-height:1.25 !important;
         margin-top:2px !important;
+        font-weight:600 !important;
     }
 
     h1{
-        font-size:19px !important;
+        font-size:18px !important;
         line-height:1.2 !important;
     }
 
     h2{
         font-size:12px !important;
-        margin-bottom:5px !important;
+        margin-bottom:4px !important;
     }
 
     p{
@@ -104,34 +102,36 @@
     }
 
     img{
-        width:42px !important;
-        height:42px !important;
+        width:40px !important;
+        height:40px !important;
     }
 
     .space-y-3 > * + *{
-        margin-top:7px !important;
+        margin-top:6px !important;
     }
 
     .p-3{
-        padding:9px !important;
+        padding:8px !important;
     }
 
     .py-4{
-        padding-top:9px !important;
-        padding-bottom:9px !important;
+        padding-top:8px !important;
+        padding-bottom:8px !important;
     }
 
     .px-4{
-        padding-left:9px !important;
-        padding-right:9px !important;
+        padding-left:8px !important;
+        padding-right:8px !important;
     }
 
     *{
         -webkit-print-color-adjust:exact !important;
         print-color-adjust:exact !important;
     }
-
 }
+   
+   
+   
    /* =========================
    CARD
 ========================= */
