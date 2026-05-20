@@ -1,1 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Job Application Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-100 p-3 md:p-8 flex flex-col items-center justify-center min-h-screen font-sans antialiased">
+
+    <div class="w-full max-w-4xl border-4 border-blue-700 bg-white rounded-none p-4 md:p-8 shadow-2xl animate-fade-in">
+
+        <div class="w-full bg-slate-200 h-2 rounded-full mb-6 overflow-hidden shadow-inner">
+            <div id="formProgress" class="bg-gradient-to-r from-blue-700 to-sky-500 h-full w-0 transition-all duration-500"></div>
+        </div>
+
+       <div class="w-full bg-slate-50 rounded-xl p-5 border border-slate-200 mb-8 transition-all">
+    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+        <span class="text-blue-700 text-base">🔍</span> 
+        <span>Check Application Status <span class="text-xs font-normal text-slate-500 block md:inline md:ml-1">(आवेदन की स्थिति देखें)</span></span>
+    </h3>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <input type="text" id="statusAppNo" placeholder="Enter Registration ID" class="flex-1 px-4 py-2 border border-slate-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800">
+        <button onclick="checkStatus()" class="bg-blue-800 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-900 active:scale-98 transition-all text-sm tracking-wide cursor-pointer shadow-sm">
+            Check Status
+        </button>
+    </div>
+    <div id="statusResult" class="mt-4 hidden p-4 rounded-xl text-sm font-semibold border transition-all"></div>
+</div>
+
+        <div id="formContainer" class="w-full bg-white rounded-none overflow-hidden">
+            
+            <div class="text-center mb-8 border-b border-slate-100 pb-6">
+                <h1 class="text-2xl md:text-3xl font-extrabold text-blue-700 tracking-wide uppercase flex items-center justify-center gap-2">
+                    <span>🎓</span> Saraswati Bal Vidhya Mandir School, Runaha
+                </h1>
+                <p class="text-slate-500 mt-2 text-xs md:text-sm font-semibold tracking-wide bg-slate-100 inline-block px-4 py-1.5 rounded-full border border-slate-200">
+                    Application Form for Teaching Staff
+                </p>
+            </div>
+
+            <form id="teacherForm" onsubmit="handleFormSubmit(event)" class="space-y-10 bg-white">
+
+<!-- Academic Session Selection -->
+<div class="mb-6 bg-blue-50 p-4 rounded-xl border border-blue-200">
+    <label class="block text-[11px] font-bold text-blue-800 uppercase tracking-wider mb-2">Select Academic Session (सत्र चुनें) *</label>
+    <!-- यहाँ 'name="session"' जोड़ दिया गया है -->
+    <select id="session" name="session" required class="w-full px-4 py-2 border border-blue-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500">
+        <option value="">-- Choose Session --</option>
+        <option value="2026-27">2026-27</option>
+        <option value="2027-28">2027-28</option>
+        <option value="2028-29">2028-29</option>
+        <option value="2029-30">2029-30</option>
+    </select>
+</div>
+           
+                <div class="form-section">
+    <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
+        <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
+        1. Personal Information (व्यक्तिगत जानकारी)
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Full Name *</label>
+            <input type="text" name="fullName" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+        </div>
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Father's / Husband's Name *</label>
+            <input type="text" name="fatherName" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+        </div>
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Date of Birth *</label>
+            <input type="date" name="dob" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+        </div>
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Gender *</label>
+            <select name="gender" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 text-sm cursor-pointer">
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+    </div>
+</div>
+              <div class="form-section">
+    <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
+        <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
+        2. Contact Details (संपर्क विवरण)
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Mobile Number *</label>
+            <input type="tel" name="mobile" id="mobileInput" required pattern="[0-9]{10}" placeholder="10 Digit Number" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+            <span id="mobileError" class="text-xs text-red-500 mt-1 hidden block">Please enter a valid 10-digit number</span>
+        </div>
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">WhatsApp Number *</label>
+            <input type="tel" name="whatsapp" required pattern="[0-9]{10}" placeholder="10 Digit Number" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+            
+            <!-- यहाँ Checkbox जोड़ा गया है -->
+            <label class="flex items-center gap-2 text-[10px] font-bold text-blue-700 cursor-pointer mt-1">
+                <input type="checkbox" onchange="copyMobile(this)" class="h-3 w-3"> Same as Mobile Number
+            </label>
+        </div>
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Email ID *</label>
+            <input type="email" name="email" required placeholder="example@gmail.com" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+        </div>
+    </div>
+</div>
+
+         <div class="form-section">
+    <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
+        <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
+        3. Job & Subject Preference (पद और विषय की प्राथमिकता)
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Post Applied For -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Post Applied For *</label>
+            <select name="postApplied" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 text-sm cursor-pointer">
+                <option value="">Select Post</option>
+                <option value="NTT">NTT (Nursery)</option>
+                <option value="PRT">PRT (Primary 1-5)</option>
+                <option value="TGT">TGT (Middle 6-10)</option>
+                <option value="PGT">PGT (Lecturer 11-12)</option>
+                <option value="Activity">Activity Teacher (Music/Sports/Art)</option>
+            </select>
+        </div>
+
+        <!-- Medium of Instruction -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Medium of Instruction *</label>
+            <select name="medium" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 text-sm cursor-pointer">
+                <option value="">Select Medium</option>
+                <option value="English">English Only</option>
+                <option value="Hindi">Hindi Only</option>
+                <option value="Both">Both (Hindi & English)</option>
+            </select>
+        </div>
+
+        <!-- Main Subject 1 -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Main Subject 1 *</label>
+            <input type="text" name="mainSubject1" id="subject1" maxlength="50" placeholder="e.g., Mathematics" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+        </div>
+
+        <!-- Main Subject 2 -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Main Subject 2 (Optional)</label>
+            <input type="text" name="mainSubject2" id="subject2" maxlength="50" placeholder="e.g., Physics" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+        </div>
+
+        <!-- Secondary Skill -->
+        <div class="md:col-span-2">
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Other Skill / Subject (Optional)</label>
+            <select name="otherSkill" class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 text-sm cursor-pointer">
+                <option value="">Select Additional Skill</option>
+                <option value="Dance">Dance</option>
+                <option value="Yoga">Yoga</option>
+                <option value="Music">Music / Sangeet</option>
+                <option value="Sports">Sports</option>
+                <option value="Art">Art & Craft</option>
+                <option value="Computer">Computer Skills</option>
+                <option value="None">None</option>
+            </select>
+        </div>
+    </div>
+</div>
+                
+<div class="form-section mb-6">
+    <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
+        <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
+        4. Educational & Professional Qualifications (योग्यता)
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Highest Qualification -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Highest Qualification *</label>
+            <select name="highQual" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">Select Qualification</option>
+                <option value="10th">10th Pass</option>
+                <option value="12th">12th Pass</option>
+                <option value="Graduate">Graduate</option>
+                <option value="Post-Graduate">Post-Graduate</option>
+                <option value="B.Ed">B.Ed</option>
+                <option value="Ph.D">Ph.D</option>
+            </select>
+        </div>
+
+        <!-- Graduation Details -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Graduation Details *</label>
+            <select name="graduation" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm">
+                <option value="">Select Graduation</option>
+                <option value="BA">B.A.</option>
+                <option value="BSc">B.Sc.</option>
+                <option value="BCom">B.Com</option>
+                <option value="BTech">B.Tech</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <!-- Post Graduation -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Post Graduation *</label>
+            <select name="postGraduation" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm">
+                <option value="">Select PG (if any)</option>
+                <option value="MA">M.A.</option>
+                <option value="MSc">M.Sc.</option>
+                <option value="MCom">M.Com</option>
+                <option value="None">None</option>
+            </select>
+        </div>
+
+        <!-- Professional Degree -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Professional Degree *</label>
+            <select name="professionalDeg" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white text-sm">
+                <option value="">Select Degree</option>
+                <option value="BEd">B.Ed.</option>
+                <option value="DElEd">D.El.Ed / BTC</option>
+                <option value="NTT">NTT</option>
+                <option value="MEd">M.Ed.</option>
+                 <option value="ITI">I.T.I.</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <!-- Teaching Eligibility Status (Checkbox name is already "eligibility") -->
+        <div class="md:col-span-2">
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Teaching Eligibility Test Qualified (Select all that apply) *</label>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-white p-3 border border-slate-200 rounded-lg">
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="tetDetails" value="CTET-P1" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">CTET Paper 1</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="tetDetails" value="CTET-P2" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">CTET Paper 2</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="tetDetails" value="MP-Varg1" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">MP TET Varg 1</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="tetDetails" value="MP-Varg2" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">MP TET Varg 2</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="tetDetails" value="MP-Varg3" class="h-4 w-4 text-blue-600 flex-shrink-0">
+                    <span class="truncate">MP TET Varg 3</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm text-slate-700 cursor-pointer truncate">
+                    <input type="checkbox" name="tetDetails" value="None" class="h-4 w-4 text-slate-400 flex-shrink-0">
+                    <span class="font-bold text-slate-500 truncate">None</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+              <div class="form-section">
+    <h2 class="text-sm font-bold text-blue-800 border-b border-slate-200 pb-2 mb-5 flex items-center gap-2 uppercase tracking-wider">
+        <span class="w-1.5 h-4 bg-blue-700 rounded-none"></span>
+        5. Teaching Experience & Salary Details (अनुभव)
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Total Experience -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Total Experience *</label>
+            <select name="experience" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 text-sm cursor-pointer">
+                <option value="">Select Experience</option>
+                <option value="Fresher">Fresher (No Experience)</option>
+                <option value="0-1 Year">0 to 1 Year</option>
+                <option value="1-3 Years">1 to 3 Years</option>
+                <option value="3-5 Years">3 to 5 Years</option>
+                <option value="5+ Years">More than 5 Years</option>
+            </select>
+        </div>
+        
+        <!-- Expected Salary -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Expected Salary *</label>
+            <input type="text" name="expectedSalary" placeholder="e.g., 00,000 / Month" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-slate-800 text-sm">
+        </div>
+        
+        <!-- Notice Period -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Notice Period *</label>
+            <select name="noticePeriod" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 text-sm cursor-pointer">
+                <option value="Immediate">Immediate Join</option>
+                <option value="2 Days">2 Days</option>
+                <option value="5 Days">5 Days</option>
+                <option value="10 Days">10 Days</option>
+                <option value="15 Days">15 Days</option>
+                <option value="1 Month">1 Month</option>
+            </select>
+        </div>
+    </div>
+</div>
+                
+                <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-5 shadow-sm">
+                    <h2 class="text-xs font-bold text-amber-900 mb-3 flex items-center gap-2 uppercase tracking-wide">
+                        <span>📝</span> 6. Declaration / शपथ पत्र *
+                    </h2>
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="declarationCheck" required class="mt-1 h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="declarationCheck" class="text-xs text-slate-700 leading-relaxed select-none cursor-pointer">
+                            मैं यह शपथ पूर्वक घोषणा करता/करती हूँ कि इस आवेदन फॉर्म में मेरे द्वारा दी गई सभी जानकारियां पूरी तरह सत्य और सटीक हैं। यदि भविष्य में कोई भी जानकारी असत्य या गलत पाई जाती है, तो विद्यालय प्रबंधन को मेरा आवेदन निरस्त करने या सेवा समाप्त करने का पूर्ण अधिकार होगा। <br>
+                            <span class="text-[11px] text-slate-500 block mt-1 font-medium">(I hereby declare that all statements made in this application are true, complete and correct to the best of my knowledge and belief.)</span>
+                        </label>
+                    </div>
+                </div>
+
+               <!-- Updated Security Verification Section -->
+<div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm w-full">
+    <h2 class="text-xs font-bold text-slate-800 mb-4 flex items-center gap-2 uppercase tracking-wide">
+        <span>🛡️</span> 7. Security Verification (सुरक्षा जांच) *
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <!-- Left Side: Captcha Display & Refresh -->
+        <div class="flex items-center gap-3">
+            <div id="captchaBox" class="flex-1 bg-white text-slate-900 font-mono text-2xl tracking-[0.2em] font-bold py-3 rounded-lg select-none border border-slate-300 shadow-inner text-center">
+                XXXX
+            </div>
+            <button type="button" onclick="generateCaptcha()" class="bg-blue-800 hover:bg-blue-900 text-white text-sm font-bold px-6 py-3 rounded-lg transition-all cursor-pointer shadow-md">
+                🔄 Refresh
+            </button>
+        </div>
+        
+        <!-- Right Side: Input -->
+        <div>
+            <input type="text" id="captchaInput" required placeholder="Enter Verification Code" class="w-full px-4 py-3 border border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 text-sm bg-white font-medium placeholder-slate-400">
+        </div>
+    </div>
+</div>
+
+                <div class="text-center pt-4 border-t border-slate-100">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-12 rounded-lg transition-all text-sm tracking-wide cursor-pointer shadow-md">
+                        Submit
+                    </button>
+                </div>
+
+             <input type="hidden" name="appNo" id="appNumberHidden">
+            </form>
+        </div>
+    </div>
+
+   <!-- Improved Success Modal -->
+<div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center border-t-8 border-green-600 animate-fade-in">
+        
+        <!-- Success Icon -->
+        <div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-green-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+
+        <h2 class="text-xl font-bold text-slate-800 mb-1">Application Submitted!</h2>
+        <p class="text-xs text-slate-500 mb-6 font-medium">आपका आवेदन सफलतापूर्वक प्राप्त हो गया है।</p>
+
+        <!-- Application Number Display -->
+        <div class="bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 mb-6 shadow-inner">
+                <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Your Registration ID</p>
+                <p id="generatedAppNo" class="text-2xl font-mono font-black text-blue-800 tracking-wider">TECH-2026-0000</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
+            <p class="text-[10px] text-amber-800 font-bold leading-tight">
+                ⚠️ कृपया इस नंबर का स्क्रीनशॉट ले लें, स्टेटस चेक करने के लिए इसकी जरूरत होगी।
+            </p>
+        </div>
+        
+        <button onclick="closeModal()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-blue-500/30">
+            Close & Continue
+        </button>
+    </div>
+</div>
+ <script>
+    let currentCaptcha = "";
+
+    // 1. Generate Captcha Code
+    function generateCaptcha() {
+        const chars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghkmnpqrstuvwxyz23456789";
+        let result = "";
+        for (let i = 0; i < 5; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        currentCaptcha = result;
+        document.getElementById("captchaBox").innerText = currentCaptcha;
+    }
+
+ // 2. Form Submission Handler
+function handleFormSubmit(e) {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const userInput = document.getElementById("captchaInput").value.trim();
+    
+    // कैप्चा वेरिफिकेशन
+    if (userInput !== currentCaptcha) {
+        alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        return;
+    }
+
+    // ID जनरेट करें
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const appNo = `TECH-2026-${randomNum}`;
+    
+    // ID को hidden input में सेट करें (नाम 'appNo' रखें जैसा आपकी शीट में है)
+    document.getElementById("appNumberHidden").value = appNo;
+    
+    // बटन को डिसेबल करें
+    submitBtn.innerText = "Submitting...";
+    submitBtn.disabled = true;
+    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec"; 
+
+    // डेटा भेजें
+    fetch(scriptURL, { 
+        method: 'POST', 
+        body: new FormData(e.target) 
+    })
+    .then(response => {
+        // 1. Success Modal दिखाएं
+        document.getElementById("generatedAppNo").innerText = appNo;
+        document.getElementById("successModal").style.display = "flex";
+        
+        // 2. फॉर्म क्लियर करें
+        e.target.reset(); 
+        
+        // 3. कैप्चा रिफ्रेश करें
+        generateCaptcha();
+        document.getElementById("captchaInput").value = "";
+        
+        // 4. प्रोग्रेस बार रिसेट (अगर इस्तेमाल कर रहे हैं)
+        document.getElementById("formProgress").style.width = "0%";
+        
+        // 5. बटन वापस सही करें
+        submitBtn.innerText = "Submit";
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+    })
+    .catch(error => {
+        alert("Error! Try again.");
+        submitBtn.innerText = "Submit";
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+    });
+}
+     
+     // 3. Eligibility Checkbox Logic
+    document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.value === 'None' && this.checked) {
+                document.querySelectorAll('input[name="eligibility"]').forEach(cb => {
+                    if (cb.value !== 'None') cb.checked = false;
+                });
+            } else if (this.checked) {
+                document.querySelector('input[value="None"]').checked = false;
+            }
+        });
+    });
+
+    // 4. Mobile & WhatsApp Sync
+    function copyMobile(chk) {
+        const mobile = document.getElementById("mobileInput").value;
+        const whatsapp = document.getElementsByName("whatsapp")[0];
+        if(chk.checked) { whatsapp.value = mobile; }
+    }
+
+    document.getElementById("mobileInput").addEventListener('input', function() {
+        const chk = document.querySelector('input[onchange="copyMobile(this)"]');
+        if(chk.checked) { document.getElementsByName("whatsapp")[0].value = this.value; }
+        
+        const errorMsg = document.getElementById("mobileError");
+        errorMsg.classList.toggle("hidden", this.value.length === 10);
+    });
+
+    // 5. Close & Reset
+    function closeModal() {
+        document.getElementById("successModal").style.display = "none";
+        location.reload();
+    }
+
+    // 6. Status Check
+    function checkStatus() {
+        const inputVal = document.getElementById("statusAppNo").value.trim();
+        const resultDiv = document.getElementById("statusResult");
+        resultDiv.classList.remove("hidden");
+        if (inputVal.startsWith("TECH-2026-")) {
+            resultDiv.innerHTML = `📄 <b>Status for ${inputVal}:</b> Under Review.`;
+            resultDiv.className = "mt-4 p-4 rounded-xl text-sm font-semibold border bg-yellow-50 text-yellow-800 border-yellow-200";
+        } else {
+            resultDiv.innerHTML = `❌ <b>Error:</b> Registration ID not found.`;
+            resultDiv.className = "mt-4 p-4 rounded-xl text-sm font-semibold border bg-red-50 text-red-800 border-red-200";
+        }
+    }
+
+    // 7. Progress Bar
+    function updateProgress() {
+        const form = document.getElementById("teacherForm");
+        const formInputs = form.querySelectorAll("input[required], select[required]");
+        let filledCount = 0;
+        formInputs.forEach(input => { if (input.value.trim() !== "") filledCount++; });
+        document.getElementById("formProgress").style.width = (filledCount / formInputs.length) * 100 + "%";
+    }
+
+    document.getElementById("teacherForm").addEventListener("input", updateProgress);
+    document.getElementById("teacherForm").addEventListener("change", updateProgress);
+
+    window.onload = generateCaptcha;
+</script>
+</body>
+</html>
+
+
 
