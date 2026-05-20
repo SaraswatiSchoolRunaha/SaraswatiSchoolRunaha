@@ -1,1 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal | Extended Record List</title>
+
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* Iski width ko badha kar 1200px kiya hai taaki columns fail sakein */
+  .box {
+    max-width: 1250px; 
+    margin: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #d1d9e6;
+  }
+
+  .list-header {
+    background: #0d47a1; /* Darker Blue */
+    color: white;
+    padding: 18px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .list-header h2 { margin: 0; font-size: 20px; }
+
+  .total-count {
+    background: #ffd600; /* Yellow highlight */
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .table-container {
+    padding: 15px;
+    overflow-x: auto; /* Screen choti hone par scroll bar aayega */
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px; /* Force lamba horizontal layout */
+  }
+
+  th {
+    background: #f8f9fa;
+    color: #333;
+    font-size: 12px;
+    padding: 15px 8px;
+    border-bottom: 2px solid #0d47a1;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #edf0f2;
+    color: #444;
+    font-size: 13.5px;
+    text-align: center;
+  }
+
+  tr:hover td { background-color: #f1f7ff; }
+
+  /* Class & Gender Badges */
+  .badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .cls-badge { background: #e3f2fd; color: #1565c0; }
+  .gen-badge { background: #f3e5f5; color: #7b1fa2; }
+
+  .btn-print {
+    padding: 7px 15px;
+    background: #2e7d32;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .btn-print:hover { background: #1b5e20; }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <div class="list-header">
+    <h2>Student Records Management</h2>
+    <span class="total-count" id="count-label">Fetching Records...</span>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>App No.</th>
+          <th>Mobile</th>
+          <th>Student Name</th>
+          <th>Father's Name</th>
+          <th>Mother's Name</th>
+          <th>DOB</th>
+          <th>Class</th>
+          <th>Medium</th>
+          <th>Gender</th>
+          <th>Category</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="data">
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  let params = new URLSearchParams(window.location.search);
+  let appno_search = params.get("appNo");
+  let mobile_search = params.get("mobile1");
+
+  // 1. यहाँ अपना Google Apps Script का Web App URL डालें
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxEQpFakRt3gJ5z8i1yQbGTfKTRUpRqc5xhJoviGiWhHFX3N3eIzviFQVEgaRNoxRhh/exec"; 
+
+  // डेटा फेच करने का फंक्शन
+  function fetchRecords() {
+    document.getElementById("count-label").innerText = "Searching...";
+
+    // URL में मोबाइल नंबर जोड़ना ताकि Apps Script को पता चले कि क्या खोजना है
+    const finalURL = `${scriptURL}?mobile1=${encodeURIComponent(mobile_search)}`;
+
+    fetch(finalURL, {
+      method: "GET",
+      redirect: "follow" // Google Apps Script के लिए यह बहुत ज़रूरी है
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(students => {
+      // अगर Apps Script 'no_record' भेजता है तो खाली लिस्ट भेजें
+      if (students.status === "no_record") {
+        displayResults([]);
+      } else {
+        // अगर डेटा मिल गया है, तो उसे सीधा टेबल में दिखाएँ
+        // (Apps Script पहले से ही फिल्टर करके भेज रहा है, इसलिए यहाँ दोबारा फिल्टर की ज़रूरत नहीं है)
+        displayResults(Array.isArray(students) ? students : [students]);
+      }
+    })
+    .catch(error => {
+      console.error('Error Details:', error);
+      document.getElementById("data").innerHTML = "<tr><td colspan='11'>डेटा लोड करने में समस्या आई। (सर्वर से संपर्क नहीं हो सका)</td></tr>";
+    });
+  }
+  
+  // 3. डेटा को टेबल में दिखाने का फंक्शन
+  function displayResults(filtered) {
+    let html = "";
+    document.getElementById("count-label").innerText = filtered.length + " Total Entries";
+
+    if (filtered.length > 0) {
+      filtered.forEach(s => {
+        html += `
+        <tr>
+          <td style="font-weight:bold; color:#d32f2f;">${s.appno || 'N/A'}</td>
+          <td>${s.mobile1 || '-'}</td>
+          <td style="text-align:left; font-weight:500;">${s.name || 'Unknown'}</td>
+          <td style="text-align:left;">${s.father || '-'}</td>
+          <td>${s.mother || '-'}</td>
+          <td>${s.dob || '-'}</td>
+          <td><span class="badge cls-badge">${s.class || '-'}</span></td>
+          <td>${s.medium || '-'}</td>
+          <td><span class="badge gen-badge">${s.gender || '-'}</span></td>
+          <td>${s.category || '-'}</td>
+          <td>
+            <button class="btn-print" onclick="printRec('${s.appno}','${s.mobile1}')">
+              PRINT
+            </button>
+          </td>
+        </tr>`;
+      });
+    } else {
+      html = "<tr><td colspan='11' style='padding:50px; color:#999;'>No matching records found in database.</td></tr>";
+    }
+    document.getElementById("data").innerHTML = html;
+  }
+
+  // पेज लोड होते ही सर्च शुरू करें
+  fetchRecords();
+
+  function printRec(appno, mobile) {
+    if (!appno || appno === 'undefined') {
+      alert("Error: Application Number missing!");
+      return;
+    }
+    window.location.href = "Reciptprint.html?appNo=" + appno + "&mobile1=" + mobile;
+  }
+</script>
+</body>
+</html>
 
