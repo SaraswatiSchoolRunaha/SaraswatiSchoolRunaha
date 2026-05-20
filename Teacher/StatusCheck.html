@@ -130,22 +130,35 @@ window.onload = function () {
                     ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Approved</span>`
                     : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Under Review</span>`;
 
-            tableBody.innerHTML = `
-                <tr class="hover:bg-slate-50 animate-fade-in">
+          tableBody.innerHTML = `
+<tr class="hover:bg-slate-50 animate-fade-in">
 
-                    <td class="px-4 py-3 font-mono">${response.mobile || "-"}</td>
-                    <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
-                    <td class="px-4 py-3">${response.fatherName || "-"}</td>
-                    <td class="px-4 py-3">${response.motherName || "-"}</td>
-                    <td class="px-4 py-3 text-center">${response.dob || "-"}</td>
-                    <td class="px-4 py-3 text-center">${response.studentClass || "-"}</td>
-                    <td class="px-4 py-3 text-center">${response.medium || "-"}</td>
-                    <td class="px-4 py-3 text-center">${response.gender || "-"}</td>
-                    <td class="px-4 py-3 text-center">${response.category || "-"}</td>
-                    <td class="px-4 py-3 text-center">${statusBadge}</td>
+    <td class="px-4 py-3 font-mono">${response.appNo || "-"}</td>
+    <td class="px-4 py-3">${response.session || "-"}</td>
+    <td class="px-4 py-3">${response.mobile || "-"}</td>
 
-                </tr>
-            `;
+    <td class="px-4 py-3 font-bold">${response.studentName || "-"}</td>
+    <td class="px-4 py-3">${response.fatherName || "-"}</td>
+    <td class="px-4 py-3">${response.dob || "-"}</td>
+    <td class="px-4 py-3 text-center">${response.gender || "-"}</td>
+
+    <td class="px-4 py-3">${response.mainSubject1 || "-"}</td>
+    <td class="px-4 py-3">${response.mainSubject2 || "-"}</td>
+    <td class="px-4 py-3">${response.otherSkill || "-"}</td>
+
+    <td class="px-4 py-3">${response.highQual || "-"}</td>
+    <td class="px-4 py-3">${response.graduation || "-"}</td>
+    <td class="px-4 py-3">${response.postGraduation || "-"}</td>
+    <td class="px-4 py-3">${response.professionalDeg || "-"}</td>
+
+    <td class="px-4 py-3 text-center">${response.experience || "-"}</td>
+    <td class="px-4 py-3 text-center">${response.expectedSalary || "-"}</td>
+
+    <td class="px-4 py-3 text-center">${statusBadge}</td>
+    <td class="px-4 py-3">${response.remarks || "-"}</td>
+
+</tr>
+`;
 
         } else {
             tableBody.innerHTML = `
