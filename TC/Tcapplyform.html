@@ -532,7 +532,7 @@
         }
     }
 
-    function handleFormSubmit(event) {
+   function handleFormSubmit(event) {
     event.preventDefault(); 
     
     // 1. फॉर्म इनपुट्स को UPPERCASE में बदलना
@@ -557,8 +557,9 @@
     // 3. बैकएंड कनेक्शन लॉजिक (Google Apps Script Web App URL)
     var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
-    // फॉर्म का सारा डेटा इकट्ठा करना
-    var formData = new FormData(document.getElementById('tcForm'));
+    // FormData को URLSearchParams में बदला ताकि Apps Script 'applicationNo' को आसानी से पढ़ सके
+    var formElement = document.getElementById('tcForm');
+    var formData = new URLSearchParams(new FormData(formElement));
     formData.append('applicationNo', applicationNo); // जेनरेटेड नंबर भी भेजें
 
     // सबमिट बटन को डिसेबल करना (ताकि यूजर दोबारा क्लिक न करे)
@@ -568,10 +569,13 @@
         submitBtn.disabled = true;
     }
 
-    // 4. fetch() द्वारा बैकएंड पर डेटा पोस्ट करना
+    // 4. fetch() द्वारा बैकएंड पर डेटा पोस्ट करना (नये headers के साथ)
     fetch(webAppUrl, {
         method: 'POST',
-        body: formData
+        body: formData.toString(),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
     })
     .then(response => {
         // बैकएंड पर डेटा सेव होने के बाद सक्सेस स्क्रीन दिखाना
@@ -600,6 +604,7 @@
         }
     });
 }
+
 </script>
 
 </body>
