@@ -337,8 +337,8 @@
     <button onclick="window.print()" class="btn btn-print">Print Receipt / रसीद प्रिंट करें</button>
 </div>
 
-<script>
-   window.onload = function() {
+   <script>
+window.onload = function() {
     var urlParams = new URLSearchParams(window.location.search);
     var appNo = urlParams.get('appNo');
     var mobile = urlParams.get('mobile');
@@ -354,16 +354,12 @@
         return String(val).toUpperCase().trim();
     }
 
-    // 🔒 आधार कार्ड को सुरक्षित फॉर्मेट (XXXX-XXXX-1234) में बदलने का फंक्शन
     function maskAadhaar(val) {
         if (!val || val === "null" || val === "undefined" || String(val).trim() === "") {
             return "--";
         }
-        // सिर्फ अंकों को निकालें (ताकि स्पेस या डैश हो तो हट जाए)
         var cleanStr = String(val).replace(/[^0-9]/g, ''); 
-        
         if (cleanStr.length >= 4) {
-            // आखिरी के 4 अंक दिखाएगा और आगे मास्क लगा देगा
             return "XXXX-XXXX-" + cleanStr.slice(-4);
         }
         return "--";
@@ -375,55 +371,60 @@
         
         var searchUrl = webAppUrl + "?appNo=" + encodeURIComponent(appNo) + "&mobile=" + encodeURIComponent(mobile);
 
-        fetch(searchUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "SUCCESS" || data.studentName) {
-                    // 1. Meta Info
-                    document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo || appNo);
-                    document.getElementById('lblDate').innerText = cleanText(data.applyDate || data.timestamp);
-                    
-                    // 2. Section 1: Applicant Details
-                    var appName = cleanText(data.applicantName);
-                    document.getElementById('lblApplicantName').innerText = appName;
-                    document.getElementById('lblRelation').innerText = cleanText(data.relation);
-                    document.getElementById('lblAffidavitApplicant').innerText = appName;
-                    
-                    // 3. Section 2: Student Personal Details
-                    document.getElementById('lblStudentName').innerText = cleanText(data.studentName);
-                    document.getElementById('lblFatherName').innerText = cleanText(data.fatherName);
-                    document.getElementById('lblMotherName').innerText = cleanText(data.motherName);
-                    document.getElementById('lblDOB').innerText = cleanText(data.dob);
-                    document.getElementById('lblGender').innerText = cleanText(data.gender);
-                    document.getElementById('lblCategory').innerText = cleanText(data.category);
-                    document.getElementById('lblSssmId').innerText = cleanText(data.samagraId);
-                    
-                    // ✨ यहाँ आधार मास्क होकर दिखेगा
-                    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
-                    
-                    document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode);
-                    document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
-                    
-                    document.getElementById('lblMobile').innerText = cleanText(mobile);
-                    document.getElementById('lblAffidavitMobile').innerText = cleanText(mobile);
-                    
-                    // 4. Section 3: Academic & TC Details
-                    document.getElementById('lblScholarNo').innerText = cleanText(data.scholarNo);
-                    document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate);
-                    document.getElementById('lblClass').innerText = cleanText(data.lastClass);
-                    document.getElementById('lblSession').innerText = cleanText(data.session);
-                    document.getElementById('lblTcReason').innerText = cleanText(data.tcReason);
-                    document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate);
-                } else {
-                    alert("Google Sheet में इस रिकॉर्ड की जानकारी नहीं मिली।");
-                    resetFields();
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                alert("डेटा लोड करने में समस्या आई।");
+        // CORS और रीडायरेक्ट की समस्या को हल करने के लिए मोड सेट किया गया है
+        fetch(searchUrl, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === "SUCCESS" || data.studentName) {
+                document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo || appNo);
+                document.getElementById('lblDate').innerText = cleanText(data.applyDate || data.timestamp);
+                
+                var appName = cleanText(data.applicantName);
+                document.getElementById('lblApplicantName').innerText = appName;
+                document.getElementById('lblRelation').innerText = cleanText(data.relation);
+                document.getElementById('lblAffidavitApplicant').innerText = appName;
+                
+                document.getElementById('lblStudentName').innerText = cleanText(data.studentName);
+                document.getElementById('lblFatherName').innerText = cleanText(data.fatherName);
+                document.getElementById('lblMotherName').innerText = cleanText(data.motherName);
+                document.getElementById('lblDOB').innerText = cleanText(data.dob);
+                document.getElementById('lblGender').innerText = cleanText(data.gender);
+                document.getElementById('lblCategory').innerText = cleanText(data.category);
+                document.getElementById('lblSssmId').innerText = cleanText(data.samagraId);
+                
+                document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
+                
+                document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode);
+                document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
+                
+                document.getElementById('lblMobile').innerText = cleanText(mobile);
+                document.getElementById('lblAffidavitMobile').innerText = cleanText(mobile);
+                
+                document.getElementById('lblScholarNo').innerText = cleanText(data.scholarNo);
+                document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate);
+                document.getElementById('lblClass').innerText = cleanText(data.lastClass);
+                document.getElementById('lblSession').innerText = cleanText(data.session);
+                document.getElementById('lblTcReason').innerText = cleanText(data.tcReason);
+                document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate);
+            } else {
+                alert("Google Sheet में इस रिकॉर्ड की जानकारी नहीं मिली।");
                 resetFields();
-            });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            alert("डेटा लोड करने में समस्या आई। कृपया इंटरनेट या Web App चेक करें।");
+            resetFields();
+        });
     } 
     // केस 2: डायरेक्ट URL पैरामीटर बैकअप (Fallback)
     else if (hasDirectData) {
@@ -441,7 +442,6 @@
         document.getElementById('lblCategory').innerText = cleanText(urlParams.get('category'));
         document.getElementById('lblSssmId').innerText = cleanText(urlParams.get('samagraId'));
         
-        // ✨ यहाँ भी आधार मास्क होकर दिखेगा
         document.getElementById('lblAadhaar').innerText = maskAadhaar(urlParams.get('aadhaar'));
         
         document.getElementById('lblUdiseCode').innerText = cleanText(urlParams.get('udiseCode'));
@@ -463,7 +463,7 @@
             el.innerText = "--";
         });
     }
-}    
+}
 </script>
 </body>
 </html>
