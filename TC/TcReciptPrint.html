@@ -341,18 +341,23 @@
 window.onload = function() {
     var urlParams = new URLSearchParams(window.location.search);
     
-    // सभी पैरामीटर्स को लोअरकेस में बदलने का फंक्शन ताकि स्पेलing मिस्टेक न हो
     var params = {};
     for (let pair of urlParams.entries()) {
         params[pair[0].toLowerCase()] = pair[1];
     }
 
-    // अब आप चेक कर सकते हैं कि कौन से मुख्य पैरामीटर आए हैं
     var appNo = params['appno'] || params['applicationno'];
     var mobile = params['mobile'] || params['mobileno'];
     var hasDirectData = params['studentname'] || params['student_name']; 
 
+    // 💡 फिक्स: अगर URL में डेटा नहीं है, तो यूजर से पूछ लें (टेस्टिंग के लिए आसान)
+    if (!appNo && !hasDirectData) {
+        appNo = prompt("URL में एप्लीकेशन नंबर नहीं मिला। कृपया यहाँ Application No दर्ज करें:");
+        mobile = prompt("कृपया पंजीकृत Mobile Number दर्ज करें:");
+    }
+
     var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
+    
 
     function cleanText(val) {
         if (!val || val === "null" || val === "undefined" || String(val).trim() === "") {
