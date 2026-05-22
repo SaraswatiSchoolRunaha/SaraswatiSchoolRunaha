@@ -285,7 +285,7 @@
             if (data.status === "SUCCESS") {
                 // अगर डेटा मिल गया, तो उसे प्रिंट वाले पेज पर रीडायरेक्ट कर दें
                 var queryParams = new URLSearchParams(data.record).toString();
-                window.location.href = "receiptprint.html?" + queryParams;
+                window.location.href = "TcReciptPrint.html?" + queryParams;
             } else {
                 // अगर रिकॉर्ड नहीं मिला
                 errorMsg.innerText = "कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।";
