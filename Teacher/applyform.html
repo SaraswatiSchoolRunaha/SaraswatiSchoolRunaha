@@ -389,7 +389,7 @@
         </button>
     </div>
 </div>
- <script>
+<script>
     let currentCaptcha = "";
 
     // 1. Generate Captcha Code
@@ -403,79 +403,63 @@
         document.getElementById("captchaBox").innerText = currentCaptcha;
     }
 
- // 2. Form Submission Handler
-function handleFormSubmit(e) {
-    e.preventDefault();
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const userInput = document.getElementById("captchaInput").value.trim();
-    
-    // कैप्चा वेरिफिकेशन
-    if (userInput !== currentCaptcha) {
-        alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
-        generateCaptcha();
-        document.getElementById("captchaInput").value = "";
-        return;
+    // 2. Form Submission Handler
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const userInput = document.getElementById("captchaInput").value.trim();
+        
+        if (userInput !== currentCaptcha) {
+            alert("❌ गलत कैप्चा कोड! (Incorrect Captcha)");
+            generateCaptcha();
+            document.getElementById("captchaInput").value = "";
+            return;
+        }
+
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const appNo = `TECH-2026-${randomNum}`;
+        document.getElementById("appNumberHidden").value = appNo;
+        
+        submitBtn.innerText = "Submitting...";
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+        const scriptURL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec"; 
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(e.target) })
+        .then(response => {
+            localStorage.setItem("savedAppNo", appNo);
+            localStorage.setItem("savedMobile", e.target.querySelector('[name="mobile"]').value);
+            localStorage.setItem("savedName", e.target.querySelector('[name="fullName"]').value);
+
+            document.getElementById("generatedAppNo").innerText = appNo;
+            document.getElementById("successModal").style.display = "flex";
+            
+            const modalBtn = document.querySelector("#successModal button");
+            modalBtn.innerText = "Print Receipt / रसीद देखें";
+            modalBtn.onclick = function() {
+                window.location.href = "ReceiptSearch.html";
+            };
+
+            e.target.reset(); 
+            generateCaptcha();
+            document.getElementById("formProgress").style.width = "0%";
+            submitBtn.innerText = "Submit";
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        })
+        .catch(error => {
+            alert("Error! Try again.");
+            submitBtn.innerText = "Submit";
+            submitBtn.disabled = false;
+        });
     }
 
-    // ID जनरेट करें
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const appNo = `TECH-2026-${randomNum}`;
-    
-    // ID को hidden input में सेट करें (नाम 'appNo' रखें जैसा आपकी शीट में है)
-    document.getElementById("appNumberHidden").value = appNo;
-    
-    // बटन को डिसेबल करें
-    submitBtn.innerText = "Submitting...";
-    submitBtn.disabled = true;
-    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
-
-    const scriptURL = "https://script.google.com/macros/s/AKfycby7oU8z9XmmEnyhLAWJFuzcIMzCOOg4VwmW-FWGaHb-Pe_XMi2vs81Rdn5poBSYuWwmXw/exec"; 
-
-    // डेटा भेजें
-    fetch(scriptURL, { 
-        method: 'POST', 
-        body: new FormData(e.target) 
-    })
-    .then(response => {
-        // 1. डेटा को ब्राउज़र में सेव करें (ताकि रसीद पेज इसे पढ़ सके)
-        localStorage.setItem("savedAppNo", appNo);
-        localStorage.setItem("savedMobile", e.target.querySelector('[name="mobile"]').value);
-        localStorage.setItem("savedName", e.target.querySelector('[name="fullName"]').value); // अगर नाम भी दिखाना हो
-
-        // 2. Success Modal दिखाएं
-        document.getElementById("generatedAppNo").innerText = appNo;
-        document.getElementById("successModal").style.display = "flex";
-        
-        // 3. बटन के व्यवहार को बदलें (रिडायरेक्ट करने के लिए)
-        const modalBtn = document.querySelector("#successModal button");
-        modalBtn.innerText = "Print Receipt / रसीद देखें";
-        modalBtn.onclick = function() {
-            window.location.href = "ReceiptSearch.html";
-        };
-
-        // 4. फॉर्म और अन्य चीजें रिसेट करें
-        e.target.reset(); 
-        generateCaptcha();
-        document.getElementById("captchaInput").value = "";
-        document.getElementById("formProgress").style.width = "0%";
-        
-        // 5. बटन को वापस सामान्य करें
-        submitBtn.innerText = "Submit";
-        submitBtn.disabled = false;
-        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-    })
-    .catch(error => {
-        alert("Error! Try again.");
-        submitBtn.innerText = "Submit";
-        submitBtn.disabled = false;
-        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-    });
-     
-     // 3. Eligibility Checkbox Logic
-    document.querySelectorAll('input[name="eligibility"]').forEach(checkbox => {
+    // 3. Eligibility Checkbox Logic (बाहर रखा गया)
+    document.querySelectorAll('input[name="tetDetails"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             if (this.value === 'None' && this.checked) {
-                document.querySelectorAll('input[name="eligibility"]').forEach(cb => {
+                document.querySelectorAll('input[name="tetDetails"]').forEach(cb => {
                     if (cb.value !== 'None') cb.checked = false;
                 });
             } else if (this.checked) {
@@ -493,7 +477,7 @@ function handleFormSubmit(e) {
 
     document.getElementById("mobileInput").addEventListener('input', function() {
         const chk = document.querySelector('input[onchange="copyMobile(this)"]');
-        if(chk.checked) { document.getElementsByName("whatsapp")[0].value = this.value; }
+        if(chk && chk.checked) { document.getElementsByName("whatsapp")[0].value = this.value; }
         
         const errorMsg = document.getElementById("mobileError");
         errorMsg.classList.toggle("hidden", this.value.length === 10);
