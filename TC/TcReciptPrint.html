@@ -340,11 +340,18 @@
    <script>
 window.onload = function() {
     var urlParams = new URLSearchParams(window.location.search);
-    var appNo = urlParams.get('appNo');
-    var mobile = urlParams.get('mobile');
-    var hasDirectData = urlParams.has('studentName'); 
+    
+    // सभी पैरामीटर्स को लोअरकेस में बदलने का फंक्शन ताकि स्पेलing मिस्टेक न हो
+    var params = {};
+    for (let pair of urlParams.entries()) {
+        params[pair[0].toLowerCase()] = pair[1];
+    }
 
-    // आपकी Google Apps Script Web App URL
+    // अब आप चेक कर सकते हैं कि कौन से मुख्य पैरामीटर आए हैं
+    var appNo = params['appno'] || params['applicationno'];
+    var mobile = params['mobile'] || params['mobileno'];
+    var hasDirectData = params['studentname'] || params['student_name']; 
+
     var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
     function cleanText(val) {
@@ -365,96 +372,106 @@ window.onload = function() {
         return "--";
     }
 
-    // केस 1: Google Sheet से लाइव डेटा लाने के लिए
+    // केस 1: अगर सिर्फ App No और Mobile आया है तो Google Sheet से लाइव डेटा लाएं
     if (appNo && mobile && !hasDirectData) {
-        document.getElementById('lblAppNo').innerText = "Loading... / लोड हो रहा है...";
+        document.getElementById('lblAppNo').innerText = "Loading...";
         
         var searchUrl = webAppUrl + "?appNo=" + encodeURIComponent(appNo) + "&mobile=" + encodeURIComponent(mobile);
 
-        // CORS और रीडायरेक्ट की समस्या को हल करने के लिए मोड सेट किया गया है
         fetch(searchUrl, {
             method: "GET",
             mode: "cors",
             redirect: "follow"
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
+            if (!response.ok) throw new Error("Network response was not ok");
             return response.json();
         })
         .then(data => {
-            if (data.status === "SUCCESS" || data.studentName) {
-                document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo || appNo);
-                document.getElementById('lblDate').innerText = cleanText(data.applyDate || data.timestamp);
+            // गूगल शीट से आने वाले डेटा को मैप करना
+            if (data.status === "SUCCESS" || data.studentName || data.student_name) {
+                // चाबियों (Keys) को संभालना चाहे वो camelCase में हों या lowercase में
+                var sName = data.studentName || data.student_name;
+                var fName = data.fatherName || data.father_name;
+                var mName = data.motherName || data.mother_name;
+                var applicant = data.applicantName || data.applicant_name;
+                var samagra = data.samagraId || data.samagra_id || data.samagraid;
+                var sNo = data.scholarNo || data.scholar_no || data.scholarno;
+
+                document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo || data.application_no || appNo);
+                document.getElementById('lblDate').innerText = cleanText(data.applyDate || data.apply_date || data.timestamp);
                 
-                var appName = cleanText(data.applicantName);
+                var appName = cleanText(applicant);
                 document.getElementById('lblApplicantName').innerText = appName;
                 document.getElementById('lblRelation').innerText = cleanText(data.relation);
                 document.getElementById('lblAffidavitApplicant').innerText = appName;
                 
-                document.getElementById('lblStudentName').innerText = cleanText(data.studentName);
-                document.getElementById('lblFatherName').innerText = cleanText(data.fatherName);
-                document.getElementById('lblMotherName').innerText = cleanText(data.motherName);
-                document.getElementById('lblDOB').innerText = cleanText(data.dob);
+                document.getElementById('lblStudentName').innerText = cleanText(sName);
+                document.getElementById('lblFatherName').innerText = cleanText(fName);
+                document.getElementById('lblMotherName').innerText = cleanText(mName);
+                document.getElementById('lblDOB').innerText = cleanText(data.dob || data.dateOfBirth);
                 document.getElementById('lblGender').innerText = cleanText(data.gender);
                 document.getElementById('lblCategory').innerText = cleanText(data.category);
-                document.getElementById('lblSssmId').innerText = cleanText(data.samagraId);
+                document.getElementById('lblSssmId').innerText = cleanText(samagra);
                 
-                document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
-                
-                document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode);
-                document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
+                document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar || data.aadhar);
+                document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode || data.udise_code);
+                document.getElementById('lblApaarId').innerText = cleanText(data.apaarId || data.apaar_id);
                 
                 document.getElementById('lblMobile').innerText = cleanText(mobile);
                 document.getElementById('lblAffidavitMobile').innerText = cleanText(mobile);
                 
-                document.getElementById('lblScholarNo').innerText = cleanText(data.scholarNo);
-                document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate);
-                document.getElementById('lblClass').innerText = cleanText(data.lastClass);
+                document.getElementById('lblScholarNo').innerText = cleanText(sNo);
+                document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate || data.admission_date);
+                document.getElementById('lblClass').innerText = cleanText(data.lastClass || data.class);
                 document.getElementById('lblSession').innerText = cleanText(data.session);
-                document.getElementById('lblTcReason').innerText = cleanText(data.tcReason);
-                document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate);
+                document.getElementById('lblTcReason').innerText = cleanText(data.tcReason || data.reason);
+                document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate || data.issue_date);
             } else {
-                alert("Google Sheet में इस रिकॉर्ड की जानकारी नहीं मिली।");
+                alert("रिकॉर्ड की जानकारी नहीं मिली। कृपया चेक करें।");
                 resetFields();
             }
         })
         .catch(error => {
             console.error('Error fetching data:', error);
-            alert("डेटा लोड करने में समस्या आई। कृपया इंटरनेट या Web App चेक करें।");
+            alert("डेटा लोड करने में समस्या आई। नेटवर्क या Apps Script चेक करें।");
             resetFields();
         });
     } 
-    // केस 2: डायरेक्ट URL पैरामीटर बैकअप (Fallback)
+    // केस 2: अगर पूरा डेटा सीधे URL में ही भेज दिया गया है (Direct Fallback)
     else if (hasDirectData) {
-        document.getElementById('lblAppNo').innerText = cleanText(urlParams.get('appNo'));
-        document.getElementById('lblDate').innerText = cleanText(urlParams.get('applyDate'));
-        var appName = cleanText(urlParams.get('applicantName'));
+        document.getElementById('lblAppNo').innerText = cleanText(params['appno'] || params['applicationno']);
+        document.getElementById('lblDate').innerText = cleanText(params['applydate'] || params['date']);
+        
+        var appName = cleanText(params['applicantname'] || params['applicant_name']);
         document.getElementById('lblApplicantName').innerText = appName;
-        document.getElementById('lblRelation').innerText = cleanText(urlParams.get('relation'));
+        document.getElementById('lblRelation').innerText = cleanText(params['relation']);
         document.getElementById('lblAffidavitApplicant').innerText = appName;
-        document.getElementById('lblStudentName').innerText = cleanText(urlParams.get('studentName'));
-        document.getElementById('lblFatherName').innerText = cleanText(urlParams.get('fatherName'));
-        document.getElementById('lblMotherName').innerText = cleanText(urlParams.get('motherName'));
-        document.getElementById('lblDOB').innerText = cleanText(urlParams.get('dob'));
-        document.getElementById('lblGender').innerText = cleanText(urlParams.get('gender'));
-        document.getElementById('lblCategory').innerText = cleanText(urlParams.get('category'));
-        document.getElementById('lblSssmId').innerText = cleanText(urlParams.get('samagraId'));
         
-        document.getElementById('lblAadhaar').innerText = maskAadhaar(urlParams.get('aadhaar'));
+        document.getElementById('lblStudentName').innerText = cleanText(params['studentname'] || params['student_name']);
+        document.getElementById('lblFatherName').innerText = cleanText(params['fathername'] || params['father_name']);
+        document.getElementById('lblMotherName').innerText = cleanText(params['mothername'] || params['mother_name']);
+        document.getElementById('lblDOB').innerText = cleanText(params['dob'] || params['dateofbirth']);
+        document.getElementById('lblGender').innerText = cleanText(params['gender']);
+        document.getElementById('lblCategory').innerText = cleanText(params['category']);
+        document.getElementById('lblSssmId').innerText = cleanText(params['samagraid'] || params['samagra_id'] || params['samagra']);
         
-        document.getElementById('lblUdiseCode').innerText = cleanText(urlParams.get('udiseCode'));
-        document.getElementById('lblApaarId').innerText = cleanText(urlParams.get('apaarId'));
-        var mob = cleanText(urlParams.get('mobile'));
+        document.getElementById('lblAadhaar').innerText = maskAadhaar(params['aadhaar'] || params['aadhar']);
+        document.getElementById('lblUdiseCode').innerText = cleanText(params['udisecode'] || params['udise_code']);
+        document.getElementById('lblApaarId').innerText = cleanText(params['apaarid'] || params['apaar_id']);
+        
+        var mob = cleanText(mobile);
         document.getElementById('lblMobile').innerText = mob;
         document.getElementById('lblAffidavitMobile').innerText = mob;
-        document.getElementById('lblScholarNo').innerText = cleanText(urlParams.get('scholarNo'));
-        document.getElementById('lblAdmissionDate').innerText = cleanText(urlParams.get('admissionDate'));
-        document.getElementById('lblClass').innerText = cleanText(urlParams.get('lastClass'));
-        document.getElementById('lblSession').innerText = cleanText(urlParams.get('session'));
-        document.getElementById('lblTcReason').innerText = cleanText(urlParams.get('tcReason'));
-        document.getElementById('lblTcIssueDate').innerText = cleanText(urlParams.get('tcIssueDate'));
+        
+        document.getElementById('lblScholarNo').innerText = cleanText(params['scholarno'] || params['scholar_no']);
+        document.getElementById('lblAdmissionDate').innerText = cleanText(params['admissiondate'] || params['admission_date']);
+        document.getElementById('lblClass').innerText = cleanText(params['lastclass'] || params['class']);
+        document.getElementById('lblSession').innerText = cleanText(params['session']);
+        document.getElementById('lblTcReason').innerText = cleanText(params['tcreason'] || params['reason']);
+        document.getElementById('lblTcIssueDate').innerText = cleanText(params['tcissuedate'] || params['issue_date']);
+    } else {
+        alert("URL में आवश्यक पैरामीटर्स (AppNo या StudentName) नहीं मिले।");
     }
 
     function resetFields() {
@@ -464,6 +481,6 @@ window.onload = function() {
         });
     }
 }
-</script>
+   </script>
 </body>
 </html>
