@@ -338,13 +338,13 @@
 </div>
 
 <script>
-    window.onload = function() {
+   window.onload = function() {
     var urlParams = new URLSearchParams(window.location.search);
     var appNo = urlParams.get('appNo');
     var mobile = urlParams.get('mobile');
-    var hasDirectData = urlParams.has('studentName'); // चेक करें कि क्या सीधा डेटा उपलब्ध है
+    var hasDirectData = urlParams.has('studentName'); 
 
-    // 💡 आपकी Google Apps Script Web App URL
+    // आपकी Google Apps Script Web App URL
     var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
     function cleanText(val) {
@@ -354,7 +354,22 @@
         return String(val).toUpperCase().trim();
     }
 
-    // केस 1: अगर सीधा डेटा नहीं है, सिर्फ appNo और mobile है तो Sheet से लाइव डेटा लाओ
+    // 🔒 आधार कार्ड को सुरक्षित फॉर्मेट (XXXX-XXXX-1234) में बदलने का फंक्शन
+    function maskAadhaar(val) {
+        if (!val || val === "null" || val === "undefined" || String(val).trim() === "") {
+            return "--";
+        }
+        // सिर्फ अंकों को निकालें (ताकि स्पेस या डैश हो तो हट जाए)
+        var cleanStr = String(val).replace(/[^0-9]/g, ''); 
+        
+        if (cleanStr.length >= 4) {
+            // आखिरी के 4 अंक दिखाएगा और आगे मास्क लगा देगा
+            return "XXXX-XXXX-" + cleanStr.slice(-4);
+        }
+        return "--";
+    }
+
+    // केस 1: Google Sheet से लाइव डेटा लाने के लिए
     if (appNo && mobile && !hasDirectData) {
         document.getElementById('lblAppNo').innerText = "Loading... / लोड हो रहा है...";
         
@@ -365,7 +380,7 @@
             .then(data => {
                 if (data.status === "SUCCESS" || data.studentName) {
                     // 1. Meta Info
-                    document.getElementById('lblAppNo').innerText = cleanText(data.appNo || appNo);
+                    document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo || appNo);
                     document.getElementById('lblDate').innerText = cleanText(data.applyDate || data.timestamp);
                     
                     // 2. Section 1: Applicant Details
@@ -381,8 +396,11 @@
                     document.getElementById('lblDOB').innerText = cleanText(data.dob);
                     document.getElementById('lblGender').innerText = cleanText(data.gender);
                     document.getElementById('lblCategory').innerText = cleanText(data.category);
-                    document.getElementById('lblSssmId').innerText = cleanText(data.sssmId);
-                    document.getElementById('lblAadhaar').innerText = cleanText(data.aadhaar);
+                    document.getElementById('lblSssmId').innerText = cleanText(data.samagraId);
+                    
+                    // ✨ यहाँ आधार मास्क होकर दिखेगा
+                    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
+                    
                     document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode);
                     document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
                     
@@ -392,22 +410,22 @@
                     // 4. Section 3: Academic & TC Details
                     document.getElementById('lblScholarNo').innerText = cleanText(data.scholarNo);
                     document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate);
-                    document.getElementById('lblClass').innerText = cleanText(data.lastClass || data.class);
+                    document.getElementById('lblClass').innerText = cleanText(data.lastClass);
                     document.getElementById('lblSession').innerText = cleanText(data.session);
                     document.getElementById('lblTcReason').innerText = cleanText(data.tcReason);
                     document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate);
                 } else {
-                    alert("Google Sheet में इस एप्लीकेशन नंबर या मोबाइल नंबर का कोई रिकॉर्ड नहीं मिला।");
+                    alert("Google Sheet में इस रिकॉर्ड की जानकारी नहीं मिली।");
                     resetFields();
                 }
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-                alert("डेटा लोड करने में समस्या आई। कृपया अपना इंटरनेट कनेक्शन जांचें।");
+                alert("डेटा लोड करने में समस्या आई।");
                 resetFields();
             });
     } 
-    // केस 2: अगर सीधे यूआरएल में ही सारा डेटा भेज दिया गया हो (Fallback)
+    // केस 2: डायरेक्ट URL पैरामीटर बैकअप (Fallback)
     else if (hasDirectData) {
         document.getElementById('lblAppNo').innerText = cleanText(urlParams.get('appNo'));
         document.getElementById('lblDate').innerText = cleanText(urlParams.get('applyDate'));
@@ -421,8 +439,11 @@
         document.getElementById('lblDOB').innerText = cleanText(urlParams.get('dob'));
         document.getElementById('lblGender').innerText = cleanText(urlParams.get('gender'));
         document.getElementById('lblCategory').innerText = cleanText(urlParams.get('category'));
-        document.getElementById('lblSssmId').innerText = cleanText(urlParams.get('sssmId'));
-        document.getElementById('lblAadhaar').innerText = cleanText(urlParams.get('aadhaar'));
+        document.getElementById('lblSssmId').innerText = cleanText(urlParams.get('samagraId'));
+        
+        // ✨ यहाँ भी आधार मास्क होकर दिखेगा
+        document.getElementById('lblAadhaar').innerText = maskAadhaar(urlParams.get('aadhaar'));
+        
         document.getElementById('lblUdiseCode').innerText = cleanText(urlParams.get('udiseCode'));
         document.getElementById('lblApaarId').innerText = cleanText(urlParams.get('apaarId'));
         var mob = cleanText(urlParams.get('mobile'));
@@ -436,16 +457,13 @@
         document.getElementById('lblTcIssueDate').innerText = cleanText(urlParams.get('tcIssueDate'));
     }
 
-    // सुरक्षित और सटीक रिसेट फंक्शन
     function resetFields() {
-        // यह सीधे उन सभी एलिमेंट्स को चुनेगा जिनकी ID 'lbl' से शुरू होती है
         var labels = document.querySelectorAll('[id^="lbl"]');
         labels.forEach(function(el) {
             el.innerText = "--";
         });
     }
-}
-    
+}    
 </script>
 </body>
 </html>
