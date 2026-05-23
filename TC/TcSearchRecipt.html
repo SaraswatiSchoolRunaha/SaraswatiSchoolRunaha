@@ -243,56 +243,49 @@ function executeSearch(event) {
     var errorMsg = document.getElementById('errorMsg');
     var searchBtn = document.getElementById('searchBtn');
 
-    // 1. संशोधित इनपुट वैलिडेशन (दोनों का होना अनिवार्य है)
+    // वैलिडेशन
     if (!appNo || !mobileNo) {
         errorMsg.innerText = "कृपया Application Number और Mobile Number दोनों भरें!";
         errorMsg.style.display = 'block';
         return;
     }
 
-    // 2. चैप्टर कोड (Captcha) वैलिडेशन
     if (userInputCaptcha !== generatedCode) {
-        errorMsg.innerText = "गलत चैप्टर कोड! कृपया दोबारा देखकर सही कोड भरें।";
+        errorMsg.innerText = "गलत चैप्टर कोड!";
         errorMsg.style.display = 'block';
         generateCaptcha(); 
         return;
     }
     
-    errorMsg.style.display = 'none';
-    
-    // बटन को डिसेबल करना
-    searchBtn.innerText = "Searching Record... / खोज रहे हैं...";
+    searchBtn.innerText = "Searching... / खोज रहे हैं...";
     searchBtn.disabled = true;
 
-    // 3. Google Apps Script URL
+    // Google Apps Script URL
     var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
-    // URL पैरामीटर्स (दोनों को साथ भेज रहे हैं)
-    var searchParams = new URLSearchParams();
-    searchParams.append('appNo', appNo);
-    searchParams.append('mobileNo', mobileNo);
+    // URL निर्माण
+    var url = webAppUrl + "?appNo=" + encodeURIComponent(appNo) + "&mobileNo=" + encodeURIComponent(mobileNo);
 
-    // Fetch API
-    fetch(webAppUrl + "?" + searchParams.toString())
+    fetch(url)
     .then(response => response.json())
     .then(data => {
         if (data.status === "SUCCESS") {
-            var queryParams = new URLSearchParams(data.record).toString();
-            window.location.href = "TcReciptPrint.html?" + queryParams;
+            // डेटा को ब्राउज़र में स्टोर करें ताकि URL में न दिखे
+            localStorage.setItem("tcData", JSON.stringify(data));
+            window.location.href = "TcReciptPrint.html";
         } else {
-            errorMsg.innerText = "कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।";
+            errorMsg.innerText = "कोई रिकॉर्ड नहीं मिला!";
             errorMsg.style.display = 'block';
             resetSearchBtn();
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        errorMsg.innerText = "सर्वर से कनेक्ट करने में त्रुटि आई!";
+        errorMsg.innerText = "सर्वर एरर!";
         errorMsg.style.display = 'block';
         resetSearchBtn();
     });
 }
-
+    
 // बटन रिसेट करने के लिए छोटी फंक्शन
 function resetSearchBtn() {
     var searchBtn = document.getElementById('searchBtn');
