@@ -5,176 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search TC Receipt | टीसी रसीद खोजें</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f4f7f6;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .search-container {
-            background-color: #ffffff;
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            border-top: 6px solid #1a73e8;
-        }
-
-        .search-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .search-header h2 {
-            color: #1a73e8;
-            font-size: 22px;
-            margin-bottom: 5px;
-        }
-
-        .search-header p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #444;
-        }
-
-        input[type="text"], input[type="tel"] {
-            padding: 12px 14px;
-            border: 1.5px solid #dadce0;
-            border-radius: 6px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"] {
-            text-transform: uppercase;
-        }
-
-        input:focus {
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
-        }
-
-        .or-divider {
-            text-align: center;
-            margin: 15px 0;
-            position: relative;
-            color: #888;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .or-divider::before, .or-divider::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background-color: #ddd;
-        }
-
-        .or-divider::before { left: 0; }
-        .or-divider::after { right: 0; }
-
-        .captcha-section {
-            background-color: #f8f9fa;
-            border: 1px solid #e2e8f0;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .captcha-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .captcha-box {
-            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-            color: #1e293b;
-            font-weight: bold;
-            font-size: 20px;
-            letter-spacing: 5px;
-            padding: 10px 20px;
-            border-radius: 6px;
-            user-select: none;
-            text-decoration: line-through;
-            font-style: italic;
-            border: 1px dashed #94a3b8;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .refresh-btn {
-            background: none;
-            border: none;
-            color: #1a73e8;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .refresh-btn:hover {
-            transform: rotate(180deg);
-        }
-        
-        .search-btn {
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            box-shadow: 0 4px 6px rgba(26,115,232,0.2);
-        }
-
-        .search-btn:hover {
-            background-color: #1557b0;
-        }
-
-        .search-btn:disabled {
-            background-color: #a0aec0;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .error-message {
-            color: #d93025;
-            font-size: 13px;
-            margin-top: 10px;
-            text-align: center;
-            display: none;
-            font-weight: 500;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .search-container { background-color: #ffffff; width: 100%; max-width: 500px; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-top: 6px solid #1a73e8; }
+        .search-header { text-align: center; margin-bottom: 25px; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
+        label { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #444; }
+        input { padding: 12px; border: 1.5px solid #dadce0; border-radius: 6px; font-size: 16px; outline: none; }
+        .captcha-box { background: #e2e8f0; font-weight: bold; font-size: 20px; letter-spacing: 5px; padding: 10px; text-align: center; border-radius: 6px; margin-bottom: 10px; }
+        .search-btn { background-color: #1a73e8; color: white; border: none; width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .error-message { color: #d93025; font-size: 13px; margin-top: 10px; text-align: center; display: none; }
     </style>
 </head>
 <body>
@@ -186,114 +26,63 @@
     </div>
 
     <form id="searchForm" onsubmit="executeSearch(event)">
-    <div class="form-group">
-        <label for="appNo">Application Number / आवेदन संख्या <span style="color:red">*</span></label>
-        <input type="text" id="appNo" required placeholder="E.G. TC-2026-8542">
-    </div>
-
-    <div class="form-group">
-        <label for="mobileNo">Registered Mobile Number / मोबाइल नंबर <span style="color:red">*</span></label>
-        <input type="tel" id="mobileNo" required pattern="[0-9]{10}" placeholder="10-DIGIT MOBILE NUMBER">
-    </div>
-
-        <!-- Chapter Code (Captcha) Field -->
-        <div class="captcha-section">
-            <label for="captchaInput">Verification Code / चैप्टर कोड <span style="color: #d93025;">*</span></label>
-            <div class="captcha-container">
-                <div class="captcha-box" id="captchaDisplay">XXXXXX</div>
-                <button type="button" class="refresh-btn" onclick="generateCaptcha()" title="चैप्टर कोड बदलें">🔄</button>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-                <input type="text" id="captchaInput" required placeholder="ENTER ABOVE CODE" maxlength="6">
-            </div>
+        <div class="form-group">
+            <label for="appNo">Application Number <span style="color:red">*</span></label>
+            <input type="text" id="appNo" required placeholder="E.G. TC-2026-8542">
         </div>
-
-        <!-- Submit Button -->
-        <button type="submit" id="searchBtn" class="search-btn">Search & Print / खोजें और प्रिंट करें</button>
-        
-        <!-- Error Display Messages -->
-        <div id="errorMsg" class="error-message">कृपया खोजने के लिए कोई एक विकल्प भरें!</div>
+        <div class="form-group">
+            <label for="mobileNo">Mobile Number <span style="color:red">*</span></label>
+            <input type="tel" id="mobileNo" required pattern="[0-9]{10}" placeholder="10-DIGIT NUMBER">
+        </div>
+        <div class="form-group">
+            <label>Verification Code</label>
+            <div class="captcha-box" id="captchaDisplay">XXXXXX</div>
+            <input type="text" id="captchaInput" required placeholder="ENTER CODE" maxlength="6">
+        </div>
+        <button type="submit" id="searchBtn" class="search-btn">Search & Print</button>
+        <div id="errorMsg" class="error-message"></div>
     </form>
 </div>
 
 <script>
     var generatedCode = "";
-
-    window.onload = function() {
-        generateCaptcha();
-    };
-
     function generateCaptcha() {
-        var characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
-        var result = '';
-        for (var i = 0; i < 6; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        generatedCode = result;
+        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        generatedCode = Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
         document.getElementById('captchaDisplay').innerText = generatedCode;
-        document.getElementById('captchaInput').value = ""; 
     }
+    window.onload = generateCaptcha;
 
-function executeSearch(event) {
-    event.preventDefault();
-    
-    var appNo = document.getElementById('appNo').value.toUpperCase().trim();
-    var mobileNo = document.getElementById('mobileNo').value.trim();
-    var userInputCaptcha = document.getElementById('captchaInput').value.toUpperCase().trim();
-    var errorMsg = document.getElementById('errorMsg');
-    var searchBtn = document.getElementById('searchBtn');
+    function executeSearch(event) {
+        event.preventDefault();
+        var errorMsg = document.getElementById('errorMsg');
+        var searchBtn = document.getElementById('searchBtn');
 
-    // वैलिडेशन
-    if (!appNo || !mobileNo) {
-        errorMsg.innerText = "कृपया Application Number और Mobile Number दोनों भरें!";
-        errorMsg.style.display = 'block';
-        return;
-    }
-
-    if (userInputCaptcha !== generatedCode) {
-        errorMsg.innerText = "गलत चैप्टर कोड!";
-        errorMsg.style.display = 'block';
-        generateCaptcha(); 
-        return;
-    }
-    
-    searchBtn.innerText = "Searching... / खोज रहे हैं...";
-    searchBtn.disabled = true;
-
-    // Google Apps Script URL
-    var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
-
-    // URL निर्माण
-    var url = webAppUrl + "?appNo=" + encodeURIComponent(appNo) + "&mobileNo=" + encodeURIComponent(mobileNo);
-
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "SUCCESS") {
-            // डेटा को ब्राउज़र में स्टोर करें ताकि URL में न दिखे
-            localStorage.setItem("tcData", JSON.stringify(data));
-            window.location.href = "TcReciptPrint.html";
-        } else {
-            errorMsg.innerText = "कोई रिकॉर्ड नहीं मिला!";
-            errorMsg.style.display = 'block';
-            resetSearchBtn();
+        if (document.getElementById('captchaInput').value.toUpperCase() !== generatedCode) {
+            errorMsg.innerText = "गलत चैप्टर कोड!"; errorMsg.style.display = 'block'; generateCaptcha(); return;
         }
-    })
-    .catch(error => {
-        errorMsg.innerText = "सर्वर एरर!";
-        errorMsg.style.display = 'block';
-        resetSearchBtn();
-    });
-}
-    
-// बटन रिसेट करने के लिए छोटी फंक्शन
-function resetSearchBtn() {
-    var searchBtn = document.getElementById('searchBtn');
-    searchBtn.innerText = "Search & Print / खोजें और प्रिंट करें";
-    searchBtn.disabled = false;
-    generateCaptcha();
-}
-</script>
 
+        searchBtn.disabled = true; searchBtn.innerText = "Searching...";
+
+        var formData = new FormData();
+        formData.append('applicationNo', document.getElementById('appNo').value);
+        formData.append('mobile', document.getElementById('mobileNo').value);
+
+        fetch("YOUR_WEB_APP_URL_HERE", {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "SUCCESS") {
+                localStorage.setItem("tcData", JSON.stringify(data));
+                window.location.href = "TcReciptPrint.html";
+            } else {
+                errorMsg.innerText = "रिकॉर्ड नहीं मिला!"; errorMsg.style.display = 'block';
+                searchBtn.disabled = false; searchBtn.innerText = "Search & Print";
+            }
+        });
+    }
+</script>
 </body>
 </html>
