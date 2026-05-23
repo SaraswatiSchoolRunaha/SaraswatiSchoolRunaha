@@ -239,71 +239,72 @@
         document.getElementById('captchaInput').value = ""; 
     }
 
-    function executeSearch(event) {
-        event.preventDefault();
-        
-        var appNo = document.getElementById('appNo').value.toUpperCase().trim();
-        var mobileNo = document.getElementById('mobileNo').value.trim();
-        var userInputCaptcha = document.getElementById('captchaInput').value.toUpperCase().trim();
-        var errorMsg = document.getElementById('errorMsg');
-        var searchBtn = document.getElementById('searchBtn');
+function executeSearch(event) {
+    event.preventDefault();
+    
+    var appNo = document.getElementById('appNo').value.toUpperCase().trim();
+    var mobileNo = document.getElementById('mobileNo').value.trim();
+    var userInputCaptcha = document.getElementById('captchaInput').value.toUpperCase().trim();
+    var errorMsg = document.getElementById('errorMsg');
+    var searchBtn = document.getElementById('searchBtn');
 
-        // 1. इनपुट वैलिडेशन
-        if (!appNo && !mobileNo) {
-            errorMsg.innerText = "कृपया खोजने के लिए कोई एक विकल्प (Application No या Mobile) भरें!";
-            errorMsg.style.display = 'block';
-            return;
-        }
-
-        // 2. चैप्टर कोड (Captcha) वैलिडेशन
-        if (userInputCaptcha !== generatedCode) {
-            errorMsg.innerText = "गलत चैप्टर कोड! कृपया दोबारा देखकर सही कोड भरें।";
-            errorMsg.style.display = 'block';
-            generateCaptcha(); 
-            return;
-        }
-        
-        errorMsg.style.display = 'none';
-        
-        // बटन को डिसेबल करना ताकि सर्चिंग के दौरान दोबारा क्लिक न हो
-        searchBtn.innerText = "Searching Record... / खोज रहे हैं...";
-        searchBtn.disabled = true;
-
-        // 3. --- गूगल ऐप्स स्क्रिप्ट कनेक्शन ---
-        // यहाँ अपनी Google Apps Script का Web App URL डालें
-        var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
-
-        // URL पैरामीटर्स तैयार करना (ताकि बैकएंड को पता चले कि क्या खोजना है)
-        var searchParams = new URLSearchParams();
-        if (appNo) searchParams.append('appNo', appNo);
-        if (mobileNo) searchParams.append('mobileNo', mobileNo);
-
-        // Fetch API के ज़रिए Google Sheet से डेटा माँगना
-        fetch(webAppUrl + "?" + searchParams.toString())
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "SUCCESS") {
-                // अगर डेटा मिल गया, तो उसे प्रिंट वाले पेज पर रीडायरेक्ट कर दें
-                var queryParams = new URLSearchParams(data.record).toString();
-                window.location.href = "TcReciptPrint.html?" + queryParams;
-            } else {
-                // अगर रिकॉर्ड नहीं मिला
-                errorMsg.innerText = "कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।";
-                errorMsg.style.display = 'block';
-                searchBtn.innerText = "Search & Print / खोजें और प्रिंट करें";
-                searchBtn.disabled = false;
-                generateCaptcha();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            errorMsg.innerText = "सर्वर से कनेक्ट करने में त्रुटि आई! कृपया दोबारा प्रयास करें।";
-            errorMsg.style.display = 'block';
-            searchBtn.innerText = "Search & Print / खोजें और प्रिंट करें";
-            searchBtn.disabled = false;
-            generateCaptcha();
-        });
+    // 1. संशोधित इनपुट वैलिडेशन (दोनों का होना अनिवार्य है)
+    if (!appNo || !mobileNo) {
+        errorMsg.innerText = "कृपया Application Number और Mobile Number दोनों भरें!";
+        errorMsg.style.display = 'block';
+        return;
     }
+
+    // 2. चैप्टर कोड (Captcha) वैलिडेशन
+    if (userInputCaptcha !== generatedCode) {
+        errorMsg.innerText = "गलत चैप्टर कोड! कृपया दोबारा देखकर सही कोड भरें।";
+        errorMsg.style.display = 'block';
+        generateCaptcha(); 
+        return;
+    }
+    
+    errorMsg.style.display = 'none';
+    
+    // बटन को डिसेबल करना
+    searchBtn.innerText = "Searching Record... / खोज रहे हैं...";
+    searchBtn.disabled = true;
+
+    // 3. Google Apps Script URL
+    var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
+
+    // URL पैरामीटर्स (दोनों को साथ भेज रहे हैं)
+    var searchParams = new URLSearchParams();
+    searchParams.append('appNo', appNo);
+    searchParams.append('mobileNo', mobileNo);
+
+    // Fetch API
+    fetch(webAppUrl + "?" + searchParams.toString())
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "SUCCESS") {
+            var queryParams = new URLSearchParams(data.record).toString();
+            window.location.href = "TcReciptPrint.html?" + queryParams;
+        } else {
+            errorMsg.innerText = "कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।";
+            errorMsg.style.display = 'block';
+            resetSearchBtn();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        errorMsg.innerText = "सर्वर से कनेक्ट करने में त्रुटि आई!";
+        errorMsg.style.display = 'block';
+        resetSearchBtn();
+    });
+}
+
+// बटन रिसेट करने के लिए छोटी फंक्शन
+function resetSearchBtn() {
+    var searchBtn = document.getElementById('searchBtn');
+    searchBtn.innerText = "Search & Print / खोजें और प्रिंट करें";
+    searchBtn.disabled = false;
+    generateCaptcha();
+}
 </script>
 
 </body>
