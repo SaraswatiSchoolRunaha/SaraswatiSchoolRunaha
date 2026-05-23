@@ -391,6 +391,27 @@
     </div>
 </div>
 <script>
+
+    // सेटिंग: यहाँ अपनी तारीखें डालें
+const startDate = "2026-05-23"; // आवेदन शुरू होने की तारीख
+const endDate = "2026-06-15";   // आवेदन की अंतिम तारीख
+
+function checkDateRange() {
+    const today = new Date().toISOString().split('T')[0];
+    const form = document.getElementById("teacherForm");
+    
+    if (today < startDate || today > endDate) {
+        // अगर तारीख बाहर है, तो फॉर्म को लॉक/डिसेबल करें
+        form.innerHTML = `
+            <div class="p-6 text-center bg-red-50 border border-red-200 rounded-xl">
+                <h3 class="text-red-700 font-bold text-lg">आवेदन प्रक्रिया बंद है!</h3>
+                <p class="text-red-600">यह फॉर्म ${startDate} से ${endDate} तक ही खुला है।</p>
+            </div>
+        `;
+        return false;
+    }
+    return true;
+}
     let currentCaptcha = "";
 
     // 1. Generate Captcha Code
@@ -516,7 +537,11 @@
     document.getElementById("teacherForm").addEventListener("input", updateProgress);
     document.getElementById("teacherForm").addEventListener("change", updateProgress);
 
-    window.onload = generateCaptcha;
+   window.onload = function() {
+    generateCaptcha();
+    checkDateRange(); // तारीख चेक करने वाला फंक्शन चलाएं
+};
+    
 </script>
 </body>
 </html>
