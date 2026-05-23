@@ -337,100 +337,64 @@
     <button onclick="window.print()" class="btn btn-print">Print Receipt / रसीद प्रिंट करें</button>
 </div>
 
- <script>
+<script>
 window.onload = function() {
-    // URL से पैरामीटर्स उठाएं
-    var urlParams = new URLSearchParams(window.location.search);
-    
-    // सुरक्षित रूप से पैरामीटर्स निकालें (सभी स्पेलिंग वेरिएंट्स हैंडल किए गए हैं)
-    var appNo = urlParams.get('appNo') || urlParams.get('appno') || urlParams.get('applicationNo') || urlParams.get('applicationno');
-    var mobile = urlParams.get('mobile') || urlParams.get('mobileNo') || urlParams.get('mobileno');
-    var hasDirectData = urlParams.get('studentName') || urlParams.get('studentname') || urlParams.get('name');
+    // 1. localStorage से डेटा निकालें (जो आपने सर्च पेज पर सेव किया था)
+    var storedData = localStorage.getItem("tcData");
 
-    var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
+    if (storedData) {
+        var data = JSON.parse(storedData);
+        populateFields(data);
+    } else {
+        // अगर डेटा नहीं है, तो यूजर को सीधे सर्च पेज पर भेजें
+        alert("कोई सत्र (Session) नहीं मिला। कृपया पहले सर्च पेज से रसीद खोजें।");
+        window.location.href = "Search.html"; // अपने सर्च पेज का सही नाम लिखें
+    }
+};
 
+function populateFields(data) {
     function cleanText(val) {
-        if (!val || val === "null" || val === "undefined" || String(val).trim() === "") {
-            return "--";
-        }
-        return String(val).toUpperCase().trim();
+        return (!val || val === "null" || val === "undefined" || String(val).trim() === "") ? "--" : String(val).toUpperCase().trim();
     }
 
     function maskAadhaar(val) {
-        if (!val || val === "null" || val === "undefined" || String(val).trim() === "") {
-            return "--";
-        }
+        if (!val || val === "null" || val === "undefined") return "--";
         var cleanStr = String(val).replace(/[^0-9]/g, ''); 
-        if (cleanStr.length >= 4) {
-            return "XXXX-XXXX-" + cleanStr.slice(-4);
-        }
-        return "--";
+        return (cleanStr.length >= 4) ? "XXXX-XXXX-" + cleanStr.slice(-4) : "--";
     }
 
-    // अगर URL पैरामीटर्स खाली हैं, तो यूजर से पूछें
-    if (!appNo && !hasDirectData) {
-        appNo = prompt("Application No दर्ज करें:");
-        mobile = prompt("पंजीकृत Mobile Number दर्ज करें:");
-    }
-
-    // केस 1: API से लाइव डेटा लाना
-    if (appNo && mobile && !hasDirectData) {
-        document.getElementById('lblAppNo').innerText = "Loading...";
-        
-        var searchUrl = webAppUrl + "?appNo=" + encodeURIComponent(appNo) + "&mobile=" + encodeURIComponent(mobile);
-
-        fetch(searchUrl, { mode: "cors" })
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.status === "SUCCESS") {
-                document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo || appNo);
-                document.getElementById('lblDate').innerText = cleanText(data.tcIssueDate || data.timestamp);
-                
-                var appName = cleanText(data.applicantName || data.fatherName);
-                document.getElementById('lblApplicantName').innerText = appName;
-                document.getElementById('lblRelation').innerText = cleanText(data.relation || "FATHER");
-                document.getElementById('lblAffidavitApplicant').innerText = appName;
-                
-                document.getElementById('lblStudentName').innerText = cleanText(data.studentName);
-                document.getElementById('lblFatherName').innerText = cleanText(data.fatherName);
-                document.getElementById('lblMotherName').innerText = cleanText(data.motherName);
-                document.getElementById('lblDOB').innerText = cleanText(data.dob);
-                document.getElementById('lblGender').innerText = cleanText(data.gender);
-                document.getElementById('lblCategory').innerText = cleanText(data.category);
-                document.getElementById('lblSssmId').innerText = cleanText(data.samagraId);
-                
-                document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
-                document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode);
-                document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
-                
-                document.getElementById('lblMobile').innerText = cleanText(data.mobile || mobile);
-                document.getElementById('lblAffidavitMobile').innerText = cleanText(data.mobile || mobile);
-                
-                document.getElementById('lblScholarNo').innerText = cleanText(data.scholarNo);
-                document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate);
-                document.getElementById('lblClass').innerText = cleanText(data.lastClass);
-                document.getElementById('lblSession').innerText = cleanText(data.session);
-                document.getElementById('lblTcReason').innerText = cleanText(data.tcReason);
-                document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate);
-            } else {
-                alert("रिकॉर्ड नहीं मिला।");
-                resetFields();
-            }
-        })
-        .catch(err => { alert("नेटवर्क एरर!"); resetFields(); });
-    } 
-    // केस 2: डायरेक्ट URL पैरामीटर (अगर डेटा साथ लाया गया हो)
-    else if (hasDirectData) {
-        document.getElementById('lblAppNo').innerText = cleanText(appNo);
-        document.getElementById('lblStudentName').innerText = cleanText(hasDirectData);
-        document.getElementById('lblFatherName').innerText = cleanText(urlParams.get('fatherName'));
-        // ... (बाकी फील्ड्स आप इसी तरह urlParams.get('field') से मैप कर लें)
-    }
-
-    function resetFields() {
-        var labels = document.querySelectorAll('[id^="lbl"]');
-        labels.forEach(el => el.innerText = "--");
-    }
+    // डेटा को HTML में भरें
+    document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
+    document.getElementById('lblDate').innerText = cleanText(data.tcIssueDate || data.timestamp);
+    
+    var appName = cleanText(data.applicantName || data.fatherName);
+    document.getElementById('lblApplicantName').innerText = appName;
+    document.getElementById('lblRelation').innerText = cleanText(data.relation || "FATHER");
+    document.getElementById('lblAffidavitApplicant').innerText = appName;
+    
+    document.getElementById('lblStudentName').innerText = cleanText(data.studentName);
+    document.getElementById('lblFatherName').innerText = cleanText(data.fatherName);
+    document.getElementById('lblMotherName').innerText = cleanText(data.motherName);
+    document.getElementById('lblDOB').innerText = cleanText(data.dob);
+    document.getElementById('lblGender').innerText = cleanText(data.gender);
+    document.getElementById('lblCategory').innerText = cleanText(data.category);
+    document.getElementById('lblSssmId').innerText = cleanText(data.samagraId);
+    
+    // आधार नंबर सुरक्षित तरीके से मास्क किया गया (प्राइवेसी प्रोटोकॉल के अनुसार)
+    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
+    
+    document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode);
+    document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
+    
+    document.getElementById('lblMobile').innerText = cleanText(data.mobile);
+    document.getElementById('lblAffidavitMobile').innerText = cleanText(data.mobile);
+    
+    document.getElementById('lblScholarNo').innerText = cleanText(data.scholarNo);
+    document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate);
+    document.getElementById('lblClass').innerText = cleanText(data.lastClass);
+    document.getElementById('lblSession').innerText = cleanText(data.session);
+    document.getElementById('lblTcReason').innerText = cleanText(data.tcReason);
+    document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate);
 }
 </script>
 </body>
