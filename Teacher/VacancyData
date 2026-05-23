@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacancy Portal - Saraswati Bal Vidhya Mandir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-900">🎓 Teaching Recruitment Dashboard</h1>
+            <p class="text-slate-600 mt-2">Saraswati Bal Vidhya Mandir, Runaha</p>
+        </div>
+
+        <div class="overflow-x-auto shadow-2xl rounded-2xl border border-slate-200 bg-white">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-blue-800 text-white text-sm md:text-base">
+                        <th class="p-4">Post</th>
+                        <th class="p-4">Subject</th>
+                        <th class="p-4 text-center">Total</th>
+                        <th class="p-4 text-center">Filled</th>
+                        <th class="p-4 text-center">Vacant</th>
+                        <th class="p-4">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="vacancyTableBody" class="text-slate-700 text-sm md:text-base">
+                    <tr><td colspan="6" class="p-10 text-center">Loading portal data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // अपना वेब ऐप URL यहाँ डालें
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzRWaAM6ApuUsO1qqPiCKPwIs1eXfdop1vEt8yhgSdKT1N6buRTHeTwplfs7GRWS67Bqg/exec";
+
+        async function fetchVacancies() {
+            try {
+                const response = await fetch(WEB_APP_URL);
+                const data = await response.json();
+                const tableBody = document.getElementById("vacancyTableBody");
+                tableBody.innerHTML = ""; 
+
+               data.forEach(v => {
+    // यहाँ हमने v.total, v.filled, v.vacant का उपयोग किया है 
+    // क्योंकि ये नाम आपके Apps Script के result.push में दिए गए हैं
+    let total = parseInt(v.total) || 0;
+    let filled = parseInt(v.filled) || 0;
+    let vacant = parseInt(v.vacant) || 0;
+
+    // स्टेटस बैज (यदि खाली पद > 0 हैं तो Open)
+    let statusBadge = vacant > 0 
+        ? '<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold text-xs uppercase">Open</span>'
+        : '<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold text-xs uppercase">Closed</span>';
+
+    tableBody.innerHTML += `
+        <tr class="border-b hover:bg-slate-50 transition">
+            <td class="p-4 font-bold text-blue-900">${v.post}</td>
+            <td class="p-4">${v.subject}</td>
+            <td class="p-4 text-center font-bold text-slate-600">${total}</td>
+            <td class="p-4 text-center font-bold text-red-600">${filled}</td>
+            <td class="p-4 text-center font-bold text-green-600">${vacant}</td>
+            <td class="p-4">${statusBadge}</td>
+        </tr>
+    `;
+});
+    </script>
+</body>
+</html>
