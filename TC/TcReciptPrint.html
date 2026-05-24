@@ -273,6 +273,10 @@
             <td id="lblUdiseCode">--</td>
         </tr>
         <tr>
+          <th>Pen Number</th>
+            <td id="lblPenNumber">--</td>
+        </tr>
+        <tr>
             <th>APAAR ID / छात्र शैक्षणिक खाता आईडी</th>
             <td id="lblApaarId">--</td>
         </tr>
@@ -387,6 +391,7 @@ function populateFields(data) {
     document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
     
     document.getElementById('lblUdiseCode').innerText = "23320124505";
+     document.getElementById('lblPenNumber').innerText = cleanText(data.pennumber);
     document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
     
     document.getElementById('lblMobile').innerText = cleanText(data.mobile);
