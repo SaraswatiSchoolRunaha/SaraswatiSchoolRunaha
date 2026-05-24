@@ -360,7 +360,7 @@ function populateFields(data) {
         return (!val || val === "null" || val === "undefined" || String(val).trim() === "") ? "--" : String(val).toUpperCase().trim();
     }
 
-   function maskAadhaar(val) {
+  function maskAadhaar(val) {
     if (!val || val === "null" || val === "undefined") return "--";
 
     var cleanStr = String(val).replace(/\D/g, '');
