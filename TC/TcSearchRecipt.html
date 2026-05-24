@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Application Receipt</title>
+    <title>Search TC Receipt | टीसी रसीद खोजें</title>
   <style>
     /* 🔥 PAGE BACKGROUND */
     body{
@@ -112,7 +112,8 @@
 
 <div class="page">
   <div class="box">
-    <h2>🎓 Application Receipt Search </h2>
+    <h2>Print TC Application Receipt</h2>
+      <p>आवेदन रसीद प्रिंट करने के लिए खोजें</p>
 
     <div class="row">
       <input type="text" id="appNo" placeholder="Application Number">
@@ -138,7 +139,7 @@ let captcha = "";
 window.onload = function() {
     const urlParams = new URLSearchParams(window.location.search);
     const appNoFromURL = urlParams.get('appNo');
-    const mobileFromURL = urlParams.get('mobile1');
+    const mobileFromURL = urlParams.get('mobile');
 
     if (appNoFromURL) { 
         document.getElementById("appNo").value = appNoFromURL; 
@@ -188,7 +189,7 @@ async function openReceipt() {
     try {
         // 🔥 सुधार 1: URL में स्पेशल करैक्टर के लिए encodeURIComponent का प्रयोग
         // 🔥 सुधार 2: Google Script के रिडायरेक्ट को संभालने के लिए 'follow' मोड
-        const finalURL = `${scriptURL}?appNo=${encodeURIComponent(appNo)}&mobile1=${encodeURIComponent(mobileValue)}&t=${new Date().getTime()}`;
+        const finalURL = `${scriptURL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobileValue)}&t=${new Date().getTime()}`;
         
         const response = await fetch(finalURL, {
             method: "GET",
@@ -204,7 +205,7 @@ async function openReceipt() {
         // 3. डेटा के हिसाब से एक्शन
         if (result.status === "found") {
             // ✅ डेटा सही होने पर प्रिंट पेज पर भेजें
-            const printURL = `./Reciptprint.html?appNo=${encodeURIComponent(appNo)}&mobile1=${encodeURIComponent(mobileValue)}`;
+            const printURL = `./TcReciptPrint.html?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobileValue)}`;
             window.location.href = printURL;
         } 
         else if (result.status === "wrong_mobile") {
