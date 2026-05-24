@@ -155,23 +155,10 @@
 <script>
 let captcha = "";
 
-// 1. पेज लोड होते ही डेटा भरना और कैप्चा बनाना
 window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const appNoFromURL = urlParams.get('appNo');
-    const mobileFromURL = urlParams.get('mobile');
-
-    if (appNoFromURL) { 
-        document.getElementById("appNo").value = appNoFromURL; 
-    }
-    if (mobileFromURL) { 
-        document.getElementById("mobile").value = mobileFromURL; 
-    }
-    
-    generateCaptcha(); // कैप्चा लोड करें
+    generateCaptcha();
 };
 
-// 2. कैप्चा जनरेट करने का फंक्शन
 function generateCaptcha(){
     let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     captcha = "";
@@ -181,56 +168,43 @@ function generateCaptcha(){
     document.getElementById("captchaText").innerText = captcha;
 }
 
-// 3. सबमिट बटन का फंक्शन (Verification logic ke sath)
 async function openReceipt() {
     let appNo = document.getElementById("appNo").value.trim();
     let mobileValue = document.getElementById("mobile").value.trim();
     let cap = document.getElementById("captchaInput").value.trim();
     let btn = document.querySelector(".submit");
 
-    // 1. इनपुट चेक
     if (!appNo || !mobileValue) {
         alert("कृपया Application No और Mobile भरें");
         return;
     }
 
-    // 2. कैप्चा चेक
     if (cap.toUpperCase() !== captcha) {
         alert("Captcha गलत है");
         generateCaptcha();
         return;
     }
+
     const scriptURL = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
     btn.innerText = "Verifying...";
     btn.disabled = true;
 
     try {
-        // 🔥 सुधार 1: URL में स्पेशल करैक्टर के लिए encodeURIComponent का प्रयोग
-        // 🔥 सुधार 2: Google Script के रिडायरेक्ट को संभालने के लिए 'follow' मोड
         const finalURL = `${scriptURL}?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobileValue)}&t=${new Date().getTime()}`;
         
         const response = await fetch(finalURL, {
             method: "GET",
-            mode: "cors", // CORS सपोर्ट के लिए
-            redirect: "follow" // Google Apps Script के लिए यह अनिवार्य है
+            mode: "cors",
+            redirect: "follow"
         });
 
-        // चेक करें कि रिस्पॉन्स सही है या नहीं
         if (!response.ok) throw new Error("Network response was not ok");
 
         const result = await response.json();
 
-       // ... (ऊपर का हिस्सा वैसा ही रखें)
-
-        const result = await response.json();
-
-        // 3. डेटा के हिसाब से एक्शन (यहाँ बदलाव करें)
         if (result.status === "SUCCESS") {
-            // ✅ डेटा सही होने पर localStorage में सेव करें
             localStorage.setItem("tcData", JSON.stringify(result));
-            
-            // अब प्रिंट पेज पर जाएँ
             window.location.href = "TcReciptPrint.html";
         } 
         else if (result.status === "NOT_FOUND") {
@@ -240,7 +214,15 @@ async function openReceipt() {
             alert("❌ एरर: " + (result.message || "डेटाबेस में जानकारी उपलब्ध नहीं है।"));
         }
 
-
+    } catch (error) {
+        console.error("Verification Error:", error);
+        alert("⚠️ सर्वर से संपर्क नहीं हो पाया।\nसुनिश्चित करें कि Apps Script को 'Anyone' के लिए Deploy किया गया है।");
+    } finally {
+        btn.innerText = "Submit";
+        btn.disabled = false;
+        generateCaptcha();
+    }
+}
 </script>
 </body>
 </html>
