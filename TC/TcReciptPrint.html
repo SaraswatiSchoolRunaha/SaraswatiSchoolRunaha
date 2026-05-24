@@ -261,12 +261,12 @@
             <td><span id="lblGender">--</span> / <span id="lblCategory">--</span></td>
         </tr>
         <tr>
-            <th>Samagra SSSM ID</th>
-            <td id="lblsamagraId">--</td>
+            th>Samagra SSSM ID</th>
+            td id="lblSamagraId">--</td>
         </tr>
         <tr>
-            <th>Aadhaar Number</th>
-            <td id="lblAadhaar">--</td>
+          <th>Aadhaar Number</th>
+            td id="lblAadhaar">--</td>
         </tr>
         <tr>
             <th>School UDISE Code / डाइस कोड</th>
@@ -378,12 +378,12 @@ function populateFields(data) {
     document.getElementById('lblDOB').innerText = cleanText(data.dob);
     document.getElementById('lblGender').innerText = cleanText(data.gender);
     document.getElementById('lblCategory').innerText = cleanText(data.category);
-    document.getElementById('lblSssmId').innerText = cleanText(data.samagraId);
+   document.getElementById('lblSamagraId').innerText = cleanText(data.samagraId);
     
     // आधार नंबर सुरक्षित तरीके से मास्क किया गया (प्राइवेसी प्रोटोकॉल के अनुसार)
-    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
+   document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
     
-    document.getElementById('lblUdiseCode').innerText = cleanText(data.udiseCode);
+    document.getElementById('lblUdiseCode').innerText = cleanText(23320124505);
     document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
     
     document.getElementById('lblMobile').innerText = cleanText(data.mobile);
