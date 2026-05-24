@@ -44,6 +44,21 @@
       border:1px solid #ccc;
     }
 
+      .input-group {
+    margin-bottom: 15px;
+    }
+    .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+
+
+
+
+      
     .captcha-box{
       display:flex;
       justify-content:center;
@@ -115,14 +130,15 @@
     <h2>Print TC Application Receipt</h2>
       <p>आवेदन रसीद प्रिंट करने के लिए खोजें</p>
 
- <div class="input-group">
-        <label>Application Number</label>
-      <input type="text" id="appNo" placeholder="Application Number">
- </div>
- <div class="input-group">
-        <label>Monile Number</label>
-     <input type="text" id="mobile" placeholder="Mobile Number">
-    </div>
+      <div class="input-group" style="margin-bottom: 15px;">
+    <label for="appNo" style="display: block; font-weight: bold; margin-bottom: 5px;">Application Number</label>
+    <input type="text" id="appNo" placeholder="E.G. TC-2026-8542" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+</div>
+
+<div class="input-group" style="margin-bottom: 15px;">
+    <label for="mobile" style="display: block; font-weight: bold; margin-bottom: 5px;">Mobile Number</label>
+    <input type="tel" id="mobile" placeholder="10-digit Mobile Number" maxlength="10" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+</div>
 
     <div class="captcha-box">
       <span id="captchaText"></span>
@@ -205,33 +221,26 @@ async function openReceipt() {
 
         const result = await response.json();
 
-        // 3. डेटा के हिसाब से एक्शन
-        if (result.status === "found") {
-            // ✅ डेटा सही होने पर प्रिंट पेज पर भेजें
-            const printURL = `./TcReciptPrint.html?appNo=${encodeURIComponent(appNo)}&mobile=${encodeURIComponent(mobileValue)}`;
-            window.location.href = printURL;
+       // ... (ऊपर का हिस्सा वैसा ही रखें)
+
+        const result = await response.json();
+
+        // 3. डेटा के हिसाब से एक्शन (यहाँ बदलाव करें)
+        if (result.status === "SUCCESS") {
+            // ✅ डेटा सही होने पर localStorage में सेव करें
+            localStorage.setItem("tcData", JSON.stringify(result));
+            
+            // अब प्रिंट पेज पर जाएँ
+            window.location.href = "TcReciptPrint.html";
         } 
-        else if (result.status === "wrong_mobile") {
-            alert("❌ कृपया अपना मोबाइल नंबर जाँच लें।");
-        } 
-        else if (result.status === "wrong_app") {
-            alert("❌ कृपया अपना एप्लिकेशन नंबर चेक करें।");
+        else if (result.status === "NOT_FOUND") {
+            alert("❌ रिकॉर्ड नहीं मिला। कृपया एप्लिकेशन नंबर और मोबाइल नंबर की जाँच करें।");
         } 
         else {
-            alert("❌ रिकॉर्ड नहीं मिला: " + (result.message || "डेटाबेस में जानकारी नहीं है।"));
+            alert("❌ एरर: " + (result.message || "डेटाबेस में जानकारी उपलब्ध नहीं है।"));
         }
 
-    } catch (error) {
-        console.error("Verification Error:", error);
-        // यहाँ असली एरर पता चलेगा
-        alert("⚠️ सर्वर से संपर्क नहीं हो पाया।\nसंभावित कारण:\n1. इंटरनेट बंद है।\n2. आपने Apps Script को 'Anyone' के लिए Deploy नहीं किया है।");
-    } finally {
-        btn.innerText = "Submit";
-        btn.disabled = false;
-        generateCaptcha(); // कैप्चा रीसेट करें
-    }
-}
-</script>
 
+</script>
 </body>
 </html>
