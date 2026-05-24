@@ -337,48 +337,38 @@
     <button onclick="window.print()" class="btn btn-print">Print Receipt / रसीद प्रिंट करें</button>
 </div>
 
-<script>
+<<script>
 window.onload = function() {
-    // 1. localStorage से डेटा निकालें
     var storedData = localStorage.getItem("tcData");
 
     if (storedData) {
         var data = JSON.parse(storedData);
         populateFields(data);
     } else {
-        // अगर डेटा नहीं है, तो यूजर को सर्च पेज पर भेजें
         alert("कोई डेटा नहीं मिला। कृपया पहले सर्च पेज से रसीद खोजें।");
         window.location.href = "Search.html"; 
     }
 };
 
 function populateFields(data) {
+    // 1. क्लीनिंग फंक्शन
     function cleanText(val) {
         return (!val || val === "null" || val === "undefined" || String(val).trim() === "") ? "--" : String(val).toUpperCase().trim();
     }
 
-  // 1. आज की तारीख को dd/mm/yyyy फॉर्मेट में निकालें
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); // जनवरी 0 से शुरू होता है
-    var yyyy = today.getFullYear();
-    var todayStr = dd + '/' + mm + '/' + yyyy;
-
-    // 2. रसीद के 'lblDate' वाले एलिमेंट में आज की तारीख डाल दें
-    document.getElementById('lblDate').innerText = todayStr;
-
-    // ... आपका बाकी का कोड (जैसे data.studentName आदि) इसके नीचे रहेगा ...
-    
-    // आधार नंबर के लिए (अंतिम 4 अंक)
+    // 2. आधार मास्क फंक्शन
     function maskAadhaar(val) {
         if (!val || val === "null" || val === "undefined") return "--";
         var cleanStr = String(val).replace(/[^0-9]/g, ''); 
         return (cleanStr.length >= 4) ? "XXXX-XXXX-" + cleanStr.slice(-4) : "--";
     }
 
-    // अब सभी फील्ड्स को इस फंक्शन के अंदर ही रखें
+    // 3. तारीख सेट करना (अगर डेटा में तारीख है तो वह, वरना आज की तारीख)
+    var displayDate = data.submissionDate ? data.submissionDate : new Date().toLocaleDateString('en-GB');
+    document.getElementById('lblDate').innerText = displayDate;
+
+    // 4. अन्य सभी फील्ड्स
     document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
-    document.getElementById('lblDate').innerText = data.submissionDate ? data.submissionDate : new Date().toLocaleDateString('en-GB');
     
     var appName = cleanText(data.applicantName || data.fatherName);
     document.getElementById('lblApplicantName').innerText = appName;
@@ -393,7 +383,7 @@ function populateFields(data) {
     document.getElementById('lblCategory').innerText = cleanText(data.category);
     document.getElementById('lblSamagraId').innerText = cleanText(data.samagraId);
     
-    // आधार नंबर सुरक्षा के साथ
+    // आधार सुरक्षा के साथ
     document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
     
     document.getElementById('lblUdiseCode').innerText = "23320124505";
