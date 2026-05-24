@@ -339,16 +339,16 @@
 
 <script>
 window.onload = function() {
-    // 1. localStorage से डेटा निकालें (जो आपने सर्च पेज पर सेव किया था)
+    // 1. localStorage से डेटा निकालें
     var storedData = localStorage.getItem("tcData");
 
     if (storedData) {
         var data = JSON.parse(storedData);
         populateFields(data);
     } else {
-        // अगर डेटा नहीं है, तो यूजर को सीधे सर्च पेज पर भेजें
-        alert("कोई सत्र (Session) नहीं मिला। कृपया पहले सर्च पेज से रसीद खोजें।");
-        window.location.href = "Search.html"; // अपने सर्च पेज का सही नाम लिखें
+        // अगर डेटा नहीं है, तो यूजर को सर्च पेज पर भेजें
+        alert("कोई डेटा नहीं मिला। कृपया पहले सर्च पेज से रसीद खोजें।");
+        window.location.href = "Search.html"; 
     }
 };
 
@@ -358,24 +358,14 @@ function populateFields(data) {
     }
 
     function maskAadhaar(val) {
-        // यदि डेटा ही नहीं है, तो "--" दिखाएं
         if (!val || val === "null" || val === "undefined") return "--";
         var cleanStr = String(val).replace(/[^0-9]/g, ''); 
-        // केवल अंतिम 4 अंक दिखाएं
         return (cleanStr.length >= 4) ? "XXXX-XXXX-" + cleanStr.slice(-4) : "--";
     }
 
-    // तारीख के लिए: अगर submissionDate नहीं मिल रहा, तो आज की तारीख लें
-    var dateToShow = data.submissionDate || new Date().toLocaleDateString('en-GB');
-    document.getElementById('lblDate').innerText = dateToShow;
-
-    // बाकी फील्ड्स...
-    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
-    // ...बाकी कोड वैसे ही रहने दें
-}
-    // डेटा को HTML में भरें
+    // अब सभी फील्ड्स को इस फंक्शन के अंदर ही रखें
     document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
-    document.getElementById('lblDate').innerText = data.submissionDate ? data.submissionDate : "N/A";
+    document.getElementById('lblDate').innerText = data.submissionDate ? data.submissionDate : new Date().toLocaleDateString('en-GB');
     
     var appName = cleanText(data.applicantName || data.fatherName);
     document.getElementById('lblApplicantName').innerText = appName;
@@ -388,12 +378,12 @@ function populateFields(data) {
     document.getElementById('lblDOB').innerText = cleanText(data.dob);
     document.getElementById('lblGender').innerText = cleanText(data.gender);
     document.getElementById('lblCategory').innerText = cleanText(data.category);
-   document.getElementById('lblSamagraId').innerText = cleanText(data.samagraId);
+    document.getElementById('lblSamagraId').innerText = cleanText(data.samagraId);
     
-    // आधार नंबर सुरक्षित तरीके से मास्क किया गया (प्राइवेसी प्रोटोकॉल के अनुसार)
-   document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
+    // आधार नंबर सुरक्षा के साथ
+    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
     
-    document.getElementById('lblUdiseCode').innerText = cleanText(23320124505);
+    document.getElementById('lblUdiseCode').innerText = "23320124505";
     document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
     
     document.getElementById('lblMobile').innerText = cleanText(data.mobile);
