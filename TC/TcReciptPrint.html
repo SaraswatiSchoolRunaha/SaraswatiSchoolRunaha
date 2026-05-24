@@ -365,7 +365,7 @@ function populateFields(data) {
 
     // डेटा को HTML में भरें
     document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
-    document.getElementById('lblDate').innerText = cleanText(data.submissionDate || data.timestamp);
+    document.getElementById('lblDate').innerText = data.submissionDate ? data.submissionDate : "N/A";
     
     var appName = cleanText(data.applicantName || data.fatherName);
     document.getElementById('lblApplicantName').innerText = appName;
