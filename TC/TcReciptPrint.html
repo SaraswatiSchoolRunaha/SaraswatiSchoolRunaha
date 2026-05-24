@@ -341,7 +341,7 @@
     <button onclick="window.print()" class="btn btn-print">Print Receipt / रसीद प्रिंट करें</button>
 </div>
 
-<<script>
+<script>
 window.onload = function() {
     var storedData = localStorage.getItem("tcData");
 
@@ -367,13 +367,10 @@ function populateFields(data) {
         return (cleanStr.length >= 4) ? "XXXX-XXXX-" + cleanStr.slice(-4) : "--";
     }
 
-    // 3. तारीख सेट करना (अगर डेटा में तारीख है तो वह, वरना आज की तारीख)
-    var displayDate = data.submissionDate ? data.submissionDate : new Date().toLocaleDateString('en-GB');
-    document.getElementById('lblDate').innerText = displayDate;
-
-    // 4. अन्य सभी फील्ड्स
+    // 3. तारीख और डेटा सेट करना
+    document.getElementById('lblDate').innerText = data.timestamp ? data.timestamp : new Date().toLocaleDateString('en-GB');
     document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
-    timestamp: (data[i][0] instanceof Date) ? Utilities.formatDate(data[i][0], Session.getScriptTimeZone(), "dd/MM/yyyy") : data[i][0],
+    
     var appName = cleanText(data.applicantName || data.fatherName);
     document.getElementById('lblApplicantName').innerText = appName;
     document.getElementById('lblRelation').innerText = cleanText(data.relation || "FATHER");
@@ -387,11 +384,11 @@ function populateFields(data) {
     document.getElementById('lblCategory').innerText = cleanText(data.category);
     document.getElementById('lblSamagraId').innerText = cleanText(data.samagraId);
     
-    // आधार सुरक्षा के साथ
+    // आधार सुरक्षा (Redacted)
     document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
     
     document.getElementById('lblUdiseCode').innerText = "23320124505";
-     document.getElementById('lblPenNumber').innerText = cleanText(data.penNumber);
+    document.getElementById('lblPenNumber').innerText = cleanText(data.penNumber);
     document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
     
     document.getElementById('lblMobile').innerText = cleanText(data.mobile);
