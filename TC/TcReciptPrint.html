@@ -358,11 +358,21 @@ function populateFields(data) {
     }
 
     function maskAadhaar(val) {
+        // यदि डेटा ही नहीं है, तो "--" दिखाएं
         if (!val || val === "null" || val === "undefined") return "--";
         var cleanStr = String(val).replace(/[^0-9]/g, ''); 
+        // केवल अंतिम 4 अंक दिखाएं
         return (cleanStr.length >= 4) ? "XXXX-XXXX-" + cleanStr.slice(-4) : "--";
     }
 
+    // तारीख के लिए: अगर submissionDate नहीं मिल रहा, तो आज की तारीख लें
+    var dateToShow = data.submissionDate || new Date().toLocaleDateString('en-GB');
+    document.getElementById('lblDate').innerText = dateToShow;
+
+    // बाकी फील्ड्स...
+    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
+    // ...बाकी कोड वैसे ही रहने दें
+}
     // डेटा को HTML में भरें
     document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
     document.getElementById('lblDate').innerText = data.submissionDate ? data.submissionDate : "N/A";
