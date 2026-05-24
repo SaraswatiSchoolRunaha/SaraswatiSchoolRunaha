@@ -373,7 +373,7 @@ function populateFields(data) {
 
     // 4. अन्य सभी फील्ड्स
     document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
-    
+    timestamp: (data[i][0] instanceof Date) ? Utilities.formatDate(data[i][0], Session.getScriptTimeZone(), "dd/MM/yyyy") : data[i][0],
     var appName = cleanText(data.applicantName || data.fatherName);
     document.getElementById('lblApplicantName').innerText = appName;
     document.getElementById('lblRelation').innerText = cleanText(data.relation || "FATHER");
