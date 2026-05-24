@@ -356,51 +356,60 @@ function populateFields(data) {
         return (!val || val === "null" || val === "undefined" || String(val).trim() === "") ? "--" : String(val).toUpperCase().trim();
     }
 
-  function maskAadhaar(val) {
-    if (!val || val === "null" || val === "undefined") return "--";
-
-    var cleanStr = String(val).replace(/\D/g, '');
-
-    if (cleanStr.length === 12) {
-        return "XXXX XXXX " + cleanStr.slice(-4);
+    // 2. आधार मास्क फंक्शन (सुरक्षित)
+    function maskAadhaar(val) {
+        if (!val || val === "null" || val === "undefined") return "--";
+        var cleanStr = String(val).replace(/\D/g, '');
+        return (cleanStr.length === 12) ? "XXXX XXXX " + cleanStr.slice(-4) : "--";
     }
 
-    return "--";
-}
-    // 3. तारीख और डेटा सेट करना
-    document.getElementById('lblDate').innerText = data.timestamp ? data.timestamp : new Date().toLocaleDateString('en-GB');
-    document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
+    // 3. सुरक्षित तरीके से डेटा सेट करने वाला फंक्शन (यह कोड को क्रैश होने से बचाएगा)
+    function safeSet(id, value) {
+        var element = document.getElementById(id);
+        if (element) {
+            element.innerText = value;
+        } else {
+            console.warn("Element not found: " + id); // अगर ID नहीं मिली तो बस चेतावनी देगा, रुकेगा नहीं
+        }
+    }
+
+    // अब सभी फील्ड्स को 'safeSet' का उपयोग करके भरें
+    safeSet('lblDate', data.timestamp ? data.timestamp : new Date().toLocaleDateString('en-GB'));
+    safeSet('lblAppNo', cleanText(data.applicationNo));
     
     var appName = cleanText(data.applicantName || data.fatherName);
-    document.getElementById('lblApplicantName').innerText = appName;
-    document.getElementById('lblRelation').innerText = cleanText(data.relation || "FATHER");
-    document.getElementById('lblAffidavitApplicant').innerText = appName;
+    safeSet('lblApplicantName', appName);
+    safeSet('lblRelation', cleanText(data.relation || "FATHER"));
+    safeSet('lblAffidavitApplicant', appName);
     
-    document.getElementById('lblStudentName').innerText = cleanText(data.studentName);
-    document.getElementById('lblFatherName').innerText = cleanText(data.fatherName);
-    document.getElementById('lblMotherName').innerText = cleanText(data.motherName);
-    document.getElementById('lblDOB').innerText = cleanText(data.dob);
-    document.getElementById('lblGender').innerText = cleanText(data.gender);
-    document.getElementById('lblCategory').innerText = cleanText(data.category);
-    document.getElementById('lblSamagraId').innerText = cleanText(data.samagraId);
+    safeSet('lblStudentName', cleanText(data.studentName));
+    safeSet('lblFatherName', cleanText(data.fatherName));
+    safeSet('lblMotherName', cleanText(data.motherName));
+    safeSet('lblDOB', cleanText(data.dob));
+    safeSet('lblGender', cleanText(data.gender));
+    safeSet('lblCategory', cleanText(data.category));
+    safeSet('lblSamagraId', cleanText(data.samagraId));
     
-    // आधार सुरक्षा (Redacted)
-    document.getElementById('lblAadhaar').innerText = maskAadhaar(data.aadhaar);
+    // आधार सुरक्षा
+    safeSet('lblAadhaar', maskAadhaar(data.aadhaar));
     
-    document.getElementById('lblUdiseCode').innerText = "23320124505";
-    document.getElementById('lblPenNumber').innerText = cleanText(data.penNumber);
-    document.getElementById('lblApaarId').innerText = cleanText(data.apaarId);
+    // UDISE कोड (अगर HTML में ID नहीं है तो ये लाइन एरर नहीं देगी)
+    safeSet('lblUdiseCode', "23320124505");
     
-    document.getElementById('lblMobile').innerText = cleanText(data.mobile);
-    document.getElementById('lblAffidavitMobile').innerText = cleanText(data.mobile);
+    safeSet('lblPenNumber', cleanText(data.penNumber));
+    safeSet('lblApaarId', cleanText(data.apaarId));
+    safeSet('lblMobile', cleanText(data.mobile));
+    safeSet('lblAffidavitMobile', cleanText(data.mobile));
     
-    document.getElementById('lblScholarNo').innerText = cleanText(data.scholarNo);
-    document.getElementById('lblAdmissionDate').innerText = cleanText(data.admissionDate);
-    document.getElementById('lblClass').innerText = cleanText(data.lastClass);
-    document.getElementById('lblSession').innerText = cleanText(data.session);
-    document.getElementById('lblTcReason').innerText = cleanText(data.tcReason);
-    document.getElementById('lblTcIssueDate').innerText = cleanText(data.tcIssueDate);
+    // यहाँ से नीचे का डेटा अब लोड होगा क्योंकि कोड क्रैश नहीं होगा
+    safeSet('lblScholarNo', cleanText(data.scholarNo));
+    safeSet('lblAdmissionDate', cleanText(data.admissionDate));
+    safeSet('lblClass', cleanText(data.lastClass));
+    safeSet('lblSession', cleanText(data.session));
+    safeSet('lblTcReason', cleanText(data.tcReason));
+    safeSet('lblTcIssueDate', cleanText(data.tcIssueDate));
 }
-</script>
+
+</script>  
 </body>
 </html>
