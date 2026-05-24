@@ -268,9 +268,9 @@
           <th>Aadhaar Number</th>
             <td id="lblAadhaar">--</td>
         </tr>
-        <tr>
-            <th>School UDISE Code / डाइस कोड</th>
-            <td id="lblUdiseCode">--</td>
+       <tr>
+            <th>Aadhaar Number</th>
+            <td id="lblAadhaar" style="text-transform:none;">--</td>
         </tr>
         <tr>
           <th>Pen Number</th>
@@ -360,13 +360,17 @@ function populateFields(data) {
         return (!val || val === "null" || val === "undefined" || String(val).trim() === "") ? "--" : String(val).toUpperCase().trim();
     }
 
-    // 2. आधार मास्क फंक्शन
-    function maskAadhaar(val) {
-        if (!val || val === "null" || val === "undefined") return "--";
-        var cleanStr = String(val).replace(/[^0-9]/g, ''); 
-        return (cleanStr.length >= 4) ? "XXXX-XXXX-" + cleanStr.slice(-4) : "--";
+   function maskAadhaar(val) {
+    if (!val || val === "null" || val === "undefined") return "--";
+
+    var cleanStr = String(val).replace(/\D/g, '');
+
+    if (cleanStr.length === 12) {
+        return "XXXX XXXX " + cleanStr.slice(-4);
     }
 
+    return "--";
+}
     // 3. तारीख और डेटा सेट करना
     document.getElementById('lblDate').innerText = data.timestamp ? data.timestamp : new Date().toLocaleDateString('en-GB');
     document.getElementById('lblAppNo').innerText = cleanText(data.applicationNo);
