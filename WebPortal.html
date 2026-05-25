@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>स्कूल मैनेजमेंट वेब पोर्टल</title>
+    <title>स्कूल मैनेजमेंट - लॉगिन</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -16,384 +16,165 @@
         }
 
         body {
-            display: flex;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
             height: 100vh;
-            background-color: #f4f6f9;
-            color: #333;
-            overflow: hidden;
-        }
-
-        /* --- 1. LEFT SIDEBAR STYLE --- */
-        .sidebar {
-            width: 260px;
-            background-color: #ffffff;
-            border-right: 1px solid #e2e8f0;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .sidebar-brand {
-            padding: 24px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1e3a8a;
-            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 20px;
         }
 
-        .sidebar-menu {
-            list-style: none;
-            padding: 15px 0;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-
-        .menu-label {
-            padding: 10px 24px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #94a3b8;
-            font-weight: 600;
-        }
-
-        .sidebar-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .sidebar-menu li a:hover {
-            background-color: #f8fafc;
-            color: #1e3a8a;
-        }
-
-        .sidebar-menu li.active a {
-            background-color: #eff6ff;
-            color: #2563eb;
-            border-left: 4px solid #2563eb;
-            padding-left: 20px; /* Adjust padding for border */
-        }
-
-        .sidebar-footer {
-            padding: 20px 24px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        .sidebar-footer a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        /* --- 2. MAIN CONTENT AREA --- */
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* Top Header Navbar */
-        .top-navbar {
-            height: 70px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 40px;
-            gap: 25px;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: #64748b;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .nav-actions i:hover {
-            color: #1e3a8a;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #334155;
-            cursor: pointer;
-        }
-
-        .user-profile img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            object-fit: cover;
-            background-color: #cbd5e1;
-        }
-
-        /* Container Inside Main Content */
-        .page-body {
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
             padding: 40px;
-            overflow-y: auto;
-            flex-grow: 1;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
+        .logo-icon {
+            font-size: 3rem;
+            color: #2563eb;
+            margin-bottom: 15px;
         }
 
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+        .login-card h2 {
+            font-size: 1.6rem;
             color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        /* Action Buttons (CSV, PDF, Print) */
-        .action-buttons {
-            display: flex;
-            gap: 10px;
+        .login-card p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
         }
 
-        .btn-action {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background-color: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            color: #475569;
-            font-size: 0.875rem;
+        .input-group {
+            text-align: left;
+            margin-bottom: 22px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
             font-weight: 500;
-            text-decoration: none;
+            color: #475569;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .login-select {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #334155;
+            background-color: #f8fafc;
             cursor: pointer;
+            appearance: none; /* डिफ़ॉल्ट एरो हटाने के लिए */
+            -webkit-appearance: none;
             transition: all 0.2s ease;
         }
 
-        .btn-action:hover {
-            background-color: #f8fafc;
-            border-color: #94a3b8;
-            color: #1e293b;
-        }
-
-        /* --- 3. DATA CARD & TABLE STYLE --- */
-        .data-card {
+        .login-select:focus {
+            outline: none;
+            border-color: #2563eb;
             background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            padding: 24px;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        .card-inner-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .card-inner-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        /* Custom Table Design */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .portal-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.9rem;
-        }
-
-        .portal-table th {
-            background-color: #f8fafc;
+        /* कस्टम एरो के लिए */
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             color: #64748b;
-            padding: 14px 16px;
+            pointer-events: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 600;
-            border-bottom: 2px solid #edf2f7;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s ease;
         }
 
-        .portal-table td {
-            padding: 14px 16px;
-            color: #334155;
-            border-bottom: 1px solid #f1f5f9;
+        .login-btn:hover {
+            background: #1d4ed8;
         }
 
-        .portal-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .portal-table tr:hover td {
-            background-color: #f8fafc;
-        }
-
-        /* Highlight Summary Row */
-        .table-summary-row {
-            background-color: #f8fafc;
-            font-weight: 600;
-        }
-        
-        .table-summary-row td {
-            border-top: 2px solid #edf2f7;
-            color: #1e293b;
+        .login-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div>
-            <div class="sidebar-brand">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span>स्कूल शिक्षा पोर्टल</span>
+    <div class="login-card">
+        <div class="logo-icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h2>विद्या मंदिर पोर्टल लॉगिन</h2>
+        <p>कृपया अपना सही रोल चुनकर आगे बढ़ें</p>
+
+        <!-- रोल सिलेक्शन ग्रुप -->
+        <div class="input-group">
+            <label for="userRole">लॉगिन रोल (Select Role)</label>
+            <div class="select-wrapper">
+                <i class="fa-solid fa-user-shield"></i>
+                <select id="userRole" class="login-select">
+                    <option value="admin">मास्टर एडमिन (Admin)</option>
+                    <option value="teacher">शिक्षक (Teacher Panel)</option>
+                    <option value="principal">प्रिंसिपल (Principal Desk)</option>
+                </select>
             </div>
-
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="#"><i class="fa-solid fa-chart-pie"></i> डैशबोर्ड (Dashboard)</a>
-                </li>
-                
-                <div class="menu-label">प्रबंधन (Management)</div>
-                <li>
-                    <a href="#"><i class="fa-solid fa-user-graduate"></i> छात्र प्रोफाइल</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-users"></i> शिक्षक डेटाबेस</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-clipboard-list"></i> उपस्थिति रिकॉर्ड</a>
-                </li>
-                
-                <div class="menu-label">शैक्षणिक व फीस</div>
-                <li>
-                    <a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> फीस संकलन</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-square-poll-vertical"></i> परीक्षा परिणाम</a>
-                </li>
-                <li class="active">
-                    <a href="#"><i class="fa-solid fa-file-lines"></i> स्टेटमेंट्स / रिपोर्ट</a>
-                </li>
-            </ul>
         </div>
 
-        <div class="sidebar-footer">
-            <a href="#"><i class="fa-solid fa-gear"></i> एडमिनिस्ट्रेशन</a>
-        </div>
-    </aside>
+        <!-- सबमिट बटन -->
+        <button class="login-btn" onclick="loginToPortal()">
+            पोर्टल में प्रवेश करें <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
 
-    <main class="main-content">
+    <script>
+    function loginToPortal() {
+        // 1. चुना हुआ रोल प्राप्त करें
+        const selectedRole = document.getElementById('userRole').value;
         
-        <header class="top-navbar">
-            <div class="nav-actions">
-                <i class="fa-solid fa-magnifying-glass" title="सर्च"></i>
-                <i class="fa-solid fa-bell" title="नोटिफिकेशन"></i>
-            </div>
-            <div class="user-profile">
-                <span>Rakesh Gupta</span>
-                <img src="https://via.placeholder.com/35" alt="User Avatar">
-                <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #64748b;"></i>
-            </div>
-        </header>
-
-        <div class="page-body">
-            
-            <div class="page-header">
-                <h1 class="page-title">
-                    <i class="fa-solid fa-file-invoice" style="color: #2563eb;"></i> 
-                    छात्र विवरण रिपोर्ट (Statement)
-                </h1>
-                <div class="action-buttons">
-                    <button class="btn-action"><i class="fa-solid fa-file-csv"></i> CSV</button>
-                    <button class="btn-action"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    <button class="btn-action"><i class="fa-solid fa-print"></i> प्रिंट</button>
-                </div>
-            </div>
-
-            <div class="data-card">
-                <div class="card-inner-header">
-                    <h2 class="card-inner-title">वर्तमान सत्र विवरण (Current Statement)</h2>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="portal-table">
-                        <thead>
-                            <tr>
-                                <th>दिनांक और समय</th>
-                                <th>विवरण (Description)</th>
-                                <th>रसीद / इनवॉइस नंबर</th>
-                                <th>राशि (Amount)</th>
-                                <th>शेष राशि (Balance)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>25/05/2026, 10:30 AM</td>
-                                <td>सत्र एडमिशन फीस जमा - कक्षा 10</td>
-                                <td>INV-2026-001</td>
-                                <td style="color: #16a34a; font-weight: 500;">+ ₹12,500.00</td>
-                                <td>₹12,500.00</td>
-                            </tr>
-                            <tr>
-                                <td>25/05/2026, 01:15 PM</td>
-                                <td>कंप्यूटर लैब विकास शुल्क</td>
-                                <td>INV-2026-042</td>
-                                <td style="color: #16a34a; font-weight: 500;">+ ₹1,500.00</td>
-                                <td>₹14,000.00</td>
-                            </tr>
-                            <tr>
-                                <td>25/05/2026, 04:00 PM</td>
-                                <td>पुस्तकालय सुरक्षा रिफंड (सफल निष्कासन)</td>
-                                <td>REF-2026-012</td>
-                                <td style="color: #dc2626; font-weight: 500;">- ₹2,000.00</td>
-                                <td>₹12,000.00</td>
-                            </tr>
-                            <tr class="table-summary-row">
-                                <td colspan="3">कुल क्लोजिंग बैलेंस (Total Closing Balance)</td>
-                                <td>—</td>
-                                <td>₹12,000.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </main>
+        // 2. यूजर को WebPortal.html पर सही रोल पैरामीटर के साथ भेजें
+        window.location.href = "WebPortal.html?role=" + selectedRole;
+    }
+    </script>
 
 </body>
 </html>
-
