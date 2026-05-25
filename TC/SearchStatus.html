@@ -3,243 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TC Status Check | टीसी स्थिति जांच</title>
+    <title>TC Status Search</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body { background-color: #f4f7f6; padding: 15px 10px; display: flex; flex-direction: column; align-items: center; }
-        
-        @media (min-width: 768px) {
-            body { padding: 30px 15px; }
-        }
-
-        .search-container {
-            background-color: #fff; width: 100%; max-width: 900px; padding: 25px;
-            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px;
-            border-top: 5px solid #0056b3;
-        }
-        h2 { font-size: 18px; color: #333; margin-bottom: 20px; text-align: center; }
-        @media (min-width: 768px) { h2 { font-size: 20px; } }
-        
-        .form-row { display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 15px; }
-        .form-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f7f6; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; }
+        .search-container { background: #fff; width: 100%; max-width: 600px; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid #0056b3; margin-top: 20px; }
+        h2 { font-size: 20px; color: #333; margin-bottom: 20px; text-align: center; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
         label { font-size: 13px; font-weight: 600; color: #555; }
-        input { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+        input { padding: 11px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
         input:focus { border-color: #0056b3; }
-        
         .captcha-wrapper { display: flex; align-items: center; gap: 10px; }
-        .captcha-box { background: #e0e0e0; padding: 8px 15px; font-size: 18px; font-weight: bold; 
-                      letter-spacing: 4px; border-radius: 4px; color: #333; font-style: italic; 
-                      user-select: none; border: 1px dashed #999; }
-        .btn-refresh { background: none; border: none; font-size: 18px; cursor: pointer; color: #666; }
-
-        .btn-search { background-color: #0056b3; color: white; padding: 11px 25px; font-size: 14px; 
-                      font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; width: 100%; }
-        @media (min-width: 768px) { .btn-search { width: auto; } }
+        .captcha-box { background: #e0e0e0; padding: 8px 15px; font-size: 18px; font-weight: bold; letter-spacing: 4px; border-radius: 4px; font-style: italic; user-select: none; border: 1px dashed #999; }
+        .btn-refresh { background: none; border: none; font-size: 18px; cursor: pointer; }
+        .btn-search { background-color: #0056b3; color: white; padding: 12px; font-size: 15px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; }
         .btn-search:hover { background-color: #004085; }
-
-        .result-container { background-color: #fff; width: 100%; max-width: 1200px; border-radius: 6px; 
-                           box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto; display: none; 
-                           border-top: 4px solid #0056b3; padding: 10px; }
-        @media (min-width: 768px) { .result-container { padding: 0; } }
-        
-        .status-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .status-table th { background-color: #f8fafc; color: #333; font-size: 12px; font-weight: bold; 
-                          padding: 15px 10px; border-bottom: 2px solid #0056b3; text-transform: uppercase; white-space: nowrap; }
-        .status-table td { padding: 12px 10px; font-size: 13px; color: #444; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; white-space: nowrap; }
-        
-        .btn-action { background-color: #28a745; color: white; padding: 8px 16px; font-size: 12px; 
-                      font-weight: bold; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
-        .btn-action:hover { background-color: #218838; }
-        
         .error-msg { color: red; font-size: 13px; text-align: center; margin-top: 10px; display: none; font-weight: 500; }
         .loading { text-align: center; font-size: 14px; color: #666; display: none; margin: 15px; }
-
-        @media (max-width: 768px) {
-            .status-table, .status-table thead, .status-table tbody, .status-table th, .status-table td, .status-table tr { 
-                display: block; 
-            }
-            .status-table thead { display: none; } 
-            .status-table tr { 
-                margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background: #fff;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            }
-            .status-table td { 
-                text-align: right; padding-left: 50%; position: relative; border-bottom: 1px dashed #eee; 
-                white-space: normal; word-break: break-word; min-height: 35px; display: flex; align-items: center; justify-content: flex-end;
-            }
-            .status-table td:last-child { border-bottom: none; justify-content: center; padding-left: 0; pt: 10px; }
-            .status-table td::before { 
-                content: attr(data-label); position: absolute; left: 10px; width: 45%; 
-                font-weight: bold; text-align: left; color: #0056b3; font-size: 12px;
-            }
-        }
+        
+        /* स्टेटस कार्ड डिज़ाइन */
+        .status-card { background: white; width: 100%; max-width: 600px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 20px; margin-top: 20px; display: none; border-left: 5px solid #28a745; }
+        .status-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 14px; }
+        .status-row:last-of-type { border-bottom: none; }
+        .label-name { font-weight: 600; color: #555; }
+        .val-name { font-weight: bold; color: #333; }
+        .badge { padding: 4px 10px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; }
+        .badge.pending { background-color: #ffc107; color: #212529; }
+        .badge.approved { background-color: #28a745; }
+        .btn-view { display: block; text-align: center; background: #28a745; color: white; text-decoration: none; padding: 10px; border-radius: 4px; font-weight: bold; margin-top: 15px; font-size: 14px; }
+        .btn-view:hover { background: #218838; }
     </style>
 </head>
 <body>
 
 <div class="search-container">
-    <h2>Check TC Application Status / टीसी स्थिति की जांच करें</h2>
-    
-    <div class="form-row">
-        <div class="form-group">
-            <label>App No. / Mobile Number</label>
-            <input type="text" id="txtSearch" placeholder="Enter App No. or Mobile">
-        </div>
-        
-        <div class="form-group">
-            <label>Security Captcha</label>
-            <div class="captcha-wrapper">
-                <div class="captcha-box" id="captchaCode">XXXX</div>
-                <button class="btn-refresh" onclick="generateCaptcha()" title="Refresh Captcha">🔄</button>
-                <input type="text" id="txtCaptchaInput" placeholder="Enter Captcha" style="width: 110px;">
-            </div>
-        </div>
-        
-        <button class="btn-search" onclick="searchData()">SEARCH / खोजें</button>
+    <h2>TC Status Search | टीसी स्थिति जांच</h2>
+    <div class="form-group">
+        <label>Application Number / Mobile Number</label>
+        <input type="text" id="txtSearch" placeholder="यहाँ ऐप नंबर या मोबाइल नंबर डालें">
     </div>
+    <div class="form-group">
+        <label>Security Captcha</label>
+        <div class="captcha-wrapper">
+            <div class="captcha-box" id="captchaCode">XXXX</div>
+            <button class="btn-refresh" onclick="generateCaptcha()">🔄</button>
+            <input type="text" id="txtCaptchaInput" placeholder="कोड डालें" style="width: 120px;">
+        </div>
+    </div>
+    <button class="btn-search" onclick="searchData()">खोजें / SEARCH</button>
     <div class="error-msg" id="errorMsg"></div>
-    <div class="loading" id="loadingMsg">⏳ Searching data Please wait.</div>
+    <div class="loading" id="loadingMsg">⏳ कृपया प्रतीक्षा करें... डेटा खोजा जा रहा है।</div>
 </div>
 
-<div class="result-container" id="resultContainer">
-    <table class="status-table">
-        <thead>
-            <tr>
-                <th>App No.</th>
-                <th>Session</th> 
-                <th>Scholar No.</th> 
-                <th>Mobile</th>
-                <th>Student Name</th>
-                <th>Father's Name</th>
-                <th>Mother's Name</th>
-                <th>DOB</th>
-                <th>Gender</th>
-                <th>Category</th>
-                <th>Samgra Id</th>
-                <th>Pen Number</th>
-                <th>Apaar Id</th>
-                <th>Aadhar No</th>
-                <th>Reason</th> 
-                <th>Other Reason</th>
-                <th>Dues Fees</th>
-                <th>Dues Library</th>
-                <th>Dues Sports</th>
-                <th>Status</th> 
-                <th>Reason / Remarks</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
-    </table>
+<div class="status-card" id="statusCard">
+    <div class="status-row"><span class="label-name">App No:</span><span class="val-name" id="lblAppNo">--</span></div>
+    <div class="status-row"><span class="label-name">छात्र का नाम (Student):</span><span class="val-name" id="lblName" style="color:#0056b3;">--</span></div>
+    <div class="status-row"><span class="label-name">पिता का नाम (Father):</span><span class="val-name" id="lblFather">--</span></div>
+    <div class="status-row"><span class="label-name">स्थिति (Status):</span><span><span class="badge" id="lblStatus">PENDING</span></span></div>
+    <a href="#" id="lnkViewMore" target="_blank" class="btn-view">📄 पूरी जानकारी / प्रिंट रसीद</a>
 </div>
 
 <script>
     var currentCaptcha = "";
+    // आपका असली वेब ऐप URL
     var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
     function generateCaptcha() {
         var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         var code = "";
-        for (var i = 0; i < 4; i++) {
-            code += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
+        for (var i = 0; i < 4; i++) { code += chars.charAt(Math.floor(Math.random() * chars.length)); }
         currentCaptcha = code;
         document.getElementById('captchaCode').innerText = currentCaptcha;
         document.getElementById('txtCaptchaInput').value = "";
     }
 
-    window.onload = function() {
-        generateCaptcha();
-        var urlParams = new URLSearchParams(window.location.search);
-        var appNo = urlParams.get('appNo');
-        var mobile = urlParams.get('mobile');
-
-        if (appNo) {
-            document.getElementById('txtSearch').value = appNo;
-        } else if (mobile) {
-            document.getElementById('txtSearch').value = mobile;
-        }
-    };
+    window.onload = generateCaptcha;
 
     function searchData() {
         var searchInput = document.getElementById('txtSearch').value.trim();
         var captchaInput = document.getElementById('txtCaptchaInput').value.trim().toUpperCase();
         var errorMsg = document.getElementById('errorMsg');
         var loadingMsg = document.getElementById('loadingMsg');
-        var resultContainer = document.getElementById('resultContainer');
-        var tableBody = document.getElementById('tableBody');
+        var statusCard = document.getElementById('statusCard');
 
         errorMsg.style.display = "none";
-        resultContainer.style.display = "none";
-        tableBody.innerHTML = "";
+        statusCard.style.display = "none";
 
-        if (searchInput === "") {
-            showError("कृपया Application Number या Mobile Number दर्ज करें।");
-            return;
-        }
-
-        if (captchaInput !== currentCaptcha) {
-            showError("गलत कैप्चा कोड! कृपया सही कोड दर्ज करें।");
-            generateCaptcha();
-            return;
-        }
+        if (!searchInput) { showError("कृपया ऐप नंबर या मोबाइल नंबर दर्ज करें।"); return; }
+        if (captchaInput !== currentCaptcha) { showError("गलत कैप्चा कोड!"); generateCaptcha(); return; }
 
         loadingMsg.style.display = "block";
-        var finalUrl = webAppUrl + "?searchQuery=" + encodeURIComponent(searchInput);
 
-        fetch(finalUrl)
-            .then(response => response.json())
+        fetch(webAppUrl + "?searchQuery=" + encodeURIComponent(searchInput))
+            .then(res => res.json())
             .then(data => {
                 loadingMsg.style.display = "none";
-
-                // फिक्स: ऐप्स स्क्रिप्ट से डायरेक्ट आने वाले सिंगल ऑब्जेक्ट 'data' को सही से पढ़ना
                 if (data.status === "SUCCESS") {
+                    document.getElementById('lblAppNo').innerText = data.applicationNo;
+                    document.getElementById('lblName').innerText = data.studentName.toUpperCase();
+                    document.getElementById('lblFather').innerText = data.fatherName.toUpperCase();
                     
-                    var tr = document.createElement('tr');
-                    
-                    var receiptLink = "TcSearchRecipt.html?appNo=" + encodeURIComponent(data.applicationNo || "") + 
-                                       "&mobile=" + encodeURIComponent(data.mobile || "");
+                    var statusBadge = document.getElementById('lblStatus');
+                    statusBadge.innerText = data.currentStatus.toUpperCase();
+                    if(data.currentStatus.toUpperCase() === "APPROVED") {
+                        statusBadge.className = "badge approved";
+                        statusCard.style.borderLeft = "5px solid #28a745";
+                    } else {
+                        statusBadge.className = "badge pending";
+                        statusCard.style.borderLeft = "5px solid #ffc107";
+                    }
 
-                    var maskAadhaar = (data.aadhaar) ? "[Aadhaar Redacted]" : "--";
-
-                    tr.innerHTML = `
-                        <td data-label="App No.">${clean(data.applicationNo)}</td>
-                        <td data-label="Session">${clean(data.session)}</td>
-                        <td data-label="Scholar No.">${clean(data.scholarNo)}</td>
-                        <td data-label="Mobile">${clean(data.mobile)}</td>
-                        <td data-label="Student Name" style="font-weight:bold; color:#0056b3;">${clean(data.studentName)}</td>
-                        <td data-label="Father's Name">${clean(data.fatherName)}</td>
-                        <td data-label="Mother's Name">${clean(data.motherName)}</td>
-                        <td data-label="DOB">${clean(data.dob)}</td>
-                        <td data-label="Gender">${clean(data.gender)}</td>
-                        <td data-label="Category">${clean(data.category)}</td>
-                        <td data-label="Samgra Id">${clean(data.samagraId)}</td>
-                        <td data-label="Pen Number">${clean(data.penNumber)}</td>
-                        <td data-label="Apaar Id">${clean(data.apaarId)}</td>
-                        <td data-label="Aadhar No">${maskAadhaar}</td>
-                        <td data-label="Reason">${clean(data.reason)}</td>
-                        <td data-label="Other Reason">${clean(data.otherReason)}</td>
-                        <td data-label="Dues Fees" style="color:red;">${clean(data.duesFees)}</td>
-                        <td data-label="Dues Library" style="color:red;">${clean(data.duesLibrary)}</td>
-                        <td data-label="Dues Sports" style="color:red;">${clean(data.duesSports)}</td>
-                        <td data-label="Status" style="font-weight:bold;">${clean(data.currentStatus)}</td>
-                        <td data-label="Reason / Remarks">${clean(data.remarks)}</td>
-                        <td><a href="${receiptLink}" target="_blank" class="btn-action">Print Receipt</a></td>
-                    `;
-                    tableBody.appendChild(tr);
-                    resultContainer.style.display = "block";
-
+                    // दूसरे पेज (view.html) पर भेजने के लिए लिंक सेट करना
+                    document.getElementById('lnkViewMore').href = "view.html?appNo=" + encodeURIComponent(data.applicationNo);
+                    statusCard.style.display = "block";
                 } else {
-                    showError("कोई रिकॉर्ड नहीं मिला! कृपया सही एप्लीकेशन नंबर या मोबाइल नंबर जांचें।");
+                    showError("कोई रिकॉर्ड नहीं मिला! कृपया सही जानकारी जांचें।");
                 }
                 generateCaptcha();
             })
-            .catch(error => {
+            .catch(err => {
                 loadingMsg.style.display = "none";
-                console.error("Error searching data:", error);
-                showError("सर्वर से जुड़ने में असमर्थ। कृपया इंटरनेट कनेक्शन की जांच करें।");
+                showError("सर्वर से कनेक्शन फेल हुआ।");
                 generateCaptcha();
             });
     }
@@ -249,14 +133,6 @@
         errorMsg.innerText = msg;
         errorMsg.style.display = "block";
     }
-
-    function clean(val) {
-        if (!val || val === "null" || val === "undefined" || String(val).trim() === "") {
-            return "--";
-        }
-        return String(val).toUpperCase().trim();
-    }
 </script>
-
 </body>
 </html>
