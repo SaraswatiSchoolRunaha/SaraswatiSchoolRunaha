@@ -47,47 +47,60 @@
     </main>
 
     <script>
-        // 1. यहाँ रोल बदलें ('admin', 'teacher', या 'principal')
-        const currentUserRole = 'admin'; 
+       // 1. URL से डायनामिक रोल लें
+const urlParams = new URLSearchParams(window.location.search);
+const currentUserRole = urlParams.get('role') || 'teacher'; 
 
-        const permissions = {
-            'admin': {
-                'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट'],
-                'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'],
-                'फीस': ['रसीद', 'बकाया'],
-                'TC': ['जारी करें', 'प्रिंट']
-            },
-            'teacher': {
-                'छात्र प्रोफाइल': ['सभी छात्र'],
-                'उपस्थिति': ['दैनिक उपस्थिति'],
-                'फीस': ['बकाया लिस्ट']
-            },
-            'principal': {
-                'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'],
-                'फीस': ['कुल आय', 'बकाया'],
-                'रिजल्ट': ['एनालिसिस', 'पब्लिश']
-            }
-        };
+// 2. परमिशन डेटा (यह वही रहेगा)
+const permissions = {
+    'admin': {
+        'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'],
+        'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'],
+        'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'],
+        'TC अपडेट': ['जारी करें', 'प्रिंट']
+    },
+    'teacher': {
+        'छात्र प्रोफाइल': ['सभी छात्र'],
+        'उपस्थिति': ['दैनिक उपस्थिति'],
+        'फीस अपडेट': ['बकाया लिस्ट']
+    },
+    'principal': {
+        'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'],
+        'उपस्थिति': ['पूरे स्कूल की रिपोर्ट'],
+        'फीस अपडेट': ['कुल आय', 'बकाया'],
+        'रिजल्ट': ['एनालिसिस', 'पब्लिश']
+    }
+};
 
-        function buildMenu() {
-            const container = document.getElementById('sideMenuContainer');
-            const roleData = permissions[currentUserRole];
-            document.getElementById('userRoleBadge').innerText = "Role: " + currentUserRole.toUpperCase();
+// 3. रोल के हिसाब से मेनू बनाएं
+function buildMenu() {
+    const container = document.getElementById('sideMenuContainer');
+    container.innerHTML = ""; // पुराना मेनू साफ़ करें
+    
+    const roleData = permissions[currentUserRole];
+    
+    // अगर कोई गलत रोल डाले, तो उसे 'teacher' मान लें
+    if(!roleData) {
+        alert("अमान्य रोल!");
+        return;
+    }
 
-            for (const [module, options] of Object.entries(roleData)) {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <div class="module-btn" onclick="toggleSubMenu(this)">
-                        <span>${module}</span>
-                        <i class="fa-solid fa-chevron-down fa-xs"></i>
-                    </div>
-                    <div class="sub-menu">
-                        ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${opt}</a>`).join('')}
-                    </div>
-                `;
-                container.appendChild(li);
-            }
-        }
+    document.getElementById('userRoleBadge').innerText = "Role: " + currentUserRole.toUpperCase();
+
+    for (const [module, options] of Object.entries(roleData)) {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="module-btn" onclick="toggleSubMenu(this)">
+                <span>${module}</span>
+                <i class="fa-solid fa-chevron-down fa-xs"></i>
+            </div>
+            <div class="sub-menu">
+                ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${opt}</a>`).join('')}
+            </div>
+        `;
+        container.appendChild(li);
+    }
+}
 
         function toggleSubMenu(element) {
             const subMenu = element.nextElementSibling;
