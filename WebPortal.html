@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>स्कूल मैनेजमेंट वैभव पोर्टल</title>
+    <title>स्कूल मैनेजमेंट वेब पोर्टल</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -173,7 +173,7 @@
             gap: 12px;
         }
 
-        /* Action Buttons (CSV, PDF, Print, Logout) */
+        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -322,10 +322,9 @@
                 <i class="fa-solid fa-bell" title="नोटिफिकेशन"></i>
             </div>
             <div class="user-profile">
-                <span id="navUserName">Rakesh Gupta</span>
+                <span id="navUserName">Loading...</span>
                 <img src="https://via.placeholder.com/35" alt="User Avatar">
             </div>
-            <!-- 🚪 लॉगआउट बटन -->
             <button onclick="logout()" class="btn-action" style="border-color: #fca5a5; color: #dc2626; background-color: #fef2f2; margin-left: 10px;">
                 <i class="fa-solid fa-right-from-bracket"></i> लॉगआउट
             </button>
@@ -334,10 +333,8 @@
         <div class="page-body">
             
             <div class="page-header">
-                <h1 class="page-title">
-                    <i class="fa-solid fa-file-invoice" style="color: #2563eb;"></i> 
-                    छात्र विवरण रिपोर्ट (Statement)
-                </h1>
+                <h1 class="page-title" id="dynamicPageTitle">
+                    </h1>
                 <div class="action-buttons">
                     <button class="btn-action"><i class="fa-solid fa-file-csv"></i> CSV</button>
                     <button class="btn-action"><i class="fa-solid fa-file-pdf"></i> PDF</button>
@@ -347,49 +344,12 @@
 
             <div class="data-card">
                 <div class="card-inner-header">
-                    <h2 class="card-inner-title">वर्तमान सत्र विवरण (Current Statement)</h2>
+                    <h2 class="card-inner-title" id="dynamicCardTitle"></h2>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="portal-table">
-                        <thead>
-                            <tr>
-                                <th>दिनांक और समय</th>
-                                <th>विवरण (Description)</th>
-                                <th>रसीद / इनवॉइस नंबर</th>
-                                <th>राशि (Amount)</th>
-                                <th>शेष राशि (Balance)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>25/05/2026, 10:30 AM</td>
-                                <td>सत्र एडमिशन फीस जमा - कक्षा 10</td>
-                                <td>INV-2026-001</td>
-                                <td style="color: #16a34a; font-weight: 500;">+ ₹12,500.00</td>
-                                <td>₹12,500.00</td>
-                            </tr>
-                            <tr>
-                                <td>25/05/2026, 01:15 PM</td>
-                                <td>कंप्यूटर लैब विकास शुल्क</td>
-                                <td>INV-2026-042</td>
-                                <td style="color: #16a34a; font-weight: 500;">+ ₹1,500.00</td>
-                                <td>₹14,000.00</td>
-                            </tr>
-                            <tr>
-                                <td>25/05/2026, 04:00 PM</td>
-                                <td>पुस्तकालय सुरक्षा रिफंड (सफल निष्कासन)</td>
-                                <td>REF-2026-012</td>
-                                <td style="color: #dc2626; font-weight: 500;">- ₹2,000.00</td>
-                                <td>₹12,000.00</td>
-                            </tr>
-                            <tr class="table-summary-row">
-                                <td colspan="3">कुल क्लोजिंग बैलेंस (Total Closing Balance)</td>
-                                <td>—</td>
-                                <td>₹12,000.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <table class="portal-table" id="dynamicTable">
+                        </table>
                 </div>
             </div>
 
@@ -398,37 +358,161 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. URL पैरामीटर से रोल (?role=...) को निकालना
+            // 1. URL से रोल निकालना
             const urlParams = new URLSearchParams(window.location.search);
             const role = urlParams.get('role');
 
-            // तत्वों को जावास्क्रिप्ट वेरिएबल में ले लें
+            // HTML तत्वों को सिलेक्ट करना
             const userNameText = document.getElementById("navUserName");
             const teacherMenu = document.getElementById("teacherDbMenu");
             const feesMenu = document.getElementById("feesMenu");
             const adminSection = document.getElementById("adminSection");
+            
+            const pageTitle = document.getElementById("dynamicPageTitle");
+            const cardTitle = document.getElementById("dynamicCardTitle");
+            const dataTable = document.getElementById("dynamicTable");
 
-            // 2. बिना किसी एक्स्ट्रा पासवर्ड कंडीशन के सीधे रोल के मुताबिक परमिशन सेट करना
+            // 2. 👑 ADMIN LOGIN होने पर क्या दिखेगा
             if (role === "admin") {
                 userNameText.innerText = "मास्टर एडमिन (Admin)";
+                
+                // कंटेंट सेट करें (फीस स्टेटमेंट)
+                pageTitle.innerHTML = `<i class="fa-solid fa-file-invoice" style="color: #2563eb;"></i> मुख्य वित्तीय रिपोर्ट (Admin Statement)`;
+                cardTitle.innerText = "वर्तमान सत्र शुल्क संकलन विवरण";
+                
+                dataTable.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>दिनांक और समय</th>
+                            <th>विवरण (Description)</th>
+                            <th>रसीद नंबर</th>
+                            <th>राशि (Amount)</th>
+                            <th>शेष राशि (Balance)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>25/05/2026, 10:30 AM</td>
+                            <td>सत्र एडमिशन फीस जमा - कक्षा 10</td>
+                            <td>INV-2026-001</td>
+                            <td style="color: #16a34a; font-weight: 500;">+ ₹12,500.00</td>
+                            <td>₹12,500.00</td>
+                        </tr>
+                        <tr>
+                            <td>25/05/2026, 01:15 PM</td>
+                            <td>कंप्यूटर लैब विकास शुल्क</td>
+                            <td>INV-2026-042</td>
+                            <td style="color: #16a34a; font-weight: 500;">+ ₹1,500.00</td>
+                            <td>₹14,000.00</td>
+                        </tr>
+                        <tr class="table-summary-row">
+                            <td colspan="3">कुल क्लोजिंग बैलेंस (Total Balance)</td>
+                            <td>—</td>
+                            <td>₹14,000.00</td>
+                        </tr>
+                    </tbody>`;
             } 
+            
+            // 3. 🧑‍🏫 TEACHER LOGIN होने पर क्या दिखेगा
             else if (role === "teacher") {
                 userNameText.innerText = "सम्मानित शिक्षक (Teacher)";
+                
+                // साइडबार से कुछ चीजें छुपाएं
                 if(teacherMenu) teacherMenu.style.display = "none";
                 if(adminSection) adminSection.style.display = "none";
+
+                // कंटेंट सेट करें (क्लास अटेंडेंस और समरी)
+                pageTitle.innerHTML = `<i class="fa-solid fa-clipboard-user" style="color: #10b981;"></i> कक्षा उपस्थिति एवं शैक्षणिक रिपोर्ट`;
+                cardTitle.innerText = "आज की कक्षा उपस्थिति विवरण (Class 10-A)";
+                
+                dataTable.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>छात्र का नाम</th>
+                            <th>रोल नंबर</th>
+                            <th>कक्षा / सेक्शन</th>
+                            <th>आज की स्थिति</th>
+                            <th>कुल उपस्थिति %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>अमित शर्मा</td>
+                            <td>101</td>
+                            <td>कक्षा 10 - A</td>
+                            <td style="color: #16a34a; font-weight: 600;">Present (उपस्थित)</td>
+                            <td>92%</td>
+                        </tr>
+                        <tr>
+                            <td>राहुल वर्मा</td>
+                            <td>102</td>
+                            <td>कक्षा 10 - A</td>
+                            <td style="color: #dc2626; font-weight: 600;">Absent (अनुपस्थित)</td>
+                            <td>78%</td>
+                        </tr>
+                        <tr class="table-summary-row">
+                            <td colspan="3">कुल छात्र: 45</td>
+                            <td>उपस्थित: 44</td>
+                            <td>अनुपस्थित: 1</td>
+                        </tr>
+                    </tbody>`;
             } 
+            
+            // 4. 🏢 PRINCIPAL LOGIN होने पर क्या दिखेगा
             else if (role === "principal") {
                 userNameText.innerText = "प्रिंसिपल डेस्क (Principal)";
+                
+                // साइडबार से कुछ चीजें छुपाएं
                 if(feesMenu) feesMenu.style.display = "none";
                 if(adminSection) adminSection.style.display = "none";
+
+                // कंटेंट सेट करें (स्कूल परफॉरमेंस समरी)
+                pageTitle.innerHTML = `<i class="fa-solid fa-chart-line" style="color: #7c3aed;"></i> विद्यालय ओवरऑल परफॉरमेंस डैशबोर्ड`;
+                cardTitle.innerText = "वार्षिक परीक्षा परिणाम एवं बोर्ड समरी रिपोर्ट";
+                
+                dataTable.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>कक्षा (Class)</th>
+                            <th>कुल पंजीकृत छात्र</th>
+                            <th>उत्तीर्ण छात्र (Passed)</th>
+                            <th>सर्वोच्च अंक (Topper)</th>
+                            <th>कुल पास प्रतिशत (Pass %)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>कक्षा 12वीं (Science)</td>
+                            <td>120</td>
+                            <td>118</td>
+                            <td>96.4% (प्रिया सिंह)</td>
+                            <td style="color: #16a34a; font-weight: 600;">98.3%</td>
+                        </tr>
+                        <tr>
+                            <td>कक्षा 10वीं (General)</td>
+                            <td>150</td>
+                            <td>145</td>
+                            <td>98.2% (रोहन गुप्ता)</td>
+                            <td style="color: #16a34a; font-weight: 600;">96.6%</td>
+                        </tr>
+                        <tr class="table-summary-row">
+                            <td>कुल स्कूल समरी</td>
+                            <td>270</td>
+                            <td>263</td>
+                            <td>स्कूल टॉपर: 98.2%</td>
+                            <td>औसत: 97.45%</td>
+                        </tr>
+                    </tbody>`;
             } 
+            
+            // सुरक्षा सुरक्षा
             else {
                 alert("अनधिकृत प्रवेश! कृपया पहले लॉगिन करें।");
                 window.location.href = "index.html";
             }
         });
 
-        // 2. 🚪 लॉगआउट फंक्शन (जैसे ही यूजर क्लिक करेगा, वह वापस लॉगिन पेज पर पहुंच जाएगा)
+        // लॉगआउट फंक्शन
         function logout() {
             const confirmLogout = confirm("क्या आप सचमुच लॉगआउट करना चाहते हैं?");
             if (confirmLogout) {
