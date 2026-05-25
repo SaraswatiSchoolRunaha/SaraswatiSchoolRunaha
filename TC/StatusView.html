@@ -3,87 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student TC Details Receipt</title>
+    <title>Track TC Application Status | टीसी स्थिति जांचें</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f4f7f6; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .receipt-container { background: #fff; width: 100%; max-width: 800px; padding: 30px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #ddd; position: relative; }
-        .header { text-align: center; border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 20px; }
-        .header h1 { font-size: 22px; color: #0056b3; }
-        .header p { font-size: 13px; color: #666; margin-top: 5px; }
+        /* 🔥 MODERN STYLE DECK */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         
-        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .info-table td { padding: 10px; border: 1px solid #e2e8f0; font-size: 14px; color: #333; width: 50%; }
-        .info-table td .title { font-weight: bold; color: #0056b3; display: inline-block; width: 140px; }
-        
-        .no-print-btn { background-color: #007bff; color: white; padding: 12px 30px; font-size: 14px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px; }
-        .no-print-btn:hover { background-color: #0056b3; }
-        .loading { font-size: 16px; color: #666; font-weight: bold; margin-top: 50px; }
+        body { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            padding: 30px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
 
+        /* 🔥 TRACKER CONTAINER */
+        .tracker-container { 
+            background: #fff; 
+            width: 100%; 
+            max-width: 750px; 
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            border-top: 6px solid #1565c0;
+            display: none;
+        }
+
+        /* 🔥 SCHOOL HEADER */
+        .school-header { 
+            text-align: center; 
+            border-bottom: 2px dashed #cfd8dc; 
+            padding-bottom: 20px; 
+            margin-bottom: 25px; 
+        }
+        .school-header h1 { font-size: 20px; color: #1565c0; font-weight: 700; letter-spacing: 0.5px; }
+        .school-header p { font-size: 13px; color: #546e7a; margin-top: 5px; font-weight: 500; }
+
+        /* 🔥 BADGE & STATUS HERO */
+        .status-hero {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .status-hero .label { font-size: 13px; color: #2e7d32; font-weight: 600; text-transform: uppercase; }
+        .status-hero .current-status { font-size: 22px; color: #1b5e20; font-weight: 700; margin-top: 4px; }
+
+        /* 🔥 LIVE VISUAL TIMELINE */
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 30px 10px 40px 10px;
+        }
+        .status-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 5%;
+            right: 5%;
+            height: 4px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        .timeline-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+        .timeline-icon {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border: 3px solid #e0e0e0;
+            border-radius: 50%;
+            margin: 0 auto 8px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #9e9e9e;
+            transition: all 0.3s ease;
+        }
+        .timeline-text { font-size: 12px; font-weight: 600; color: #757575; }
+        
+        /* Active Status Classes */
+        .timeline-step.active .timeline-icon {
+            border-color: #1565c0;
+            background: #1565c0;
+            color: #fff;
+            box-shadow: 0 0 0 5px rgba(21, 101, 192, 0.2);
+        }
+        .timeline-step.active .timeline-text { color: #1565c0; font-weight: 700; }
+
+        /* 🔥 SECTION HEADINGS */
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #37474f;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 🔥 DATA GRID STYLES */
+        .data-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            margin-bottom: 25px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #eceff1;
+        }
+        .data-item { display: flex; flex-direction: column; gap: 4px; }
+        .data-label { font-size: 12px; color: #78909c; font-weight: 600; }
+        .data-value { font-size: 14px; color: #263238; font-weight: 600; }
+
+        /* Dues Block Special Customization */
+        .dues-grid { background: #fff3e0; border: 1px solid #ffe0b2; }
+        .dues-grid .data-label { color: #e65100; }
+        .dues-grid .data-value { color: #bf360c; }
+
+        /* 🔥 ACTION BUTTONS */
+        .btn-group { display: flex; gap: 10px; width: 100%; max-width: 750px; margin-bottom: 15px; }
+        .action-btn { 
+            flex: 1;
+            padding: 12px; 
+            font-size: 14px; 
+            font-weight: bold; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-print { background-color: #1565c0; color: white; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.2); }
+        .btn-print:hover { background-color: #0d47a1; }
+        .btn-back { background-color: #cfd8dc; color: #37474f; }
+        .btn-back:hover { background-color: #b0bec5; }
+
+        /* 🔥 UTILITIES */
+        .loading { font-size: 16px; color: #546e7a; font-weight: 600; margin-top: 60px; text-align: center; }
+        
+        /* 🔥 RESPONSIVE DESIGN */
+        @media (max-width: 600px) {
+            .data-grid { grid-template-columns: 1fr; gap: 12px; }
+            .status-timeline { margin: 20px 0; }
+            .timeline-text { font-size: 11px; }
+        }
+
+        /* 🔥 PRINT MEDIA RULES */
         @media print {
             body { background: #fff; padding: 0; }
-            .receipt-container { border: none; box-shadow: none; width: 100%; padding: 0; }
-            .no-print-btn { display: none !important; }
+            .tracker-container { border: none; box-shadow: none; width: 100%; padding: 0; display: block !important; }
+            .btn-group, .status-timeline { display: none !important; }
+            .data-grid { background: #fff; border: 1px solid #000; }
         }
     </style>
 </head>
 <body>
 
-<button class="no-print-btn" id="btnPrint" onclick="window.print()" style="display:none;">🖨️ Print Receipt / प्रिंट करें</button>
+<!-- Action Buttons Layout -->
+<div class="btn-group" id="actionButtons" style="display: none;">
+    <button class="action-btn btn-back" onclick="window.history.back()">⬅️ पीछे जाएं</button>
+    <button class="action-btn btn-print" onclick="window.print()">🖨️ प्रिंट रसीद (Print)</button>
+</div>
 
-<div id="loading" class="loading">⏳ लोड हो रहा है... कृपया प्रतीक्षा करें...</div>
+<!-- Loading State Spinner -->
+<div id="loading" class="loading">⏳ आपकी TC एप्लीकेशन स्टेटस खोजी जा रही है... कृपया प्रतीक्षा करें...</div>
 
-<div class="receipt-container" id="receiptBlock" style="display:none;">
-    <div class="header">
-        <h1>SARASWATI BAL VIDHYA MANDIR HIGH SCHOOL</h1>
-        <p>Runaha, Madhya Pradesh | TC Application Acknowledgement Receipt</p>
-    </div>
+<!-- Main Status Container -->
+<div class="tracker-container" id="trackerBlock">
     
-    <table class="info-table">
-        <tr>
-            <td><span class="title">Application No:</span> <span id="rAppNo">--</span></td>
-            <td><span class="title">Session:</span> <span id="rSession">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">Scholar No:</span> <span id="rScholarNo">--</span></td>
-            <td><span class="title">Mobile No:</span> <span id="rMobile">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">Student Name:</span> <span id="rStudentName" style="font-weight:bold;">--</span></td>
-            <td><span class="title">Father's Name:</span> <span id="rFatherName">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">Mother's Name:</span> <span id="rMotherName">--</span></td>
-            <td><span class="title">Date of Birth:</span> <span id="rDob">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">Gender:</span> <span id="rGender">--</span></td>
-            <td><span class="title">Category:</span> <span id="rCategory">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">Samagra ID:</span> <span id="rSamagra">--</span></td>
-            <td><span class="title">Aadhar No:</span> <span id="rAadhar">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">PEN Number:</span> <span id="rPen">--</span></td>
-            <td><span class="title">APAAR ID:</span> <span id="rApaar">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">TC Reason:</span> <span id="rReason">--</span></td>
-            <td><span class="title">Other Reason:</span> <span id="rOtherReason">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">Dues Fees:</span> <span id="rDuesFees" style="font-weight:bold;">--</span></td>
-            <td><span class="title">Dues Library:</span> <span id="rDuesLib" style="font-weight:bold;">--</span></td>
-        </tr>
-        <tr>
-            <td><span class="title">Dues Sports:</span> <span id="rDuesSports" style="font-weight:bold;">--</span></td>
-            <td><span class="title">Current Status:</span> <span id="rStatus" style="font-weight:bold; color:green;">--</span></td>
-        </tr>
-        <tr>
-            <td colspan="2"><span class="title">Remarks:</span> <span id="rRemarks">--</span></td>
-        </tr>
-    </table>
+    <!-- School Header Info -->
+    <div class="school-header">
+        <h1>SARASWATI BAL VIDHYA MANDIR HIGH SCHOOL</h1>
+        <p>Runaha, Madhya Pradesh | ऑनलाइन टीसी स्थिति ट्रैकर (Live Tracking)</p>
+    </div>
+
+    <!-- Live Status Box -->
+    <div class="status-hero">
+        <div class="label">वर्तमान स्थिति / Current Status</div>
+        <div class="current-status" id="trackStatus">--</div>
+    </div>
+
+    <!-- Dynamic Steps Progress Bar -->
+    <div class="status-timeline">
+        <div class="timeline-step" id="step-applied">
+            <div class="timeline-icon">1</div>
+            <div class="timeline-text">Applied</div>
+        </div>
+        <div class="timeline-step" id="step-cleared">
+            <div class="timeline-icon">2</div>
+            <div class="timeline-text">Dues Cleared</div>
+        </div>
+        <div class="timeline-step" id="step-approved">
+            <div class="timeline-icon">3</div>
+            <div class="timeline-text">Approved</div>
+        </div>
+        <div class="timeline-step" id="step-issued">
+            <div class="timeline-icon">4</div>
+            <div class="timeline-text">TC Issued</div>
+        </div>
+    </div>
+
+    <!-- Block 1: Basic Student Info -->
+    <div class="section-title">👤 छात्र एवं आवेदन विवरण (Student Details)</div>
+    <div class="data-grid">
+        <div class="data-item">
+            <div class="data-label">Application Number / आवेदन क्र.</div>
+            <div class="data-value" id="tAppNo">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Academic Session / शैक्षणिक सत्र</div>
+            <div class="data-value" id="tSession">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Scholar Number / स्कॉलर क्र.</div>
+            <div class="data-value" id="tScholarNo">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Registered Mobile / मोबाइल नंबर</div>
+            <div class="data-value" id="tMobile">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Student Name / विद्यार्थी का नाम</div>
+            <div class="data-value" id="tStudentName">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Father's Name / पिता का नाम</div>
+            <div class="data-value" id="tFatherName">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Mother's Name / माता का नाम</div>
+            <div class="data-value" id="tMotherName">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Date of Birth / जन्म तिथि</div>
+            <div class="data-value" id="tDob">--</div>
+        </div>
+    </div>
+
+    <!-- Block 2: National & State IDs -->
+    <div class="section-title">🪪 पहचान पत्र विवरण (Identity Verification)</div>
+    <div class="data-grid">
+        <div class="data-item">
+            <div class="data-label">Samagra ID / समग्र आईडी</div>
+            <div class="data-value" id="tSamagra">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Aadhar Number / आधार नंबर</div>
+            <div class="data-value" id="tAadhar">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">PEN Number / स्थायी शिक्षा संख्या</div>
+            <div class="data-value" id="tPen">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">APAAR ID / अपार आईडी</div>
+            <div class="data-value" id="tApaar">--</div>
+        </div>
+    </div>
+
+    <!-- Block 3: Dues & Approvals Account -->
+    <div class="section-title">💰 बकाया शुल्क खाता विवरण (Dues Clearance Status)</div>
+    <div class="data-grid dues-grid">
+        <div class="data-item">
+            <div class="data-label">Pending School Fees / शेष शिक्षण शुल्क</div>
+            <div class="data-value" id="tDuesFees">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Library Dues / पुस्तकालय बकाया</div>
+            <div class="data-value" id="tDuesLib">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Sports Dues / खेलकूद विभाग बकाया</div>
+            <div class="data-value" id="tDuesSports">--</div>
+        </div>
+        <div class="data-item">
+            <div class="data-label">Reason for Leaving / टीसी का कारण</div>
+            <div class="data-value" id="tReason">--</div>
+        </div>
+    </div>
+
+    <!-- Block 4: Official Office Remarks -->
+    <div class="section-title">📝 कार्यालय टिप्पणी (Official Remarks)</div>
+    <div class="data-grid" style="grid-template-columns: 1fr; margin-bottom: 0;">
+        <div class="data-item">
+            <div class="data-label">Remarks / महत्वपूर्ण निर्देश</div>
+            <div class="data-value" id="tRemarks">--</div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -94,50 +317,92 @@
         var appNo = urlParams.get('appNo');
 
         if (!appNo) {
-            document.getElementById('loading').innerText = "त्रुटि: कोई एप्लीकेशन नंबर नहीं मिला!";
+            document.getElementById('loading').innerText = "त्रुटि: ट्रैकिंग के लिए कोई एप्लिकेशन नंबर नहीं मिला!";
             return;
         }
 
-        // पहले वाले पेज से आए ऐप नंबर को बैकएंड में भेजना
         fetch(webAppUrl + "?searchQuery=" + encodeURIComponent(appNo))
             .then(res => res.json())
             .then(data => {
                 if (data.status === "SUCCESS") {
                     document.getElementById('loading').style.display = "none";
                     
-                    // खानों में डेटा सेट करना
-                    document.getElementById('rAppNo').innerText = data.applicationNo || "--";
-                    document.getElementById('rSession').innerText = data.session || "--";
-                    document.getElementById('rScholarNo').innerText = data.scholarNo || "--";
-                    document.getElementById('rMobile').innerText = data.mobile || "--";
-                    document.getElementById('rStudentName').innerText = String(data.studentName).toUpperCase();
-                    document.getElementById('rFatherName').innerText = String(data.fatherName).toUpperCase();
-                    document.getElementById('rMotherName').innerText = String(data.motherName).toUpperCase();
-                    document.getElementById('rDob').innerText = data.dob || "--";
-                    document.getElementById('rGender').innerText = data.gender || "--";
-                    document.getElementById('rCategory').innerText = data.category || "--";
-                    document.getElementById('rSamagra').innerText = data.samagraId || "--";
-                    document.getElementById('rAadhar').innerText = data.aadhaar || "--";
-                    document.getElementById('rPen').innerText = data.penNumber || "--";
-                    document.getElementById('rApaar').innerText = data.apaarId || "--";
-                    document.getElementById('rReason').innerText = data.reason || "--";
-                    document.getElementById('rOtherReason').innerText = data.otherReason || "--";
-                    document.getElementById('rDuesFees').innerText = data.duesFees || "--";
-                    document.getElementById('rDuesLib').innerText = data.duesLibrary || "--";
-                    document.getElementById('rDuesSports').innerText = data.duesSports || "--";
-                    document.getElementById('rStatus').innerText = data.currentStatus || "--";
-                    document.getElementById('rRemarks').innerText = data.remarks || "--";
+                    // Setting Core Values Mapping
+                    document.getElementById('tAppNo').innerText = data.applicationNo || "--";
+                    document.getElementById('tSession').innerText = data.session || "--";
+                    document.getElementById('tScholarNo').innerText = data.scholarNo || "--";
+                    document.getElementById('tMobile').innerText = data.mobile || "--";
+                    document.getElementById('tStudentName').innerText = String(data.studentName).toUpperCase();
+                    document.getElementById('tFatherName').innerText = String(data.fatherName).toUpperCase();
+                    document.getElementById('tMotherName').innerText = String(data.motherName).toUpperCase();
+                    document.getElementById('tDob').innerText = data.dob || "--";
+                    
+                    document.getElementById('tSamagra').innerText = data.samagraId || "--";
+                    document.getElementById('tAadhar').innerText = data.aadhaar || "--";
+                    document.getElementById('tPen').innerText = data.penNumber || "--";
+                    document.getElementById('tApaar').innerText = data.apaarId || "--";
+                    
+                    document.getElementById('tDuesFees').innerText = data.duesFees || "--";
+                    document.getElementById('tDuesLib').innerText = data.duesLibrary || "--";
+                    document.getElementById('tDuesSports').innerText = data.duesSports || "--";
+                    
+                    // TC Reason Mapping
+                    let reasonText = data.reason || "";
+                    if(data.otherReason) { reasonText += " (" + data.otherReason + ")"; }
+                    document.getElementById('tReason').innerText = reasonText || "--";
+                    
+                    document.getElementById('tRemarks').innerText = data.remarks || "कोई टिप्पणी नहीं।";
 
-                    document.getElementById('receiptBlock').style.display = "block";
-                    document.getElementById('btnPrint').style.display = "block";
+                    // Processing Live Status Text & Timeline Progress
+                    let currentStatus = data.currentStatus ? data.currentStatus.trim().toUpperCase() : "PENDING";
+                    document.getElementById('trackStatus').innerText = data.currentStatus || "PENDING";
+                    
+                    // Handling Progress Bar Steps
+                    updateTimelineProgress(currentStatus);
+
+                    // Reveal Layout Components
+                    document.getElementById('trackerBlock').style.display = "block";
+                    document.getElementById('actionButtons').style.display = "flex";
                 } else {
-                    document.getElementById('loading').innerText = "रिकॉर्ड लोड करने में विफल।";
+                    document.getElementById('loading').innerText = "❌ एप्लिकेशन स्टेटस लोड करने में विफल। कृपया विवरण जांचें।";
                 }
             })
             .catch(err => {
-                document.getElementById('loading').innerText = "सर्वर से डेटा लाने में समस्या आई।";
+                document.getElementById('loading').innerText = "⚠️ सर्वर एरर: डेटा लाने में समस्या हुई।";
             });
     };
+
+    // Function to light up timeline steps based on database value
+    function updateTimelineProgress(status) {
+        // Reset all steps first
+        document.querySelectorAll('.timeline-step').forEach(step => step.classList.remove('active'));
+        
+        // Stage wise tracking logic
+        if (status === "APPLIED" || status === "PENDING" || status === "UNDER PROCESS") {
+            document.getElementById('step-applied').classList.add('active');
+        } 
+        else if (status === "DUES CLEARED" || status === "NO DUES") {
+            document.getElementById('step-applied').classList.add('active');
+            document.getElementById('step-cleared').classList.add('active');
+        } 
+        else if (status === "APPROVED") {
+            document.getElementById('step-applied').classList.add('active');
+            document.getElementById('step-cleared').classList.add('active');
+            document.getElementById('step-approved').classList.add('active');
+        } 
+        else if (status === "ISSUED" || status === "COMPLETED" || status === "TC ISSUED") {
+            document.getElementById('step-applied').classList.add('active');
+            document.getElementById('step-cleared').classList.add('active');
+            document.getElementById('step-approved').classList.add('active');
+            document.getElementById('step-issued').classList.add('active');
+            
+            // Success State Background Accent
+            document.querySelector('.status-hero').style.backgroundColor = "#e8f5e9";
+        } else {
+            // Default Fallback state
+            document.getElementById('step-applied').classList.add('active');
+        }
+    }
 </script>
 </body>
 </html>
