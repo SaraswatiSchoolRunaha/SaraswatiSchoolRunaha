@@ -10,15 +10,17 @@
     <div class="w-full max-w-md bg-white p-5 md:p-8 shadow-md border rounded-lg border-blue-600">
         <h1 class="text-xl md:text-2xl font-bold text-blue-700 text-center mb-4">🎓 Teacher Search Status</h1>
         
-        <form id="statusForm" class="space-y-3">
-            <input type="text" id="appNoInput" required placeholder="Application Number" class="w-full px-4 py-2 border rounded">
-            <input type="tel" id="mobileInput" required placeholder="Mobile Number" class="w-full px-4 py-2 border rounded">
+<form id="statusForm" class="space-y-3">
+            <input type="text" id="appNoInput" required placeholder="Application Number" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="tel" id="mobileInput" required placeholder="Mobile Number" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            
             <div class="flex gap-2">
-                <div id="captchaBox" class="font-mono text-xl font-bold border px-4 py-2 bg-gray-100 w-full text-center tracking-widest"></div>
-                <button type="button" onclick="generateCaptcha()" class="bg-orange-500 text-white px-4 py-2 rounded">Refresh</button>
+                <div id="captchaBox" class="font-mono text-xl font-bold border px-4 py-2 bg-gray-100 w-full text-center tracking-widest select-none rounded flex items-center justify-center"></div>
+                <button type="button" onclick="generateCaptcha()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded text-sm font-medium transition-colors">Refresh</button>
             </div>
-            <input type="text" id="captchaInput" required placeholder="Enter Captcha" class="w-full px-4 py-2 border rounded">
-            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded font-bold">Submit</button>
+            
+            <input type="text" id="captchaInput" required placeholder="Enter Captcha" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2.5 rounded font-bold transition-colors shadow">Submit</button>
         </form>
     </div>
 
