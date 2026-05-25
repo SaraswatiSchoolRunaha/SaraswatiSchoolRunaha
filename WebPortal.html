@@ -5,44 +5,56 @@
     <title>स्कूल मैनेजमेंट पोर्टल</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS को व्यवस्थित रखा गया है */
-        body { display: flex; height: 100vh; background: #f4f6f9; font-family: sans-serif; margin: 0; }
-        .sidebar { width: 260px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
+        /* पुराना लेआउट बरकरार */
+        body { display: flex; height: 100vh; background: #f4f6f9; font-family: 'Inter', sans-serif; margin: 0; }
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .sidebar-brand { padding: 24px; font-weight: 700; color: #1e3a8a; border-bottom: 1px solid #f1f5f9; }
         .sidebar-menu { list-style: none; padding: 15px 0; }
-        .sidebar-menu li a { padding: 12px 24px; display: block; color: #64748b; text-decoration: none; border-left: 4px solid transparent; }
-        .sidebar-menu li.active a { background: #eff6ff; color: #2563eb; border-left-color: #2563eb; }
+        .sidebar-menu li a { padding: 12px 24px; display: block; color: #64748b; text-decoration: none; font-size: 0.95rem; }
+        .sidebar-menu li.active a { background: #eff6ff; color: #2563eb; border-left: 4px solid #2563eb; }
         .main-content { flex-grow: 1; display: flex; flex-direction: column; }
-        .top-navbar { height: 60px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .page-body { padding: 30px; }
-        .data-card { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
+        
+        /* आपका पुराना हेडर डिज़ाइन */
+        .top-navbar { height: 70px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; gap: 20px; }
+        .user-profile { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .btn-action { padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; background: #fff; }
+        
+        .page-body { padding: 40px; }
+        .data-card { background: #fff; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; text-align: left; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div style="padding: 20px; font-weight: bold; color: #1e3a8a;">स्कूल पोर्टल</div>
+        <div class="sidebar-brand">स्कूल शिक्षा पोर्टल</div>
         <ul class="sidebar-menu" id="sideMenu">
-            <li class="active"><a href="#" onclick="loadPage('profile', this)"><i class="fa-solid fa-user"></i> छात्र प्रोफाइल</a></li>
-            <li><a href="#" onclick="loadPage('attendance', this)"><i class="fa-solid fa-clipboard-check"></i> उपस्थिति</a></li>
-            <li><a href="#" onclick="loadPage('admitcard', this)"><i class="fa-solid fa-id-card"></i> एडमिट कार्ड</a></li>
-            <li><a href="#" onclick="loadPage('result', this)"><i class="fa-solid fa-square-poll-vertical"></i> रिजल्ट अपडेट</a></li>
-            <li><a href="#" onclick="loadPage('tc', this)"><i class="fa-solid fa-file-contract"></i> TC अपडेट</a></li>
-            <li><a href="#" onclick="loadPage('fees', this)"><i class="fa-solid fa-indian-rupee-sign"></i> फीस अपडेट</a></li>
-            <li><a href="#" onclick="loadPage('certificate', this)"><i class="fa-solid fa-certificate"></i> सर्टिफिकेट अपडेट</a></li>
+            <li class="active"><a href="#" onclick="loadPage('profile', this)"><i class="fa-solid fa-user-graduate"></i> 1. छात्र प्रोफाइल</a></li>
+            <li><a href="#" onclick="loadPage('attendance', this)"><i class="fa-solid fa-clipboard-check"></i> 2. उपस्थिति</a></li>
+            <li><a href="#" onclick="loadPage('admitcard', this)"><i class="fa-solid fa-id-card"></i> 3. एडमिट कार्ड</a></li>
+            <li><a href="#" onclick="loadPage('result', this)"><i class="fa-solid fa-square-poll-vertical"></i> 4. रिजल्ट अपडेट</a></li>
+            <li><a href="#" onclick="loadPage('tc', this)"><i class="fa-solid fa-file-contract"></i> 5. TC अपडेट</a></li>
+            <li><a href="#" onclick="loadPage('fees', this)"><i class="fa-solid fa-indian-rupee-sign"></i> 6. फीस अपडेट</a></li>
+            <li><a href="#" onclick="loadPage('certificate', this)"><i class="fa-solid fa-certificate"></i> 7. सर्टिफिकेट अपडेट</a></li>
         </ul>
     </aside>
 
     <main class="main-content">
+        <!-- आपका ओरिजिनल हेडर डिज़ाइन -->
         <header class="top-navbar">
-            <h3 id="pageTitle">छात्र प्रोफाइल</h3>
-            <button onclick="window.location.href='index.html'" style="padding: 5px 15px; cursor: pointer;">लॉगआउट</button>
+            <div class="user-profile">
+                <span id="navUserName">Rakesh Gupta</span>
+                <img src="https://via.placeholder.com/35" style="border-radius:50%">
+            </div>
+            <button onclick="logout()" class="btn-action" style="color: #dc2626;">लॉगआउट</button>
         </header>
+
         <div class="page-body">
+            <h2 id="pageTitle">छात्र प्रोफाइल</h2>
             <div class="data-card">
                 <table id="contentTable">
-                    <!-- डेटा यहाँ डायनामिक लोड होगा -->
+                    <!-- डेटा यहाँ आएगा -->
                 </table>
             </div>
         </div>
@@ -50,24 +62,23 @@
 
     <script>
         const dataConfig = {
-            'profile': { title: 'छात्र प्रोफाइल', html: '<tr><th>नाम</th><th>कक्षा</th><th>Action</th></tr><tr><td>Rakesh Kumar</td><td>10th</td><td><button>Edit</button></td></tr>' },
-            'attendance': { title: 'उपस्थिति रिकॉर्ड', html: '<tr><th>नाम</th><th>Status</th><th>Date</th></tr><tr><td>Rakesh Kumar</td><td>Present</td><td>25-05-2026</td></tr>' },
-            'admitcard': { title: 'एडमिट कार्ड', html: '<tr><th>नाम</th><th>Exam</th><th>Download</th></tr><tr><td>Rakesh Kumar</td><td>Final Term</td><td><button>Print</button></td></tr>' },
-            'result': { title: 'रिजल्ट अपडेट', html: '<tr><th>विषय</th><th>अंक</th><th>Status</th></tr><tr><td>गणित</td><td>95</td><td>Pass</td></tr>' },
-            'tc': { title: 'TC अपडेट', html: '<tr><th>छात्र</th><th>TC नंबर</th><th>Status</th></tr><tr><td>Rakesh Kumar</td><td>TC-2026-001</td><td>Issued</td></tr>' },
-            'fees': { title: 'फीस अपडेट', html: '<tr><th>माह</th><th>राशि</th><th>Status</th></tr><tr><td>May</td><td>₹1200</td><td>Paid</td></tr>' },
-            'certificate': { title: 'सर्टिफिकेट अपडेट', html: '<tr><th>प्रकार</th><th>नाम</th><th>Status</th></tr><tr><td>Bonafide</td><td>Rakesh</td><td>Generated</td></tr>' }
+            'profile': { title: 'छात्र प्रोफाइल', html: '<tr><th>नाम</th><th>कक्षा</th><th>विवरण</th></tr><tr><td>...</td><td>...</td><td>...</td></tr>' },
+            'attendance': { title: 'उपस्थिति (Attendance)', html: '<tr><th>नाम</th><th>स्थिति</th><th>दिनांक</th></tr><tr><td>...</td><td>...</td><td>...</td></tr>' },
+            'admitcard': { title: 'एडमिट कार्ड', html: '<tr><th>नाम</th><th>परीक्षा</th><th>डाउनलोड</th></tr><tr><td>...</td><td>...</td><td>...</td></tr>' },
+            'result': { title: 'रिजल्ट अपडेट', html: '<tr><th>छात्र</th><th>विषय</th><th>अंक</th></tr><tr><td>...</td><td>...</td><td>...</td></tr>' },
+            'tc': { title: 'TC अपडेट', html: '<tr><th>छात्र</th><th>TC नंबर</th><th>स्थिति</th></tr><tr><td>...</td><td>...</td><td>...</td></tr>' },
+            'fees': { title: 'फीस अपडेट', html: '<tr><th>छात्र</th><th>माह</th><th>राशि</th></tr><tr><td>...</td><td>...</td><td>...</td></tr>' },
+            'certificate': { title: 'सर्टिफिकेट अपडेट', html: '<tr><th>छात्र</th><th>प्रकार</th><th>स्थिति</th></tr><tr><td>...</td><td>...</td><td>...</td></tr>' }
         };
 
         function loadPage(page, element) {
-            // एक्टिव क्लास बदलें
             document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
             element.parentElement.classList.add('active');
-
-            // कंटेंट अपडेट करें
             document.getElementById('pageTitle').innerText = dataConfig[page].title;
             document.getElementById('contentTable').innerHTML = dataConfig[page].html;
         }
+
+        function logout() { if(confirm("लॉगआउट करें?")) window.location.href='index.html'; }
 
         // डिफॉल्ट लोड
         loadPage('profile', document.querySelector('.sidebar-menu li'));
