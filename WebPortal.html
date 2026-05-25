@@ -7,82 +7,92 @@
     <style>
         /* CSS डिज़ाइन */
         body { display: flex; height: 100vh; background: #f4f6f9; font-family: 'Inter', sans-serif; margin: 0; }
-        
-        /* साइडबार डिज़ाइन */
         .sidebar { width: 280px; background: #ffffff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
-        .sidebar-brand { padding: 25px; font-size: 1.2rem; font-weight: 800; color: #1e3a8a; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px; }
-        .sidebar-menu { list-style: none; padding: 10px 0; overflow-y: auto; }
-        .menu-group { padding: 15px 25px 5px; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
-        .sidebar-menu li a { padding: 12px 25px; display: flex; align-items: center; gap: 12px; color: #64748b; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-        .sidebar-menu li.active a { background: #eff6ff; color: #2563eb; border-left: 4px solid #2563eb; }
+        .sidebar-brand { padding: 25px; font-weight: 800; color: #1e3a8a; border-bottom: 1px solid #f1f5f9; }
         
-        /* हेडर डिज़ाइन */
+        /* सब-मेनू स्टाइल */
+        .sidebar-menu { list-style: none; padding: 10px 0; }
+        .module-btn { padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; color: #64748b; cursor: pointer; border-left: 4px solid transparent; }
+        .module-btn:hover { background: #f8fafc; color: #1e3a8a; }
+        .sub-menu { display: none; background: #f8fafc; padding: 5px 0; }
+        .sub-menu a { padding: 10px 25px 10px 50px; display: block; color: #64748b; text-decoration: none; font-size: 0.85rem; }
+        .sub-menu a:hover { color: #2563eb; }
+        
         .main-content { flex-grow: 1; display: flex; flex-direction: column; }
         .top-navbar { height: 70px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; padding: 5px 15px; border: 1px solid #e2e8f0; border-radius: 50px; background: #f8fafc; }
-        
-        /* कंटेंट एरिया */
-        .page-body { padding: 30px; }
-        .data-card { background: #fff; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 14px; border-bottom: 1px solid #f1f5f9; text-align: left; }
+        .data-card { background: #fff; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 30px; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-brand"><i class="fa-solid fa-school"></i> SchoolPortal</div>
-        <ul class="sidebar-menu" id="sideMenu">
-            <!-- मॉड्यूल्स और सब-ऑप्शंस -->
-            <div class="menu-group">प्रबंधन मॉड्यूल्स</div>
-            <li><a href="#" onclick="loadPage('profile', this)"><i class="fa-solid fa-user"></i> 1. छात्र प्रोफाइल</a></li>
-            <li><a href="#" onclick="loadPage('attendance', this)"><i class="fa-solid fa-clipboard-check"></i> 2. उपस्थिति</a></li>
-            <li><a href="#" onclick="loadPage('admitcard', this)"><i class="fa-solid fa-id-card"></i> 3. एडमिट कार्ड</a></li>
-            <li><a href="#" onclick="loadPage('result', this)"><i class="fa-solid fa-square-poll-vertical"></i> 4. रिजल्ट अपडेट</a></li>
-            <li><a href="#" onclick="loadPage('tc', this)"><i class="fa-solid fa-file-contract"></i> 5. TC अपडेट</a></li>
-            <li><a href="#" onclick="loadPage('fees', this)"><i class="fa-solid fa-indian-rupee-sign"></i> 6. फीस अपडेट</a></li>
-            <li><a href="#" onclick="loadPage('certificate', this)"><i class="fa-solid fa-certificate"></i> 7. सर्टिफिकेट</a></li>
+        <div class="sidebar-brand">SchoolPortal</div>
+        <ul class="sidebar-menu">
+            
+            <!-- छात्र प्रोफाइल मॉड्यूल -->
+            <li>
+                <div class="module-btn" onclick="toggleSubMenu(this)">
+                    <span><i class="fa-solid fa-user"></i> छात्र प्रोफाइल</span>
+                    <i class="fa-solid fa-chevron-down fa-xs"></i>
+                </div>
+                <div class="sub-menu">
+                    <a href="#" onclick="showContent('छात्र सूची')">सभी छात्र देखें</a>
+                    <a href="#" onclick="showContent('नया प्रवेश')">नया छात्र जोड़ें</a>
+                    <a href="#" onclick="showContent('प्रोफाइल एडिट')">डेटा एडिट करें</a>
+                </div>
+            </li>
+
+            <!-- उपस्थिति मॉड्यूल -->
+            <li>
+                <div class="module-btn" onclick="toggleSubMenu(this)">
+                    <span><i class="fa-solid fa-clipboard-check"></i> उपस्थिति</span>
+                    <i class="fa-solid fa-chevron-down fa-xs"></i>
+                </div>
+                <div class="sub-menu">
+                    <a href="#" onclick="showContent('दैनिक उपस्थिति')">दैनिक उपस्थिति</a>
+                    <a href="#" onclick="showContent('महीने की रिपोर्ट')">महीने की रिपोर्ट</a>
+                </div>
+            </li>
+
+            <!-- फीस मॉड्यूल -->
+            <li>
+                <div class="module-btn" onclick="toggleSubMenu(this)">
+                    <span><i class="fa-solid fa-indian-rupee-sign"></i> फीस अपडेट</span>
+                    <i class="fa-solid fa-chevron-down fa-xs"></i>
+                </div>
+                <div class="sub-menu">
+                    <a href="#" onclick="showContent('फीस भुगतान')">फीस भुगतान रसीद</a>
+                    <a href="#" onclick="showContent('बकाया लिस्ट')">बकाया फीस लिस्ट</a>
+                </div>
+            </li>
         </ul>
     </aside>
 
     <main class="main-content">
         <header class="top-navbar">
-            <div id="pageTitle" style="font-weight: 600; font-size: 1.1rem;">छात्र प्रोफाइल</div>
-            <div class="user-profile">
-                <span>Rakesh Gupta</span>
-                <button onclick="logout()" style="border:none; background:none; color:red; cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i></button>
-            </div>
+            <h3 id="pageTitle">पोर्टल डैशबोर्ड</h3>
+            <div class="user-profile">Rakesh Gupta</div>
         </header>
 
-        <div class="page-body">
-            <div class="data-card">
-                <table id="contentTable">
-                    <!-- यहाँ डेटा डायनामिक आएगा -->
-                </table>
-            </div>
+        <div class="data-card">
+            <h2 id="cardTitle">मेनू चुनें</h2>
+            <div id="contentArea">यहाँ आपका कंटेंट दिखाई देगा।</div>
         </div>
     </main>
 
     <script>
-        const dataConfig = {
-            'profile': { title: 'छात्र प्रोफाइल (Sub-Options: View, Edit, Delete)', html: '<tr><th>नाम</th><th>कक्षा</th><th>Action</th></tr><tr><td>...</td><td>...</td><td>Edit / View</td></tr>' },
-            'attendance': { title: 'उपस्थिति (Sub-Options: Monthly, Daily, Report)', html: '<tr><th>दिनांक</th><th>कुल उपस्थिति</th><th>Status</th></tr><tr><td>25-05-2026</td><td>44/45</td><td>Complete</td></tr>' },
-            'admitcard': { title: 'एडमिट कार्ड (Sub-Options: Generate, Print, Download)', html: '<tr><th>Exam</th><th>Status</th><th>Action</th></tr><tr><td>Final</td><td>Ready</td><td>Print</td></tr>' },
-            'result': { title: 'रिजल्ट अपडेट (Sub-Options: Entry, Correction, Publishing)', html: '<tr><th>विषय</th><th>अंक</th><th>Action</th></tr><tr><td>गणित</td><td>95</td><td>Update</td></tr>' },
-            'tc': { title: 'TC अपडेट (Sub-Options: Issue, Print, Record)', html: '<tr><th>TC No</th><th>Status</th><th>Action</th></tr><tr><td>TC-001</td><td>Issued</td><td>Print</td></tr>' },
-            'fees': { title: 'फीस अपडेट (Sub-Options: Monthly, Due, Receipts)', html: '<tr><th>Month</th><th>Amount</th><th>Status</th></tr><tr><td>May</td><td>₹1200</td><td>Paid</td></tr>' },
-            'certificate': { title: 'सर्टिफिकेट (Sub-Options: Bonafide, Character, Transfer)', html: '<tr><th>Type</th><th>Status</th><th>Action</th></tr><tr><td>Bonafide</td><td>Generated</td><td>Print</td></tr>' }
-        };
-
-        function loadPage(page, element) {
-            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
-            element.parentElement.classList.add('active');
-            document.getElementById('pageTitle').innerText = dataConfig[page].title;
-            document.getElementById('contentTable').innerHTML = dataConfig[page].html;
+        // सब-मेनू खोलने/बंद करने का फंक्शन
+        function toggleSubMenu(element) {
+            const subMenu = element.nextElementSibling;
+            subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block";
         }
 
-        function logout() { if(confirm("लॉगआउट करें?")) window.location.href='index.html'; }
-        loadPage('profile', document.querySelector('.sidebar-menu li'));
+        // कंटेंट दिखाने का फंक्शन
+        function showContent(title) {
+            document.getElementById('pageTitle').innerText = title;
+            document.getElementById('cardTitle').innerText = title;
+            document.getElementById('contentArea').innerHTML = `<p>${title} से संबंधित डेटा यहाँ लोड होगा...</p>`;
+        }
     </script>
 </body>
 </html>
