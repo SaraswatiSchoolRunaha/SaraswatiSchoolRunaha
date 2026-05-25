@@ -114,7 +114,7 @@
                     }
 
                     // दूसरे पेज (view.html) पर भेजने के लिए लिंक सेट करना
-                    document.getElementById('lnkViewMore').href = "view.html?appNo=" + encodeURIComponent(data.applicationNo);
+                    document.getElementById('lnkViewMore').href = "StatusView.html?appNo=" + encodeURIComponent(data.applicationNo);
                     statusCard.style.display = "block";
                 } else {
                     showError("कोई रिकॉर्ड नहीं मिला! कृपया सही जानकारी जांचें।");
