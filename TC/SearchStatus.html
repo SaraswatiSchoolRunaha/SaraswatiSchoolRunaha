@@ -126,7 +126,7 @@
                     }
 
                     // 🔒 सुरक्षा लॉक: अगले ट्रैकर पेज (view.html) पर हमेशा UNIQUE Application Number ही जाएगा
-                    document.getElementById('lnkViewMore').href = "view.html?appNo=" + encodeURIComponent(data.applicationNo);
+                    document.getElementById('lnkViewMore').href = "StatusView.html?appNo=" + encodeURIComponent(data.applicationNo);
                     statusCard.style.display = "block";
                 } else {
                     warningMsg.style.display = "none";
