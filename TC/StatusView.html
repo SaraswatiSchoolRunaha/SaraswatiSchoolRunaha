@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student TC Details Receipt</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f7f6; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .receipt-container { background: #fff; width: 100%; max-width: 800px; padding: 30px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #ddd; position: relative; }
+        .header { text-align: center; border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { font-size: 22px; color: #0056b3; }
+        .header p { font-size: 13px; color: #666; margin-top: 5px; }
+        
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .info-table td { padding: 10px; border: 1px solid #e2e8f0; font-size: 14px; color: #333; width: 50%; }
+        .info-table td .title { font-weight: bold; color: #0056b3; display: inline-block; width: 140px; }
+        
+        .no-print-btn { background-color: #007bff; color: white; padding: 12px 30px; font-size: 14px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px; }
+        .no-print-btn:hover { background-color: #0056b3; }
+        .loading { font-size: 16px; color: #666; font-weight: bold; margin-top: 50px; }
 
+        @media print {
+            body { background: #fff; padding: 0; }
+            .receipt-container { border: none; box-shadow: none; width: 100%; padding: 0; }
+            .no-print-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="no-print-btn" id="btnPrint" onclick="window.print()" style="display:none;">🖨️ Print Receipt / प्रिंट करें</button>
+
+<div id="loading" class="loading">⏳ लोड हो रहा है... कृपया प्रतीक्षा करें...</div>
+
+<div class="receipt-container" id="receiptBlock" style="display:none;">
+    <div class="header">
+        <h1>SARASWATI BAL VIDHYA MANDIR HIGH SCHOOL</h1>
+        <p>Runaha, Madhya Pradesh | TC Application Acknowledgement Receipt</p>
+    </div>
+    
+    <table class="info-table">
+        <tr>
+            <td><span class="title">Application No:</span> <span id="rAppNo">--</span></td>
+            <td><span class="title">Session:</span> <span id="rSession">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">Scholar No:</span> <span id="rScholarNo">--</span></td>
+            <td><span class="title">Mobile No:</span> <span id="rMobile">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">Student Name:</span> <span id="rStudentName" style="font-weight:bold;">--</span></td>
+            <td><span class="title">Father's Name:</span> <span id="rFatherName">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">Mother's Name:</span> <span id="rMotherName">--</span></td>
+            <td><span class="title">Date of Birth:</span> <span id="rDob">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">Gender:</span> <span id="rGender">--</span></td>
+            <td><span class="title">Category:</span> <span id="rCategory">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">Samagra ID:</span> <span id="rSamagra">--</span></td>
+            <td><span class="title">Aadhar No:</span> <span id="rAadhar">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">PEN Number:</span> <span id="rPen">--</span></td>
+            <td><span class="title">APAAR ID:</span> <span id="rApaar">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">TC Reason:</span> <span id="rReason">--</span></td>
+            <td><span class="title">Other Reason:</span> <span id="rOtherReason">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">Dues Fees:</span> <span id="rDuesFees" style="font-weight:bold;">--</span></td>
+            <td><span class="title">Dues Library:</span> <span id="rDuesLib" style="font-weight:bold;">--</span></td>
+        </tr>
+        <tr>
+            <td><span class="title">Dues Sports:</span> <span id="rDuesSports" style="font-weight:bold;">--</span></td>
+            <td><span class="title">Current Status:</span> <span id="rStatus" style="font-weight:bold; color:green;">--</span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="title">Remarks:</span> <span id="rRemarks">--</span></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
+
+    window.onload = function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var appNo = urlParams.get('appNo');
+
+        if (!appNo) {
+            document.getElementById('loading').innerText = "त्रुटि: कोई एप्लीकेशन नंबर नहीं मिला!";
+            return;
+        }
+
+        // पहले वाले पेज से आए ऐप नंबर को बैकएंड में भेजना
+        fetch(webAppUrl + "?searchQuery=" + encodeURIComponent(appNo))
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "SUCCESS") {
+                    document.getElementById('loading').style.display = "none";
+                    
+                    // खानों में डेटा सेट करना
+                    document.getElementById('rAppNo').innerText = data.applicationNo || "--";
+                    document.getElementById('rSession').innerText = data.session || "--";
+                    document.getElementById('rScholarNo').innerText = data.scholarNo || "--";
+                    document.getElementById('rMobile').innerText = data.mobile || "--";
+                    document.getElementById('rStudentName').innerText = String(data.studentName).toUpperCase();
+                    document.getElementById('rFatherName').innerText = String(data.fatherName).toUpperCase();
+                    document.getElementById('rMotherName').innerText = String(data.motherName).toUpperCase();
+                    document.getElementById('rDob').innerText = data.dob || "--";
+                    document.getElementById('rGender').innerText = data.gender || "--";
+                    document.getElementById('rCategory').innerText = data.category || "--";
+                    document.getElementById('rSamagra').innerText = data.samagraId || "--";
+                    document.getElementById('rAadhar').innerText = data.aadhaar || "--";
+                    document.getElementById('rPen').innerText = data.penNumber || "--";
+                    document.getElementById('rApaar').innerText = data.apaarId || "--";
+                    document.getElementById('rReason').innerText = data.reason || "--";
+                    document.getElementById('rOtherReason').innerText = data.otherReason || "--";
+                    document.getElementById('rDuesFees').innerText = data.duesFees || "--";
+                    document.getElementById('rDuesLib').innerText = data.duesLibrary || "--";
+                    document.getElementById('rDuesSports').innerText = data.duesSports || "--";
+                    document.getElementById('rStatus').innerText = data.currentStatus || "--";
+                    document.getElementById('rRemarks').innerText = data.remarks || "--";
+
+                    document.getElementById('receiptBlock').style.display = "block";
+                    document.getElementById('btnPrint').style.display = "block";
+                } else {
+                    document.getElementById('loading').innerText = "रिकॉर्ड लोड करने में विफल।";
+                }
+            })
+            .catch(err => {
+                document.getElementById('loading').innerText = "सर्वर से डेटा लाने में समस्या आई।";
+            });
+    };
+</script>
+</body>
+</html>
