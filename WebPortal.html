@@ -81,7 +81,7 @@
             background-color: #eff6ff;
             color: #2563eb;
             border-left: 4px solid #2563eb;
-            padding-left: 20px; /* Adjust padding for border */
+            padding-left: 20px;
         }
 
         .sidebar-footer {
@@ -260,7 +260,6 @@
             background-color: #f8fafc;
         }
 
-        /* Highlight Summary Row */
         .table-summary-row {
             background-color: #f8fafc;
             font-weight: 600;
@@ -286,31 +285,31 @@
                     <a href="#"><i class="fa-solid fa-chart-pie"></i> डैशबोर्ड (Dashboard)</a>
                 </li>
                 
-                <div class="menu-label">प्रबंधन (Management)</div>
-                <li>
+                <div id="mgmtLabel" class="menu-label">प्रबंधन (Management)</div>
+                <li id="studentProfileMenu">
                     <a href="#"><i class="fa-solid fa-user-graduate"></i> छात्र प्रोफाइल</a>
                 </li>
-                <li>
+                <li id="teacherDbMenu">
                     <a href="#"><i class="fa-solid fa-users"></i> शिक्षक डेटाबेस</a>
                 </li>
-                <li>
+                <li id="attendanceMenu">
                     <a href="#"><i class="fa-solid fa-clipboard-list"></i> उपस्थिति रिकॉर्ड</a>
                 </li>
                 
-                <div class="menu-label">शैक्षणिक व फीस</div>
-                <li>
+                <div id="academicLabel" class="menu-label">शैक्षणिक व फीस</div>
+                <li id="feesMenu">
                     <a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> फीस संकलन</a>
                 </li>
-                <li>
+                <li id="resultMenu">
                     <a href="#"><i class="fa-solid fa-square-poll-vertical"></i> परीक्षा परिणाम</a>
                 </li>
-                <li class="active">
+                <li id="reportsMenu" class="active">
                     <a href="#"><i class="fa-solid fa-file-lines"></i> स्टेटमेंट्स / रिपोर्ट</a>
                 </li>
             </ul>
         </div>
 
-        <div class="sidebar-footer">
+        <div class="sidebar-footer" id="adminSection">
             <a href="#"><i class="fa-solid fa-gear"></i> एडमिनिस्ट्रेशन</a>
         </div>
     </aside>
@@ -323,7 +322,7 @@
                 <i class="fa-solid fa-bell" title="नोटिफिकेशन"></i>
             </div>
             <div class="user-profile">
-                <span>Rakesh Gupta</span>
+                <span id="navUserName">Rakesh Gupta</span>
                 <img src="https://via.placeholder.com/35" alt="User Avatar">
                 <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #64748b;"></i>
             </div>
@@ -393,6 +392,45 @@
 
         </div>
     </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. URL पैरामीटर से रोल (?role=...) को निकालना
+            const urlParams = new URLSearchParams(window.location.search);
+            const role = urlParams.get('role');
+
+            // तत्वों को जावास्क्रिप्ट वेरिएबल में ले लें
+            const userNameText = document.getElementById("navUserName");
+            const teacherMenu = document.getElementById("teacherDbMenu");
+            const feesMenu = document.getElementById("feesMenu");
+            const adminSection = document.getElementById("adminSection");
+
+            // 2. बिना किसी एक्स्ट्रा पासवर्ड कंडीशन के सीधे रोल के मुताबिक परमिशन सेट करना
+            if (role === "admin") {
+                userNameText.innerText = "मास्टर एडमिन (Admin)";
+                // एडमिन को सब कुछ दिखेगा, कुछ छुपाने की जरूरत नहीं है
+            } 
+            else if (role === "teacher") {
+                userNameText.innerText = "सम्मानित शिक्षक (Teacher)";
+                
+                // शिक्षक को 'शिक्षक डेटाबेस' और नीचे का 'एडमिनिस्ट्रेशन' गियर बटन नहीं दिखेगा
+                if(teacherMenu) teacherMenu.style.display = "none";
+                if(adminSection) adminSection.style.display = "none";
+            } 
+            else if (role === "principal") {
+                userNameText.innerText = "प्रिंसिपल डेस्क (Principal)";
+                
+                // प्रिंसिपल को फीस कलेक्शन डायरेक्ट एडिट करने की अनुमति नहीं (छुपा दिया)
+                if(feesMenu) feesMenu.style.display = "none";
+                if(adminSection) adminSection.style.display = "none";
+            } 
+            else {
+                // सुरक्षा सुरक्षा: यदि कोई सीधे बिना लॉगिन के URL खोलता है तो उसे वापस लॉगिन पर खदेड़ दें
+                alert("अनधिकृत प्रवेश! कृपया पहले लॉगिन करें।");
+                window.location.href = "index.html";
+            }
+        });
+    </script>
 
 </body>
 </html>
