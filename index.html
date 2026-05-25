@@ -1053,7 +1053,7 @@ function closeLogin() {
     if(popup) popup.style.display = 'none'; 
 }
 
-// 4. Login Functionality (The Fix)
+// 4. Login Functionality (The Fix) - सीधे WebPortal.html पर भेजने के लिए
 function handleLogin() {
     const roleSelect = document.getElementById('userRole');
     const userField = document.getElementById('username');
@@ -1071,18 +1071,16 @@ function handleLogin() {
     // Verification Logic
     if (credentials[role] && enteredId === credentials[role].id && enteredPass === credentials[role].pass) {
         alert("Saraswati School Portal: Login Successful as " + role.toUpperCase());
-        applyPermissions(role);
-        closeLogin();
         
-        // Clear fields for security
-        userField.value = "";
-        passField.value = "";
+        // 🌟 मुख्य बदलाव: अब यह यूजर को रोल के साथ सीधे WebPortal.html पेज पर ले जाएगा
+        window.location.href = "WebPortal.html?role=" + role;
+        
     } else {
         alert("गलत आईडी या पासवर्ड! कृपया दोबारा जाँचें।");
     }
 }
-
-// 5. Menu Visibility Logic (Naya Updated Version)
+ 
+ // 5. Menu Visibility Logic (Naya Updated Version)
 function applyPermissions(role) {
     
     // 👇 यहाँ पर डालना है यह कोड (इसके ठीक नीचे) 👇
