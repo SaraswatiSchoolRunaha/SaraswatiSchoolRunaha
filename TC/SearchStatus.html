@@ -19,6 +19,7 @@
         .btn-search { background-color: #0056b3; color: white; padding: 12px; font-size: 15px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; }
         .btn-search:hover { background-color: #004085; }
         .error-msg { color: red; font-size: 13px; text-align: center; margin-top: 10px; display: none; font-weight: 500; }
+        .warning-msg { color: #b71c1c; background-color: #ffebee; padding: 10px; border-radius: 4px; font-size: 12px; text-align: center; margin-top: 10px; display: none; font-weight: 500; border: 1px solid #ffcdd2; }
         .loading { text-align: center; font-size: 14px; color: #666; display: none; margin: 15px; }
         
         /* स्टेटस कार्ड डिज़ाइन */
@@ -52,6 +53,7 @@
     </div>
     <button class="btn-search" onclick="searchData()">खोजें / SEARCH</button>
     <div class="error-msg" id="errorMsg"></div>
+    <div class="warning-msg" id="warningMsg">⚠️ ध्यान दें: यदि इस मोबाइल नंबर पर एक से अधिक छात्र पंजीकृत हैं, तो कृपया सही जानकारी के लिए सीधे "Application Number" का उपयोग करके खोजें।</div>
     <div class="loading" id="loadingMsg">⏳ कृपया प्रतीक्षा करें... डेटा खोजा जा रहा है।</div>
 </div>
 
@@ -65,7 +67,6 @@
 
 <script>
     var currentCaptcha = "";
-    // आपका असली वेब ऐप URL
     var webAppUrl = "https://script.google.com/macros/s/AKfycbx9FMkptJA9pIChCwwHwD6DAp2QknNvy7lM4UmxJUWHK-Wn2ZN-66HYgoZYjFjnZRPc8g/exec";
 
     function generateCaptcha() {
@@ -83,10 +84,12 @@
         var searchInput = document.getElementById('txtSearch').value.trim();
         var captchaInput = document.getElementById('txtCaptchaInput').value.trim().toUpperCase();
         var errorMsg = document.getElementById('errorMsg');
+        var warningMsg = document.getElementById('warningMsg');
         var loadingMsg = document.getElementById('loadingMsg');
         var statusCard = document.getElementById('statusCard');
 
         errorMsg.style.display = "none";
+        warningMsg.style.display = "none";
         statusCard.style.display = "none";
 
         if (!searchInput) { showError("कृपया ऐप नंबर या मोबाइल नंबर दर्ज करें।"); return; }
@@ -94,11 +97,18 @@
 
         loadingMsg.style.display = "block";
 
+        // अगर इनपुट सिर्फ नंबर है (यानी मोबाइल नंबर है), तो चेतावनी मैसेज एक्टिव करें
+        if (/^\d+$/.test(searchInput)) {
+            warningMsg.style.display = "block";
+        }
+
         fetch(webAppUrl + "?searchQuery=" + encodeURIComponent(searchInput))
             .then(res => res.json())
             .then(data => {
                 loadingMsg.style.display = "none";
                 if (data.status === "SUCCESS") {
+                    // यहाँ सुरक्षा जांच: भले ही खोज मोबाइल से हुई हो, लेकिन 'view.html' को 
+                    // हमेशा 'data.applicationNo' ही ट्रांसफर होगा, जिससे रसीद पेज पर हमेशा सही छात्र खुलेगा।
                     document.getElementById('lblAppNo').innerText = data.applicationNo;
                     document.getElementById('lblName').innerText = data.studentName.toUpperCase();
                     document.getElementById('lblFather').innerText = data.fatherName.toUpperCase();
@@ -113,16 +123,18 @@
                         statusCard.style.borderLeft = "5px solid #ffc107";
                     }
 
-                    // दूसरे पेज (view.html) पर भेजने के लिए लिंक सेट करना
+                    // 🔒 सुरक्षा लॉक: अगले ट्रैकर पेज (view.html) पर हमेशा UNIQUE Application Number ही जाएगा
                     document.getElementById('lnkViewMore').href = "view.html?appNo=" + encodeURIComponent(data.applicationNo);
                     statusCard.style.display = "block";
                 } else {
+                    warningMsg.style.display = "none";
                     showError("कोई रिकॉर्ड नहीं मिला! कृपया सही जानकारी जांचें।");
                 }
                 generateCaptcha();
             })
             .catch(err => {
                 loadingMsg.style.display = "none";
+                warningMsg.style.display = "none";
                 showError("सर्वर से कनेक्शन फेल हुआ।");
                 generateCaptcha();
             });
