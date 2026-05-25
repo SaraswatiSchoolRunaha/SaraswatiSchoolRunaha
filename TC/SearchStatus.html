@@ -7,7 +7,6 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* मोबाइल पर ऊपर की फालतू स्पेसिंग को कम किया */
         body { background-color: #f4f7f6; padding: 15px 10px; display: flex; flex-direction: column; align-items: center; }
         
         @media (min-width: 768px) {
@@ -56,12 +55,11 @@
         .error-msg { color: red; font-size: 13px; text-align: center; margin-top: 10px; display: none; font-weight: 500; }
         .loading { text-align: center; font-size: 14px; color: #666; display: none; margin: 15px; }
 
-        /* 📱 मोबाइल रिस्पॉन्सिव कार्ड लेआउट (मैजिक सीएसएस) */
         @media (max-width: 768px) {
             .status-table, .status-table thead, .status-table tbody, .status-table th, .status-table td, .status-table tr { 
                 display: block; 
             }
-            .status-table thead { display: none; } /* मोबाइल पर हेडर छुपाएं */
+            .status-table thead { display: none; } 
             .status-table tr { 
                 margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background: #fff;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.03);
@@ -71,7 +69,6 @@
                 white-space: normal; word-break: break-word; min-height: 35px; display: flex; align-items: center; justify-content: flex-end;
             }
             .status-table td:last-child { border-bottom: none; justify-content: center; padding-left: 0; pt: 10px; }
-            /* data-label के जरिए मोबाइल पर नाम दिखाना */
             .status-table td::before { 
                 content: attr(data-label); position: absolute; left: 10px; width: 45%; 
                 font-weight: bold; text-align: left; color: #0056b3; font-size: 12px;
@@ -134,7 +131,7 @@
             </tr>
         </thead>
         <tbody id="tableBody">
-            </tbody>
+        </tbody>
     </table>
 </div>
 
@@ -197,45 +194,41 @@
             .then(data => {
                 loadingMsg.style.display = "none";
 
-                if (data.status === "SUCCESS" && data.records && data.records.length > 0) {
+                // फिक्स: ऐप्स स्क्रिप्ट से डायरेक्ट आने वाले सिंगल ऑब्जेक्ट 'data' को सही से पढ़ना
+                if (data.status === "SUCCESS") {
                     
-                    data.records.forEach(row => {
-                        var tr = document.createElement('tr');
-                        
-                        var receiptLink = "receipt.html?appNo=" + encodeURIComponent(row.appNo) + 
-                                           "&mobile=" + encodeURIComponent(row.mobile);
+                    var tr = document.createElement('tr');
+                    
+                    var receiptLink = "receipt.html?appNo=" + encodeURIComponent(data.applicationNo || "") + 
+                                       "&mobile=" + encodeURIComponent(data.mobile || "");
 
-                        var maskAadhaar = (row.aadharNo || row.aadhar) ? "[Aadhaar Redacted]" : "--";
+                    var maskAadhaar = (data.aadhaar) ? "[Aadhaar Redacted]" : "--";
 
-                        // ध्यान दें: यहाँ जावास्क्रिप्ट का सिंटैक्स एरर बैकटिक (`) बंद करके फिक्स कर दिया गया है
-                        // साथ ही प्रत्येक td में data-label जोड़ा गया है ताकि मोबाइल पर सुंदर लेबल दिखे
-                        tr.innerHTML = `
-                            <td data-label="App No.">${clean(row.appNo)}</td>
-                            <td data-label="Session">${clean(row.session)}</td>
-                            <td data-label="Scholar No.">${clean(row.scholarNo || row.scholar)}</td>
-                            <td data-label="Mobile">${clean(row.mobile)}</td>
-                            <td data-label="Student Name" style="font-weight:bold; color:#0056b3;">${clean(row.studentName)}</td>
-                            <td data-label="Father's Name">${clean(row.fatherName)}</td>
-                            <td data-label="Mother's Name">${clean(row.motherName)}</td>
-                            <td data-label="DOB">${clean(row.dob)}</td>
-                            <td data-label="Gender">${clean(row.gender)}</td>
-                            <td data-label="Category">${clean(row.category)}</td>
-                            <td data-label="Samgra Id">${clean(row.samgraId || row.sssmId)}</td>
-                            <td data-label="Pen Number">${clean(row.penNumber || row.penNo)}</td>
-                            <td data-label="Apaar Id">${clean(row.apaarId)}</td>
-                            <td data-label="Aadhar No">${maskAadhaar}</td>
-                            <td data-label="Reason">${clean(row.reason)}</td>
-                            <td data-label="Other Reason">${clean(row.otherReason)}</td>
-                            <td data-label="Dues Fees" style="color:red;">${clean(row.duesFees)}</td>
-                            <td data-label="Dues Library" style="color:red;">${clean(row.duesLibrary)}</td>
-                            <td data-label="Dues Sports" style="color:red;">${clean(row.duesSports)}</td>
-                            <td data-label="Status" style="font-weight:bold;">${clean(row.status)}</td>
-                            <td data-label="Reason / Remarks">${clean(row.remarks || row.reasonRemarks)}</td>
-                            <td><a href="${receiptLink}" target="_blank" class="btn-action">Print Receipt</a></td>
-                        `;
-                        tableBody.appendChild(tr);
-                    });
-
+                    tr.innerHTML = `
+                        <td data-label="App No.">${clean(data.applicationNo)}</td>
+                        <td data-label="Session">${clean(data.session)}</td>
+                        <td data-label="Scholar No.">${clean(data.scholarNo)}</td>
+                        <td data-label="Mobile">${clean(data.mobile)}</td>
+                        <td data-label="Student Name" style="font-weight:bold; color:#0056b3;">${clean(data.studentName)}</td>
+                        <td data-label="Father's Name">${clean(data.fatherName)}</td>
+                        <td data-label="Mother's Name">${clean(data.motherName)}</td>
+                        <td data-label="DOB">${clean(data.dob)}</td>
+                        <td data-label="Gender">${clean(data.gender)}</td>
+                        <td data-label="Category">${clean(data.category)}</td>
+                        <td data-label="Samgra Id">${clean(data.samagraId)}</td>
+                        <td data-label="Pen Number">${clean(data.penNumber)}</td>
+                        <td data-label="Apaar Id">${clean(data.apaarId)}</td>
+                        <td data-label="Aadhar No">${maskAadhaar}</td>
+                        <td data-label="Reason">${clean(data.reason)}</td>
+                        <td data-label="Other Reason">${clean(data.otherReason)}</td>
+                        <td data-label="Dues Fees" style="color:red;">${clean(data.duesFees)}</td>
+                        <td data-label="Dues Library" style="color:red;">${clean(data.duesLibrary)}</td>
+                        <td data-label="Dues Sports" style="color:red;">${clean(data.duesSports)}</td>
+                        <td data-label="Status" style="font-weight:bold;">${clean(data.currentStatus)}</td>
+                        <td data-label="Reason / Remarks">${clean(data.remarks)}</td>
+                        <td><a href="${receiptLink}" target="_blank" class="btn-action">Print Receipt</a></td>
+                    `;
+                    tableBody.appendChild(tr);
                     resultContainer.style.display = "block";
 
                 } else {
