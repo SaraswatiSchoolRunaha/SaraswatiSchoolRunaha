@@ -99,7 +99,7 @@
         <button class="btn-search" onclick="searchData()">SEARCH / खोजें</button>
     </div>
     <div class="error-msg" id="errorMsg"></div>
-    <div class="loading" id="loadingMsg">⏳ Searching data from Google Sheet... Please wait.</div>
+    <div class="loading" id="loadingMsg">⏳ Searching data Please wait.</div>
 </div>
 
 <div class="result-container" id="resultContainer">
@@ -199,7 +199,7 @@
                     
                     var tr = document.createElement('tr');
                     
-                    var receiptLink = "receipt.html?appNo=" + encodeURIComponent(data.applicationNo || "") + 
+                    var receiptLink = "TcSearchRecipt.html?appNo=" + encodeURIComponent(data.applicationNo || "") + 
                                        "&mobile=" + encodeURIComponent(data.mobile || "");
 
                     var maskAadhaar = (data.aadhaar) ? "[Aadhaar Redacted]" : "--";
