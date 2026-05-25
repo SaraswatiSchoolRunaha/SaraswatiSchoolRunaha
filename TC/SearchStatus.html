@@ -6,14 +6,21 @@
     <title>TC Status Check | टीसी स्थिति जांच</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f7f6; padding: 30px 15px; display: flex; flex-direction: column; align-items: center; }
         
+        /* मोबाइल पर ऊपर की फालतू स्पेसिंग को कम किया */
+        body { background-color: #f4f7f6; padding: 15px 10px; display: flex; flex-direction: column; align-items: center; }
+        
+        @media (min-width: 768px) {
+            body { padding: 30px 15px; }
+        }
+
         .search-container {
             background-color: #fff; width: 100%; max-width: 900px; padding: 25px;
             border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px;
             border-top: 5px solid #0056b3;
         }
-        h2 { font-size: 20px; color: #333; margin-bottom: 20px; text-align: center; }
+        h2 { font-size: 18px; color: #333; margin-bottom: 20px; text-align: center; }
+        @media (min-width: 768px) { h2 { font-size: 20px; } }
         
         .form-row { display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 15px; }
         .form-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px; }
@@ -21,7 +28,6 @@
         input { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
         input:focus { border-color: #0056b3; }
         
-        /* 🔒 Captcha Styles */
         .captcha-wrapper { display: flex; align-items: center; gap: 10px; }
         .captcha-box { background: #e0e0e0; padding: 8px 15px; font-size: 18px; font-weight: bold; 
                       letter-spacing: 4px; border-radius: 4px; color: #333; font-style: italic; 
@@ -29,26 +35,48 @@
         .btn-refresh { background: none; border: none; font-size: 18px; cursor: pointer; color: #666; }
 
         .btn-search { background-color: #0056b3; color: white; padding: 11px 25px; font-size: 14px; 
-                     font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+                      font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; width: 100%; }
+        @media (min-width: 768px) { .btn-search { width: auto; } }
         .btn-search:hover { background-color: #004085; }
 
-        /* 📊 डेटा टेबल डिजाइन */
         .result-container { background-color: #fff; width: 100%; max-width: 1200px; border-radius: 6px; 
                            box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto; display: none; 
-                           border-top: 4px solid #0056b3; }
+                           border-top: 4px solid #0056b3; padding: 10px; }
+        @media (min-width: 768px) { .result-container { padding: 0; } }
         
-        .status-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1500px; }
+        .status-table { width: 100%; border-collapse: collapse; text-align: left; }
         .status-table th { background-color: #f8fafc; color: #333; font-size: 12px; font-weight: bold; 
                           padding: 15px 10px; border-bottom: 2px solid #0056b3; text-transform: uppercase; white-space: nowrap; }
         .status-table td { padding: 12px 10px; font-size: 13px; color: #444; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; white-space: nowrap; }
-        .status-table tr:hover { background-color: #f8fafc; }
         
-        .btn-action { background-color: #28a745; color: white; padding: 6px 12px; font-size: 12px; 
-                      font-weight: bold; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-action { background-color: #28a745; color: white; padding: 8px 16px; font-size: 12px; 
+                      font-weight: bold; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
         .btn-action:hover { background-color: #218838; }
         
         .error-msg { color: red; font-size: 13px; text-align: center; margin-top: 10px; display: none; font-weight: 500; }
         .loading { text-align: center; font-size: 14px; color: #666; display: none; margin: 15px; }
+
+        /* 📱 मोबाइल रिस्पॉन्सिव कार्ड लेआउट (मैजिक सीएसएस) */
+        @media (max-width: 768px) {
+            .status-table, .status-table thead, .status-table tbody, .status-table th, .status-table td, .status-table tr { 
+                display: block; 
+            }
+            .status-table thead { display: none; } /* मोबाइल पर हेडर छुपाएं */
+            .status-table tr { 
+                margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background: #fff;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            }
+            .status-table td { 
+                text-align: right; padding-left: 50%; position: relative; border-bottom: 1px dashed #eee; 
+                white-space: normal; word-break: break-word; min-height: 35px; display: flex; align-items: center; justify-content: flex-end;
+            }
+            .status-table td:last-child { border-bottom: none; justify-content: center; padding-left: 0; pt: 10px; }
+            /* data-label के जरिए मोबाइल पर नाम दिखाना */
+            .status-table td::before { 
+                content: attr(data-label); position: absolute; left: 10px; width: 45%; 
+                font-weight: bold; text-align: left; color: #0056b3; font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -106,8 +134,7 @@
             </tr>
         </thead>
         <tbody id="tableBody">
-            <!-- Google Sheet का डेटा यहाँ आकर लोड होगा -->
-        </tbody>
+            </tbody>
     </table>
 </div>
 
@@ -178,32 +205,32 @@
                         var receiptLink = "receipt.html?appNo=" + encodeURIComponent(row.appNo) + 
                                            "&mobile=" + encodeURIComponent(row.mobile);
 
-                        // सुरक्षित आधार प्रदर्शन लॉजिक
                         var maskAadhaar = (row.aadharNo || row.aadhar) ? "[Aadhaar Redacted]" : "--";
 
-                        // सभी 22 कॉलम्स को सही क्रम में व्यवस्थित किया गया है
+                        // ध्यान दें: यहाँ जावास्क्रिप्ट का सिंटैक्स एरर बैकटिक (`) बंद करके फिक्स कर दिया गया है
+                        // साथ ही प्रत्येक td में data-label जोड़ा गया है ताकि मोबाइल पर सुंदर लेबल दिखे
                         tr.innerHTML = `
-                            <td>${clean(row.appNo)}</td>
-                            <td>${clean(row.session)}</td>
-                            <td>${clean(row.scholarNo || row.scholar)}</td>
-                            <td>${clean(row.mobile)}</td>
-                            <td>${clean(row.studentName)}</td>
-                            <td>${clean(row.fatherName)}</td>
-                            <td>${clean(row.motherName)}</td>
-                            <td>${clean(row.dob)}</td>
-                            <td>${clean(row.gender)}</td>
-                            <td>${clean(row.category)}</td>
-                            <td>${clean(row.samgraId || row.sssmId)}</td>
-                            <td>${clean(row.penNumber || row.penNo)}</td>
-                            <td>${clean(row.apaarId)}</td>
-                            <td>${maskAadhaar}</td>
-                            <td>${clean(row.reason)}</td>
-                            <td>${clean(row.otherReason)}</td>
-                            <td>${clean(row.duesFees)}</td>
-                            <td>${clean(row.duesLibrary)}</td>
-                            <td>${clean(row.duesSports)}</td>
-                            <td>${clean(row.status)}</td>
-                            <td>${clean(row.remarks || row.reasonRemarks)}</td>
+                            <td data-label="App No.">${clean(row.appNo)}</td>
+                            <td data-label="Session">${clean(row.session)}</td>
+                            <td data-label="Scholar No.">${clean(row.scholarNo || row.scholar)}</td>
+                            <td data-label="Mobile">${clean(row.mobile)}</td>
+                            <td data-label="Student Name" style="font-weight:bold; color:#0056b3;">${clean(row.studentName)}</td>
+                            <td data-label="Father's Name">${clean(row.fatherName)}</td>
+                            <td data-label="Mother's Name">${clean(row.motherName)}</td>
+                            <td data-label="DOB">${clean(row.dob)}</td>
+                            <td data-label="Gender">${clean(row.gender)}</td>
+                            <td data-label="Category">${clean(row.category)}</td>
+                            <td data-label="Samgra Id">${clean(row.samgraId || row.sssmId)}</td>
+                            <td data-label="Pen Number">${clean(row.penNumber || row.penNo)}</td>
+                            <td data-label="Apaar Id">${clean(row.apaarId)}</td>
+                            <td data-label="Aadhar No">${maskAadhaar}</td>
+                            <td data-label="Reason">${clean(row.reason)}</td>
+                            <td data-label="Other Reason">${clean(row.otherReason)}</td>
+                            <td data-label="Dues Fees" style="color:red;">${clean(row.duesFees)}</td>
+                            <td data-label="Dues Library" style="color:red;">${clean(row.duesLibrary)}</td>
+                            <td data-label="Dues Sports" style="color:red;">${clean(row.duesSports)}</td>
+                            <td data-label="Status" style="font-weight:bold;">${clean(row.status)}</td>
+                            <td data-label="Reason / Remarks">${clean(row.remarks || row.reasonRemarks)}</td>
                             <td><a href="${receiptLink}" target="_blank" class="btn-action">Print Receipt</a></td>
                         `;
                         tableBody.appendChild(tr);
