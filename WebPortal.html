@@ -2,524 +2,75 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>स्कूल मैनेजमेंट वेब पोर्टल</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>स्कूल मैनेजमेंट पोर्टल</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
-        }
-
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: #f4f6f9;
-            color: #333;
-            overflow: hidden;
-        }
-
-        /* --- 1. LEFT SIDEBAR STYLE --- */
-        .sidebar {
-            width: 260px;
-            background-color: #ffffff;
-            border-right: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .sidebar-brand {
-            padding: 24px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1e3a8a;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 15px 0;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-
-        .menu-label {
-            padding: 10px 24px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #94a3b8;
-            font-weight: 600;
-        }
-
-        .sidebar-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .sidebar-menu li a:hover {
-            background-color: #f8fafc;
-            color: #1e3a8a;
-        }
-
-        .sidebar-menu li.active a {
-            background-color: #eff6ff;
-            color: #2563eb;
-            border-left: 4px solid #2563eb;
-            padding-left: 20px;
-        }
-
-        .sidebar-footer {
-            padding: 20px 24px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        .sidebar-footer a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        /* --- 2. MAIN CONTENT AREA --- */
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* Top Header Navbar */
-        .top-navbar {
-            height: 70px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 40px;
-            gap: 25px;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: #64748b;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .nav-actions i:hover {
-            color: #1e3a8a;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #334155;
-            cursor: pointer;
-        }
-
-        .user-profile img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            object-fit: cover;
-            background-color: #cbd5e1;
-        }
-
-        /* Container Inside Main Content */
-        .page-body {
-            padding: 40px;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-action {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background-color: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            color: #475569;
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-action:hover {
-            background-color: #f8fafc;
-            border-color: #94a3b8;
-            color: #1e293b;
-        }
-
-        /* --- 3. DATA CARD & TABLE STYLE --- */
-        .data-card {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            padding: 24px;
-        }
-
-        .card-inner-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .card-inner-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        /* Custom Table Design */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .portal-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.9rem;
-        }
-
-        .portal-table th {
-            background-color: #f8fafc;
-            color: #64748b;
-            padding: 14px 16px;
-            font-weight: 600;
-            border-bottom: 2px solid #edf2f7;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-
-        .portal-table td {
-            padding: 14px 16px;
-            color: #334155;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .portal-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .portal-table tr:hover td {
-            background-color: #f8fafc;
-        }
-
-        .table-summary-row {
-            background-color: #f8fafc;
-            font-weight: 600;
-        }
-        
-        .table-summary-row td {
-            border-top: 2px solid #edf2f7;
-            color: #1e293b;
-        }
+        /* CSS को व्यवस्थित रखा गया है */
+        body { display: flex; height: 100vh; background: #f4f6f9; font-family: sans-serif; margin: 0; }
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
+        .sidebar-menu { list-style: none; padding: 15px 0; }
+        .sidebar-menu li a { padding: 12px 24px; display: block; color: #64748b; text-decoration: none; border-left: 4px solid transparent; }
+        .sidebar-menu li.active a { background: #eff6ff; color: #2563eb; border-left-color: #2563eb; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .top-navbar { height: 60px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .page-body { padding: 30px; }
+        .data-card { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div>
-            <div class="sidebar-brand">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span>स्कूल शिक्षा पोर्टल</span>
-            </div>
-
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="#"><i class="fa-solid fa-chart-pie"></i> डैशबोर्ड (Dashboard)</a>
-                </li>
-                
-                <div id="mgmtLabel" class="menu-label">प्रबंधन (Management)</div>
-                <li id="studentProfileMenu">
-                    <a href="#"><i class="fa-solid fa-user-graduate"></i> छात्र प्रोफाइल</a>
-                </li>
-                <li id="teacherDbMenu">
-                    <a href="#"><i class="fa-solid fa-users"></i> शिक्षक डेटाबेस</a>
-                </li>
-                <li id="attendanceMenu">
-                    <a href="#"><i class="fa-solid fa-clipboard-list"></i> उपस्थिति रिकॉर्ड</a>
-                </li>
-                
-                <div id="academicLabel" class="menu-label">शैक्षणिक व फीस</div>
-                <li id="feesMenu">
-                    <a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> फीस संकलन</a>
-                </li>
-                <li id="resultMenu">
-                    <a href="#"><i class="fa-solid fa-square-poll-vertical"></i> परीक्षा परिणाम</a>
-                </li>
-                <li id="reportsMenu" class="active">
-                    <a href="#"><i class="fa-solid fa-file-lines"></i> स्टेटमेंट्स / रिपोर्ट</a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="sidebar-footer" id="adminSection">
-            <a href="#"><i class="fa-solid fa-gear"></i> एडमिनिस्ट्रेशन</a>
-        </div>
+        <div style="padding: 20px; font-weight: bold; color: #1e3a8a;">स्कूल पोर्टल</div>
+        <ul class="sidebar-menu" id="sideMenu">
+            <li class="active"><a href="#" onclick="loadPage('profile', this)"><i class="fa-solid fa-user"></i> छात्र प्रोफाइल</a></li>
+            <li><a href="#" onclick="loadPage('attendance', this)"><i class="fa-solid fa-clipboard-check"></i> उपस्थिति</a></li>
+            <li><a href="#" onclick="loadPage('admitcard', this)"><i class="fa-solid fa-id-card"></i> एडमिट कार्ड</a></li>
+            <li><a href="#" onclick="loadPage('result', this)"><i class="fa-solid fa-square-poll-vertical"></i> रिजल्ट अपडेट</a></li>
+            <li><a href="#" onclick="loadPage('tc', this)"><i class="fa-solid fa-file-contract"></i> TC अपडेट</a></li>
+            <li><a href="#" onclick="loadPage('fees', this)"><i class="fa-solid fa-indian-rupee-sign"></i> फीस अपडेट</a></li>
+            <li><a href="#" onclick="loadPage('certificate', this)"><i class="fa-solid fa-certificate"></i> सर्टिफिकेट अपडेट</a></li>
+        </ul>
     </aside>
 
     <main class="main-content">
-        
         <header class="top-navbar">
-            <div class="nav-actions">
-                <i class="fa-solid fa-magnifying-glass" title="सर्च"></i>
-                <i class="fa-solid fa-bell" title="नोटिफिकेशन"></i>
-            </div>
-            <div class="user-profile">
-                <span id="navUserName">Loading...</span>
-                <img src="https://via.placeholder.com/35" alt="User Avatar">
-            </div>
-            <button onclick="logout()" class="btn-action" style="border-color: #fca5a5; color: #dc2626; background-color: #fef2f2; margin-left: 10px;">
-                <i class="fa-solid fa-right-from-bracket"></i> लॉगआउट
-            </button>
+            <h3 id="pageTitle">छात्र प्रोफाइल</h3>
+            <button onclick="window.location.href='index.html'" style="padding: 5px 15px; cursor: pointer;">लॉगआउट</button>
         </header>
-
         <div class="page-body">
-            
-            <div class="page-header">
-                <h1 class="page-title" id="dynamicPageTitle">
-                    </h1>
-                <div class="action-buttons">
-                    <button class="btn-action"><i class="fa-solid fa-file-csv"></i> CSV</button>
-                    <button class="btn-action"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    <button class="btn-action"><i class="fa-solid fa-print"></i> प्रिंट</button>
-                </div>
-            </div>
-
             <div class="data-card">
-                <div class="card-inner-header">
-                    <h2 class="card-inner-title" id="dynamicCardTitle"></h2>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="portal-table" id="dynamicTable">
-                        </table>
-                </div>
+                <table id="contentTable">
+                    <!-- डेटा यहाँ डायनामिक लोड होगा -->
+                </table>
             </div>
-
         </div>
     </main>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // 1. URL से रोल निकालना
-            const urlParams = new URLSearchParams(window.location.search);
-            const role = urlParams.get('role');
+        const dataConfig = {
+            'profile': { title: 'छात्र प्रोफाइल', html: '<tr><th>नाम</th><th>कक्षा</th><th>Action</th></tr><tr><td>Rakesh Kumar</td><td>10th</td><td><button>Edit</button></td></tr>' },
+            'attendance': { title: 'उपस्थिति रिकॉर्ड', html: '<tr><th>नाम</th><th>Status</th><th>Date</th></tr><tr><td>Rakesh Kumar</td><td>Present</td><td>25-05-2026</td></tr>' },
+            'admitcard': { title: 'एडमिट कार्ड', html: '<tr><th>नाम</th><th>Exam</th><th>Download</th></tr><tr><td>Rakesh Kumar</td><td>Final Term</td><td><button>Print</button></td></tr>' },
+            'result': { title: 'रिजल्ट अपडेट', html: '<tr><th>विषय</th><th>अंक</th><th>Status</th></tr><tr><td>गणित</td><td>95</td><td>Pass</td></tr>' },
+            'tc': { title: 'TC अपडेट', html: '<tr><th>छात्र</th><th>TC नंबर</th><th>Status</th></tr><tr><td>Rakesh Kumar</td><td>TC-2026-001</td><td>Issued</td></tr>' },
+            'fees': { title: 'फीस अपडेट', html: '<tr><th>माह</th><th>राशि</th><th>Status</th></tr><tr><td>May</td><td>₹1200</td><td>Paid</td></tr>' },
+            'certificate': { title: 'सर्टिफिकेट अपडेट', html: '<tr><th>प्रकार</th><th>नाम</th><th>Status</th></tr><tr><td>Bonafide</td><td>Rakesh</td><td>Generated</td></tr>' }
+        };
 
-            // HTML तत्वों को सिलेक्ट करना
-            const userNameText = document.getElementById("navUserName");
-            const teacherMenu = document.getElementById("teacherDbMenu");
-            const feesMenu = document.getElementById("feesMenu");
-            const adminSection = document.getElementById("adminSection");
-            
-            const pageTitle = document.getElementById("dynamicPageTitle");
-            const cardTitle = document.getElementById("dynamicCardTitle");
-            const dataTable = document.getElementById("dynamicTable");
+        function loadPage(page, element) {
+            // एक्टिव क्लास बदलें
+            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+            element.parentElement.classList.add('active');
 
-            // 2. 👑 ADMIN LOGIN होने पर क्या दिखेगा
-            if (role === "admin") {
-                userNameText.innerText = "मास्टर एडमिन (Admin)";
-                
-                // कंटेंट सेट करें (फीस स्टेटमेंट)
-                pageTitle.innerHTML = `<i class="fa-solid fa-file-invoice" style="color: #2563eb;"></i> मुख्य वित्तीय रिपोर्ट (Admin Statement)`;
-                cardTitle.innerText = "वर्तमान सत्र शुल्क संकलन विवरण";
-                
-                dataTable.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>दिनांक और समय</th>
-                            <th>विवरण (Description)</th>
-                            <th>रसीद नंबर</th>
-                            <th>राशि (Amount)</th>
-                            <th>शेष राशि (Balance)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>25/05/2026, 10:30 AM</td>
-                            <td>सत्र एडमिशन फीस जमा - कक्षा 10</td>
-                            <td>INV-2026-001</td>
-                            <td style="color: #16a34a; font-weight: 500;">+ ₹12,500.00</td>
-                            <td>₹12,500.00</td>
-                        </tr>
-                        <tr>
-                            <td>25/05/2026, 01:15 PM</td>
-                            <td>कंप्यूटर लैब विकास शुल्क</td>
-                            <td>INV-2026-042</td>
-                            <td style="color: #16a34a; font-weight: 500;">+ ₹1,500.00</td>
-                            <td>₹14,000.00</td>
-                        </tr>
-                        <tr class="table-summary-row">
-                            <td colspan="3">कुल क्लोजिंग बैलेंस (Total Balance)</td>
-                            <td>—</td>
-                            <td>₹14,000.00</td>
-                        </tr>
-                    </tbody>`;
-            } 
-            
-            // 3. 🧑‍🏫 TEACHER LOGIN होने पर क्या दिखेगा
-            else if (role === "teacher") {
-                userNameText.innerText = "सम्मानित शिक्षक (Teacher)";
-                
-                // साइडबार से कुछ चीजें छुपाएं
-                if(teacherMenu) teacherMenu.style.display = "none";
-                if(adminSection) adminSection.style.display = "none";
-
-                // कंटेंट सेट करें (क्लास अटेंडेंस और समरी)
-                pageTitle.innerHTML = `<i class="fa-solid fa-clipboard-user" style="color: #10b981;"></i> कक्षा उपस्थिति एवं शैक्षणिक रिपोर्ट`;
-                cardTitle.innerText = "आज की कक्षा उपस्थिति विवरण (Class 10-A)";
-                
-                dataTable.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>छात्र का नाम</th>
-                            <th>रोल नंबर</th>
-                            <th>कक्षा / सेक्शन</th>
-                            <th>आज की स्थिति</th>
-                            <th>कुल उपस्थिति %</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>अमित शर्मा</td>
-                            <td>101</td>
-                            <td>कक्षा 10 - A</td>
-                            <td style="color: #16a34a; font-weight: 600;">Present (उपस्थित)</td>
-                            <td>92%</td>
-                        </tr>
-                        <tr>
-                            <td>राहुल वर्मा</td>
-                            <td>102</td>
-                            <td>कक्षा 10 - A</td>
-                            <td style="color: #dc2626; font-weight: 600;">Absent (अनुपस्थित)</td>
-                            <td>78%</td>
-                        </tr>
-                        <tr class="table-summary-row">
-                            <td colspan="3">कुल छात्र: 45</td>
-                            <td>उपस्थित: 44</td>
-                            <td>अनुपस्थित: 1</td>
-                        </tr>
-                    </tbody>`;
-            } 
-            
-            // 4. 🏢 PRINCIPAL LOGIN होने पर क्या दिखेगा
-            else if (role === "principal") {
-                userNameText.innerText = "प्रिंसिपल डेस्क (Principal)";
-                
-                // साइडबार से कुछ चीजें छुपाएं
-                if(feesMenu) feesMenu.style.display = "none";
-                if(adminSection) adminSection.style.display = "none";
-
-                // कंटेंट सेट करें (स्कूल परफॉरमेंस समरी)
-                pageTitle.innerHTML = `<i class="fa-solid fa-chart-line" style="color: #7c3aed;"></i> विद्यालय ओवरऑल परफॉरमेंस डैशबोर्ड`;
-                cardTitle.innerText = "वार्षिक परीक्षा परिणाम एवं बोर्ड समरी रिपोर्ट";
-                
-                dataTable.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>कक्षा (Class)</th>
-                            <th>कुल पंजीकृत छात्र</th>
-                            <th>उत्तीर्ण छात्र (Passed)</th>
-                            <th>सर्वोच्च अंक (Topper)</th>
-                            <th>कुल पास प्रतिशत (Pass %)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>कक्षा 12वीं (Science)</td>
-                            <td>120</td>
-                            <td>118</td>
-                            <td>96.4% (प्रिया सिंह)</td>
-                            <td style="color: #16a34a; font-weight: 600;">98.3%</td>
-                        </tr>
-                        <tr>
-                            <td>कक्षा 10वीं (General)</td>
-                            <td>150</td>
-                            <td>145</td>
-                            <td>98.2% (रोहन गुप्ता)</td>
-                            <td style="color: #16a34a; font-weight: 600;">96.6%</td>
-                        </tr>
-                        <tr class="table-summary-row">
-                            <td>कुल स्कूल समरी</td>
-                            <td>270</td>
-                            <td>263</td>
-                            <td>स्कूल टॉपर: 98.2%</td>
-                            <td>औसत: 97.45%</td>
-                        </tr>
-                    </tbody>`;
-            } 
-            
-            // सुरक्षा सुरक्षा
-            else {
-                alert("अनधिकृत प्रवेश! कृपया पहले लॉगिन करें।");
-                window.location.href = "index.html";
-            }
-        });
-
-        // लॉगआउट फंक्शन
-        function logout() {
-            const confirmLogout = confirm("क्या आप सचमुच लॉगआउट करना चाहते हैं?");
-            if (confirmLogout) {
-                window.location.href = "index.html";
-            }
+            // कंटेंट अपडेट करें
+            document.getElementById('pageTitle').innerText = dataConfig[page].title;
+            document.getElementById('contentTable').innerHTML = dataConfig[page].html;
         }
-    </script>
 
+        // डिफॉल्ट लोड
+        loadPage('profile', document.querySelector('.sidebar-menu li'));
+    </script>
 </body>
 </html>
