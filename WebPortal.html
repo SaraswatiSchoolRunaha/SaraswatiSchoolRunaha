@@ -3,87 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <title>स्कूल मैनेजमेंट पोर्टल</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background: #f4f6f9; margin: 0; }
-        .header { background: #1e3a8a; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .school-info { display: flex; align-items: center; gap: 10px; }
-        .container { padding: 30px; }
-        table { width: 100%; border-collapse: collapse; background: #fff; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        body { display: flex; height: 100vh; background: #f4f6f9; font-family: sans-serif; margin: 0; }
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid #ddd; }
+        .sidebar-brand { padding: 20px; text-align: center; border-bottom: 1px solid #ddd; }
+        .school-logo { font-size: 2rem; color: #1e3a8a; display: block; margin-bottom: 5px; }
+        .school-name { font-weight: bold; color: #1e3a8a; font-size: 1.1rem; }
+        .sidebar-menu { list-style: none; padding: 15px 0; }
+        .module-btn { padding: 12px 25px; display: flex; align-items: center; justify-content: space-between; color: #64748b; cursor: pointer; }
+        .module-btn:hover { background: #f1f5f9; }
+        .sub-menu { display: none; background: #f8fafc; }
+        .sub-menu a { padding: 10px 25px 10px 50px; display: block; color: #64748b; text-decoration: none; font-size: 0.9rem; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .top-navbar { height: 70px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .page-body { padding: 30px; }
+        .stats-container { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat-card { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; flex: 1; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background: #f8fafc; }
-        .btn { padding: 8px 15px; cursor: pointer; border: none; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="school-info">
-            <span>🎓 आदर्श पब्लिक स्कूल</span>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-graduation-cap school-logo"></i>
+            <div class="school-name">आदर्श पब्लिक स्कूल</div>
         </div>
-        <div>
-            <button class="btn" onclick="logout()">लॉगआउट</button>
-        </div>
-    </header>
+        <ul class="sidebar-menu" id="sideMenuContainer"></ul>
+    </aside>
 
-    <div class="container">
-        <div id="contentArea">डेटा लोड हो रहा है...</div>
-    </div>
+    <main class="main-content">
+        <header class="top-navbar">
+            <div id="pageTitle" style="font-size: 1.2rem; font-weight: bold;">डैशबोर्ड</div>
+            <button onclick="logout()" class="btn-action">लॉगआउट</button>
+        </header>
+        <div class="page-body"><div id="contentArea">डेटा लोड हो रहा है...</div></div>
+    </main>
 
     <script>
-        let classData = {}; 
-        const currentUserRole = 'admin'; // आप यहाँ रोल बदल सकते हैं
-
-        // किसे क्या दिखेगा
-        const columnPermissions = {
-            'admin': ['SH', 'School No', 'Name', 'Father', 'Mother', 'DOB', 'Medium', 'Gender', 'Action'],
-            'teacher': ['SH', 'Name', 'Father', 'Medium']
+        let classData = {};
+        const permissions = {
+            'डैशबोर्ड': [],
+            'छात्र प्रोफाइल': ['नया एडमिशन', 'सभी छात्र'],
+            'उपस्थिति': ['दैनिक उपस्थिति', 'मासिक रिपोर्ट'],
+            'फीस अपडेट': ['फीस जमा करें', 'बकाया लिस्ट'],
+            'TC अपडेट': ['TC जारी करें', 'रिकॉर्ड'],
+            'रसीद अपडेट': ['नई रसीद', 'पिछली रसीदें'],
+            'एडमिट कार्ड': ['डाउनलोड', 'प्रिंट']
         };
 
         async function loadData() {
-            const url = "YOUR_WEB_APP_URL"; // अपना Google Script URL यहाँ डालें
+            const url = "YOUR_WEB_APP_URL"; // अपना URL यहाँ डालें
             try {
                 const response = await fetch(url);
                 const rawData = await response.json();
-                classData = {};
                 rawData.forEach(s => {
                     let cls = "Class " + s.class;
                     if (!classData[cls]) classData[cls] = [];
                     classData[cls].push(s);
                 });
-                renderDashboard();
+                buildMenu();
+                showContent('डैशबोर्ड');
             } catch (e) { document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि।"; }
         }
 
-        function renderDashboard() {
-            let html = `<h3>कक्षाएं (1-12)</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
-            for (let cls in classData) {
-                html += `<tr style="cursor:pointer" onclick="renderStudents('${cls}')"><td>${cls}</td><td>${classData[cls].length}</td></tr>`;
+        function buildMenu() {
+            const container = document.getElementById('sideMenuContainer');
+            for (const [module, options] of Object.entries(permissions)) {
+                const li = document.createElement('li');
+                if (options.length === 0) {
+                    li.innerHTML = `<div class="module-btn" onclick="showContent('${module}')"><span>${module}</span></div>`;
+                } else {
+                    li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span>${module}</span><i class="fa fa-chevron-down fa-xs"></i></div>
+                        <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${opt}</a>`).join('')}</div>`;
+                }
+                container.appendChild(li);
             }
-            html += `</table>`;
-            document.getElementById('contentArea').innerHTML = html;
         }
 
-        function renderStudents(cls) {
-            const allowed = columnPermissions[currentUserRole] || ['SH', 'Name'];
-            let html = `<h3>${cls} - छात्र सूची</h3><button class="btn" onclick="renderDashboard()">वापस जाएं</button><table><tr>`;
-            allowed.forEach(c => html += `<th>${c}</th>`);
-            html += `</tr>`;
-            
+        function toggleSubMenu(el) { el.nextElementSibling.style.display = el.nextElementSibling.style.display === "block" ? "none" : "block"; }
+
+        function showContent(title) {
+            document.getElementById('pageTitle').innerText = title;
+            if (title === 'डैशबोर्ड') {
+                let html = `<div class="stats-container"><div class="stat-card"><h3>कुल छात्र</h3><p>${Object.values(classData).flat().length}</p></div></div>
+                            <h3>कक्षा-वार सूची</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
+                for (let cls in classData) { html += `<tr style="cursor:pointer" onclick="showClassStudents('${cls}')"><td>${cls}</td><td>${classData[cls].length}</td></tr>`; }
+                document.getElementById('contentArea').innerHTML = html + `</table>`;
+            } else {
+                document.getElementById('contentArea').innerHTML = `<h3>${title}</h3><p>यहाँ ${title} का कार्य होगा...</p>`;
+            }
+        }
+
+        function showClassStudents(cls) {
+            let html = `<h3>${cls} - छात्र सूची</h3><button onclick="showContent('डैशबोर्ड')">वापस</button>
+                <table><tr><th>SH</th><th>School No</th><th>Name</th><th>Father</th><th>Mother</th><th>Action</th></tr>`;
             classData[cls].forEach((s, i) => {
-                html += `<tr>`;
-                allowed.forEach(col => {
-                    if(col === 'SH') html += `<td>${i+1}</td>`;
-                    else if(col === 'Action') html += `<td><button>Edit</button><button>Delete</button></td>`;
-                    else html += `<td>${s[col.toLowerCase().replace(' ', '')] || '-'}</td>`;
-                });
-                html += `</tr>`;
+                html += `<tr><td>${i+1}</td><td>${s.schoolno}</td><td>${s.name}</td><td>${s.father}</td><td>${s.mother}</td><td><button>Edit</button></td></tr>`;
             });
-            html += `</table>`;
-            document.getElementById('contentArea').innerHTML = html;
+            document.getElementById('contentArea').innerHTML = html + `</table>`;
         }
 
-        function logout() { if(confirm("लॉगआउट?")) window.location.href='index.html'; }
-        
+        function logout() { window.location.href='index.html'; }
         loadData();
     </script>
 </body>
