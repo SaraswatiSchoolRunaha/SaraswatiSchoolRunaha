@@ -5,7 +5,6 @@
     <title>स्कूल मैनेजमेंट पोर्टल</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* आपका पुराना लेआउट */
         body { display: flex; height: 100vh; background: #f4f6f9; font-family: sans-serif; margin: 0; }
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #ddd; }
         .sidebar-brand { padding: 25px; font-weight: bold; color: #1e3a8a; border-bottom: 1px solid #ddd; }
@@ -14,12 +13,15 @@
         .sub-menu { display: none; background: #f8fafc; }
         .sub-menu a { padding: 10px 25px 10px 50px; display: block; color: #64748b; text-decoration: none; font-size: 0.9rem; }
         
-        /* आपका पुराना हेडर डिज़ाइन */
         .main-content { flex-grow: 1; display: flex; flex-direction: column; }
         .top-navbar { height: 70px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
-        .user-profile { font-weight: 500; }
+        .user-profile { font-weight: 500; display: flex; align-items: center; gap: 10px; }
         .btn-action { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; background: #fff; }
         .page-body { padding: 30px; }
+        
+        /* नए स्टाइल */
+        .role-badge { padding: 4px 10px; background: #e0e7ff; color: #1e3a8a; border-radius: 12px; font-size: 0.85rem; }
+        .lang-btn { cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -30,11 +32,12 @@
     </aside>
 
     <main class="main-content">
-        <!-- पुराना हेडर -->
         <header class="top-navbar">
             <div id="pageTitle" style="font-size: 1.2rem; font-weight: bold;">डैशबोर्ड</div>
             <div class="user-profile">
-                <span id="userRoleBadge" style="margin-right:15px; color:#2563eb;"></span>
+                <button class="lang-btn" onclick="setLang('EN')">EN</button>
+                <button class="lang-btn" onclick="setLang('HN')">HN</button>
+                <span id="userRoleBadge" class="role-badge"></span>
                 <button onclick="logout()" class="btn-action">लॉगआउट</button>
             </div>
         </header>
@@ -47,60 +50,47 @@
     </main>
 
     <script>
-       // 1. URL से डायनामिक रोल लें
-const urlParams = new URLSearchParams(window.location.search);
-const currentUserRole = urlParams.get('role') || 'teacher'; 
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentUserRole = urlParams.get('role') || 'teacher'; 
 
-// 2. परमिशन डेटा (यह वही रहेगा)
-const permissions = {
-    'admin': {
-        'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'],
-        'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'],
-        'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'],
-        'TC अपडेट': ['जारी करें', 'प्रिंट']
-    },
-    'teacher': {
-        'छात्र प्रोफाइल': ['सभी छात्र'],
-        'उपस्थिति': ['दैनिक उपस्थिति'],
-        'फीस अपडेट': ['बकाया लिस्ट']
-    },
-    'principal': {
-        'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'],
-        'उपस्थिति': ['पूरे स्कूल की रिपोर्ट'],
-        'फीस अपडेट': ['कुल आय', 'बकाया'],
-        'रिजल्ट': ['एनालिसिस', 'पब्लिश']
-    }
-};
+        // मेनू के लिए आइकन्स
+        const icons = {
+            'छात्र प्रोफाइल': 'fa-user-graduate',
+            'उपस्थिति': 'fa-clipboard-user',
+            'फीस अपडेट': 'fa-money-bill-wave',
+            'TC अपडेट': 'fa-file-contract',
+            'रिजल्ट': 'fa-poll'
+        };
 
-// 3. रोल के हिसाब से मेनू बनाएं
-function buildMenu() {
-    const container = document.getElementById('sideMenuContainer');
-    container.innerHTML = ""; // पुराना मेनू साफ़ करें
-    
-    const roleData = permissions[currentUserRole];
-    
-    // अगर कोई गलत रोल डाले, तो उसे 'teacher' मान लें
-    if(!roleData) {
-        alert("अमान्य रोल!");
-        return;
-    }
+        const permissions = {
+            'admin': { 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
+            'teacher': { 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
+            'principal': { 'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'], 'उपस्थिति': ['पूरे स्कूल की रिपोर्ट'], 'फीस अपडेट': ['कुल आय', 'बकाया'], 'रिजल्ट': ['एनालिसिस', 'पब्लिश'] }
+        };
 
-    document.getElementById('userRoleBadge').innerText = "Role: " + currentUserRole.toUpperCase();
+        function buildMenu() {
+            const container = document.getElementById('sideMenuContainer');
+            container.innerHTML = "";
+            const roleData = permissions[currentUserRole];
+            if(!roleData) { alert("अमान्य रोल!"); return; }
 
-    for (const [module, options] of Object.entries(roleData)) {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <div class="module-btn" onclick="toggleSubMenu(this)">
-                <span>${module}</span>
-                <i class="fa-solid fa-chevron-down fa-xs"></i>
-            </div>
-            <div class="sub-menu">
-                ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${opt}</a>`).join('')}
-            </div>
-        `;
-        container.appendChild(li);
-    }
-}
+            document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
+
+            for (const [module, options] of Object.entries(roleData)) {
+                const iconClass = icons[module] || 'fa-bars';
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="module-btn" onclick="toggleSubMenu(this)">
+                        <span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${module}</span>
+                        <i class="fa-solid fa-chevron-down fa-xs"></i>
+                    </div>
+                    <div class="sub-menu">
+                        ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${opt}</a>`).join('')}
+                    </div>
+                `;
+                container.appendChild(li);
+            }
+        }
 
         function toggleSubMenu(element) {
             const subMenu = element.nextElementSibling;
@@ -112,7 +102,16 @@ function buildMenu() {
             document.getElementById('contentArea').innerHTML = `<h3>${title}</h3><p>यहाँ डेटा मैनेज करने का फॉर्म आएगा...</p>`;
         }
 
-        function logout() { window.location.href='index.html'; }
+        function logout() {
+            if(confirm("क्या आप वाकई लॉगआउट करना चाहते हैं?")) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function setLang(lang) {
+            alert("भाषा को " + lang + " में बदला गया।");
+        }
+
         buildMenu();
     </script>
 </body>
