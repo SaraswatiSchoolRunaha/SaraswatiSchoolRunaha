@@ -5,17 +5,14 @@
     <title>स्कूल मैनेजमेंट पोर्टल</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* आपका पुराना लेआउट सुरक्षित है */
         body { display: flex; height: 100vh; background: #f4f6f9; font-family: sans-serif; margin: 0; }
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #ddd; }
-        
-        /* स्कूल लोगो और नाम के लिए नया स्टाइल (पुराना बरकरार है) */
         .sidebar-brand { padding: 20px; text-align: center; border-bottom: 1px solid #ddd; }
         .school-logo { font-size: 2rem; color: #1e3a8a; display: block; margin-bottom: 5px; }
         .school-name { font-weight: bold; color: #1e3a8a; font-size: 1.1rem; }
-        
         .sidebar-menu { list-style: none; padding: 15px 0; }
         .module-btn { padding: 12px 25px; display: flex; align-items: center; justify-content: space-between; color: #64748b; cursor: pointer; }
+        .module-btn:hover { background: #f1f5f9; }
         .sub-menu { display: none; background: #f8fafc; }
         .sub-menu a { padding: 10px 25px 10px 50px; display: block; color: #64748b; text-decoration: none; font-size: 0.9rem; }
         
@@ -24,9 +21,9 @@
         .user-profile { font-weight: 500; display: flex; align-items: center; gap: 10px; }
         .btn-action { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; background: #fff; }
         .page-body { padding: 30px; }
-        
         .role-badge { padding: 4px 10px; background: #e0e7ff; color: #1e3a8a; border-radius: 12px; font-size: 0.85rem; }
         .lang-btn { cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .class-card { padding: 15px; border: 1px solid #ddd; margin: 10px 0; cursor: pointer; background: #fff; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -62,6 +59,13 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentUserRole = urlParams.get('role') || 'teacher'; 
 
+        // नया: क्लास का डेटा
+        const classData = {
+            'Class 1': ['राहुल', 'प्रिया', 'अमित'],
+            'Class 2': ['नेहा', 'रोहित', 'सोनू'],
+            'Class 3': ['कविता', 'विकास', 'अंजली']
+        };
+
         const translations = {
             'HN': { 'डैशबोर्ड': 'डैशबोर्ड', 'छात्र प्रोफाइल': 'छात्र प्रोफाइल', 'उपस्थिति': 'उपस्थिति', 'फीस अपडेट': 'फीस अपडेट', 'TC अपडेट': 'TC अपडेट', 'रिजल्ट': 'रिजल्ट', 'स्वागत': 'पोर्टल पर आपका स्वागत है।', 'सभी छात्र': 'सभी छात्र', 'नया प्रवेश': 'नया प्रवेश', 'डेटा एडिट': 'डेटा एडिट', 'डिलीट': 'डिलीट', 'दैनिक उपस्थिति': 'दैनिक उपस्थिति', 'रिपोर्ट': 'रिपोर्ट', 'रसीद': 'रसीद', 'बकाया लिस्ट': 'बकाया लिस्ट', 'जारी करें': 'जारी करें', 'प्रिंट': 'प्रिंट', 'रिपोर्ट्स': 'रिपोर्ट्स', 'पूरे स्कूल की रिपोर्ट': 'पूरे स्कूल की रिपोर्ट', 'कुल आय': 'कुल आय', 'बकाया': 'बकाया', 'एनालिसिस': 'एनालिसिस', 'पब्लिश': 'पब्लिश' },
             'EN': { 'डैशबोर्ड': 'Dashboard', 'छात्र प्रोफाइल': 'Student Profile', 'उपस्थिति': 'Attendance', 'फीस अपडेट': 'Fee Update', 'TC अपडेट': 'TC Update', 'रिजल्ट': 'Result', 'स्वागत': 'Welcome to the Portal.', 'सभी छात्र': 'All Students', 'नया प्रवेश': 'New Admission', 'डेटा एडिट': 'Data Edit', 'डिलीट': 'Delete', 'दैनिक उपस्थिति': 'Daily Attendance', 'रिपोर्ट': 'Report', 'रसीद': 'Receipt', 'बकाया लिस्ट': 'Pending List', 'जारी करें': 'Issue', 'प्रिंट': 'Print', 'रिपोर्ट्स': 'Reports', 'पूरे स्कूल की रिपोर्ट': 'School Report', 'कुल आय': 'Total Income', 'बकाया': 'Due', 'एनालिसिस': 'Analysis', 'पब्लिश': 'Publish' }
@@ -84,19 +88,11 @@
             for (const [module, options] of Object.entries(roleData)) {
                 const iconClass = icons[module] || 'fa-bars';
                 const li = document.createElement('li');
-                
                 if (options.length === 0) {
                     li.innerHTML = `<div class="module-btn" onclick="showContent('${module}')"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span></div>`;
                 } else {
-                    li.innerHTML = `
-                        <div class="module-btn" onclick="toggleSubMenu(this)">
-                            <span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span>
-                            <i class="fa-solid fa-chevron-down fa-xs"></i>
-                        </div>
-                        <div class="sub-menu">
-                            ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}
-                        </div>
-                    `;
+                    li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span><i class="fa-solid fa-chevron-down fa-xs"></i></div>
+                        <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}</div>`;
                 }
                 container.appendChild(li);
             }
@@ -108,8 +104,24 @@
         }
 
         function showContent(title) {
-            document.getElementById('pageTitle').innerText = translations[currentLang][title];
-            document.getElementById('contentArea').innerHTML = `<h3>${translations[currentLang][title]}</h3><p>यहाँ डेटा मैनेज करने का फॉर्म आएगा...</p>`;
+            document.getElementById('pageTitle').innerText = translations[currentLang][title] || title;
+            if (title === 'डैशबोर्ड') {
+                let html = `<h3>${translations[currentLang]['डैशबोर्ड']}</h3><p>कक्षाएं चुनें:</p>`;
+                for (const className in classData) {
+                    html += `<div class="class-card" onclick="showClassStudents('${className}')">${className}</div>`;
+                }
+                document.getElementById('contentArea').innerHTML = html;
+            } else {
+                document.getElementById('contentArea').innerHTML = `<h3>${translations[currentLang][title] || title}</h3><p>यहाँ डेटा मैनेज करने का फॉर्म आएगा...</p>`;
+            }
+        }
+
+        function showClassStudents(className) {
+            const students = classData[className];
+            let html = `<h3>${className} के छात्र</h3><button onclick="showContent('डैशबोर्ड')">वापस</button><ul>`;
+            students.forEach(s => html += `<li>${s}</li>`);
+            html += `</ul>`;
+            document.getElementById('contentArea').innerHTML = html;
         }
 
         function setLang(lang) {
