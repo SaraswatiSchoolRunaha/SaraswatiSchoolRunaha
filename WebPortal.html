@@ -5,9 +5,15 @@
     <title>स्कूल मैनेजमेंट पोर्टल</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* आपका पुराना लेआउट सुरक्षित है */
         body { display: flex; height: 100vh; background: #f4f6f9; font-family: sans-serif; margin: 0; }
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #ddd; }
-        .sidebar-brand { padding: 25px; font-weight: bold; color: #1e3a8a; border-bottom: 1px solid #ddd; }
+        
+        /* स्कूल लोगो और नाम के लिए नया स्टाइल (पुराना बरकरार है) */
+        .sidebar-brand { padding: 20px; text-align: center; border-bottom: 1px solid #ddd; }
+        .school-logo { font-size: 2rem; color: #1e3a8a; display: block; margin-bottom: 5px; }
+        .school-name { font-weight: bold; color: #1e3a8a; font-size: 1.1rem; }
+        
         .sidebar-menu { list-style: none; padding: 15px 0; }
         .module-btn { padding: 12px 25px; display: flex; align-items: center; justify-content: space-between; color: #64748b; cursor: pointer; }
         .sub-menu { display: none; background: #f8fafc; }
@@ -26,7 +32,10 @@
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-brand">स्कूल शिक्षा पोर्टल</div>
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-graduation-cap school-logo"></i>
+            <div class="school-name">आदर्श पब्लिक स्कूल</div>
+        </div>
         <ul class="sidebar-menu" id="sideMenuContainer"></ul>
     </aside>
 
@@ -58,35 +67,37 @@
             'EN': { 'डैशबोर्ड': 'Dashboard', 'छात्र प्रोफाइल': 'Student Profile', 'उपस्थिति': 'Attendance', 'फीस अपडेट': 'Fee Update', 'TC अपडेट': 'TC Update', 'रिजल्ट': 'Result', 'स्वागत': 'Welcome to the Portal.', 'सभी छात्र': 'All Students', 'नया प्रवेश': 'New Admission', 'डेटा एडिट': 'Data Edit', 'डिलीट': 'Delete', 'दैनिक उपस्थिति': 'Daily Attendance', 'रिपोर्ट': 'Report', 'रसीद': 'Receipt', 'बकाया लिस्ट': 'Pending List', 'जारी करें': 'Issue', 'प्रिंट': 'Print', 'रिपोर्ट्स': 'Reports', 'पूरे स्कूल की रिपोर्ट': 'School Report', 'कुल आय': 'Total Income', 'बकाया': 'Due', 'एनालिसिस': 'Analysis', 'पब्लिश': 'Publish' }
         };
 
-        const icons = { 'छात्र प्रोफाइल': 'fa-user-graduate', 'उपस्थिति': 'fa-clipboard-user', 'फीस अपडेट': 'fa-money-bill-wave', 'TC अपडेट': 'fa-file-contract', 'रिजल्ट': 'fa-poll' };
+        const icons = { 'डैशबोर्ड': 'fa-house', 'छात्र प्रोफाइल': 'fa-user-graduate', 'उपस्थिति': 'fa-clipboard-user', 'फीस अपडेट': 'fa-money-bill-wave', 'TC अपडेट': 'fa-file-contract', 'रिजल्ट': 'fa-poll' };
 
-        // यह रहा आपका परमिशन डेटा जो सुरक्षित है
         const permissions = {
-            'admin': { 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
-            'teacher': { 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
-            'principal': { 'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'], 'उपस्थिति': ['पूरे स्कूल की रिपोर्ट'], 'फीस अपडेट': ['कुल आय', 'बकाया'], 'रिजल्ट': ['एनालिसिस', 'पब्लिश'] }
+            'admin': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
+            'teacher': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
+            'principal': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'], 'उपस्थिति': ['पूरे स्कूल की रिपोर्ट'], 'फीस अपडेट': ['कुल आय', 'बकाया'], 'रिजल्ट': ['एनालिसिस', 'पब्लिश'] }
         };
 
         function buildMenu() {
             const container = document.getElementById('sideMenuContainer');
             container.innerHTML = "";
             const roleData = permissions[currentUserRole];
-            if(!roleData) { alert("अमान्य रोल!"); return; }
-            
             document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
 
             for (const [module, options] of Object.entries(roleData)) {
                 const iconClass = icons[module] || 'fa-bars';
                 const li = document.createElement('li');
-                li.innerHTML = `
-                    <div class="module-btn" onclick="toggleSubMenu(this)">
-                        <span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span>
-                        <i class="fa-solid fa-chevron-down fa-xs"></i>
-                    </div>
-                    <div class="sub-menu">
-                        ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}
-                    </div>
-                `;
+                
+                if (options.length === 0) {
+                    li.innerHTML = `<div class="module-btn" onclick="showContent('${module}')"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span></div>`;
+                } else {
+                    li.innerHTML = `
+                        <div class="module-btn" onclick="toggleSubMenu(this)">
+                            <span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span>
+                            <i class="fa-solid fa-chevron-down fa-xs"></i>
+                        </div>
+                        <div class="sub-menu">
+                            ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}
+                        </div>
+                    `;
+                }
                 container.appendChild(li);
             }
         }
@@ -104,8 +115,7 @@
         function setLang(lang) {
             currentLang = lang;
             buildMenu();
-            document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
-            document.getElementById('contentArea').innerHTML = translations[currentLang]['स्वागत'];
+            showContent('डैशबोर्ड');
         }
 
         function logout() {
