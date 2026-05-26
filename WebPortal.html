@@ -23,18 +23,28 @@
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background: #f8fafc; }
 
-      .news-ticker { 
-        background: #1e3a8a; 
-        color: white; 
-        padding: 10px; 
-        overflow: hidden; 
-        white-space: nowrap; 
-        border-radius: 4px; 
-        margin-bottom: 20px; 
-        position: sticky; /* यह न्यूज़ को ऊपर ही रखेगा */
-        top: 0; 
-        z-index: 1000; 
-    }
+     /* Newscast Ticker CSS */
+.news-ticker { 
+    background: #1e3a8a; 
+    color: white; 
+    padding: 10px; 
+    overflow: hidden; 
+    white-space: nowrap; 
+    border-radius: 4px; 
+    margin-bottom: 20px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 100;
+}
+.news-ticker span { 
+    display: inline-block; 
+    padding-left: 100%; 
+    animation: ticker 20s linear infinite; 
+}
+@keyframes ticker { 
+    0% { transform: translate(0, 0); } 
+    100% { transform: translate(-100%, 0); } 
+}
     </style>
 </head>
 <body>
@@ -57,13 +67,13 @@
             </div>
         </header>
 
-      <div class="page-body">
-        <div class="news-ticker">
+    <div class="page-body">
+    <div class="news-ticker">
         <span>📢 नवीनतम सूचना: स्कूल की वार्षिक परीक्षा 10 जून से शुरू होगी। | फीस जमा करने की अंतिम तिथि 30 मई है।</span>
     </div>
-    
+
     <div id="contentArea" style="background:#fff; padding:20px; border:1px solid #ddd;">डेटा लोड हो रहा है...</div>
-    </div>
+</div>
     </main>
     <script>
         let currentLang = 'HN';
