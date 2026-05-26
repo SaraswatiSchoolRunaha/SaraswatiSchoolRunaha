@@ -1062,51 +1062,28 @@ function handleLogin() {
     }
 }
  
- // 5. Menu Visibility Logic (Naya Updated Version)
+// 5. Menu Visibility Logic (Naya Updated Version)
 function applyPermissions(role) {
     
-    // 👇 यहाँ पर डालना है यह कोड (इसके ठीक नीचे) 👇
+    // Maintenance Mode बाईपास चेक (सुरक्षा पिन कोड के लिए)
     if (isPortalClosed && role === 'student') {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('dev') !== 'true' || urlParams.get('pin') !== DEV_SECRET_PIN) return;
     }
-    // 👆 यहाँ तक 👆
 
+    // सभी मेनू और ड्रापडाउन को सिलेक्ट करना
     const allMenus = document.querySelectorAll('nav .dropdown, nav > a');
     
-    // Permission Lists: Kaun kya dekhega
-    const studentAllowed = ["Home", "Gallery", "Contact"];
-  
-   // teacher  ke liye Limited Access (Yahan se Fees/TC/Promotion hata diya hai)
-     const teacherAllowed = ["Home", "Attendance", "Result Upd", "Gallery", "Contact"];
-  
-    // Principal ke liye Limited Access (Yahan se Fees/TC/Promotion hata diya hai)
-    const principalAllowed = ["Home", "Attendance", "Profile Upd", "Result Upd", "Admit Card Upd", "Fees Upd", "Certificate", "Gallery", "Contact"];
-    
- 
-
+    // 🌟 पुरानी लिस्ट हटा दी गई है - अब बिना किसी पाबंदी के सभी मेनू हमेशा दिखाई देंगे
     allMenus.forEach(menu => {
-        const menuText = menu.textContent.trim();
-        
-        if (role === "student") {
-            const isAllowed = studentAllowed.some(allowed => menuText.includes(allowed));
-            menu.style.display = isAllowed ? "inline-block" : "none";
-        } 
-        else if (role === "teacher") {
-            const isAllowed = teacherAllowed.some(allowed => menuText.includes(allowed));
-            menu.style.display = isAllowed ? "inline-block" : "none";
-        } 
-        else if (role === "principal") {
-            // Principal ko sirf 'principalAllowed' list wala dikhega
-            const isAllowed = principalAllowed.some(allowed => menuText.includes(allowed));
-            menu.style.display = isAllowed ? "inline-block" : "none";
-        }
-        else if (role === "admin") {
-            // Admin ko SAB KUCH dikhega (Full Access)
-            menu.style.display = "inline-block"; 
-        }
+        menu.style.display = "inline-block"; 
     });
-   // Update Topbar UI
+
+    // Topbar UI को अपडेट करना (Login/Logout बटन दिखाने के लिए)
+    updateTopbar(role);
+}
+ 
+ // Update Topbar UI
     updateTopbar(role);
 }
   
