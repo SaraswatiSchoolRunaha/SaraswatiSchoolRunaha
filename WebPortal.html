@@ -60,6 +60,7 @@
 
         const icons = { 'छात्र प्रोफाइल': 'fa-user-graduate', 'उपस्थिति': 'fa-clipboard-user', 'फीस अपडेट': 'fa-money-bill-wave', 'TC अपडेट': 'fa-file-contract', 'रिजल्ट': 'fa-poll' };
 
+        // यह रहा आपका परमिशन डेटा जो सुरक्षित है
         const permissions = {
             'admin': { 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
             'teacher': { 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
@@ -70,6 +71,8 @@
             const container = document.getElementById('sideMenuContainer');
             container.innerHTML = "";
             const roleData = permissions[currentUserRole];
+            if(!roleData) { alert("अमान्य रोल!"); return; }
+            
             document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
 
             for (const [module, options] of Object.entries(roleData)) {
