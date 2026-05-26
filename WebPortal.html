@@ -23,7 +23,11 @@
         .page-body { padding: 30px; }
         .role-badge { padding: 4px 10px; background: #e0e7ff; color: #1e3a8a; border-radius: 12px; font-size: 0.85rem; }
         .lang-btn { cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .class-card { padding: 15px; border: 1px solid #ddd; margin: 10px 0; cursor: pointer; background: #fff; border-radius: 5px; }
+        
+        /* टेबल स्टाइल */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f8fafc; }
     </style>
 </head>
 <body>
@@ -31,7 +35,7 @@
     <aside class="sidebar">
         <div class="sidebar-brand">
             <i class="fa-solid fa-graduation-cap school-logo"></i>
-            <div class="school-name"> सरस्वती बाल विद्या मंदिर </div>
+            <div class="school-name">आदर्श पब्लिक स्कूल</div>
         </div>
         <ul class="sidebar-menu" id="sideMenuContainer"></ul>
     </aside>
@@ -48,9 +52,7 @@
         </header>
 
         <div class="page-body">
-            <div id="contentArea" style="background:#fff; padding:20px; border:1px solid #ddd;">
-                पोर्टल पर आपका स्वागत है।
-            </div>
+            <div id="contentArea" style="background:#fff; padding:20px; border:1px solid #ddd;"></div>
         </div>
     </main>
 
@@ -59,24 +61,23 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentUserRole = urlParams.get('role') || 'teacher'; 
 
-        // नया: क्लास का डेटा
-        const classData = {
-            'Class 1': ['राहुल', 'प्रिया', 'अमित'],
-            'Class 2': ['नेहा', 'रोहित', 'सोनू'],
-            'Class 3': ['कविता', 'विकास', 'अंजली']
-        };
+        // 1 से 12 तक का डेटा
+        const classData = {};
+        for(let i=1; i<=12; i++) {
+            classData[`Class ${i}`] = [{ id: 101, name: "राहुल", father: "रमेश", mother: "सुनीता", dob: "2015-05-10", medium: "Hindi", gender: "Male" }];
+        }
 
         const translations = {
-            'HN': { 'डैशबोर्ड': 'डैशबोर्ड', 'छात्र प्रोफाइल': 'छात्र प्रोफाइल', 'उपस्थिति': 'उपस्थिति', 'फीस अपडेट': 'फीस अपडेट', 'TC अपडेट': 'TC अपडेट', 'रिजल्ट': 'रिजल्ट', 'स्वागत': 'पोर्टल पर आपका स्वागत है।', 'सभी छात्र': 'सभी छात्र', 'नया प्रवेश': 'नया प्रवेश', 'डेटा एडिट': 'डेटा एडिट', 'डिलीट': 'डिलीट', 'दैनिक उपस्थिति': 'दैनिक उपस्थिति', 'रिपोर्ट': 'रिपोर्ट', 'रसीद': 'रसीद', 'बकाया लिस्ट': 'बकाया लिस्ट', 'जारी करें': 'जारी करें', 'प्रिंट': 'प्रिंट', 'रिपोर्ट्स': 'रिपोर्ट्स', 'पूरे स्कूल की रिपोर्ट': 'पूरे स्कूल की रिपोर्ट', 'कुल आय': 'कुल आय', 'बकाया': 'बकाया', 'एनालिसिस': 'एनालिसिस', 'पब्लिश': 'पब्लिश' },
-            'EN': { 'डैशबोर्ड': 'Dashboard', 'छात्र प्रोफाइल': 'Student Profile', 'उपस्थिति': 'Attendance', 'फीस अपडेट': 'Fee Update', 'TC अपडेट': 'TC Update', 'रिजल्ट': 'Result', 'स्वागत': 'Welcome to the Portal.', 'सभी छात्र': 'All Students', 'नया प्रवेश': 'New Admission', 'डेटा एडिट': 'Data Edit', 'डिलीट': 'Delete', 'दैनिक उपस्थिति': 'Daily Attendance', 'रिपोर्ट': 'Report', 'रसीद': 'Receipt', 'बकाया लिस्ट': 'Pending List', 'जारी करें': 'Issue', 'प्रिंट': 'Print', 'रिपोर्ट्स': 'Reports', 'पूरे स्कूल की रिपोर्ट': 'School Report', 'कुल आय': 'Total Income', 'बकाया': 'Due', 'एनालिसिस': 'Analysis', 'पब्लिश': 'Publish' }
+            'HN': { 'डैशबोर्ड': 'डैशबोर्ड', 'छात्र प्रोफाइल': 'छात्र प्रोफाइल', 'उपस्थिति': 'उपस्थिति', 'फीस अपडेट': 'फीस अपडेट', 'TC अपडेट': 'TC अपडेट', 'रिजल्ट': 'रिजल्ट' },
+            'EN': { 'डैशबोर्ड': 'Dashboard', 'छात्र प्रोफाइल': 'Student Profile', 'उपस्थिति': 'Attendance', 'फीस अपडेट': 'Fee Update', 'TC अपडेट': 'TC Update', 'रिजल्ट': 'Result' }
         };
 
         const icons = { 'डैशबोर्ड': 'fa-house', 'छात्र प्रोफाइल': 'fa-user-graduate', 'उपस्थिति': 'fa-clipboard-user', 'फीस अपडेट': 'fa-money-bill-wave', 'TC अपडेट': 'fa-file-contract', 'रिजल्ट': 'fa-poll' };
 
         const permissions = {
-            'admin': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
-            'teacher': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
-            'principal': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'], 'उपस्थिति': ['पूरे स्कूल की रिपोर्ट'], 'फीस अपडेट': ['कुल आय', 'बकाया'], 'रिजल्ट': ['एनालिसिस', 'पब्लिश'] }
+            'admin': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक'], 'फीस अपडेट': ['रसीद'] },
+            'teacher': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'] },
+            'principal': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'] }
         };
 
         function buildMenu() {
@@ -89,10 +90,10 @@
                 const iconClass = icons[module] || 'fa-bars';
                 const li = document.createElement('li');
                 if (options.length === 0) {
-                    li.innerHTML = `<div class="module-btn" onclick="showContent('${module}')"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span></div>`;
+                    li.innerHTML = `<div class="module-btn" onclick="showContent('${module}')"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module] || module}</span></div>`;
                 } else {
-                    li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span><i class="fa-solid fa-chevron-down fa-xs"></i></div>
-                        <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}</div>`;
+                    li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module] || module}</span><i class="fa-solid fa-chevron-down fa-xs"></i></div>
+                        <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${opt}</a>`).join('')}</div>`;
                 }
                 container.appendChild(li);
             }
@@ -104,23 +105,27 @@
         }
 
         function showContent(title) {
-            document.getElementById('pageTitle').innerText = translations[currentLang][title] || title;
+            document.getElementById('pageTitle').innerText = title;
             if (title === 'डैशबोर्ड') {
-                let html = `<h3>${translations[currentLang]['डैशबोर्ड']}</h3><p>कक्षाएं चुनें:</p>`;
-                for (const className in classData) {
-                    html += `<div class="class-card" onclick="showClassStudents('${className}')">${className}</div>`;
+                let html = `<h3>कक्षाएं (1-12)</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
+                for (let cls in classData) {
+                    html += `<tr style="cursor:pointer" onclick="showClassStudents('${cls}')"><td>${cls}</td><td>${classData[cls].length}</td></tr>`;
                 }
+                html += `</table>`;
                 document.getElementById('contentArea').innerHTML = html;
             } else {
-                document.getElementById('contentArea').innerHTML = `<h3>${translations[currentLang][title] || title}</h3><p>यहाँ डेटा मैनेज करने का फॉर्म आएगा...</p>`;
+                document.getElementById('contentArea').innerHTML = `<h3>${title}</h3><p>यहाँ फॉर्म आएगा...</p>`;
             }
         }
 
-        function showClassStudents(className) {
-            const students = classData[className];
-            let html = `<h3>${className} के छात्र</h3><button onclick="showContent('डैशबोर्ड')">वापस</button><ul>`;
-            students.forEach(s => html += `<li>${s}</li>`);
-            html += `</ul>`;
+        function showClassStudents(cls) {
+            let html = `<h3>${cls} - छात्र सूची</h3><button onclick="showContent('डैशबोर्ड')">वापस</button>
+                <table><tr><th>SH</th><th>School No</th><th>Name</th><th>Father</th><th>Mother</th><th>DOB</th><th>Medium</th><th>Gender</th><th>Action</th></tr>`;
+            classData[cls].forEach((s, i) => {
+                html += `<tr><td>${i+1}</td><td>${s.id}</td><td>${s.name}</td><td>${s.father}</td><td>${s.mother}</td><td>${s.dob}</td><td>${s.medium}</td><td>${s.gender}</td>
+                    <td><button>Edit</button><button>Delete</button></td></tr>`;
+            });
+            html += `</table>`;
             document.getElementById('contentArea').innerHTML = html;
         }
 
@@ -131,12 +136,11 @@
         }
 
         function logout() {
-            if(confirm(currentLang === 'HN' ? "क्या आप वाकई लॉगआउट करना चाहते हैं?" : "Are you sure you want to logout?")) {
-                window.location.href = 'index.html';
-            }
+            if(confirm("लॉगआउट करना चाहते हैं?")) window.location.href='index.html';
         }
 
         buildMenu();
+        showContent('डैशबोर्ड');
     </script>
 </body>
 </html>
