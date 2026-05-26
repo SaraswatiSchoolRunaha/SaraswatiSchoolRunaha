@@ -7,19 +7,18 @@
     <style>
         body { display: flex; height: 100vh; background: #f4f6f9; font-family: sans-serif; margin: 0; }
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #ddd; }
-        .sidebar-brand { padding: 20px; text-align: center; border-bottom: 1px solid #ddd; }
-        .school-logo { font-size: 2rem; color: #1e3a8a; display: block; margin-bottom: 5px; }
-        .school-name { font-weight: bold; color: #1e3a8a; font-size: 1.1rem; }
+        .sidebar-brand { padding: 25px; font-weight: bold; color: #1e3a8a; border-bottom: 1px solid #ddd; cursor:pointer; }
         .sidebar-menu { list-style: none; padding: 15px 0; }
         .module-btn { padding: 12px 25px; display: flex; align-items: center; justify-content: space-between; color: #64748b; cursor: pointer; }
-        .module-btn:hover { background: #f1f5f9; }
         .sub-menu { display: none; background: #f8fafc; }
         .sub-menu a { padding: 10px 25px 10px 50px; display: block; color: #64748b; text-decoration: none; font-size: 0.9rem; }
         .main-content { flex-grow: 1; display: flex; flex-direction: column; }
         .top-navbar { height: 70px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .user-profile { font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        .btn-action { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; background: #fff; }
         .page-body { padding: 30px; }
-        .stats-container { display: flex; gap: 20px; margin-bottom: 20px; }
-        .stat-card { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; flex: 1; text-align: center; }
+        .role-badge { padding: 4px 10px; background: #e0e7ff; color: #1e3a8a; border-radius: 12px; font-size: 0.85rem; }
+        .lang-btn { cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 12px; font-weight: bold; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background: #f8fafc; }
@@ -28,86 +27,98 @@
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-brand">
-            <i class="fa-solid fa-graduation-cap school-logo"></i>
-            <div class="school-name">आदर्श पब्लिक स्कूल</div>
-        </div>
+        <div class="sidebar-brand" onclick="showDashboard()">स्कूल शिक्षा पोर्टल</div>
         <ul class="sidebar-menu" id="sideMenuContainer"></ul>
     </aside>
 
     <main class="main-content">
         <header class="top-navbar">
             <div id="pageTitle" style="font-size: 1.2rem; font-weight: bold;">डैशबोर्ड</div>
-            <button onclick="logout()" class="btn-action">लॉगआउट</button>
+            <div class="user-profile">
+                <button class="lang-btn" onclick="setLang('EN')">EN</button>
+                <button class="lang-btn" onclick="setLang('HN')">HN</button>
+                <span id="userRoleBadge" class="role-badge"></span>
+                <button onclick="logout()" class="btn-action">लॉगआउट</button>
+            </div>
         </header>
-        <div class="page-body"><div id="contentArea">डेटा लोड हो रहा है...</div></div>
+
+        <div class="page-body">
+            <div id="contentArea" style="background:#fff; padding:20px; border:1px solid #ddd;">डेटा लोड हो रहा है...</div>
+        </div>
     </main>
 
     <script>
+        let currentLang = 'HN';
         let classData = {};
-        const permissions = {
-            'डैशबोर्ड': [],
-            'छात्र प्रोफाइल': ['नया एडमिशन', 'सभी छात्र'],
-            'उपस्थिति': ['दैनिक उपस्थिति', 'मासिक रिपोर्ट'],
-            'फीस अपडेट': ['फीस जमा करें', 'बकाया लिस्ट'],
-            'TC अपडेट': ['TC जारी करें', 'रिकॉर्ड'],
-            'रसीद अपडेट': ['नई रसीद', 'पिछली रसीदें'],
-            'एडमिट कार्ड': ['डाउनलोड', 'प्रिंट']
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentUserRole = urlParams.get('role') || 'teacher'; 
+
+        const translations = {
+            'HN': { 'डैशबोर्ड': 'डैशबोर्ड', 'छात्र प्रोफाइल': 'छात्र प्रोफाइल', 'उपस्थिति': 'उपस्थिति', 'फीस अपडेट': 'फीस अपडेट', 'TC अपडेट': 'TC अपडेट', 'रिजल्ट': 'रिजल्ट', 'स्वागत': 'पोर्टल पर आपका स्वागत है।', 'सभी छात्र': 'सभी छात्र', 'नया प्रवेश': 'नया प्रवेश', 'डेटा एडिट': 'डेटा एडिट', 'डिलीट': 'डिलीट', 'दैनिक उपस्थिति': 'दैनिक उपस्थिति', 'रिपोर्ट': 'रिपोर्ट', 'रसीद': 'रसीद', 'बकाया लिस्ट': 'बकाया लिस्ट', 'जारी करें': 'जारी करें', 'प्रिंट': 'प्रिंट', 'रिपोर्ट्स': 'रिपोर्ट्स', 'पूरे स्कूल की रिपोर्ट': 'पूरे स्कूल की रिपोर्ट', 'कुल आय': 'कुल आय', 'बकाया': 'बकाया', 'एनालिसिस': 'एनालिसिस', 'पब्लिश': 'पब्लिश' },
+            'EN': { 'डैशबोर्ड': 'Dashboard', 'छात्र प्रोफाइल': 'Student Profile', 'उपस्थिति': 'Attendance', 'फीस अपडेट': 'Fee Update', 'TC अपडेट': 'TC Update', 'रिजल्ट': 'Result', 'स्वागत': 'Welcome to the Portal.', 'सभी छात्र': 'All Students', 'नया प्रवेश': 'New Admission', 'डेटा एडिट': 'Data Edit', 'डिलीट': 'Delete', 'दैनिक उपस्थिति': 'Daily Attendance', 'रिपोर्ट': 'Report', 'रसीद': 'Receipt', 'बकाया लिस्ट': 'Pending List', 'जारी करें': 'Issue', 'प्रिंट': 'Print', 'रिपोर्ट्स': 'Reports', 'पूरे स्कूल की रिपोर्ट': 'School Report', 'कुल आय': 'Total Income', 'बकाया': 'Due', 'एनालिसिस': 'Analysis', 'पब्लिश': 'Publish' }
         };
 
+        const icons = { 'छात्र प्रोफाइल': 'fa-user-graduate', 'उपस्थिति': 'fa-clipboard-user', 'फीस अपडेट': 'fa-money-bill-wave', 'TC अपडेट': 'fa-file-contract', 'रिजल्ट': 'fa-poll' };
+        const permissions = {
+            'admin': { 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश', 'डेटा एडिट', 'डिलीट'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
+            'teacher': { 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
+            'principal': { 'छात्र प्रोफाइल': ['सभी छात्र', 'रिपोर्ट्स'], 'उपस्थिति': ['पूरे स्कूल की रिपोर्ट'], 'फीस अपडेट': ['कुल आय', 'बकाया'], 'रिजल्ट': ['एनालिसिस', 'पब्लिश'] }
+        };
+
+        // डेटा लोडर
         async function loadData() {
-            const url = "YOUR_WEB_APP_URL"; // अपना URL यहाँ डालें
+            const url = "YOUR_WEB_APP_URL"; 
             try {
                 const response = await fetch(url);
                 const rawData = await response.json();
+                classData = {};
                 rawData.forEach(s => {
                     let cls = "Class " + s.class;
                     if (!classData[cls]) classData[cls] = [];
                     classData[cls].push(s);
                 });
-                buildMenu();
-                showContent('डैशबोर्ड');
+                showDashboard();
             } catch (e) { document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि।"; }
         }
 
-        function buildMenu() {
-            const container = document.getElementById('sideMenuContainer');
-            for (const [module, options] of Object.entries(permissions)) {
-                const li = document.createElement('li');
-                if (options.length === 0) {
-                    li.innerHTML = `<div class="module-btn" onclick="showContent('${module}')"><span>${module}</span></div>`;
-                } else {
-                    li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span>${module}</span><i class="fa fa-chevron-down fa-xs"></i></div>
-                        <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${opt}</a>`).join('')}</div>`;
-                }
-                container.appendChild(li);
+        function showDashboard() {
+            document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
+            let html = `<h3>कक्षाएं (Class-wise)</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
+            for (let cls in classData) {
+                html += `<tr style="cursor:pointer" onclick="showClassStudents('${cls}')"><td>${cls}</td><td>${classData[cls].length}</td></tr>`;
             }
-        }
-
-        function toggleSubMenu(el) { el.nextElementSibling.style.display = el.nextElementSibling.style.display === "block" ? "none" : "block"; }
-
-        function showContent(title) {
-            document.getElementById('pageTitle').innerText = title;
-            if (title === 'डैशबोर्ड') {
-                let html = `<div class="stats-container"><div class="stat-card"><h3>कुल छात्र</h3><p>${Object.values(classData).flat().length}</p></div></div>
-                            <h3>कक्षा-वार सूची</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
-                for (let cls in classData) { html += `<tr style="cursor:pointer" onclick="showClassStudents('${cls}')"><td>${cls}</td><td>${classData[cls].length}</td></tr>`; }
-                document.getElementById('contentArea').innerHTML = html + `</table>`;
-            } else {
-                document.getElementById('contentArea').innerHTML = `<h3>${title}</h3><p>यहाँ ${title} का कार्य होगा...</p>`;
-            }
+            document.getElementById('contentArea').innerHTML = html + `</table>`;
         }
 
         function showClassStudents(cls) {
-            let html = `<h3>${cls} - छात्र सूची</h3><button onclick="showContent('डैशबोर्ड')">वापस</button>
-                <table><tr><th>SH</th><th>School No</th><th>Name</th><th>Father</th><th>Mother</th><th>Action</th></tr>`;
+            let html = `<h3>${cls} - छात्र सूची</h3><button onclick="showDashboard()">वापस</button>
+                <table><tr><th>SH</th><th>School No</th><th>Name</th><th>Father</th><th>Mother</th><th>DOB</th><th>Medium</th><th>Gender</th></tr>`;
             classData[cls].forEach((s, i) => {
-                html += `<tr><td>${i+1}</td><td>${s.schoolno}</td><td>${s.name}</td><td>${s.father}</td><td>${s.mother}</td><td><button>Edit</button></td></tr>`;
+                html += `<tr><td>${i+1}</td><td>${s.schoolno}</td><td>${s.name}</td><td>${s.father}</td><td>${s.mother}</td><td>${s.dob}</td><td>${s.medium}</td><td>${s.gender}</td></tr>`;
             });
             document.getElementById('contentArea').innerHTML = html + `</table>`;
         }
 
-        function logout() { window.location.href='index.html'; }
+        function buildMenu() {
+            const container = document.getElementById('sideMenuContainer');
+            container.innerHTML = "";
+            const roleData = permissions[currentUserRole];
+            document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
+            for (const [module, options] of Object.entries(roleData)) {
+                const iconClass = icons[module] || 'fa-bars';
+                const li = document.createElement('li');
+                li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span><i class="fa-solid fa-chevron-down fa-xs"></i></div>
+                    <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}</div>`;
+                container.appendChild(li);
+            }
+        }
+
+        function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
+        function showContent(title) { document.getElementById('pageTitle').innerText = title; document.getElementById('contentArea').innerHTML = `<h3>${title}</h3><p>यहाँ डेटा फॉर्म आएगा...</p>`; }
+        function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
+        function logout() { if(confirm("लॉगआउट?")) window.location.href = 'index.html'; }
+
+        buildMenu();
         loadData();
     </script>
 </body>
