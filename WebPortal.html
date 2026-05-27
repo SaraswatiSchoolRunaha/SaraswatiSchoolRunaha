@@ -75,76 +75,99 @@
     <div id="contentArea" style="background:#fff; padding:20px; border:1px solid #ddd;">डेटा लोड हो रहा है...</div>
 </div>
     </main>
-    <script>
-        let currentLang = 'HN';
-        let classData = {};
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentUserRole = urlParams.get('role') || 'teacher'; 
+   <script>
+    let currentLang = 'HN';
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentUserRole = urlParams.get('role') || 'teacher';
 
-        const translations = {
-            'HN': { 'डैशबोर्ड': 'डैशबोर्ड', 'छात्र प्रोफाइल': 'छात्र प्रोफाइल', 'उपस्थिति': 'उपस्थिति', 'फीस अपडेट': 'फीस अपडेट', 'TC अपडेट': 'TC अपडेट', 'रिजल्ट': 'रिजल्ट', 'सभी छात्र': 'सभी छात्र', 'नया प्रवेश': 'नया प्रवेश', 'दैनिक उपस्थिति': 'दैनिक उपस्थिति', 'रिपोर्ट': 'रिपोर्ट', 'रसीद': 'रसीद', 'बकाया लिस्ट': 'बकाया लिस्ट', 'जारी करें': 'जारी करें', 'प्रिंट': 'प्रिंट' },
-            'EN': { 'डैशबोर्ड': 'Dashboard', 'छात्र प्रोफाइल': 'Student Profile', 'उपस्थिति': 'Attendance', 'फीस अपडेट': 'Fee Update', 'TC अपडेट': 'TC Update', 'रिजल्ट': 'Result', 'सभी छात्र': 'All Students', 'नया प्रवेश': 'New Admission', 'दैनिक उपस्थिति': 'Daily Attendance', 'रिपोर्ट': 'Report', 'रसीद': 'Receipt', 'बकाया लिस्ट': 'Pending List', 'जारी करें': 'Issue', 'प्रिंट': 'Print' }
-        };
+    const translations = {
+        'HN': { 'डैशबोर्ड': 'डैशबोर्ड', 'छात्र प्रोफाइल': 'छात्र प्रोफाइल', 'उपस्थिति': 'उपस्थिति', 'फीस अपडेट': 'फीस अपडेट', 'TC अपडेट': 'TC अपडेट', 'रिजल्ट': 'रिजल्ट', 'सभी छात्र': 'सभी छात्र', 'नया प्रवेश': 'नया प्रवेश', 'दैनिक उपस्थिति': 'दैनिक उपस्थिति', 'रिपोर्ट': 'रिपोर्ट', 'रसीद': 'रसीद', 'बकाया लिस्ट': 'बकाया लिस्ट', 'जारी करें': 'जारी करें', 'प्रिंट': 'प्रिंट' },
+        'EN': { 'डैशबोर्ड': 'Dashboard', 'छात्र प्रोफाइल': 'Student Profile', 'उपस्थिति': 'Attendance', 'फीस अपडेट': 'Fee Update', 'TC अपडेट': 'TC Update', 'रिजल्ट': 'Result', 'सभी छात्र': 'All Students', 'नया प्रवेश': 'New Admission', 'दैनिक उपस्थिति': 'Daily Attendance', 'रिपोर्ट': 'Report', 'रसीद': 'Receipt', 'बकाया लिस्ट': 'Pending List', 'जारी करें': 'Issue', 'प्रिंट': 'Print' }
+    };
 
-        const icons = { 'डैशबोर्ड': 'fa-house', 'छात्र प्रोफाइल': 'fa-user-graduate', 'उपस्थिति': 'fa-clipboard-user', 'फीस अपडेट': 'fa-money-bill-wave', 'TC अपडेट': 'fa-file-contract', 'रिजल्ट': 'fa-poll' };
-        
-        // डैशबोर्ड को सबसे ऊपर रखने के लिए यहाँ व्यवस्थित किया गया है
-        const permissions = {
-            'admin': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
-            'teacher': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
-            'principal': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['रिपोर्ट'], 'फीस अपडेट': ['बकाया लिस्ट'] }
-        };
+    const icons = { 'डैशबोर्ड': 'fa-house', 'छात्र प्रोफाइल': 'fa-user-graduate', 'उपस्थिति': 'fa-clipboard-user', 'फीस अपडेट': 'fa-money-bill-wave', 'TC अपडेट': 'fa-file-contract', 'रिजल्ट': 'fa-poll' };
 
-        async function loadData() {
-            const url = "YOUR_WEB_APP_URL"; 
-            try {
-                const response = await fetch(url);
-                const rawData = await response.json();
-                classData = {};
-                rawData.forEach(s => {
-                    let cls = "Class " + s.class;
-                    if (!classData[cls]) classData[cls] = [];
-                    classData[cls].push(s);
-                });
-                showDashboard();
-            } catch (e) { document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि।"; }
+    const permissions = {
+        'admin': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र', 'नया प्रवेश'], 'उपस्थिति': ['दैनिक उपस्थिति', 'रिपोर्ट'], 'फीस अपडेट': ['रसीद', 'बकाया लिस्ट'], 'TC अपडेट': ['जारी करें', 'प्रिंट'] },
+        'teacher': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['दैनिक उपस्थिति'], 'फीस अपडेट': ['बकाया लिस्ट'] },
+        'principal': { 'डैशबोर्ड': [], 'छात्र प्रोफाइल': ['सभी छात्र'], 'उपस्थिति': ['रिपोर्ट'], 'फीस अपडेट': ['बकाया लिस्ट'] }
+    };
+
+    // 1. यहाँ अपनी सभी अलग-अलग फाइलों के Web App URL डालें
+    const sheetUrls = {
+        'सभी छात्र': 'https://script.google.com/macros/s/DATABASE_ID/exec',
+        'बकाया लिस्ट': 'https://script.google.com/macros/s/FEES_ID/exec',
+        'दैनिक उपस्थिति': 'https://script.google.com/macros/s/ATTENDANCE_ID/exec',
+        'जारी करें': 'https://script.google.com/macros/s/TC_ID/exec'
+    };
+
+    // 2. डेटा लाने वाला नया फंक्शन
+    async function fetchSheetData(title) {
+        const url = sheetUrls[title];
+        if (!url) {
+            document.getElementById('contentArea').innerHTML = `<h3>${title}</h3><p>डेटा सोर्स कॉन्फ़िगर नहीं है।</p>`;
+            return;
         }
 
-        function buildMenu() {
-            const container = document.getElementById('sideMenuContainer');
-            container.innerHTML = "";
-            const roleData = permissions[currentUserRole];
-            document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
-            
-            for (const [module, options] of Object.entries(roleData)) {
-                const iconClass = icons[module] || 'fa-bars';
-                const li = document.createElement('li');
-                if (options.length === 0) {
-                    li.innerHTML = `<div class="module-btn" onclick="showDashboard()"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span></div>`;
-                } else {
-                    li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span><i class="fa-solid fa-chevron-down fa-xs"></i></div>
-                        <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}</div>`;
-                }
-                container.appendChild(li);
+        document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है...";
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            renderTable(data);
+        } catch (e) {
+            document.getElementById('contentArea').innerHTML = "डेटा लाने में त्रुटि हुई। (Google Web App पब्लिशिंग चेक करें)";
+        }
+    }
+
+    // 3. टेबल रेंडर करने वाला फंक्शन
+    function renderTable(data) {
+        if (!data || data.length === 0) {
+            document.getElementById('contentArea').innerHTML = "कोई डेटा नहीं मिला।";
+            return;
+        }
+        let headers = Object.keys(data[0]);
+        let html = "<table><tr>" + headers.map(h => `<th>${h}</th>`).join('') + "</tr>";
+        data.forEach(row => {
+            html += "<tr>" + headers.map(h => `<td>${row[h]}</td>`).join('') + "</tr>";
+        });
+        document.getElementById('contentArea').innerHTML = html + "</table>";
+    }
+
+    // 4. मेनू बनाने का फंक्शन
+    function buildMenu() {
+        const container = document.getElementById('sideMenuContainer');
+        container.innerHTML = "";
+        const roleData = permissions[currentUserRole];
+        document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
+        for (const [module, options] of Object.entries(roleData)) {
+            const iconClass = icons[module] || 'fa-bars';
+            const li = document.createElement('li');
+            if (options.length === 0) {
+                li.innerHTML = `<div class="module-btn" onclick="showDashboard()"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span></div>`;
+            } else {
+                li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span><i class="fa-solid fa-chevron-down fa-xs"></i></div>
+                                <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}</div>`;
             }
+            container.appendChild(li);
         }
+    }
 
-        function showDashboard() {
-            document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
-            let html = `<h3>कक्षाएं (Class-wise)</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
-            for (let cls in classData) {
-                html += `<tr style="cursor:pointer" onclick="showClassStudents('${cls}')"><td>${cls}</td><td>${classData[cls].length}</td></tr>`;
-            }
-            document.getElementById('contentArea').innerHTML = html + `</table>`;
-        }
+    function showDashboard() {
+        document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
+        document.getElementById('contentArea').innerHTML = "<h3>डैशबोर्ड</h3><p>नमस्ते! कृपया बाईं ओर से कोई विकल्प चुनें।</p>";
+    }
 
-        function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
-        function showContent(title) { document.getElementById('pageTitle').innerText = title; document.getElementById('contentArea').innerHTML = `<h3>${title}</h3><p>यहाँ डेटा फॉर्म आएगा...</p>`; }
-        function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
-        function logout() { if(confirm("लॉगआउट?")) window.location.href = 'index.html'; }
+    function showContent(title) {
+        document.getElementById('pageTitle').innerText = translations[currentLang][title];
+        fetchSheetData(title);
+    }
 
-        buildMenu();
-        loadData();
-    </script>
+    function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
+    function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
+    function logout() { if(confirm("लॉगआउट?")) window.location.href = 'index.html'; }
+
+    buildMenu();
+    showDashboard();
+</script>
 </body>
 </html>
