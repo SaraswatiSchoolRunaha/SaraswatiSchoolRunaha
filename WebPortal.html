@@ -144,24 +144,34 @@
     }
 
     // 4. मेनू बनाने का फंक्शन
-    function buildMenu() {
+  function buildMenu() {
         const container = document.getElementById('sideMenuContainer');
         container.innerHTML = "";
         const roleData = permissions[currentUserRole];
         document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
+        
         for (const [module, options] of Object.entries(roleData)) {
             const iconClass = icons[module] || 'fa-bars';
             const li = document.createElement('li');
+            
+            // अगर ऑप्शंस खाली हैं, तो डैशबोर्ड जैसा साधारण बटन
             if (options.length === 0) {
                 li.innerHTML = `<div class="module-btn" onclick="showDashboard()"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span></div>`;
-            } else {
-                li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)"><span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span><i class="fa-solid fa-chevron-down fa-xs"></i></div>
-                                <div class="sub-menu">${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}</div>`;
+            } 
+            // अगर ऑप्शंस हैं, तो सब-मेनू वाला बटन
+            else {
+                li.innerHTML = `<div class="module-btn" onclick="toggleSubMenu(this)">
+                                    <span><i class="fa-solid ${iconClass}" style="margin-right:10px;"></i> ${translations[currentLang][module]}</span>
+                                    <i class="fa-solid fa-chevron-down fa-xs"></i>
+                                </div>
+                                <div class="sub-menu">
+                                    ${options.map(opt => `<a href="#" onclick="showContent('${opt}')">${translations[currentLang][opt]}</a>`).join('')}
+                                </div>`;
             }
             container.appendChild(li);
         }
     }
-
+       
     function showDashboard() {
         document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
         document.getElementById('contentArea').innerHTML = "<h3>डैशबोर्ड</h3><p>नमस्ते! कृपया बाईं ओर से कोई विकल्प चुनें।</p>";
