@@ -175,9 +175,46 @@
         }
     }
        
-    function showDashboard() {
+   function showDashboard() {
         document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
-        document.getElementById('contentArea').innerHTML = "<h3>डैशबोर्ड</h3><p>नमस्ते! कृपया बाईं ओर से कोई विकल्प चुनें।</p>";
+        
+        // डेटा लोड होने तक का मैसेज
+        document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है...";
+
+        fetch(sheetUrls['सभी छात्र'])
+            .then(res => res.json())
+            .then(data => {
+                let classMap = {};
+                // यहाँ 'Class' की जगह अपनी शीट के कॉलम का नाम लिखें (जैसे 'कक्षा')
+                data.forEach(item => {
+                    let cls = item['Class'] || 'N/A'; 
+                    if (!classMap[cls]) classMap[cls] = [];
+                    classMap[cls].push(item);
+                });
+
+                let html = `<h3>कक्षाएं (क्लिक करें)</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
+                for (let cls in classMap) {
+                    html += `<tr style="cursor:pointer; background:#fff;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='#fff'" onclick="showClassList('${cls.replace(/'/g, "\\'")}')">
+                                <td>${cls}</td><td>${classMap[cls].length}</td>
+                             </tr>`;
+                }
+                document.getElementById('contentArea').innerHTML = html + `</table>`;
+                window.lastData = data; 
+            })
+            .catch(() => {
+                document.getElementById('contentArea').innerHTML = "<p>डेटा लोड करने में त्रुटि हुई।</p>";
+            });
+    }
+
+    function showClassList(cls) {
+        let filtered = window.lastData.filter(item => (item['Class'] || 'N/A') === cls);
+        let headers = Object.keys(filtered[0]);
+        let html = `<button onclick="showDashboard()" class="btn-action">← वापस</button><table><tr>` 
+                    + headers.map(h => `<th>${h}</th>`).join('') + `</tr>`;
+        filtered.forEach(row => {
+            html += "<tr>" + headers.map(h => `<td>${row[h]}</td>`).join('') + "</tr>";
+        });
+        document.getElementById('contentArea').innerHTML = html + "</table>";
     }
 
     function showContent(title) {
