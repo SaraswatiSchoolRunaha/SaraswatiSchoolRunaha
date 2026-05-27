@@ -164,7 +164,7 @@
 
     function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
-    function logout() { if(confirm("लॉगआउट?")) window.location.href = 'index.html'; }
+    function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
 
     buildMenu();
     showDashboard();
