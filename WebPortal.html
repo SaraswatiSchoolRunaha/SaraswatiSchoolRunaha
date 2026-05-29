@@ -175,53 +175,142 @@
         }
     }
        
-   function showDashboard() {
-    document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
-    document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है...";
+ function showDashboard() {
 
-       fetch(sheetUrls['Database'] + "?action=getDashboard")
-        .then(res => res.json())
-        .then(data => {
-            window.lastData = data;
-            
-            let classCount = {};
-            data.forEach(item => {
-                let cls = item['Class'] || 'N/A';
-                classCount[cls] = (classCount[cls] || 0) + 1;
-            });
+    document.getElementById('pageTitle').innerText =
+        translations[currentLang]['डैशबोर्ड'];
 
-            // यहाँ से कोड शुरू हो रहा है:
-            let totalStudents = data.length;
-            let html = `
-                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-                    <div style="background: #1e3a8a; color: white; padding: 20px; border-radius: 8px; flex: 1;">
-                        <h3>कुल छात्र</h3>
-                        <p style="font-size: 24px; font-weight: bold;">${totalStudents}</p>
-                    </div>
-                    <div style="background: #2563eb; color: white; padding: 20px; border-radius: 8px; flex: 1;">
-                        <h3>सक्रिय कक्षाएं</h3>
-                        <p style="font-size: 24px; font-weight: bold;">${Object.keys(classCount).length}</p>
-                    </div>
-                </div>
-                <h3>कक्षाएं और छात्र संख्या</h3>
-                <table>
-                    <tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
-            
-            // टेबल की पंक्तियाँ जोड़ना
-            for (let cls in classCount) {
-                html += `<tr style="cursor:pointer;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='#fff'" onclick="showClassList('${cls}')">
-                            <td>${cls}</td>
-                            <td>${classCount[cls]}</td>
-                         </tr>`;
-            }
-            // यहाँ तक कोड है।
+    document.getElementById('contentArea').innerHTML = `
+        <div style="text-align:center;padding:30px;">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            डेटा लोड हो रहा है...
+        </div>
+    `;
 
-            document.getElementById('contentArea').innerHTML = html + `</table>`;
-        })
-        .catch(err => {
-            document.getElementById('contentArea').innerHTML = "<p>डेटा लोड करने में त्रुटि हुई।</p>";
-            console.error(err);
+    fetch(sheetUrls['Database'] + "?action=getDashboard")
+    .then(res => res.json())
+    .then(data => {
+
+        window.lastData = data;
+
+        // Class Wise Count
+        let classCount = {};
+
+        data.forEach(student => {
+
+            let cls = student['Class'] || 'N/A';
+
+            classCount[cls] = (classCount[cls] || 0) + 1;
         });
+
+        let totalStudents = data.length;
+
+        let html = `
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+            margin-bottom:25px;
+        ">
+
+            <div style="
+                background:#1e3a8a;
+                color:#fff;
+                padding:20px;
+                border-radius:10px;
+                box-shadow:0 4px 10px rgba(0,0,0,0.1);
+            ">
+                <h3>कुल छात्र</h3>
+                <p style="
+                    font-size:32px;
+                    font-weight:bold;
+                    margin-top:10px;
+                ">
+                    ${totalStudents}
+                </p>
+            </div>
+
+            <div style="
+                background:#2563eb;
+                color:#fff;
+                padding:20px;
+                border-radius:10px;
+                box-shadow:0 4px 10px rgba(0,0,0,0.1);
+            ">
+                <h3>कुल कक्षाएं</h3>
+                <p style="
+                    font-size:32px;
+                    font-weight:bold;
+                    margin-top:10px;
+                ">
+                    ${Object.keys(classCount).length}
+                </p>
+            </div>
+
+        </div>
+
+        <div style="
+            background:#fff;
+            border-radius:10px;
+            overflow:hidden;
+            border:1px solid #ddd;
+        ">
+
+            <div style="
+                padding:15px;
+                background:#f8fafc;
+                font-weight:bold;
+                border-bottom:1px solid #ddd;
+            ">
+                कक्षा अनुसार छात्र संख्या
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>कक्षा</th>
+                        <th>कुल छात्र</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+        `;
+
+        for(let cls in classCount){
+
+            html += `
+                <tr
+                    style="cursor:pointer;"
+                    onclick="showClassList('${cls}')"
+                >
+                    <td>${cls}</td>
+                    <td>${classCount[cls]}</td>
+                </tr>
+            `;
+        }
+
+        html += `
+                </tbody>
+            </table>
+        </div>
+        `;
+
+        document.getElementById('contentArea').innerHTML = html;
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        document.getElementById('contentArea').innerHTML = `
+            <div style="color:red;padding:20px;">
+                Dashboard डेटा लोड नहीं हुआ।
+            </div>
+        `;
+    });
 }
        
     function showClassList(cls) {
