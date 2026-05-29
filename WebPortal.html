@@ -198,7 +198,7 @@
 
         data.forEach(student => {
 
-            let cls = student['Class'] || 'N/A';
+          let cls = student['class'] || 'N/A';
 
             classCount[cls] = (classCount[cls] || 0) + 1;
         });
@@ -314,7 +314,7 @@
 }
        
     function showClassList(cls) {
-        let filtered = window.lastData.filter(item => (item['Class'] || 'N/A') === cls);
+        let filtered = window.lastData.filter(item => (item['class'] || 'N/A') === cls);
         let headers = Object.keys(filtered[0]);
         let html = `<button onclick="showDashboard()" class="btn-action">← वापस</button><table><tr>` 
                     + headers.map(h => `<th>${h}</th>`).join('') + `</tr>`;
