@@ -176,36 +176,46 @@
     }
        
    function showDashboard() {
-        document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
-        
-        // डेटा लोड होने तक का मैसेज
-        document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है...";
+    document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
+    document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है...";
 
-        fetch(sheetUrls['Database'])
-            .then(res => res.json())
-            .then(data => {
-                let classMap = {};
-                // यहाँ 'Class' की जगह अपनी शीट के कॉलम का नाम लिखें (जैसे 'कक्षा')
-                data.forEach(item => {
-                    let cls = item['Class'] || 'N/A'; 
-                    if (!classMap[cls]) classMap[cls] = [];
-                    classMap[cls].push(item);
-                });
-
-                let html = `<h3>कक्षाएं (क्लिक करें)</h3><table><tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
-                for (let cls in classMap) {
-                    html += `<tr style="cursor:pointer; background:#fff;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='#fff'" onclick="showClassList('${cls.replace(/'/g, "\\'")}')">
-                                <td>${cls}</td><td>${classMap[cls].length}</td>
-                             </tr>`;
+    fetch(sheetUrls['Database'])
+        .then(res => res.json())
+        .then(data => {
+            window.lastData = data; // डेटा को स्टोर करें ताकि बाद में उपयोग हो सके
+            
+            // क्लास-वार गिनती के लिए ऑब्जेक्ट
+            let classCount = {};
+            
+            data.forEach(item => {
+                let cls = item['Class'] || 'N/A'; // अपनी शीट के कॉलम का नाम 'Class' की जगह लिखें
+                if (classCount[cls]) {
+                    classCount[cls]++;
+                } else {
+                    classCount[cls] = 1;
                 }
-                document.getElementById('contentArea').innerHTML = html + `</table>`;
-                window.lastData = data; 
-            })
-            .catch(() => {
-                document.getElementById('contentArea').innerHTML = "<p>डेटा लोड करने में त्रुटि हुई।</p>";
             });
-    }
 
+            // HTML टेबल बनाना
+            let html = `<h3>कक्षाएं और छात्र संख्या</h3>
+                        <table>
+                            <tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
+            
+            for (let cls in classCount) {
+                html += `<tr style="cursor:pointer;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='#fff'" onclick="showClassList('${cls}')">
+                            <td>${cls}</td>
+                            <td>${classCount[cls]}</td>
+                         </tr>`;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html + `</table>`;
+        })
+        .catch(err => {
+            document.getElementById('contentArea').innerHTML = "<p>डेटा लोड करने में त्रुटि हुई।</p>";
+            console.error(err);
+        });
+}
+       
     function showClassList(cls) {
         let filtered = window.lastData.filter(item => (item['Class'] || 'N/A') === cls);
         let headers = Object.keys(filtered[0]);
