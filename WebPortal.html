@@ -131,19 +131,34 @@
         }
     }
 
-    // 3. टेबल रेंडर करने वाला फंक्शन
-    function renderTable(data) {
-        if (!data || data.length === 0) {
-            document.getElementById('contentArea').innerHTML = "कोई डेटा नहीं मिला।";
-            return;
-        }
-        let headers = Object.keys(data[0]);
-        let html = "<table><tr>" + headers.map(h => `<th>${h}</th>`).join('') + "</tr>";
-        data.forEach(row => {
-            html += "<tr>" + headers.map(h => `<td>${row[h]}</td>`).join('') + "</tr>";
-        });
-        document.getElementById('contentArea').innerHTML = html + "</table>";
+    // 3. टेबल रेंडर करने वाला सुरक्षित फंक्शन
+function renderTable(data) {
+    if (!data || data.length === 0) {
+        document.getElementById('contentArea').innerHTML = "कोई डेटा नहीं मिला।";
+        return;
     }
+
+    // सभी ऑब्जेक्ट्स के keys को इकट्ठा करें (ताकि अगर किसी row में key न हो तो भी error न आए)
+    let allKeys = new Set();
+    data.forEach(row => {
+        Object.keys(row).forEach(key => allKeys.add(key));
+    });
+    let headers = Array.from(allKeys);
+
+    let html = "<table><tr>" + headers.map(h => `<th>${h}</th>`).join('') + "</tr>";
+    
+    data.forEach(row => {
+        html += "<tr>";
+        headers.forEach(h => {
+            // यदि वैल्यू undefined है, तो उसे खाली स्ट्रिंग ('') दिखाएं
+            let cellValue = (row[h] !== undefined && row[h] !== null) ? row[h] : "";
+            html += `<td>${cellValue}</td>`;
+        });
+        html += "</tr>";
+    });
+    
+    document.getElementById('contentArea').innerHTML = html + "</table>";
+}
 
     // 4. मेनू बनाने का फंक्शन
   function buildMenu() {
@@ -258,9 +273,21 @@ function showDashboard() {
     }
 
     function showContent(title) {
-        document.getElementById('pageTitle').innerText = translations[currentLang][title];
+    document.getElementById('pageTitle').innerText = translations[currentLang][title];
+    
+    // अगर डेटा पहले से लोड है और 'सभी छात्र' देखना है
+    if (title === 'सभी छात्र' && window.lastData) {
+        renderTable(window.lastData);
+    } 
+    // अगर डेटा मौजूद नहीं है, तो 'Database' से लोड करें
+    else if (title === 'सभी छात्र') {
+        fetchSheetData('Database'); 
+    }
+    // बाकी ऑप्शंस के लिए पुराना तरीका
+    else {
         fetchSheetData(title);
     }
+}
 
     function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
