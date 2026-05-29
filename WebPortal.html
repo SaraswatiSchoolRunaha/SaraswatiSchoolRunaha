@@ -182,32 +182,40 @@
     fetch(sheetUrls['Database'])
         .then(res => res.json())
         .then(data => {
-            window.lastData = data; // डेटा को स्टोर करें ताकि बाद में उपयोग हो सके
+            window.lastData = data;
             
-            // क्लास-वार गिनती के लिए ऑब्जेक्ट
             let classCount = {};
-            
             data.forEach(item => {
-                let cls = item['Class'] || 'N/A'; // अपनी शीट के कॉलम का नाम 'Class' की जगह लिखें
-                if (classCount[cls]) {
-                    classCount[cls]++;
-                } else {
-                    classCount[cls] = 1;
-                }
+                let cls = item['Class'] || 'N/A';
+                classCount[cls] = (classCount[cls] || 0) + 1;
             });
 
-            // HTML टेबल बनाना
-            let html = `<h3>कक्षाएं और छात्र संख्या</h3>
-                        <table>
-                            <tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
+            // यहाँ से कोड शुरू हो रहा है:
+            let totalStudents = data.length;
+            let html = `
+                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                    <div style="background: #1e3a8a; color: white; padding: 20px; border-radius: 8px; flex: 1;">
+                        <h3>कुल छात्र</h3>
+                        <p style="font-size: 24px; font-weight: bold;">${totalStudents}</p>
+                    </div>
+                    <div style="background: #2563eb; color: white; padding: 20px; border-radius: 8px; flex: 1;">
+                        <h3>सक्रिय कक्षाएं</h3>
+                        <p style="font-size: 24px; font-weight: bold;">${Object.keys(classCount).length}</p>
+                    </div>
+                </div>
+                <h3>कक्षाएं और छात्र संख्या</h3>
+                <table>
+                    <tr><th>कक्षा</th><th>कुल छात्र</th></tr>`;
             
+            // टेबल की पंक्तियाँ जोड़ना
             for (let cls in classCount) {
                 html += `<tr style="cursor:pointer;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='#fff'" onclick="showClassList('${cls}')">
                             <td>${cls}</td>
                             <td>${classCount[cls]}</td>
                          </tr>`;
             }
-            
+            // यहाँ तक कोड है।
+
             document.getElementById('contentArea').innerHTML = html + `</table>`;
         })
         .catch(err => {
