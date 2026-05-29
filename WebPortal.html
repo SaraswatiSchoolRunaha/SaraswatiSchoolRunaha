@@ -179,7 +179,7 @@
     document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
     document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है...";
 
-    fetch(sheetUrls['Database'])
+       fetch(sheetUrls['Database'] + "?action=getDashboard")
         .then(res => res.json())
         .then(data => {
             window.lastData = data;
