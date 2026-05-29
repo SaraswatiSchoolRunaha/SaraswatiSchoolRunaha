@@ -240,12 +240,51 @@
 
         let html = `
 
-       <div style="
-    display:flex;
-    gap:15px;
-    margin-bottom:20px;
-    flex-wrap:wrap;
+      <div style="
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    font-family: 'Segoe UI', sans-serif;
 ">
+
+    <!-- Card 1: कुल छात्र -->
+    <div style="
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        min-width: 180px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="font-size: 14px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">
+            कुल छात्र
+        </div>
+        <div style="font-size: 32px; font-weight: 700; margin-top: 8px;">
+            ${totalStudents}
+        </div>
+    </div>
+
+    <!-- Card 2: कुल कक्षाएं -->
+    <div style="
+        background: linear-gradient(135deg, #0f172a, #334155);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        min-width: 180px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="font-size: 14px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">
+            कुल कक्षाएं
+        </div>
+        <div style="font-size: 32px; font-weight: 700; margin-top: 8px;">
+            ${Object.keys(classCount).length}
+        </div>
+    </div>
+
+</div>
 
     <div style="
         background:#1e3a8a;
@@ -296,6 +335,7 @@
     </div>
 
 </div>
+
         <div style="
             background:white;
             border-radius:10px;
