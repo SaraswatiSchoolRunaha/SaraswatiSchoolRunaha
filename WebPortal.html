@@ -300,12 +300,12 @@ function saveAttendance() {
     rows.forEach(row => {
         attendance.push({
             date: date,
-            student_id: row.cells[0].innerText,
-            student_name: row.cells[1].innerText,
-            father_name: row.cells[2].innerText,
-            medium: row.cells[3].innerText,
-            class: row.cells[4].innerText,
-            status: row.querySelector('.attStatus').value
+            id: row.cells[0].innerText,      // यहाँ key 'id' है
+            name: row.cells[1].innerText,    // यहाँ key 'name' है
+            father: row.cells[2].innerText,  // यहाँ key 'father' है
+            medium: row.cells[3].innerText,  // यहाँ key 'medium' है
+            class: row.cells[4].innerText,   // यहाँ key 'class' है
+            status: row.querySelector('.attStatus').value // यहाँ key 'status' है
         });
     });
 
