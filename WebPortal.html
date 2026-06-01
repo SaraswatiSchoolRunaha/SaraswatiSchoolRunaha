@@ -216,14 +216,12 @@ function renderTable(data) {
         }
     }
        
-// --- अटेंडेंस मॉड्यूल कोड ---
-
 // 1. फॉर्म और क्लास सिलेक्शन
 function showAttendanceForm() {
     document.getElementById('pageTitle').innerText = "दैनिक उपस्थिति";
 
     // सभी यूनिक क्लास निकालें
-    let classes = [...new Set(window.lastData.map(s => s['class'] || s['Class']))].filter(c => c !== undefined);
+    let classes = [...new Set(window.lastData.map(s => s['Class'] || s['class']))].filter(c => c !== undefined && c !== "");
 
     let html = `
         <div style="margin-bottom:20px; display:flex; gap:15px; align-items:center;">
@@ -252,16 +250,29 @@ function filterStudentsByClass() {
         return;
     }
 
-    let filteredStudents = window.lastData.filter(s => (s['class'] || s['Class']) == selectedClass);
+    // डेटा को फिल्टर करें
+    let filteredStudents = window.lastData.filter(s => (s['Class'] || s['class']) == selectedClass);
 
     let html = `
         <table id="attTable">
-            <thead><tr><th>ID</th><th>नाम</th><th>उपस्थिति</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Father Name</th>
+                    <th>Medium</th>
+                    <th>Class</th>
+                    <th>Status (P/A)</th>
+                </tr>
+            </thead>
             <tbody>
                 ${filteredStudents.map(student => `
                     <tr>
-                        <td>${student['ID'] || student['Student ID'] || 'N/A'}</td>
-                        <td>${student['Name'] || student['Student Name'] || 'N/A'}</td>
+                        <td>${student['Student ID'] || student['ID'] || '-'}</td>
+                        <td>${student['Student Name'] || student['Name'] || '-'}</td>
+                        <td>${student['Father Name'] || '-'}</td>
+                        <td>${student['Medium'] || '-'}</td>
+                        <td>${student['Class'] || student['class'] || '-'}</td>
                         <td>
                             <select class="attStatus">
                                 <option value="P">Present (P)</option>
@@ -289,10 +300,12 @@ function saveAttendance() {
     rows.forEach(row => {
         attendance.push({
             date: date,
-            id: row.cells[0].innerText,
-            name: row.cells[1].innerText,
-            status: row.querySelector('.attStatus').value,
-            class: selectedClass
+            student_id: row.cells[0].innerText,
+            student_name: row.cells[1].innerText,
+            father_name: row.cells[2].innerText,
+            medium: row.cells[3].innerText,
+            class: row.cells[4].innerText,
+            status: row.querySelector('.attStatus').value
         });
     });
 
@@ -305,9 +318,7 @@ function saveAttendance() {
     })
     .then(() => alert("उपस्थिति सफलतापूर्वक दर्ज हो गई!"))
     .catch(err => alert("त्रुटि: " + err));
-}    
-
-
+}
        
 function showDashboard() {
     document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
