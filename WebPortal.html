@@ -273,6 +273,9 @@ function saveAttendance() {
     let attendance = [];
     let rows = document.querySelectorAll("#attTable tbody tr");
     let date = document.getElementById("attDate").value;
+    
+    // यहाँ से फॉर्म में चुनी गई क्लास की वैल्यू लें
+    let selectedClass = document.getElementById("classFilter").value;
 
     rows.forEach(row => {
         attendance.push({
@@ -280,36 +283,23 @@ function saveAttendance() {
             id: row.cells[0].innerText,
             name: row.cells[1].innerText,
             status: row.querySelector('.attStatus').value,
-            class: "12th" // इसे अपने हिसाब से बदलें
-            class: "11th"
-            class: "10th"
-            class: "9th"
-            class: "8th"
-            class: "7th"
-            class: "6th"
-            class: "5th"
-            class: "IVth"
-            class: "IIIrd"
-            class: "IInd"
-            class: "Ist"
-            class: "KGII"
-            class: "KGI"
-            class: "Nussary"
-            });
+            class: selectedClass // अब यह सही क्लास सेव करेगा
+        });
     });
 
-    // अपना Google Web App URL यहाँ डालें
     const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
 
     fetch(url, {
         method: 'POST',
-        mode: 'no-cors', // इसे न हटाएँ, यह Google Script के लिए जरूरी है
+        mode: 'no-cors',
         body: JSON.stringify(attendance)
     })
-    .then(() => alert("उपस्थिति दर्ज हो गई!"))
+    .then(() => alert("उपस्थिति सफलतापूर्वक दर्ज हो गई!"))
     .catch(err => alert("त्रुटि: " + err));
 }
-  
+
+
+       
 function showDashboard() {
     document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
 
