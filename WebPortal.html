@@ -219,28 +219,40 @@ function renderTable(data) {
        
 // --- अटेंडेंस मॉड्यूल कोड ---
 
+// 1. फॉर्म और क्लास सिलेक्शन
 function showAttendanceForm() {
     document.getElementById('pageTitle').innerText = "दैनिक उपस्थिति";
 
     // सभी यूनिक क्लास निकालें
-    let classes = [...new Set(window.lastData.map(s => s['class'] || s['Class']))];
+    let classes = [...new Set(window.lastData.map(s => s['class'] || s['Class']))].filter(c => c !== undefined);
 
     let html = `
-        <div style="margin-bottom:20px;">
-            <label>कक्षा चुनें: </label>
-            <select id="classFilter" onchange="filterStudentsByClass()">
-                <option value="">-- कक्षा चुनें --</option>
-                ${classes.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
-            </select>
+        <div style="margin-bottom:20px; display:flex; gap:15px; align-items:center;">
+            <div>
+                <label>तारीख: </label>
+                <input type="date" id="attDate" value="${new Date().toISOString().split('T')[0]}">
+            </div>
+            <div>
+                <label>कक्षा चुनें: </label>
+                <select id="classFilter" onchange="filterStudentsByClass()">
+                    <option value="">-- कक्षा चुनें --</option>
+                    ${classes.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
+                </select>
+            </div>
         </div>
         <div id="attendanceTableContainer"></div>
     `;
     document.getElementById('contentArea').innerHTML = html;
 }
 
-// क्लास चुनते ही टेबल बनाने वाला फंक्शन
+// 2. क्लास के हिसाब से टेबल फिल्टर करना
 function filterStudentsByClass() {
     let selectedClass = document.getElementById('classFilter').value;
+    if (!selectedClass) {
+        document.getElementById('attendanceTableContainer').innerHTML = "";
+        return;
+    }
+
     let filteredStudents = window.lastData.filter(s => (s['class'] || s['Class']) == selectedClass);
 
     let html = `
@@ -266,24 +278,22 @@ function filterStudentsByClass() {
     document.getElementById('attendanceTableContainer').innerHTML = html;
 }
 
-
-       
-       
+// 3. डेटा सेव करना
 function saveAttendance() {
-    let attendance = [];
-    let rows = document.querySelectorAll("#attTable tbody tr");
     let date = document.getElementById("attDate").value;
-    
-    // यहाँ से फॉर्म में चुनी गई क्लास की वैल्यू लें
     let selectedClass = document.getElementById("classFilter").value;
+    let rows = document.querySelectorAll("#attTable tbody tr");
+    
+    if (!date) { alert("कृपया तारीख चुनें!"); return; }
 
+    let attendance = [];
     rows.forEach(row => {
         attendance.push({
             date: date,
             id: row.cells[0].innerText,
             name: row.cells[1].innerText,
             status: row.querySelector('.attStatus').value,
-            class: selectedClass // अब यह सही क्लास सेव करेगा
+            class: selectedClass
         });
     });
 
@@ -296,7 +306,7 @@ function saveAttendance() {
     })
     .then(() => alert("उपस्थिति सफलतापूर्वक दर्ज हो गई!"))
     .catch(err => alert("त्रुटि: " + err));
-}
+}    
 
 
        
