@@ -216,25 +216,38 @@ function renderTable(data) {
             container.appendChild(li);
         }
     }
+       
 // --- अटेंडेंस मॉड्यूल कोड ---
 
 function showAttendanceForm() {
     document.getElementById('pageTitle').innerText = "दैनिक उपस्थिति";
-    
-    // यह मानकर कि 'window.lastData' में स्टूडेंट्स की लिस्ट है
-    if (!window.lastData || window.lastData.length === 0) {
-        document.getElementById('contentArea').innerHTML = "कृपया पहले डैशबोर्ड से डेटा लोड करें...";
-        return;
-    }
+
+    // सभी यूनिक क्लास निकालें
+    let classes = [...new Set(window.lastData.map(s => s['class'] || s['Class']))];
 
     let html = `
         <div style="margin-bottom:20px;">
-            <label>तारीख: </label> <input type="date" id="attDate" value="${new Date().toISOString().split('T')[0]}">
+            <label>कक्षा चुनें: </label>
+            <select id="classFilter" onchange="filterStudentsByClass()">
+                <option value="">-- कक्षा चुनें --</option>
+                ${classes.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
+            </select>
         </div>
+        <div id="attendanceTableContainer"></div>
+    `;
+    document.getElementById('contentArea').innerHTML = html;
+}
+
+// क्लास चुनते ही टेबल बनाने वाला फंक्शन
+function filterStudentsByClass() {
+    let selectedClass = document.getElementById('classFilter').value;
+    let filteredStudents = window.lastData.filter(s => (s['class'] || s['Class']) == selectedClass);
+
+    let html = `
         <table id="attTable">
             <thead><tr><th>ID</th><th>नाम</th><th>उपस्थिति</th></tr></thead>
             <tbody>
-                ${window.lastData.map(student => `
+                ${filteredStudents.map(student => `
                     <tr>
                         <td>${student['ID'] || student['Student ID'] || 'N/A'}</td>
                         <td>${student['Name'] || student['Student Name'] || 'N/A'}</td>
@@ -248,11 +261,13 @@ function showAttendanceForm() {
                 `).join('')}
             </tbody>
         </table>
-        <button onclick="saveAttendance()" class="btn-action" style="background:#1e3a8a; color:white; padding:10px 20px;">सबमिट उपस्थिति</button>
+        <button onclick="saveAttendance()" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
     `;
-    document.getElementById('contentArea').innerHTML = html;
+    document.getElementById('attendanceTableContainer').innerHTML = html;
 }
 
+
+       
        
 function saveAttendance() {
     let attendance = [];
