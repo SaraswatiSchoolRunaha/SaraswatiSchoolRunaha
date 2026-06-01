@@ -216,7 +216,85 @@ function renderTable(data) {
             container.appendChild(li);
         }
     }
+// --- अटेंडेंस मॉड्यूल कोड ---
+
+function showAttendanceForm() {
+    document.getElementById('pageTitle').innerText = "दैनिक उपस्थिति";
+    
+    // यह मानकर कि 'window.lastData' में स्टूडेंट्स की लिस्ट है
+    if (!window.lastData || window.lastData.length === 0) {
+        document.getElementById('contentArea').innerHTML = "कृपया पहले डैशबोर्ड से डेटा लोड करें...";
+        return;
+    }
+
+    let html = `
+        <div style="margin-bottom:20px;">
+            <label>तारीख: </label> <input type="date" id="attDate" value="${new Date().toISOString().split('T')[0]}">
+        </div>
+        <table id="attTable">
+            <thead><tr><th>ID</th><th>नाम</th><th>उपस्थिति</th></tr></thead>
+            <tbody>
+                ${window.lastData.map(student => `
+                    <tr>
+                        <td>${student['ID'] || student['Student ID'] || 'N/A'}</td>
+                        <td>${student['Name'] || student['Student Name'] || 'N/A'}</td>
+                        <td>
+                            <select class="attStatus">
+                                <option value="P">Present (P)</option>
+                                <option value="A">Absent (A)</option>
+                            </select>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        <button onclick="saveAttendance()" class="btn-action" style="background:#1e3a8a; color:white; padding:10px 20px;">सबमिट उपस्थिति</button>
+    `;
+    document.getElementById('contentArea').innerHTML = html;
+}
+
        
+function saveAttendance() {
+    let attendance = [];
+    let rows = document.querySelectorAll("#attTable tbody tr");
+    let date = document.getElementById("attDate").value;
+
+    rows.forEach(row => {
+        attendance.push({
+            date: date,
+            id: row.cells[0].innerText,
+            name: row.cells[1].innerText,
+            status: row.querySelector('.attStatus').value,
+            class: "12th" // इसे अपने हिसाब से बदलें
+            class: "11th"
+            class: "10th"
+            class: "9th"
+            class: "8th"
+            class: "7th"
+            class: "6th"
+            class: "5th"
+            class: "IVth"
+            class: "IIIrd"
+            class: "IInd"
+            class: "Ist"
+            class: "KGII"
+            class: "KGI"
+            class: "Nussary"
+            });
+    });
+
+    // अपना Google Web App URL यहाँ डालें
+    const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
+
+    fetch(url, {
+        method: 'POST',
+        mode: 'no-cors', // इसे न हटाएँ, यह Google Script के लिए जरूरी है
+        body: JSON.stringify(attendance)
+    })
+    .then(() => alert("उपस्थिति दर्ज हो गई!"))
+    .catch(err => alert("त्रुटि: " + err));
+}
+  
 function showDashboard() {
     document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
 
