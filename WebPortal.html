@@ -381,20 +381,27 @@ function showDashboard() {
     function showContent(title) {
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
     
+    // नया अटेंडेंस मॉड्यूल के लिए कंडीशन
+    if (title === 'दैनिक उपस्थिति') {
+        showAttendanceForm(); // यह वह फंक्शन है जो मैंने अभी आपको दिया था
+    }
     // अगर डेटा पहले से लोड है और 'सभी छात्र' देखना है
-    if (title === 'सभी छात्र' && window.lastData) {
+    else if (title === 'सभी छात्र' && window.lastData) {
         renderTable(window.lastData);
     } 
     // अगर डेटा मौजूद नहीं है, तो 'Database' से लोड करें
     else if (title === 'सभी छात्र') {
         fetchSheetData('Database'); 
     }
-    // बाकी ऑप्शंस के लिए पुराना तरीका
+    // बाकी ऑप्शंस के लिए
     else {
         fetchSheetData(title);
     }
 }
 
+
+
+       
     function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
     function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
