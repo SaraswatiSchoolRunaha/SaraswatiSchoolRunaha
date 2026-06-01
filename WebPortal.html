@@ -250,8 +250,11 @@ function filterStudentsByClass() {
         return;
     }
 
-    // डेटा को फिल्टर करें
-    let filteredStudents = window.lastData.filter(s => (s['Class'] || s['class']) == selectedClass);
+    // डेटा को फिल्टर करें (स्पेलिंग की किसी भी गलती को हैंडल करने के लिए)
+    let filteredStudents = window.lastData.filter(s => {
+        let cls = s['Class'] || s['class'] || s['CLASS'] || "";
+        return cls == selectedClass;
+    });
 
     let html = `
         <table id="attTable">
@@ -266,28 +269,36 @@ function filterStudentsByClass() {
                 </tr>
             </thead>
             <tbody>
-                ${filteredStudents.map(student => `
+                ${filteredStudents.map(s => {
+                    // डेटा सुरक्षित रूप से निकालने के लिए (Fallback logic)
+                    let id = s['Student ID'] || s['ID'] || s['id'] || '-';
+                    let name = s['Student Name'] || s['Name'] || s['name'] || '-';
+                    let father = s['Father Name'] || s['FatherName'] || s['father'] || '-';
+                    let medium = s['Medium'] || s['medium'] || '-';
+                    let cls = s['Class'] || s['class'] || '-';
+
+                    return `
                     <tr>
-                        <td>${student['Student ID'] || student['ID'] || '-'}</td>
-                        <td>${student['Student Name'] || student['Name'] || '-'}</td>
-                        <td>${student['Father Name'] || '-'}</td>
-                        <td>${student['Medium'] || '-'}</td>
-                        <td>${student['Class'] || student['class'] || '-'}</td>
+                        <td>${id}</td>
+                        <td>${name}</td>
+                        <td>${father}</td>
+                        <td>${medium}</td>
+                        <td>${cls}</td>
                         <td>
                             <select class="attStatus">
                                 <option value="P">Present (P)</option>
                                 <option value="A">Absent (A)</option>
                             </select>
                         </td>
-                    </tr>
-                `).join('')}
+                    </tr>`;
+                }).join('')}
             </tbody>
         </table>
         <button onclick="saveAttendance()" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
     `;
     document.getElementById('attendanceTableContainer').innerHTML = html;
 }
-
+       
 // 3. डेटा सेव करना
 function saveAttendance() {
     let date = document.getElementById("attDate").value;
