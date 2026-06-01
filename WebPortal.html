@@ -307,15 +307,15 @@ function saveAttendance() {
 
     let attendance = [];
     rows.forEach(row => {
-        attendance.push({
-            date: date,
-            id: row.cells[0].innerText,      // Student ID
-            name: row.cells[1].innerText,    // Name
-            father: row.cells[2].innerText,  // Father
-            medium: row.cells[3].innerText,  // Medium
-            class: row.cells[4].innerText,   // Class
-            status: row.querySelector('.attStatus').value // Status (P/A)
-        });
+       attendance.push({
+    date: date,
+    "Student ID": row.cells[0].innerText,
+    "Student Name": row.cells[1].innerText,
+    "Father Name": row.cells[2].innerText,
+    "Medium": row.cells[3].innerText,
+    "Class": row.cells[4].innerText,
+    "Status": row.querySelector('.attStatus').value
+});
     });
 
     // अपना Web App URL यहाँ सही डालें
