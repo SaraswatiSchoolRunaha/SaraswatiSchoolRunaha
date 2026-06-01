@@ -299,10 +299,9 @@ function filterStudentsByClass() {
     document.getElementById('attendanceTableContainer').innerHTML = html;
 }
        
-// 3. डेटा सेव करना
+// 3. डेटा सेव करना (इसे अपने पुराने फंक्शन से बदलें)
 function saveAttendance() {
     let date = document.getElementById("attDate").value;
-    let selectedClass = document.getElementById("classFilter").value;
     let rows = document.querySelectorAll("#attTable tbody tr");
     
     if (!date) { alert("कृपया तारीख चुनें!"); return; }
@@ -311,25 +310,41 @@ function saveAttendance() {
     rows.forEach(row => {
         attendance.push({
             date: date,
-            id: row.cells[0].innerText,      // यहाँ key 'id' है
-            name: row.cells[1].innerText,    // यहाँ key 'name' है
-            father: row.cells[2].innerText,  // यहाँ key 'father' है
-            medium: row.cells[3].innerText,  // यहाँ key 'medium' है
-            class: row.cells[4].innerText,   // यहाँ key 'class' है
-            status: row.querySelector('.attStatus').value // यहाँ key 'status' है
+            id: row.cells[0].innerText,      // Student ID
+            name: row.cells[1].innerText,    // Name
+            father: row.cells[2].innerText,  // Father
+            medium: row.cells[3].innerText,  // Medium
+            class: row.cells[4].innerText,   // Class
+            status: row.querySelector('.attStatus').value // Status (P/A)
         });
     });
 
+    // अपना Web App URL यहाँ सही डालें
     const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
+
+    // बटन को लोड करते समय डिसेबल करें (ताकि डबल क्लिक न हो)
+    event.target.innerText = "सेव हो रहा है...";
+    event.target.disabled = true;
 
     fetch(url, {
         method: 'POST',
-        mode: 'no-cors',
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(attendance)
     })
-    .then(() => alert("उपस्थिति सफलतापूर्वक दर्ज हो गई!"))
-    .catch(err => alert("त्रुटि: " + err));
+    .then(response => response.text())
+    .then(result => {
+        alert("उपस्थिति सफलतापूर्वक दर्ज हो गई और कैलकुलेशन अपडेट हो गया!");
+        event.target.innerText = "सबमिट उपस्थिति";
+        event.target.disabled = false;
+    })
+    .catch(err => {
+        alert("त्रुटि: " + err);
+        event.target.innerText = "सबमिट उपस्थिति";
+        event.target.disabled = false;
+    });
 }
+
+
        
 function showDashboard() {
     document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
