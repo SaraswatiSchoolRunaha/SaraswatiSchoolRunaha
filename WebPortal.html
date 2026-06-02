@@ -351,19 +351,7 @@ function showDashboard() {
         translations[currentLang]['डैशबोर्ड'];
 
     document.getElementById('contentArea').innerHTML = `
-        <div style="margin-bottom:20px; background:#fff; padding:15px; border-radius:8px; border:1px solid #ddd;">
-            <input type="text" id="searchInput"
-                   placeholder="Student ID यहाँ लिखें..."
-                   style="padding:10px; width:250px; border:1px solid #ccc; border-radius:4px;">
-
-            <button onclick="searchStudentById()"
-                    class="btn-action"
-                    style="background:#1e3a8a; color:white;">
-                खोजें
-            </button>
-        </div>
-
-        <div id="dashboardResults">
+            <div id="dashboardResults">
             <div style="text-align:center; padding:40px; color:#1e3a8a;">
                 <i class="fa-solid fa-spinner fa-spin"></i>
                 डेटा लोड हो रहा है...
