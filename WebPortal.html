@@ -499,7 +499,23 @@ if (title === 'उपस्थिति डैशबोर्ड') {
         } catch (e) {
             document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
         }
-    } 
+    }
+        
+// 2. यहाँ नया 'छात्र जोड़ें' वाला कोड पेस्ट करें:
+else if (title === 'छात्र जोड़ें') {
+    document.getElementById('pageTitle').innerText = "नया छात्र जोड़ें";
+    document.getElementById('contentArea').innerHTML = `
+        <div style="max-width: 500px; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+            <input type="text" id="sid" placeholder="Student ID" style="width:100%; padding:8px; margin-bottom:10px;"><br>
+            <input type="text" id="sname" placeholder="Student Name" style="width:100%; padding:8px; margin-bottom:10px;"><br>
+            <input type="text" id="fname" placeholder="Father Name" style="width:100%; padding:8px; margin-bottom:10px;"><br>
+            <input type="text" id="med" placeholder="Medium" style="width:100%; padding:8px; margin-bottom:10px;"><br>
+            <input type="text" id="cls" placeholder="Class" style="width:100%; padding:8px; margin-bottom:10px;"><br>
+            <button onclick="submitNewStudent()" style="background:#1e3a8a; color:white; padding:10px 20px; border:none; cursor:pointer;">छात्र जोड़ें</button>
+        </div>
+    `; 
+}
+    
     // बाकी मॉड्यूल के लिए
     else {
         if (title === 'सभी छात्र' && window.lastData) {
@@ -515,6 +531,40 @@ if (title === 'उपस्थिति डैशबोर्ड') {
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
     function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
 
+// छात्र डेटा सबमिट करने के लिए फंक्शन
+function submitNewStudent() {
+    const studentData = {
+        action: "addStudent",
+        studentId: document.getElementById('sid').value,
+        name: document.getElementById('sname').value,
+        father: document.getElementById('fname').value,
+        medium: document.getElementById('med').value,
+        class: document.getElementById('cls').value
+    };
+
+    // अपना सही 'StudentData' वाला URL यहाँ सुनिश्चित करें
+    const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
+
+    fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(studentData)
+    })
+    .then(() => {
+        alert("छात्र सफलतापूर्वक जुड़ गया!");
+        showDashboard(); 
+    })
+    .catch(err => alert("त्रुटि: " + err));
+}
+       
+
+
+
+
+
+
+       
     buildMenu();
     showDashboard();
 </script>
