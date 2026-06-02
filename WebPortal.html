@@ -431,35 +431,63 @@ async function showContent(title) {
     // 1. टाइटल अपडेट करें
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
 
-    if (title === 'दैनिक उपस्थिति') {
-        document.getElementById('contentArea').innerHTML = "छात्र डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...";
-
+    // नया ब्लॉक: उपस्थिति डैशबोर्ड के लिए
+    if (title === 'उपस्थिति डैशबोर्ड') {
+        document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...";
+        
         try {
-            // URL में &class=All जोड़ें ताकि आपकी स्क्रिप्ट इसे समझ सके
-            const url = sheetUrls['StudentData'] + "?action=getStudents&class=All";
+            // हम डेटाबेस URL से आज का समरी डेटा मांगेंगे
+            const url = sheetUrls['Database'] + "?action=getAttendanceSummary";
             const response = await fetch(url);
-
-            if (!response.ok) throw new Error("सर्वर से रिस्पॉन्स नहीं मिला: " + response.status);
-
             const data = await response.json();
 
-            // अगर डेटा खाली है
+            if (!data || data.length === 0) {
+                document.getElementById('contentArea').innerHTML = "आज का कोई अटेंडेंस डेटा नहीं मिला।";
+                return;
+            }
+
+            // टेबल रेंडर करना
+            let html = `<table border="1" style="width:100%; border-collapse:collapse;">
+                <tr style="background:#f1f5f9;">
+                    <th>कक्षा</th>
+                    <th>उपस्थित (P)</th>
+                    <th>अनुपस्थित (A)</th>
+                </tr>`;
+            
+            data.forEach(row => {
+                html += `<tr>
+                    <td>${row.Class}</td>
+                    <td style="color:green; font-weight:bold;">${row.P || 0}</td>
+                    <td style="color:red; font-weight:bold;">${row.A || 0}</td>
+                </tr>`;
+            });
+            html += `</table>`;
+            document.getElementById('contentArea').innerHTML = html;
+
+        } catch (e) {
+            document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
+        }
+    } 
+    // पुराना ब्लॉक: दैनिक उपस्थिति के लिए
+    else if (title === 'दैनिक उपस्थिति') {
+        document.getElementById('contentArea').innerHTML = "छात्र डेटा लोड हो रहा है...";
+        try {
+            const url = sheetUrls['StudentData'] + "?action=getStudents&class=All";
+            const response = await fetch(url);
+            const data = await response.json();
+
             if (!data || data.length === 0) {
                 document.getElementById('contentArea').innerHTML = "कोई छात्र डेटा नहीं मिला।";
                 return;
             }
-
             window.lastData = data;
             showAttendanceForm();
-
         } catch (e) {
-            console.error("Error details:", e);
-            document.getElementById('contentArea').innerHTML = 
-                "डेटा लोड करने में त्रुटि हुई। कृपया कंसोल (F12) चेक करें या Google Apps Script डिप्लॉयमेंट देखें।";
+            document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
         }
-
-    } else {
-        // बाकी मॉड्यूल के लिए
+    } 
+    // बाकी मॉड्यूल के लिए
+    else {
         if (title === 'सभी छात्र' && window.lastData) {
             renderTable(window.lastData);
         } else {
