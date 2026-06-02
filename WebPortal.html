@@ -294,16 +294,15 @@ function filterStudentsByClass() {
                 }).join('')}
             </tbody>
         </table>
-        <button onclick="saveAttendance()" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
-    `;
+     <button onclick="saveAttendance(event)" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
     document.getElementById('attendanceTableContainer').innerHTML = html;
 }
        
 // 3. डेटा सेव करना (इसे अपने पुराने फंक्शन से बदलें)
 function saveAttendance(event) {
+    let btn = event.target; // अब यहाँ बटन की सही पहचान होगी
     let date = document.getElementById("attDate").value;
     let rows = document.querySelectorAll("#attTable tbody tr");
-    let btn = event.target; // अब event सुरक्षित है
     
     if (!date) { alert("कृपया तारीख चुनें!"); return; }
 
@@ -320,19 +319,19 @@ function saveAttendance(event) {
         });
     });
 
+    // अपना सही वेब ऐप URL यहाँ डालें
     const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
 
-    // बटन को डिसेबल करें
     btn.innerText = "सेव हो रहा है...";
     btn.disabled = true;
 
     fetch(url, {
         method: 'POST',
+        mode: 'no-cors', // इसे जरूर जोड़ें
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(attendance)
     })
-    .then(response => response.text())
-    .then(result => {
+    .then(() => {
         alert("उपस्थिति सफलतापूर्वक दर्ज हो गई!");
         btn.innerText = "सबमिट उपस्थिति";
         btn.disabled = false;
