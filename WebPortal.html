@@ -434,42 +434,54 @@ async function showContent(title) {
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
 
     // नया ब्लॉक: उपस्थिति डैशबोर्ड के लिए
-    if (title === 'उपस्थिति डैशबोर्ड') {
-        document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...";
-        
-        try {
-            // हम डेटाबेस URL से आज का समरी डेटा मांगेंगे
-            const url = sheetUrls['Attendance'] + "?action=getAttendanceSummary";
-            const response = await fetch(url);
-            const data = await response.json();
+    // showContent में 'उपस्थिति डैशबोर्ड' वाला हिस्सा अपडेट करें:
+if (title === 'उपस्थिति डैशबोर्ड') {
+    document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है...";
+    
+    try {
+        const url = sheetUrls['Attendance'] + "?action=getAttendanceSummary";
+        const response = await fetch(url);
+        const data = await response.json();
 
-            if (!data || data.length === 0) {
-                document.getElementById('contentArea').innerHTML = "आज का कोई अटेंडेंस डेटा नहीं मिला।";
-                return;
-            }
+        if (!data || data.length === 0) {
+            document.getElementById('contentArea').innerHTML = "आज का कोई अटेंडेंस डेटा नहीं मिला।";
+            return;
+        }
 
-            // टेबल रेंडर करना
-            let html = `<table border="1" style="width:100%; border-collapse:collapse;">
+        // 1. कुल छात्रों की गणना करें (अगर डेटा में P और A दोनों का योग है)
+        let totalStudents = data.reduce((sum, row) => sum + (parseInt(row.P || 0) + parseInt(row.A || 0)), 0);
+
+        // 2. HTML तैयार करें
+        let html = `
+            <h3 style="color:#1e3a8a;">📢 आज की उपस्थिति रिपोर्ट</h3>
+            <p style="font-size:0.9rem; color:#64748b;">कुल छात्र संख्या: <strong>${totalStudents}</strong></p>
+            <table border="1" style="width:100%; border-collapse:collapse; margin-top:10px;">
                 <tr style="background:#f1f5f9;">
                     <th>कक्षा</th>
                     <th>उपस्थित (P)</th>
                     <th>अनुपस्थित (A)</th>
+                    <th>कुल छात्र</th>
                 </tr>`;
-            
-            data.forEach(row => {
-                html += `<tr>
+        
+        data.forEach(row => {
+            let p = parseInt(row.P || 0);
+            let a = parseInt(row.A || 0);
+            html += `<tr>
                     <td>${row.Class}</td>
-                    <td style="color:green; font-weight:bold;">${row.P || 0}</td>
-                    <td style="color:red; font-weight:bold;">${row.A || 0}</td>
+                    <td style="color:green; font-weight:bold;">${p}</td>
+                    <td style="color:red; font-weight:bold;">${a}</td>
+                    <td style="font-weight:bold;">${p + a}</td>
                 </tr>`;
-            });
-            html += `</table>`;
-            document.getElementById('contentArea').innerHTML = html;
+        });
+        
+        html += `</table>`;
+        document.getElementById('contentArea').innerHTML = html;
 
-        } catch (e) {
-            document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
-        }
-    } 
+    } catch (e) {
+        document.getElementById('contentArea').innerHTML = "त्रुटि: अटेंडेंस डेटा लोड करने में समस्या हुई।";
+    }
+}
+    
     // पुराना ब्लॉक: दैनिक उपस्थिति के लिए
     else if (title === 'दैनिक उपस्थिति') {
         document.getElementById('contentArea').innerHTML = "छात्र डेटा लोड हो रहा है...";
