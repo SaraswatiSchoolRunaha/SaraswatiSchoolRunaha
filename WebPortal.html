@@ -531,18 +531,28 @@ else if (title === 'छात्र जोड़ें') {
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
     function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
 
-// छात्र डेटा सबमिट करने के लिए फंक्शन
 function submitNewStudent() {
+    const studentId = document.getElementById('sid').value;
+    const sname = document.getElementById('sname').value;
+    const fname = document.getElementById('fname').value;
+    const med = document.getElementById('med').value;
+    const cls = document.getElementById('cls').value;
+
+    // वैलिडेशन: क्या ID खाली है?
+    if (!studentId) {
+        alert("कृपया Student ID दर्ज करें!");
+        return;
+    }
+
     const studentData = {
         action: "addStudent",
-        studentId: document.getElementById('sid').value,
-        name: document.getElementById('sname').value,
-        father: document.getElementById('fname').value,
-        medium: document.getElementById('med').value,
-        class: document.getElementById('cls').value
+        studentId: studentId,
+        name: sname,
+        father: fname,
+        medium: med,
+        class: cls
     };
 
-    // अपना सही 'StudentData' वाला URL यहाँ सुनिश्चित करें
     const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
 
     fetch(url, {
@@ -552,18 +562,11 @@ function submitNewStudent() {
         body: JSON.stringify(studentData)
     })
     .then(() => {
-        alert("छात्र सफलतापूर्वक जुड़ गया!");
+        alert("छात्र (ID: " + studentId + ") सफलतापूर्वक जुड़ गया!");
         showDashboard(); 
     })
     .catch(err => alert("त्रुटि: " + err));
 }
-       
-
-
-
-
-
-
        
     buildMenu();
     showDashboard();
