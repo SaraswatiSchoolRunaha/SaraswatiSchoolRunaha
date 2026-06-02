@@ -526,19 +526,53 @@ if (title === 'उपस्थिति डैशबोर्ड') {
         }
     }
         
-// 2. यहाँ नया 'छात्र जोड़ें' वाला कोड पेस्ट करें:
 else if (title === 'छात्र जोड़ें') {
     document.getElementById('pageTitle').innerText = "नया छात्र जोड़ें";
+
     document.getElementById('contentArea').innerHTML = `
-        <div style="max-width: 500px; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-            <input type="text" id="sid" placeholder="Student ID" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-            <input type="text" id="sname" placeholder="Student Name" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-            <input type="text" id="fname" placeholder="Father Name" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-            <input type="text" id="med" placeholder="Medium" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-            <input type="text" id="cls" placeholder="Class" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-            <button onclick="submitNewStudent()" style="background:#1e3a8a; color:white; padding:10px 20px; border:none; cursor:pointer;">छात्र जोड़ें</button>
+
+        <!-- Student Search -->
+        <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd; margin-bottom:20px;">
+            <h3 style="margin-top:0; color:#1e3a8a;">छात्र खोजें</h3>
+
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Student ID दर्ज करें"
+                   style="width:70%; padding:8px; margin-right:10px;">
+
+            <button onclick="searchStudentById()"
+                    style="background:#1e3a8a; color:white; padding:8px 15px; border:none; cursor:pointer;">
+                खोजें
+            </button>
+
+            <div id="dashboardResults" style="margin-top:15px;"></div>
         </div>
-    `; 
+
+        <!-- Add Student Form -->
+        <div style="max-width:500px; background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd;">
+            <h3 style="margin-top:0; color:#1e3a8a;">नया छात्र जोड़ें</h3>
+
+            <input type="text" id="sid" placeholder="Student ID"
+                   style="width:100%; padding:8px; margin-bottom:10px;"><br>
+
+            <input type="text" id="sname" placeholder="Student Name"
+                   style="width:100%; padding:8px; margin-bottom:10px;"><br>
+
+            <input type="text" id="fname" placeholder="Father Name"
+                   style="width:100%; padding:8px; margin-bottom:10px;"><br>
+
+            <input type="text" id="med" placeholder="Medium"
+                   style="width:100%; padding:8px; margin-bottom:10px;"><br>
+
+            <input type="text" id="cls" placeholder="Class"
+                   style="width:100%; padding:8px; margin-bottom:10px;"><br>
+
+            <button onclick="submitNewStudent()"
+                    style="background:#16a34a; color:white; padding:10px 20px; border:none; cursor:pointer;">
+                छात्र जोड़ें
+            </button>
+        </div>
+    `;
 }
     
     // बाकी मॉड्यूल के लिए
