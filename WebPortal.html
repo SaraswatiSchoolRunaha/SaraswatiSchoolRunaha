@@ -135,7 +135,7 @@
     // 1. यहाँ अपनी सभी अलग-अलग फाइलों के Web App URL डालें
     const sheetUrls = {
         'Database': 'https://script.google.com/macros/s/AKfycbxEQpFakRt3gJ5z8i1yQbGTfKTRUpRqc5xhJoviGiWhHFX3N3eIzviFQVEgaRNoxRhh/exec',
-        'StudentData':"https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
+        'StudentData':'https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec',
         'बकाया लिस्ट': 'https://script.google.com/macros/s/FEES_ID/exec',
         'जारी करें': 'https://script.google.com/macros/s/TC_ID/exec'
     };
@@ -436,7 +436,7 @@ async function showContent(title) {
 
         try {
             // URL में &class=All जोड़ें ताकि आपकी स्क्रिप्ट इसे समझ सके
-            const url = sheetUrls['Database'] + "?action=getStudents&class=All";
+            const url = sheetUrls['StudentData'] + "?action=getStudents&class=All";
             const response = await fetch(url);
 
             if (!response.ok) throw new Error("सर्वर से रिस्पॉन्स नहीं मिला: " + response.status);
