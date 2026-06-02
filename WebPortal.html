@@ -299,31 +299,32 @@ function filterStudentsByClass() {
 }
        
 // 3. डेटा सेव करना (इसे अपने पुराने फंक्शन से बदलें)
-function saveAttendance() {
+// HTML बटन को बदलें: onclick="saveAttendance(event)" 
+function saveAttendance(event) {
     let date = document.getElementById("attDate").value;
     let rows = document.querySelectorAll("#attTable tbody tr");
+    let btn = event.target; // अब event सुरक्षित है
     
     if (!date) { alert("कृपया तारीख चुनें!"); return; }
 
     let attendance = [];
     rows.forEach(row => {
-       attendance.push({
-    date: date,
-    "Student ID": row.cells[0].innerText,
-    "Student Name": row.cells[1].innerText,
-    "Father Name": row.cells[2].innerText,
-    "Medium": row.cells[3].innerText,
-    "Class": row.cells[4].innerText,
-    "Status": row.querySelector('.attStatus').value
-});
+        attendance.push({
+            date: date,
+            "Student ID": row.cells[0].innerText.trim(),
+            "Student Name": row.cells[1].innerText.trim(),
+            "Father Name": row.cells[2].innerText.trim(),
+            "Medium": row.cells[3].innerText.trim(),
+            "Class": row.cells[4].innerText.trim(),
+            "Status": row.querySelector('.attStatus').value
+        });
     });
 
-    // अपना Web App URL यहाँ सही डालें
     const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
 
-    // बटन को लोड करते समय डिसेबल करें (ताकि डबल क्लिक न हो)
-    event.target.innerText = "सेव हो रहा है...";
-    event.target.disabled = true;
+    // बटन को डिसेबल करें
+    btn.innerText = "सेव हो रहा है...";
+    btn.disabled = true;
 
     fetch(url, {
         method: 'POST',
@@ -332,17 +333,16 @@ function saveAttendance() {
     })
     .then(response => response.text())
     .then(result => {
-        alert("उपस्थिति सफलतापूर्वक दर्ज हो गई और कैलकुलेशन अपडेट हो गया!");
-        event.target.innerText = "सबमिट उपस्थिति";
-        event.target.disabled = false;
+        alert("उपस्थिति सफलतापूर्वक दर्ज हो गई!");
+        btn.innerText = "सबमिट उपस्थिति";
+        btn.disabled = false;
     })
     .catch(err => {
         alert("त्रुटि: " + err);
-        event.target.innerText = "सबमिट उपस्थिति";
-        event.target.disabled = false;
+        btn.innerText = "सबमिट उपस्थिति";
+        btn.disabled = false;
     });
 }
-
 
        
 function showDashboard() {
