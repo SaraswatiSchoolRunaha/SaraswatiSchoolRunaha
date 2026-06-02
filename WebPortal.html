@@ -455,50 +455,7 @@ function showDashboard() {
         });
 }
        
-       // डैशबोर्ड कार्ड्स और टेबल का HTML
-        let html = `
-        <div style="display:flex; gap:20px; margin-bottom:20px; flex-wrap:wrap; font-family:'Segoe UI', sans-serif;">
-            <div style="background:linear-gradient(135deg,#1e3a8a,#3b82f6); color:white; padding:20px; border-radius:12px; min-width:180px; flex:1; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition:0.3s; cursor:pointer;"
-                 onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-                <div style="font-size:14px; opacity:0.9; text-transform:uppercase; letter-spacing:1px;">कुल छात्र</div>
-                <div style="font-size:32px; font-weight:700; margin-top:8px;">${totalStudents}</div>
-            </div>
-
-            <div style="background:linear-gradient(135deg,#0f172a,#334155); color:white; padding:20px; border-radius:12px; min-width:180px; flex:1; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition:0.3s; cursor:pointer;"
-                 onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-                <div style="font-size:14px; opacity:0.9; text-transform:uppercase; letter-spacing:1px;">कुल कक्षाएं</div>
-                <div style="font-size:32px; font-weight:700; margin-top:8px;">${Object.keys(classCount).length}</div>
-            </div>
-        </div>
-
-        <div style="background:white; border-radius:10px; overflow:hidden; border:1px solid #ddd;">
-            <div style="padding:15px; background:#f8fafc; font-weight:bold; border-bottom:1px solid #ddd;">कक्षा अनुसार छात्र संख्या</div>
-            <table>
-                <thead><tr><th>कक्षा</th><th>कुल छात्र</th></tr></thead>
-                <tbody>
-                    ${Object.keys(classCount).map(cls => `
-                        <tr style="cursor:pointer;" onclick="showClassList('${cls}')" 
-                            onmouseover="this.style.backgroundColor='#f1f5f9'" onmouseout="this.style.backgroundColor='transparent'">
-                            <td>${cls}</td>
-                            <td>${classCount[cls]}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </div>`;
-
-        document.getElementById('contentArea').innerHTML = html;
-    })
-    .catch(error => {
-        document.getElementById('contentArea').innerHTML = `
-            <div style="color:red; padding:20px; background:#fff; border-radius:10px;">
-                <h3>Dashboard डेटा लोड नहीं हुआ</h3>
-                <p>${error.message}</p>
-            </div>
-        `;
-    });
-}       
-    function showClassList(cls) {
+         function showClassList(cls) {
         let filtered = window.lastData.filter(item => (item['class'] || 'N/A') === cls);
         let headers = Object.keys(filtered[0]);
         let html = `<button onclick="showDashboard()" class="btn-action">← वापस</button><table><tr>` 
