@@ -427,32 +427,49 @@ function showDashboard() {
         });
         document.getElementById('contentArea').innerHTML = html + "</table>";
     }
+async function showContent(title) {
 
-  async function showContent(title) {
-    document.getElementById('pageTitle').innerText = translations[currentLang][title];
-    
-    // 1. दैनिक उपस्थिति के लिए: अगर डेटा नहीं है तो पहले लोड करें
+    document.getElementById('pageTitle').innerText =
+        translations[currentLang][title];
+
     if (title === 'दैनिक उपस्थिति') {
-        if (!window.lastData) {
-            document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...";
-            try {
-                const response = await fetch(sheetUrls['Database'] + "?action=getDashboard");
-                window.lastData = await response.json();
-                showAttendanceForm();
-            } catch (e) {
-                document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
-            }
-        } else {
+
+        document.getElementById('contentArea').innerHTML =
+            "छात्र डेटा लोड हो रहा है...";
+
+        try {
+
+            const response = await fetch(
+                sheetUrls['Database'] + "?action=getStudents"
+            );
+
+            const data = await response.json();
+
+            window.lastData = data;
+
             showAttendanceForm();
+
+        } catch (e) {
+
+            document.getElementById('contentArea').innerHTML =
+                "StudentData लोड करने में त्रुटि हुई।";
+
+            console.error(e);
+
         }
-    } 
-    // 2. 'सभी छात्र' या अन्य के लिए
-    else {
+
+    } else {
+
         if (title === 'सभी छात्र' && window.lastData) {
+
             renderTable(window.lastData);
+
         } else {
+
             fetchSheetData(title);
+
         }
+
     }
 }
 
