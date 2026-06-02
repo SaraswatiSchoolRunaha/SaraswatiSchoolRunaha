@@ -428,52 +428,47 @@ function showDashboard() {
         document.getElementById('contentArea').innerHTML = html + "</table>";
     }
 async function showContent(title) {
-
-    document.getElementById('pageTitle').innerText =
-        translations[currentLang][title];
+    // 1. टाइटल अपडेट करें
+    document.getElementById('pageTitle').innerText = translations[currentLang][title];
 
     if (title === 'दैनिक उपस्थिति') {
-
-        document.getElementById('contentArea').innerHTML =
-            "छात्र डेटा लोड हो रहा है...";
+        document.getElementById('contentArea').innerHTML = "छात्र डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...";
 
         try {
+            // URL में &class=All जोड़ें ताकि आपकी स्क्रिप्ट इसे समझ सके
+            const url = sheetUrls['Database'] + "?action=getStudents&class=All";
+            const response = await fetch(url);
 
-            const response = await fetch(
-                sheetUrls['Database'] + "?action=getStudents"
-            );
+            if (!response.ok) throw new Error("सर्वर से रिस्पॉन्स नहीं मिला: " + response.status);
 
             const data = await response.json();
 
-            window.lastData = data;
+            // अगर डेटा खाली है
+            if (!data || data.length === 0) {
+                document.getElementById('contentArea').innerHTML = "कोई छात्र डेटा नहीं मिला।";
+                return;
+            }
 
+            window.lastData = data;
             showAttendanceForm();
 
         } catch (e) {
-
-            document.getElementById('contentArea').innerHTML =
-                "StudentData लोड करने में त्रुटि हुई।";
-
-            console.error(e);
-
+            console.error("Error details:", e);
+            document.getElementById('contentArea').innerHTML = 
+                "डेटा लोड करने में त्रुटि हुई। कृपया कंसोल (F12) चेक करें या Google Apps Script डिप्लॉयमेंट देखें।";
         }
 
     } else {
-
+        // बाकी मॉड्यूल के लिए
         if (title === 'सभी छात्र' && window.lastData) {
-
             renderTable(window.lastData);
-
         } else {
-
             fetchSheetData(title);
-
         }
-
     }
 }
-
-    function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
+       
+       function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
     function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
 
