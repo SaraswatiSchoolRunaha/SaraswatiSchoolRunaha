@@ -428,30 +428,34 @@ function showDashboard() {
         document.getElementById('contentArea').innerHTML = html + "</table>";
     }
 
-    function showContent(title) {
+  async function showContent(title) {
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
     
-    // नया अटेंडेंस मॉड्यूल के लिए कंडीशन
+    // 1. दैनिक उपस्थिति के लिए: अगर डेटा नहीं है तो पहले लोड करें
     if (title === 'दैनिक उपस्थिति') {
-        showAttendanceForm(); // यह वह फंक्शन है जो मैंने अभी आपको दिया था
-    }
-    // अगर डेटा पहले से लोड है और 'सभी छात्र' देखना है
-    else if (title === 'सभी छात्र' && window.lastData) {
-        renderTable(window.lastData);
+        if (!window.lastData) {
+            document.getElementById('contentArea').innerHTML = "डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...";
+            try {
+                const response = await fetch(sheetUrls['Database'] + "?action=getDashboard");
+                window.lastData = await response.json();
+                showAttendanceForm();
+            } catch (e) {
+                document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
+            }
+        } else {
+            showAttendanceForm();
+        }
     } 
-    // अगर डेटा मौजूद नहीं है, तो 'Database' से लोड करें
-    else if (title === 'सभी छात्र') {
-        fetchSheetData('Database'); 
-    }
-    // बाकी ऑप्शंस के लिए
+    // 2. 'सभी छात्र' या अन्य के लिए
     else {
-        fetchSheetData(title);
+        if (title === 'सभी छात्र' && window.lastData) {
+            renderTable(window.lastData);
+        } else {
+            fetchSheetData(title);
+        }
     }
 }
 
-
-
-       
     function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
     function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
