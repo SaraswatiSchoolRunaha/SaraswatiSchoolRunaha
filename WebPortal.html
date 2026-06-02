@@ -439,7 +439,7 @@ async function showContent(title) {
         
         try {
             // हम डेटाबेस URL से आज का समरी डेटा मांगेंगे
-            const url = sheetUrls['Database'] + "?action=getAttendanceSummary";
+            const url = sheetUrls['Attendance'] + "?action=getAttendanceSummary";
             const response = await fetch(url);
             const data = await response.json();
 
