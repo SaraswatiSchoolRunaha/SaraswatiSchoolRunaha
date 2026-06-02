@@ -349,29 +349,27 @@ function saveAttendance(event) {
 function showDashboard() {
     document.getElementById('pageTitle').innerText = translations[currentLang]['डैशबोर्ड'];
 
-    // सर्च बार वाला HTML
-    let searchHTML = `
+    // 1. सर्च बार और डेटा के लिए अलग-अलग जगह बनाएं
+    document.getElementById('contentArea').innerHTML = `
         <div style="margin-bottom:20px; background:#fff; padding:15px; border-radius:8px; border:1px solid #ddd;">
             <input type="text" id="searchInput" placeholder="Student ID यहाँ लिखें..." style="padding:10px; width:250px; border:1px solid #ccc; border-radius:4px;">
             <button onclick="searchStudentById()" class="btn-action" style="background:#1e3a8a; color:white;">खोजें</button>
         </div>
-    `;
-
-    // यहाँ हमने searchHTML को spinner के साथ जोड़ दिया है
-    document.getElementById('contentArea').innerHTML = searchHTML + `
-        <div style="text-align:center; padding:40px; color:#1e3a8a;">
-            <i class="fa-solid fa-spinner fa-spin"></i> डेटा लोड हो रहा है...
+        <div id="dashboardResults">
+            <div style="text-align:center; padding:40px; color:#1e3a8a;">
+                <i class="fa-solid fa-spinner fa-spin"></i> डेटा लोड हो रहा है...
+            </div>
         </div>
     `;
 
     fetch(sheetUrls['Database'] + "?action=getDashboard")
-        .then(response => {
+    .then(response => {
         if (!response.ok) throw new Error("Server Response Error");
         return response.json();
     })
     .then(data => {
         if (!data || data.length === 0) {
-            document.getElementById('contentArea').innerHTML = `<div style="padding:20px;color:red;">कोई डेटा नहीं मिला।</div>`;
+            document.getElementById('dashboardResults').innerHTML = `<div style="padding:20px;color:red;">कोई डेटा नहीं मिला।</div>`;
             return;
         }
 
@@ -384,7 +382,39 @@ function showDashboard() {
 
         let totalStudents = data.length;
 
-        // डैशबोर्ड कार्ड्स और टेबल का HTML
+        // 2. सिर्फ dashboardResults वाले हिस्से को भरें
+        let html = `
+            <div style="display:flex; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+                <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex:1;">
+                    <div style="font-size:14px;">कुल छात्र</div>
+                    <div style="font-size:32px; font-weight:700;">${totalStudents}</div>
+                </div>
+                <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex:1;">
+                    <div style="font-size:14px;">कुल कक्षाएं</div>
+                    <div style="font-size:32px; font-weight:700;">${Object.keys(classCount).length}</div>
+                </div>
+            </div>
+            <table style="width:100%; background:#fff;">
+                <thead><tr><th>कक्षा</th><th>कुल छात्र</th></tr></thead>
+                <tbody>
+                    ${Object.keys(classCount).map(cls => `
+                        <tr style="cursor:pointer;" onclick="showClassList('${cls}')">
+                            <td>${cls}</td>
+                            <td>${classCount[cls]}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+        document.getElementById('dashboardResults').innerHTML = html;
+    })
+    .catch(error => {
+        document.getElementById('dashboardResults').innerHTML = `<div style="color:red;">डेटा लोड करने में त्रुटि!</div>`;
+    });
+}
+       
+       
+       // डैशबोर्ड कार्ड्स और टेबल का HTML
         let html = `
         <div style="display:flex; gap:20px; margin-bottom:20px; flex-wrap:wrap; font-family:'Segoe UI', sans-serif;">
             <div style="background:linear-gradient(135deg,#1e3a8a,#3b82f6); color:white; padding:20px; border-radius:12px; min-width:180px; flex:1; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition:0.3s; cursor:pointer;"
