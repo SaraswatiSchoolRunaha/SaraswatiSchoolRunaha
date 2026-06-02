@@ -575,6 +575,32 @@ function submitNewStudent() {
     })
     .catch(err => alert("त्रुटि: " + err));
 }
+
+       function searchStudentById() {
+    let searchId = document.getElementById('searchInput').value.trim();
+    if (!searchId) { alert("कृपया Student ID डालें!"); return; }
+
+    // window.lastData में ID ढूँढें
+    let student = window.lastData.find(s => 
+        (s['Student ID'] || s['ID'] || s['id'] || '').toString() === searchId
+    );
+
+    if (student) {
+        // अगर छात्र मिल जाए
+        let html = `<button onclick="showDashboard()" class="btn-action">← वापस</button><h3>छात्र विवरण</h3><ul>`;
+        for (let key in student) {
+            html += `<li><b>${key}:</b> ${student[key]}</li>`;
+        }
+        html += `</ul>`;
+        document.getElementById('contentArea').innerHTML = html;
+    } else {
+        alert("इस ID का छात्र नहीं मिला!");
+    }
+}
+
+
+
+
        
     buildMenu();
     showDashboard();
