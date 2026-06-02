@@ -608,31 +608,44 @@ function submitNewStudent() {
 }
 
        function searchStudentById() {
-    let searchId = document.getElementById('searchInput').value.trim();
-    if (!searchId) { alert("कृपया Student ID डालें!"); return; }
+    // 1. सर्च इनपुट और रिजल्ट कंटेनर को सुरक्षित तरीके से प्राप्त करें
+    let searchInput = document.getElementById('searchInput');
+    let resultsContainer = document.getElementById('dashboardResults');
+    
+    if (!searchInput) return; // अगर सर्च इनपुट मौजूद नहीं है
+    
+    let searchId = searchInput.value.trim();
+    if (!searchId) { 
+        alert("कृपया Student ID डालें!"); 
+        return; 
+    }
 
-    // window.lastData में ID ढूँढें
+    // 2. window.lastData में ID ढूँढें
     let student = window.lastData.find(s => 
         (s['Student ID'] || s['ID'] || s['id'] || '').toString() === searchId
     );
 
     if (student) {
-        // अगर छात्र मिल जाए
-        let html = `<button onclick="showDashboard()" class="btn-action">← वापस</button><h3>छात्र विवरण</h3><ul>`;
-        for (let key in student) {
-            html += `<li><b>${key}:</b> ${student[key]}</li>`;
-        }
-        html += `</ul>`;
-        document.getElementById('contentArea').innerHTML = html;
+        // 3. रिजल्ट कंटेनर में डेटा दिखाएं (सर्च बार सुरक्षित रहेगा)
+        let html = `
+            <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd; margin-top:20px;">
+                <button onclick="showDashboard()" class="btn-action" style="margin-bottom:15px;">← वापस</button>
+                <h3 style="color:#1e3a8a;">छात्र विवरण</h3>
+                <ul style="list-style:none; padding:0;">
+                    ${Object.keys(student).map(key => `
+                        <li style="padding:8px; border-bottom:1px solid #eee;">
+                            <b>${key}:</b> ${student[key]}
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+        `;
+        resultsContainer.innerHTML = html;
     } else {
         alert("इस ID का छात्र नहीं मिला!");
     }
 }
-
-
-
-
-       
+ 
     buildMenu();
     showDashboard();
 </script>
