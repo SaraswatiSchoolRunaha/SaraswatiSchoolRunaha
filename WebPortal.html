@@ -436,7 +436,7 @@ async function showContent(title) {
 
         try {
             // URL में &class=All जोड़ें ताकि आपकी स्क्रिप्ट इसे समझ सके
-            const url = sheetUrls['StudentData'] + "?action=getStudents&class=All";
+            const url = sheetUrls['Database'] + "?action=getStudents&class=All";
             const response = await fetch(url);
 
             if (!response.ok) throw new Error("सर्वर से रिस्पॉन्स नहीं मिला: " + response.status);
