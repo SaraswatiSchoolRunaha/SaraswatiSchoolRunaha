@@ -653,64 +653,52 @@ function submitNewStudent() {
     .catch(err => alert("त्रुटि: " + err));
 }
 
-  function searchStudentById() {
-    // 1. सर्च इनपुट को प्राप्त करें
-    let searchInput = document.getElementById('searchInput');
-    if (!searchInput) return; 
-    
-    let searchId = searchInput.value.trim();
-    if (!searchId) { 
-        alert("कृपया Student ID डालें!"); 
-        return; 
-    }
+async function searchStudentById() {
 
-    // 2. चेक करें कि डेटाबेस लोड हुआ है या नहीं
-    if (!window.lastData || window.lastData.length === 0) {
-        alert("डेटाबेस अभी लोड नहीं हो पाया है। कृपया थोड़ी देर बाद कोशिश करें।");
+    let searchId = document.getElementById('searchInput').value.trim();
+
+    if (!searchId) {
+        alert("कृपया Student ID डालें!");
         return;
     }
 
-    // 3. सबसे सुरक्षित तरीका: किसी भी कॉलम में अगर 'id' शब्द है, तो वैल्यू मैच करें
-    let student = window.lastData.find(s => {
-        return Object.keys(s).some(key => {
-            let k = key.toLowerCase().trim();
-            if (k === 'id' || k === 'student id' || k.includes('id') || k.includes('roll') || k.includes('s.no')) {
-                let val = (s[key] || '').toString().trim().toLowerCase();
-                return val === searchId.toLowerCase();
-            }
-            return false;
-        });
-    });
-       
-    if (student) {
-        // 4. छात्र मिलने पर फॉर्म ऑटो-फिल करें (लचीले कॉलम नेम्स के साथ)
-        document.getElementById('sid').value = searchId;
-        
-        let nameVal = student['Student Name'] || student['name'] || student['Name'] || student['छात्र का नाम'] || '';
-        let fatherVal = student['Father Name'] || student['father'] || student['FatherName'] || student['पिता का नाम'] || '';
-        let medVal = student['Medium'] || student['medium'] || student['माध्यम'] || 'Hindi';
-        let clsVal = student['Class'] || student['class'] || student['CLASS'] || student['कक्षा'] || '';
+    try {
 
-        document.getElementById('sname').value = nameVal;
-        document.getElementById('fname').value = fatherVal;
-        document.getElementById('med').value = medVal;
-        document.getElementById('cls').value = clsVal;
-        
-        alert("छात्र का विवरण मिल गया है और फॉर्म में भर दिया गया है!");
-    } else {
-        // रिकॉर्ड न मिलने पर फॉर्म खाली करें
-        document.getElementById('sid').value = '';
-        document.getElementById('sname').value = '';
-        document.getElementById('fname').value = '';
-        document.getElementById('med').value = '';
-        document.getElementById('cls').value = '';
-        
-        // डेटाबेस में उपलब्ध पहले रिकॉर्ड की हेडिंग्स दिखाना (मदद के लिए)
-        let availableKeys = Object.keys(window.lastData[0]).join(", ");
-        alert("इस ID का छात्र रिकॉर्ड में नहीं मिला!\n\nकृपया जांचें कि क्या आप सही ID डाल रहे हैं। आपकी शीट में उपलब्ध कॉलम ये हैं:\n[ " + availableKeys + " ]");
+        const response = await fetch(
+            sheetUrls['Database'] +
+            "?action=searchById&studentId=" +
+            encodeURIComponent(searchId)
+        );
+
+        const student = await response.json();
+
+        if (student.status === "found") {
+
+            document.getElementById('sid').value = student.studentId || '';
+            document.getElementById('sname').value = student.name || '';
+            document.getElementById('fname').value = student.father || '';
+            document.getElementById('med').value = student.medium || '';
+            document.getElementById('cls').value = student.class || '';
+
+            alert("छात्र का विवरण मिल गया!");
+
+        } else {
+
+            document.getElementById('sid').value = '';
+            document.getElementById('sname').value = '';
+            document.getElementById('fname').value = '';
+            document.getElementById('med').value = '';
+            document.getElementById('cls').value = '';
+
+            alert(student.message || "छात्र नहीं मिला");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("डेटा प्राप्त करने में त्रुटि हुई");
     }
 }
-   window.onload = function() {
+       window.onload = function() {
     buildMenu();
     showDashboard();
 };    
