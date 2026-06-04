@@ -533,7 +533,7 @@ else if (title === 'छात्र जोड़ें') {
     document.getElementById('contentArea').innerHTML = `
         <div style="text-align:center; padding:40px; color:#1e3a8a;">
             <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-            <p style="margin-top:10px; font-weight:bold;">सर्च इंजन के लिए लाइव डेटाबेस लोड हो रहा है, कृपया प्रतीक्षा करें...</p>
+            <p style="margin-top:10px; font-weight:bold;"> डेटाबेस लोड हो रहा है, कृपया प्रतीक्षा करें...</p>
         </div>
     `;
 
@@ -594,7 +594,7 @@ else if (title === 'छात्र जोड़ें') {
             document.getElementById('contentArea').innerHTML = `
                 <div style="color:red; padding:20px; text-align:center; font-weight:bold;">
                     <i class="fa-solid fa-triangle-exclamation fa-2x"></i><br>
-                    डेटाबेस लोड करने में समस्या आई। कृपया अपना इंटरनेट या Google Web App चेक करें।
+                    डेटाबेस लोड करने में समस्या आई। कृपया अपना इंटरनेट चेक करें।
                 </div>
             `;
             console.error("Error loading search database: ", err);
@@ -655,19 +655,7 @@ else if (title === 'छात्र जोड़ें') {
             fetchSheetData(title);
         }
     }
-}
-
-
-
-
-
-
-
-
-
-
-       
-       
+} 
     function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
     function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
@@ -802,6 +790,44 @@ function showDeleteStudentList(){
         "deleteStudentContainer"
     ).innerHTML = html;
 }   
+async function deleteStudent(studentId){
+
+    if(!confirm(studentId + " को Delete करना चाहते हैं?")){
+        return;
+    }
+
+    try{
+
+        const response = await fetch(
+            sheetUrls['StudentData'],
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+                    action:"deleteStudent",
+                    studentId: studentId
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        alert(result.message);
+
+        if(result.status === "success"){
+            showContent("छात्र हटाएँ");
+        }
+
+    }catch(err){
+
+        alert("Delete Error");
+
+        console.log(err);
+
+    }
+} 
     window.onload = function() {
     buildMenu();
     showDashboard();
