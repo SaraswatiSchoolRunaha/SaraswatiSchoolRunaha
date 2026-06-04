@@ -666,33 +666,6 @@ function submitNewStudent() {
         alert("इस ID का छात्र रिकॉर्ड में नहीं मिला!");
     }
 }
-       
-    // 2. window.lastData में ID ढूँढें
-    let student = window.lastData.find(s => 
-        (s['Student ID'] || s['ID'] || s['id'] || '').toString() === searchId
-    );
-
-    if (student) {
-        // 3. रिजल्ट कंटेनर में डेटा दिखाएं (सर्च बार सुरक्षित रहेगा)
-        let html = `
-            <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd; margin-top:20px;">
-                <button onclick="showDashboard()" class="btn-action" style="margin-bottom:15px;">← वापस</button>
-                <h3 style="color:#1e3a8a;">छात्र विवरण</h3>
-                <ul style="list-style:none; padding:0;">
-                    ${Object.keys(student).map(key => `
-                        <li style="padding:8px; border-bottom:1px solid #eee;">
-                            <b>${key}:</b> ${student[key]}
-                        </li>
-                    `).join('')}
-                </ul>
-            </div>
-        `;
-        resultsContainer.innerHTML = html;
-    } else {
-        alert("इस ID का छात्र नहीं मिला!");
-    }
-}
- 
    window.onload = function() {
     buildMenu();
     showDashboard();
