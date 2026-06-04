@@ -801,31 +801,33 @@ async function deleteStudent(studentId){
         const response = await fetch(
             sheetUrls['StudentData'],
             {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    action:"deleteStudent",
+                    action: "deleteStudent",
                     studentId: studentId
                 })
             }
         );
 
-        const text = await response.text();
+        const data = await response.json();   // 🔥 IMPORTANT CHANGE
 
-        console.log("Server Response:", text);
+        console.log("Server Response:", data);
 
-        alert("छात्र सफलतापूर्वक हटाया गया");
+        if(data.status === "success"){
+            alert("छात्र सफलतापूर्वक हटाया गया");
+        } else {
+            alert(data.message || "Delete failed");
+        }
 
-        showDeleteStudentList(); // लिस्ट रिफ्रेश
+        showDeleteStudentList();
 
-    }catch(err){
+    } catch(err){
 
         console.error(err);
-
         alert("सर्वर से कनेक्ट नहीं हो पाया");
-
     }
 }
     
