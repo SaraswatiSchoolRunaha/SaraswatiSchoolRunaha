@@ -641,11 +641,15 @@ function submitNewStudent() {
         return;
     }
 
-    // 3. window.lastData में ID ढूँढें (अलग-अलग स्पेलिंग फॉर्मेट को संभालने के लिए)
-    let student = window.lastData.find(s => 
-        (s['Student ID'] || s['ID'] || s['id'] || '').toString().trim() === searchId
-    );
-
+    // 3. window.lastData में ID ढूँढें (अधिक सुरक्षित और सभी फॉर्मेट को सपोर्ट करने वाला तरीका)
+    let student = window.lastData.find(s => {
+        // छात्र की ID को शीट की सभी संभावित हेडिंग्स में ढूंढें
+        let sheetId = s['Student ID'] || s['ID'] || s['id'] || s['Id'] || s['student id'] || '';
+        
+        // दोनों ID को टेक्स्ट (String) में बदलकर, स्पेस हटाकर और स्मॉल लेटर में करके मैच करें
+        return sheetId.toString().trim().toLowerCase() === searchId.toString().trim().toLowerCase();
+    });
+       
     if (student) {
         // 4. छात्र मिलने पर फॉर्म के सभी इनपुट बॉक्स में डेटा ऑटो-फिल करें
         document.getElementById('sid').value = searchId;
