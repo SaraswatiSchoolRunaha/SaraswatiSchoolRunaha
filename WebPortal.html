@@ -812,35 +812,13 @@ async function deleteStudent(studentId){
             }
         );
 
-     async function deleteStudent(studentId){
-
-    if(!confirm(studentId + " को Delete करना चाहते हैं?")){
-        return;
-    }
-
-    try{
-
-        const response = await fetch(
-            sheetUrls['StudentData'],
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify({
-                    action:"deleteStudent",
-                    studentId: studentId
-                })
-            }
-        );
-
         const text = await response.text();
 
         console.log("Server Response:", text);
 
         alert("छात्र सफलतापूर्वक हटाया गया");
 
-        showContent("छात्र हटाएँ");
+        showDeleteStudentList(); // लिस्ट रिफ्रेश
 
     }catch(err){
 
@@ -850,6 +828,7 @@ async function deleteStudent(studentId){
 
     }
 }
+    
     window.onload = function() {
     buildMenu();
     showDashboard();
