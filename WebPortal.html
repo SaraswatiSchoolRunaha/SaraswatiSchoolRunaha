@@ -600,6 +600,52 @@ else if (title === 'छात्र जोड़ें') {
             console.error("Error loading search database: ", err);
         });
 }
+
+    
+    else if(title === 'छात्र हटाएँ'){
+
+    document.getElementById('contentArea').innerHTML =
+        "डेटा लोड हो रहा है...";
+
+    try{
+
+        const response = await fetch(
+            sheetUrls['StudentData'] + "?action=getStudents&class=All"
+        );
+
+        const data = await response.json();
+
+        window.studentDataList = data;
+
+        let classes = [...new Set(
+            data.map(s => s.Class || s.class)
+        )].filter(Boolean);
+
+        document.getElementById('contentArea').innerHTML = `
+            <h3>छात्र हटाएँ</h3>
+
+            <select id="deleteClassFilter"
+                    onchange="showDeleteStudentList()">
+
+                <option value="">कक्षा चुनें</option>
+
+                ${classes.map(c =>
+                    `<option value="${c}">${c}</option>`
+                ).join('')}
+            </select>
+
+            <div id="deleteStudentContainer"
+                 style="margin-top:20px;"></div>
+        `;
+
+    }catch(err){
+
+        document.getElementById('contentArea').innerHTML =
+            "डेटा लोड नहीं हुआ";
+
+    }
+}
+        
     
     // बाकी मॉड्यूल के लिए
     else {
@@ -611,6 +657,16 @@ else if (title === 'छात्र जोड़ें') {
     }
 }
 
+
+
+
+
+
+
+
+
+
+       
        
     function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
@@ -698,7 +754,55 @@ async function searchStudentById() {
         alert("डेटा प्राप्त करने में त्रुटि हुई");
     }
 }
-       window.onload = function() {
+function showDeleteStudentList(){
+
+    let cls =
+        document.getElementById("deleteClassFilter").value;
+
+    let students =
+        window.studentDataList.filter(s =>
+            (s.Class || s.class) == cls
+        );
+
+    let html = `
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th>Medium</th>
+                <th>Class</th>
+                <th>Action</th>
+            </tr>
+    `;
+
+    students.forEach(stu => {
+
+        html += `
+        <tr>
+            <td>${stu["Student ID"] || ""}</td>
+            <td>${stu["Student Name"] || ""}</td>
+            <td>${stu["Father Name"] || ""}</td>
+            <td>${stu["Medium"] || ""}</td>
+            <td>${stu["Class"] || ""}</td>
+            <td>
+                <button
+                    style="background:red;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;"
+                    onclick="deleteStudent('${stu["Student ID"]}')">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById(
+        "deleteStudentContainer"
+    ).innerHTML = html;
+}   
+    window.onload = function() {
     buildMenu();
     showDashboard();
 };    
