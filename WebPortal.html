@@ -653,8 +653,8 @@ function submitNewStudent() {
     .catch(err => alert("त्रुटि: " + err));
 }
 
-   function searchStudentById() {
-    // 1. सर्च इनपुट को सुरक्षित तरीके से प्राप्त करें
+  function searchStudentById() {
+    // 1. सर्च इनपुट को प्राप्त करें
     let searchInput = document.getElementById('searchInput');
     if (!searchInput) return; 
     
@@ -664,39 +664,50 @@ function submitNewStudent() {
         return; 
     }
 
-    // 2. चेक करें कि डेटाबेस (Dashboard Data) लोड हुआ है या नहीं
-    if (!window.lastData) {
-        alert("डेटा अभी लोड हो रहा है, कृपया थोड़ी देर बाद कोशिश करें या डैशबोर्ड पर जाएं।");
+    // 2. चेक करें कि डेटाबेस लोड हुआ है या नहीं
+    if (!window.lastData || window.lastData.length === 0) {
+        alert("डेटाबेस अभी लोड नहीं हो पाया है। कृपया थोड़ी देर बाद कोशिश करें।");
         return;
     }
 
-    // 3. window.lastData में ID ढूँढें (अधिक सुरक्षित और सभी फॉर्मेट को सपोर्ट करने वाला तरीका)
+    // 3. सबसे सुरक्षित तरीका: किसी भी कॉलम में अगर 'id' शब्द है, तो वैल्यू मैच करें
     let student = window.lastData.find(s => {
-        // छात्र की ID को शीट की सभी संभावित हेडिंग्स में ढूंढें
-        let sheetId = s['Student ID'] || s['ID'] || s['id'] || s['Id'] || s['student id'] || '';
-        
-        // दोनों ID को टेक्स्ट (String) में बदलकर, स्पेस हटाकर और स्मॉल लेटर में करके मैच करें
-        return sheetId.toString().trim().toLowerCase() === searchId.toString().trim().toLowerCase();
+        return Object.keys(s).some(key => {
+            let k = key.toLowerCase().trim();
+            if (k === 'id' || k === 'student id' || k.includes('id') || k.includes('roll') || k.includes('s.no')) {
+                let val = (s[key] || '').toString().trim().toLowerCase();
+                return val === searchId.toLowerCase();
+            }
+            return false;
+        });
     });
        
     if (student) {
-        // 4. छात्र मिलने पर फॉर्म के सभी इनपुट बॉक्स में डेटा ऑटो-फिल करें
+        // 4. छात्र मिलने पर फॉर्म ऑटो-फिल करें (लचीले कॉलम नेम्स के साथ)
         document.getElementById('sid').value = searchId;
-        document.getElementById('sname').value = student['Student Name'] || student['name'] || student['Name'] || '';
-        document.getElementById('fname').value = student['Father Name'] || student['father'] || student['FatherName'] || '';
-        document.getElementById('med').value = student['Medium'] || student['medium'] || 'Hindi';
-        document.getElementById('cls').value = student['Class'] || student['class'] || student['CLASS'] || '';
+        
+        let nameVal = student['Student Name'] || student['name'] || student['Name'] || student['छात्र का नाम'] || '';
+        let fatherVal = student['Father Name'] || student['father'] || student['FatherName'] || student['पिता का नाम'] || '';
+        let medVal = student['Medium'] || student['medium'] || student['माध्यम'] || 'Hindi';
+        let clsVal = student['Class'] || student['class'] || student['CLASS'] || student['कक्षा'] || '';
+
+        document.getElementById('sname').value = nameVal;
+        document.getElementById('fname').value = fatherVal;
+        document.getElementById('med').value = medVal;
+        document.getElementById('cls').value = clsVal;
         
         alert("छात्र का विवरण मिल गया है और फॉर्म में भर दिया गया है!");
     } else {
-        // अगर छात्र नहीं मिलता तो पुराने फॉर्म डेटा को साफ (Clear) करें
+        // रिकॉर्ड न मिलने पर फॉर्म खाली करें
         document.getElementById('sid').value = '';
         document.getElementById('sname').value = '';
         document.getElementById('fname').value = '';
         document.getElementById('med').value = 'Hindi';
         document.getElementById('cls').value = '';
         
-        alert("इस ID का छात्र रिकॉर्ड में नहीं मिला!");
+        // डेटाबेस में उपलब्ध पहले रिकॉर्ड की हेडिंग्स दिखाना (मदद के लिए)
+        let availableKeys = Object.keys(window.lastData[0]).join(", ");
+        alert("इस ID का छात्र रिकॉर्ड में नहीं मिला!\n\nकृपया जांचें कि क्या आप सही ID डाल रहे हैं। आपकी शीट में उपलब्ध कॉलम ये हैं:\n[ " + availableKeys + " ]");
     }
 }
    window.onload = function() {
