@@ -630,13 +630,13 @@ function submitNewStudent() {
     }
 
     const studentData = {
-        action: "addStudent",
-        studentId: studentId,
-        name: sname,
-        father: fname,
-        medium: med,
-        class: cls
-    };
+    action: "saveToStudentData",
+    studentId: studentId,
+    name: sname,
+    father: fname,
+    medium: med,
+    class: cls
+};
 
     const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
 
