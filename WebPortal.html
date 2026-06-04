@@ -530,23 +530,47 @@ else if (title === 'छात्र जोड़ें') {
     document.getElementById('pageTitle').innerText = "नया छात्र जोड़ें";
 
     document.getElementById('contentArea').innerHTML = `
-
-        <!-- Student Search -->
         <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd; margin-bottom:20px;">
-            <h3 style="margin-top:0; color:#1e3a8a;">छात्र खोजें</h3>
+            <h3 style="margin-top:0; color:#1e3a8a;">डेटाबेस से छात्र खोजें</h3>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="searchInput" placeholder="Student ID दर्ज करें" style="flex:grow: 1; width:70%; padding:8px;">
+                <button onclick="searchStudentById()" style="background:#1e3a8a; color:white; padding:8px 15px; border:none; cursor:pointer; border-radius:4px;">
+                    <i class="fa-solid fa-magnifying-glass"></i> खोजें
+                </button>
+            </div>
+            <div id="studentSearchStatusContainer" style="margin-top:10px;"></div>
+        </div>
 
-            <input type="text"
-                   id="searchInput"
-                   placeholder="Student ID दर्ज करें"
-                   style="width:70%; padding:8px; margin-right:10px;">
-
-            <button onclick="searchStudentById()"
-                    style="background:#1e3a8a; color:white; padding:8px 15px; border:none; cursor:pointer;">
-                खोजें
+        <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd;">
+            <h3 style="margin-top:0; color:#1e3a8a;">छात्र का विवरण</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Student ID *</label>
+                    <input type="text" id="sid" readonly style="width:100%; padding:8px; background:#f1f5f9; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">छात्र का नाम</label>
+                    <input type="text" id="sname" readonly style="width:100%; padding:8px; background:#f1f5f9; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">पिता का नाम</label>
+                    <input type="text" id="fname" readonly style="width:100%; padding:8px; background:#f1f5f9; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">माध्यम (Medium)</label>
+                    <input type="text" id="med" readonly style="width:100%; padding:8px; background:#f1f5f9; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">कक्षा (Class)</label>
+                    <input type="text" id="cls" readonly style="width:100%; padding:8px; background:#f1f5f9; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
+                </div>
+            </div>
+            <button onclick="submitNewStudent()" style="background:#1e3a8a; color:white; padding:12px 25px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:1rem; width:100%;">
+                <i class="fa-solid fa-paper-plane"></i> इस छात्र का डेटा StudentData शीट में भेजें
             </button>
         </div>
     `;
-}
+}    
     
     // बाकी मॉड्यूल के लिए
     else {
@@ -559,7 +583,7 @@ else if (title === 'छात्र जोड़ें') {
 }
 
        
-       function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
+    function toggleSubMenu(element) { const subMenu = element.nextElementSibling; subMenu.style.display = (subMenu.style.display === "block") ? "none" : "block"; }
     function setLang(lang) { currentLang = lang; buildMenu(); showDashboard(); }
     function logout() { if(confirm("क्या आप लॉग आउट होना चाहते हैं?")) window.location.href = 'index.html'; }
 
@@ -600,12 +624,10 @@ function submitNewStudent() {
     .catch(err => alert("त्रुटि: " + err));
 }
 
-       function searchStudentById() {
-    // 1. सर्च इनपुट और रिजल्ट कंटेनर को सुरक्षित तरीके से प्राप्त करें
+   function searchStudentById() {
+    // 1. सर्च इनपुट को सुरक्षित तरीके से प्राप्त करें
     let searchInput = document.getElementById('searchInput');
-    let resultsContainer = document.getElementById('dashboardResults');
-    
-    if (!searchInput) return; // अगर सर्च इनपुट मौजूद नहीं है
+    if (!searchInput) return; 
     
     let searchId = searchInput.value.trim();
     if (!searchId) { 
@@ -613,6 +635,38 @@ function submitNewStudent() {
         return; 
     }
 
+    // 2. चेक करें कि डेटाबेस (Dashboard Data) लोड हुआ है या नहीं
+    if (!window.lastData) {
+        alert("डेटा अभी लोड हो रहा है, कृपया थोड़ी देर बाद कोशिश करें या डैशबोर्ड पर जाएं।");
+        return;
+    }
+
+    // 3. window.lastData में ID ढूँढें (अलग-अलग स्पेलिंग फॉर्मेट को संभालने के लिए)
+    let student = window.lastData.find(s => 
+        (s['Student ID'] || s['ID'] || s['id'] || '').toString().trim() === searchId
+    );
+
+    if (student) {
+        // 4. छात्र मिलने पर फॉर्म के सभी इनपुट बॉक्स में डेटा ऑटो-फिल करें
+        document.getElementById('sid').value = searchId;
+        document.getElementById('sname').value = student['Student Name'] || student['name'] || student['Name'] || '';
+        document.getElementById('fname').value = student['Father Name'] || student['father'] || student['FatherName'] || '';
+        document.getElementById('med').value = student['Medium'] || student['medium'] || 'Hindi';
+        document.getElementById('cls').value = student['Class'] || student['class'] || student['CLASS'] || '';
+        
+        alert("छात्र का विवरण मिल गया है और फॉर्म में भर दिया गया है!");
+    } else {
+        // अगर छात्र नहीं मिलता तो पुराने फॉर्म डेटा को साफ (Clear) करें
+        document.getElementById('sid').value = '';
+        document.getElementById('sname').value = '';
+        document.getElementById('fname').value = '';
+        document.getElementById('med').value = 'Hindi';
+        document.getElementById('cls').value = '';
+        
+        alert("इस ID का छात्र रिकॉर्ड में नहीं मिला!");
+    }
+}
+       
     // 2. window.lastData में ID ढूँढें
     let student = window.lastData.find(s => 
         (s['Student ID'] || s['ID'] || s['id'] || '').toString() === searchId
