@@ -1145,18 +1145,20 @@ function submitAttendanceUpdate(event) {
             btn.innerText = "स्थिति सुधारें (Update)";
         }
     })
-   .catch(err => {
+
+    .catch(err => {
     console.error("Update Error:", err);
     alert("अपडेट एरर: " + err.message);
     btn.disabled = false;
     btn.innerText = "स्थिति सुधारें (Update)";
 });
-
+}
        
-    window.onload = function() {
+window.onload = function() {
     buildMenu();
     showDashboard();
-};    
+};
+    
 </script>
 </body>
 </html>
