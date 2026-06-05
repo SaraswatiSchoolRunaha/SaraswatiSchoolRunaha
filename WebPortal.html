@@ -520,6 +520,33 @@ function showDashboard() {
         document.getElementById('contentArea').innerHTML = html + "</table>";
     }
        
+function showAttendanceForm() {
+    document.getElementById("contentArea").innerHTML = `
+        <h3>📅 दैनिक उपस्थिति</h3>
+
+        <div style="margin-bottom:10px;">
+            <label>तारीख चुनें</label><br>
+            <input type="date" id="attDate" style="padding:8px; width:200px;">
+        </div>
+
+        <div style="margin-bottom:10px;">
+            <label>कक्षा चुनें</label><br>
+            <select id="classFilter" onchange="checkLockAndLoadStudents()" style="padding:8px;">
+                <option value="">-- चुनें --</option>
+                <option value="1">Class 1</option>
+                <option value="2">Class 2</option>
+                <option value="3">Class 3</option>
+            </select>
+        </div>
+
+        <div id="attendanceTableContainer"></div>
+    `;
+}
+
+
+
+
+      
 async function showContent(title) {
     // 1. टाइटल अपडेट करें
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
