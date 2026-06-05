@@ -556,10 +556,10 @@ function showAttendanceForm() {
                 border-radius:10px;
             }
 
-            .form-row{
-             display:flex;
-             gap:15px;
-             align-items:flex-end;
+           .form-row{
+            display:flex;
+            gap:15px;
+            align-items:flex-end;
             }
 
             .form-group{
@@ -568,17 +568,22 @@ function showAttendanceForm() {
 
             .form-control{
             width:100%;
-                box-sizing:border-box;
-            }
-            label{
-                font-weight:bold;
-                display:block;
-                margin-bottom:5px;
+            box-sizing:border-box;
+            height:50px;       /* बॉक्स की ऊँचाई */
+            padding:10px;
+            font-size:16px;
+            border:1px solid #ccc;
+            border-radius:6px;
             }
 
+            label{
+            font-weight:bold;
+            font-size:15px;
+            margin-bottom:6px;
+            }            
             @media(max-width:768px){
-                .form-row{
-                    flex-wrap:wrap;
+            .form-row{
+            flex-wrap:wrap;
                 }
             }
         </style>
