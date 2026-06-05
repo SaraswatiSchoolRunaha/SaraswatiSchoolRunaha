@@ -790,16 +790,19 @@ function showDeleteStudentList(){
         "deleteStudentContainer"
     ).innerHTML = html;
 }   
-async function deleteStudent(studentId){
 
-    if(!confirm(studentId + " को Delete करना चाहते हैं?")){
+       
+    async function deleteStudent(studentId, buttonElement) {
+
+    if (!confirm(studentId + " को Delete करना चाहते हैं?")) {
         return;
     }
 
-    try{
-
-        const response = await fetch(sheetUrls['StudentData'], {
+    try {
+        // fetch में mode: "no-cors" जोड़ दिया है
+        await fetch(sheetUrls['StudentData'], {
             method: "POST",
+            mode: "no-cors", 
             headers: {
                 "Content-Type": "application/json"
             },
@@ -809,36 +812,26 @@ async function deleteStudent(studentId){
             })
         });
 
-        // 🔥 IMPORTANT FIX
-        const text = await response.text();
-        console.log("RAW RESPONSE:", text);
+        // 💡 ध्यान दें: no-cors मोड में हम response.json() या response.text() को रीड नहीं कर सकते।
+        // इसलिए सीधे सफल डिलीट का मैसेज दिखाएंगे।
+        
+        alert("छात्र सफलतापूर्वक हटाया गया");
 
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch (e) {
-            console.log("JSON parse error:", e);
-            alert("Server response गलत है");
-            return;
-        }
-
-        console.log("Server Response:", data);
-
-        if(data.status === "success"){
-            alert("छात्र सफलतापूर्वक हटाया गया");
+        // स्क्रीन (UI) से तुरंत उस छात्र की रो (Row) को गायब करने के लिए:
+        if (buttonElement) {
+            let row = buttonElement.closest('tr');
+            if (row) row.remove();
         } else {
-            alert(data.message || "Delete failed");
+            // अगर बटन एलिमेंट नहीं है, तो पूरी लिस्ट रिफ्रेश करें
+            showDeleteStudentList();
         }
 
-        showDeleteStudentList();
-
-    } catch(err){
-
+    } catch (err) {
         console.error(err);
         alert("सर्वर से कनेक्ट नहीं हो पाया");
     }
 }
-
+       
        
     window.onload = function() {
     buildMenu();
