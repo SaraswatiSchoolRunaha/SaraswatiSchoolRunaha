@@ -1050,46 +1050,40 @@ function showDeleteStudentList(){
 }
        
 // 1. उपस्थिति सुधार पोर्टल का UI बनाना
-function showCorrectionPortal() {
-    document.getElementById('pageTitle').innerText = "उपस्थिति सुधार";
-    
-    document.getElementById('contentArea').innerHTML = `
-        <div style="max-width: 500px; margin: 20px auto; padding: 25px; border: 1px solid #e2e8f0; border-radius: 8px; background:#fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-            <h3 style="text-align: center; color: #1e3a8a; margin-top:0; margin-bottom:20px;">📝 उपस्थिति सुधार पोर्टल</h3>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="font-weight:bold; color:#475569;">तारीख चुनें:</label>
-                <input type="date" id="searchDate" style="width: 100%; padding: 10px; margin-top: 5px; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:4px;" required>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight:bold; color:#475569;">छात्र ID (Student ID):</label>
-                <input type="text" id="searchStudentId" placeholder="ID दर्ज करें" style="width: 100%; padding: 10px; margin-top: 5px; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:4px;" required>
-            </div>
-            
-            <button onclick="searchAttendanceRecord()" style="width: 100%; padding: 12px; background-color: #1e3a8a; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:bold; font-size:15px;">रिकॉर्ड खोजें</button>
-            
-            <hr style="margin: 25px 0; border:0; border-top:1px solid #e2e8f0;">
-            
-            <div id="updateFormSection" style="display: none; background:#f8fafc; padding:15px; border-radius:6px; border:1px solid #ebd5e1;">
-                <h4 style="margin-top:0; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">छात्र का विवरण:</h4>
-                <p style="margin:8px 0;"><b>नाम:</b> <span id="resName" style="color:#334155;">-</span></p>
-                <p style="margin:8px 0;"><b>कक्षा:</b> <span id="resClass" style="color:#334155;">-</span></p>
-                <input type="hidden" id="resRowIndex">
-                
-                <div style="margin: 15px 0;">
-                    <label style="font-weight:bold; color:#475569;">नया स्टेटस चुनें:</label>
-                    <select id="newStatusSelect" style="width: 100%; padding: 8px; margin-top: 5px; border:1px solid #cbd5e1; border-radius:4px;">
-                        <option value="P">Present (P)</option>
-                        <option value="A">Absent (A)</option>
-                    </select>
-                </div>
-                
-                <button onclick="submitAttendanceUpdate()" style="width: 100%; padding: 10px; background-color: #22c55e; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:bold; font-size:15px;">स्थिति सुधारें (Update)</button>
-            </div>
-        </div>`;
-}
+function searchAttendanceRecord() {
+    let date = document.getElementById('searchDate').value;
+    let studentId = document.getElementById('searchStudentId').value;
 
+    if (!date || !studentId) {
+        alert("Date और Student ID भरें");
+        return;
+    }
+
+    // Example API call (Google Sheet / backend)
+    fetch(`YOUR_API_URL?action=searchAttendance&date=${date}&id=${studentId}`)
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data || !data.found) {
+            alert("Record नहीं मिला");
+            return;
+        }
+
+        // show form
+        document.getElementById('updateFormSection').style.display = "block";
+
+        // fill data
+        document.getElementById('resName').innerText = data.name;
+        document.getElementById('resClass').innerText = data.class;
+        document.getElementById('resRowIndex').value = data.rowIndex;
+
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Server error");
+    });
+}
+       
 // 2. बैकएंड से पुरानी रो (Row Number) खोजना
 function searchAttendanceRecord() {
     const date = document.getElementById("searchDate").value;
@@ -1116,42 +1110,62 @@ function searchAttendanceRecord() {
 
 // 3. सुधरा हुआ स्टेटस बैकएंड पर भेजना
 function submitAttendanceUpdate(event) {
+
     const rowIndex = document.getElementById("resRowIndex").value;
     const newStatus = document.getElementById("newStatusSelect").value;
-    const btn = event.target;
+
+    if (!rowIndex) {
+        alert("पहले record search करें");
+        return;
+    }
+
+    const btn = event?.target;
 
     const payload = {
         action: "updateSingleAttendance",
-        rowIndex: parseInt(rowIndex),
+        rowIndex: Number(rowIndex),
         newStatus: newStatus
     };
 
-    btn.disabled = true;
-    btn.innerText = "सुधार किया जा रहा है...";
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = "सुधार किया जा रहा है...";
+    }
 
     fetch(sheetUrls['Attendance'], {
         method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify(payload)
     })
     .then(res => res.json())
     .then(data => {
+
         if (data.status === "success") {
             alert("🎉 " + data.message);
+
             document.getElementById("updateFormSection").style.display = "none";
             document.getElementById("searchStudentId").value = "";
-        } else {
+        } 
+        else {
             alert("सुधार करने में विफल: " + data.message);
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = "स्थिति सुधारें (Update)";
+            }
+        }
+    })
+    .catch(err => {
+        console.error("Update Error:", err);
+        alert("अपडेट एरर: " + err.message);
+
+        if (btn) {
             btn.disabled = false;
             btn.innerText = "स्थिति सुधारें (Update)";
         }
-    })
-
-    .catch(err => {
-    console.error("Update Error:", err);
-    alert("अपडेट एरर: " + err.message);
-    btn.disabled = false;
-    btn.innerText = "स्थिति सुधारें (Update)";
-});
+    });
 }
        
 window.onload = function() {
