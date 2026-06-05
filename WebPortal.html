@@ -573,24 +573,23 @@ if (title === 'उपस्थिति डैशबोर्ड') {
     }
 }
     
-    // पुराना ब्लॉक: दैनिक उपस्थिति के लिए
-    else if (title === 'दैनिक उपस्थिति') {
-        document.getElementById('contentArea').innerHTML = "छात्र डेटा लोड हो रहा है...";
-        try {
-            const url = sheetUrls['StudentData'] + "?action=getStudents&class=All";
-            const response = await fetch(url);
-            const data = await response.json();
+  else if (title === 'दैनिक उपस्थिति') {
+    document.getElementById('contentArea').innerHTML = "छात्र डेटा लोड हो रहा है...";
+    try {
+        const url = sheetUrls['StudentData'] + "?action=getStudents&class=All";
+        const response = await fetch(url);
+        const data = await response.json();
 
-            if (!data || data.length === 0) {
-                document.getElementById('contentArea').innerHTML = "कोई छात्र डेटा नहीं मिला।";
-                return;
-            }
-            window.lastData = data;
-            showAttendanceForm();
-        } catch (e) {
-            document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
+        if (!data || data.length === 0) {
+            document.getElementById('contentArea').innerHTML = "कोई छात्र डेटा नहीं मिला।";
+            return;
         }
+        window.lastData = data;
+        showAttendanceForm();
+    } catch (e) {
+        document.getElementById('contentArea').innerHTML = "डेटा लोड करने में त्रुटि हुई।";
     }
+}
         
 // इस ब्लॉक को showContent फ़ंक्शन के अंदर सही जगह पर पेस्ट करें
 else if (title === 'उपस्थिति सुधार') {
