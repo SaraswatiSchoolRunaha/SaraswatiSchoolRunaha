@@ -524,7 +524,7 @@ function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
     
     // यहाँ सिर्फ आखिरी कक्षा की संख्या लिखें (जैसे 10), बाकी सब कोड खुद संभाल लेगा
-    const maxClass = 15; 
+    const maxClass = 10; 
     let classOptions = '<option value="">-- कक्षा चुनें --</option>';
     for (let i = 1; i <= maxClass; i++) {
         classOptions += `<option value="${i}">Class ${i}</option>`;
@@ -571,7 +571,7 @@ function showAttendanceForm() {
             </div>
         </div>
     `;
-}       
+}
     async function showContent(title) {
     // 1. टाइटल अपडेट करें
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
