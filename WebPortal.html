@@ -522,40 +522,38 @@ function showDashboard() {
        
 function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
+    
+    // मान लीजिए आपकी क्लासेस का ऐरे यह है
+    const classes = [{id: "1", name: "Class 1"}, {id: "2", name: "Class 2"}, {id: "3", name: "Class 3"}];
+    const classOptions = classes.map(cls => `<option value="${cls.id}">${cls.name}</option>`).join('');
 
     document.getElementById("contentArea").innerHTML = `
-        <div style="max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
-            <h3 style="margin-top: 0; color: #333;">📅 दैनिक उपस्थिति</h3>
-            <hr>
-
-            <div style="margin-bottom: 15px;">
-                <label style="font-weight: bold; display: block; margin-bottom: 5px;">तारीख चुनें:</label>
-                <input type="date" id="attDate" value="${today}" 
-                    style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-            </div>
-
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; display: block; margin-bottom: 5px;">कक्षा चुनें:</label>
-                <select id="classFilter" onchange="checkLockAndLoadStudents()" 
-                    style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
-                    <option value="">-- कक्षा चुनें --</option>
-                    <option value="1">Class 1</option>
-                    <option value="2">Class 2</option>
-                    <option value="3">Class 3</option>
-                </select>
-            </div>
-
-            <div id="attendanceTableContainer" style="margin-top: 15px;"></div>
+        <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff;">
+            <h3 style="margin-top: 0;">📅 दैनिक उपस्थिति</h3>
             
-            <button id="saveBtn" onclick="saveAttendance()" 
-                style="display: none; width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">
-                उपस्थिति सुरक्षित करें
-            </button>
+            <!-- यहाँ Flexbox का उपयोग किया गया है -->
+            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                <div style="flex: 1;">
+                    <label style="display:block; font-size: 14px; margin-bottom: 5px;">तारीख:</label>
+                    <input type="date" id="attDate" value="${today}" style="padding:8px; width:100%; border:1px solid #ccc; border-radius:4px;">
+                </div>
+                <div style="flex: 1;">
+                    <label style="display:block; font-size: 14px; margin-bottom: 5px;">कक्षा:</label>
+                    <select id="classFilter" onchange="checkLockAndLoadStudents()" style="padding:8px; width:100%; border:1px solid #ccc; border-radius:4px;">
+                        <option value="">-- चुनें --</option>
+                        ${classOptions}
+                    </select>
+                </div>
+            </div>
+
+            <!-- छात्रों की लिस्ट इसी के नीचे आएगी -->
+            <div id="attendanceTableContainer" style="border-top: 1px solid #eee; padding-top: 10px;">
+                <p style="color: #666; text-align: center;">कृपया कक्षा चुनें...</p>
+            </div>
         </div>
     `;
 }
-
-async function showContent(title) {
+    async function showContent(title) {
     // 1. टाइटल अपडेट करें
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
 
