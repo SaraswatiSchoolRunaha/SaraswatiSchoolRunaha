@@ -257,13 +257,30 @@ async function checkLockAndLoadStudents() {
         const result = await response.json();
 
         if (result.isLocked === true || result.status === "locked") {
-            container.innerHTML = `
-                <div style="background:#fee2e2; border:1px solid #f87171; color:#991b1b; padding:15px; border-radius:6px; margin-top:10px; font-weight:bold;">
-                    ⚠️ लॉक नोटिस: कक्षा ${selectedClass} (${selectedMedium}) की दिनांक ${selectedDate} की उपस्थिति पहले ही सबमिट करके लॉक की जा चुकी है!
-                </div>`;
+
+    container.innerHTML = `
+    <div style="
+        background:#fee2e2;
+        border:2px solid #dc2626;
+        color:#991b1b;
+        padding:20px;
+        border-radius:8px;
+        margin-top:15px;
+        text-align:center;
+        font-weight:bold;
+        font-size:16px;
+    ">
+        ⚠️ इस कक्षा की उपस्थिति पहले ही सबमिट की जा चुकी है।
+        <br><br>
+        Attendance Correction के लिए Admin से संपर्क करें।
+        </div>
+    `;
+
+    return;
+
         } else {
-            filterStudentsByClass();
-        }
+        filterStudentsByClass();
+    }
 
     } catch (e) {
         console.error(e);
@@ -593,31 +610,33 @@ function showAttendanceForm() {
 
             <div class="form-row">
 
-                <div class="form-group">
+               <div class="form-group">
                     <label>तारीख</label>
-                    <input type="date" id="attDate" value="${today}" class="form-control"
-                        onchange="checkLockAndLoadStudents()">
-                </div>
-
-                <div class="form-group">
+                    <input type="date"
+                    id="attDate"
+                   value="${today}"
+                   class="form-control"
+                   onchange="checkLockAndLoadStudents()">
+            </div>
+                    <div class="form-group">
                     <label>कक्षा</label>
                     <select id="classFilter" class="form-control"
-                        onchange="checkLockAndLoadStudents()">
-                        <option value="">-- कक्षा --</option>
-                        ${classOptions}
-                    </select>
-                </div>
+                    onchange="checkLockAndLoadStudents()">
+                    <option value="">-- कक्षा --</option>
+                    ${classOptions}
+                </select>
+            </div>
 
-                <div class="form-group">
+               <div class="form-group">
                     <label>माध्यम</label>
                     <select id="mediumFilter" class="form-control"
-                        onchange="checkLockAndLoadStudents()">
-                        <option value="">-- माध्यम --</option>
-                        ${mediumOptions}
-                    </select>
-                </div>
+                    onchange="checkLockAndLoadStudents()">
+                    <option value="">-- माध्यम --</option>
+                    ${mediumOptions}
+                </select>
+        </div>
 
-            </div>
+        </div>
 
             <div id="attendanceTableContainer">
                 <p style="text-align:center; margin-top:20px;">
