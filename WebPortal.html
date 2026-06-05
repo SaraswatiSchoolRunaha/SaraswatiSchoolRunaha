@@ -304,16 +304,33 @@ function filterStudentsByClass() {
         return;
     }
 
-    // फ़िल्टरिंग लॉजिक
-    let filteredStudents = window.lastData.filter(s => {
-        let cls = (s['Class'] || s['class'] || s['CLASS'] || "").toString().trim();
-        return cls == selectedClass.toString().trim();
-    });
+   let selectedMedium =
+    document.getElementById('mediumFilter').value;
 
-    if (filteredStudents.length === 0) {
-        container.innerHTML = "<span style='color:red;'>इस कक्षा में कोई छात्र नहीं मिले।</span>";
-        return;
-    }
+console.log("Selected Class:", selectedClass);
+console.log("Selected Medium:", selectedMedium);
+
+let filteredStudents = window.lastData.filter(s => {
+
+    let cls =
+    (s['Class'] || s['class'] || s['CLASS'] || "")
+    .toString().trim();
+
+    let med =
+    (s['Medium'] || s['medium'] || s['MEDIUM'] || "")
+    .toString().trim();
+
+    console.log(
+        "Student:",
+        cls,
+        med
+    );
+
+    return (
+        cls.toLowerCase() === selectedClass.toString().trim().toLowerCase() &&
+        med.toLowerCase() === selectedMedium.toString().trim().toLowerCase()
+    );
+});
 
     // टेबल रेंडरिंग
     let html = `
@@ -1098,7 +1115,7 @@ function searchAttendanceRecord() {
 }
 
 // 3. सुधरा हुआ स्टेटस बैकएंड पर भेजना
-function submitAttendanceUpdate() {
+function submitAttendanceUpdate(event) {
     const rowIndex = document.getElementById("resRowIndex").value;
     const newStatus = document.getElementById("newStatusSelect").value;
     const btn = event.target;
@@ -1128,12 +1145,14 @@ function submitAttendanceUpdate() {
             btn.innerText = "स्थिति सुधारें (Update)";
         }
     })
-    .catch(err => {
-        alert("अपडेट एरर: " + err);
-        btn.disabled = false;
-        btn.innerText = "स्थिति सुधारें (Update)";
-    });
-}
+   .catch(err => {
+    console.error("Update Error:", err);
+    alert("अपडेट एरर: " + err.message);
+    btn.disabled = false;
+    btn.innerText = "स्थिति सुधारें (Update)";
+});
+
+       
     window.onload = function() {
     buildMenu();
     showDashboard();
