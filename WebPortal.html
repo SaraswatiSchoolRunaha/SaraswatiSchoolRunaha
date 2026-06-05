@@ -256,7 +256,7 @@ async function checkLockAndLoadStudents() {
         const response = await fetch(url);
         const result = await response.json();
 
-        if (result.isLocked === true || result.status === "locked") {
+if (result.exists === true) {
 
     container.innerHTML = `
     <div style="
@@ -273,15 +273,15 @@ async function checkLockAndLoadStudents() {
         ⚠️ इस कक्षा की उपस्थिति पहले ही सबमिट की जा चुकी है।
         <br><br>
         Attendance Correction के लिए Admin से संपर्क करें।
-        </div>
+    </div>
     `;
 
     return;
 
-        } else {
-        filterStudentsByClass();
-    }
-
+} else {
+    filterStudentsByClass();
+}
+        
     } catch (e) {
         console.error(e);
         filterStudentsByClass();
