@@ -1049,8 +1049,8 @@ function showDeleteStudentList(){
     }
 }
        
-// 1. उपस्थिति सुधार पोर्टल का UI बनाना
 function searchAttendanceRecord() {
+
     let date = document.getElementById('searchDate').value;
     let studentId = document.getElementById('searchStudentId').value;
 
@@ -1059,20 +1059,20 @@ function searchAttendanceRecord() {
         return;
     }
 
-    // Example API call (Google Sheet / backend)
-    fetch(`YOUR_API_URL?action=searchAttendance&date=${date}&id=${studentId}`)
+    fetch(`YOUR_API_URL?action=getStudentAttendanceRow&studentId=${studentId}&date=${date}`)
     .then(res => res.json())
     .then(data => {
 
-        if (!data || !data.found) {
+        // ❌ OLD: data.found
+        // ✅ NEW: data.status === "found"
+
+        if (!data || data.status !== "found") {
             alert("Record नहीं मिला");
             return;
         }
 
-        // show form
         document.getElementById('updateFormSection').style.display = "block";
 
-        // fill data
         document.getElementById('resName').innerText = data.name;
         document.getElementById('resClass').innerText = data.class;
         document.getElementById('resRowIndex').value = data.rowIndex;
