@@ -45,7 +45,12 @@
     0% { transform: translate(0, 0); } 
     100% { transform: translate(-100%, 0); } 
 }
-    </style>
+
+/* Present और Absent के लिए बैकग्राउंड कलर */
+.row-present { background-color: #d1fae5 !important; } /* हल्का हरा रंग */
+.row-absent { background-color: #fee2e2 !important; }  /* हल्का लाल रंग */     
+    
+ </style>
 </head>
 <body>
     
@@ -243,7 +248,7 @@ function showAttendanceForm() {
     document.getElementById('contentArea').innerHTML = html;
 }
 
-// 2. क्लास के हिसाब से टेबल फिल्टर करना
+// 2. क्लास के हिसाब से टेबल फिल्टर करना (रंग बदलने वाले लॉजिक के साथ)
 function filterStudentsByClass() {
     let selectedClass = document.getElementById('classFilter').value;
     if (!selectedClass) {
@@ -278,15 +283,16 @@ function filterStudentsByClass() {
                     let medium = s['Medium'] || s['medium'] || '-';
                     let cls = s['Class'] || s['class'] || '-';
 
+                    // डिफ़ॉल्ट रूप से tr पर row-present (हरा) क्लास दी गई है
                     return `
-                    <tr>
+                    <tr class="row-present">
                         <td>${id}</td>
                         <td>${name}</td>
                         <td>${father}</td>
                         <td>${medium}</td>
                         <td>${cls}</td>
                         <td>
-                            <select class="attStatus">
+                            <select class="attStatus" onchange="updateRowColor(this)">
                                 <option value="P">Present (P)</option>
                                 <option value="A">Absent (A)</option>
                             </select>
@@ -299,7 +305,24 @@ function filterStudentsByClass() {
   `;
     document.getElementById('attendanceTableContainer').innerHTML = html;
 }
-       
+
+   // ... ऊपर आपका filterStudentsByClass() फ़ंक्शन होगा ...
+function filterStudentsByClass() {
+    // पुराना कोड यहाँ खत्म हो रहा है
+} 
+
+// 🎯 यहाँ पर इस नए फ़ंक्शन को पेस्ट कर दीजिए:
+function updateRowColor(selectElement) {
+    let row = selectElement.closest('tr');
+    if (selectElement.value === 'P') {
+        row.classList.add('row-present');
+        row.classList.remove('row-absent');
+    } else if (selectElement.value === 'A') {
+        row.classList.add('row-absent');
+        row.classList.remove('row-present');
+    }
+}
+   
 // 3. डेटा सेव करना (इसे अपने पुराने फंक्शन से बदलें)
 function saveAttendance(event) {
     let btn = event.target; // अब यहाँ बटन की सही पहचान होगी
