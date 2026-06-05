@@ -522,37 +522,45 @@ function showDashboard() {
        
 function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
-    
-    // मान लीजिए आपकी क्लासेस का ऐरे यह है
     const classes = [{id: "1", name: "Class 1"}, {id: "2", name: "Class 2"}, {id: "3", name: "Class 3"}];
     const classOptions = classes.map(cls => `<option value="${cls.id}">${cls.name}</option>`).join('');
 
     document.getElementById("contentArea").innerHTML = `
-        <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff;">
-            <h3 style="margin-top: 0;">📅 दैनिक उपस्थिति</h3>
+        <style>
+            .attendance-card { max-width: 800px; margin: 20px auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #fff; }
+            .form-row { display: flex; gap: 20px; margin-bottom: 20px; }
+            .form-group { flex: 1; }
+            .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #444; }
+            .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+            #attendanceTableContainer { width: 100%; overflow-x: auto; margin-top: 10px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        </style>
+
+        <div class="attendance-card">
+            <h3 style="margin-top: 0; color: #2c3e50;">📅 दैनिक उपस्थिति</h3>
             
-            <!-- यहाँ Flexbox का उपयोग किया गया है -->
-            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                <div style="flex: 1;">
-                    <label style="display:block; font-size: 14px; margin-bottom: 5px;">तारीख:</label>
-                    <input type="date" id="attDate" value="${today}" style="padding:8px; width:100%; border:1px solid #ccc; border-radius:4px;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>तारीख चुनें</label>
+                    <input type="date" id="attDate" value="${today}" class="form-control">
                 </div>
-                <div style="flex: 1;">
-                    <label style="display:block; font-size: 14px; margin-bottom: 5px;">कक्षा:</label>
-                    <select id="classFilter" onchange="checkLockAndLoadStudents()" style="padding:8px; width:100%; border:1px solid #ccc; border-radius:4px;">
+                <div class="form-group">
+                    <label>कक्षा चुनें</label>
+                    <select id="classFilter" onchange="checkLockAndLoadStudents()" class="form-control">
                         <option value="">-- चुनें --</option>
                         ${classOptions}
                     </select>
                 </div>
             </div>
 
-            <!-- छात्रों की लिस्ट इसी के नीचे आएगी -->
-            <div id="attendanceTableContainer" style="border-top: 1px solid #eee; padding-top: 10px;">
-                <p style="color: #666; text-align: center;">कृपया कक्षा चुनें...</p>
+            <div id="attendanceTableContainer">
+                <p style="text-align: center; color: #888; padding: 20px;">कृपया कक्षा चुनें और विवरण देखें...</p>
             </div>
         </div>
     `;
 }
+       
     async function showContent(title) {
     // 1. टाइटल अपडेट करें
     document.getElementById('pageTitle').innerText = translations[currentLang][title];
