@@ -222,33 +222,49 @@ function renderTable(data) {
         }
     }
        
-// 1. फॉर्म और क्लास सिलेक्शन (अपडेटेड - लॉक सिस्टम के साथ)
-function showAttendanceForm() {
-    document.getElementById('pageTitle').innerText = "दैनिक उपस्थिति";
+// 1. लॉक सिस्टम चेक करने वाला फ़ंक्शन (जो ऑनचेंज पर कॉल हो रहा है)
+async function checkLockAndLoadStudents() {
+    let selectedClass = document.getElementById('classFilter').value;
+    let selectedDate = document.getElementById('attDate').value;
+    let container = document.getElementById('attendanceTableContainer');
 
-    // सभी यूनिक क्लास निकालें
-    let classes = [...new Set(window.lastData.map(s => s['Class'] || s['class']))].filter(c => c !== undefined && c !== "");
+    if (!selectedClass) {
+        container.innerHTML = "";
+        return;
+    }
 
-    let html = `
-        <div style="margin-bottom:20px; display:flex; gap:15px; align-items:center;">
-            <div>
-                <label>तारीख: </label>
-                <input type="date" id="attDate" value="${new Date().toISOString().split('T')[0]}">
-            </div>
-            <div>
-                <label>कक्षा चुनें: </label>
-                <select id="classFilter" onchange="checkLockAndLoadStudents()">
-                    <option value="">-- कक्षा चुनें --</option>
-                    ${classes.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
-                </select>
-            </div>
-        </div>
-        <div id="attendanceTableContainer"></div>
-    `;
-    document.getElementById('contentArea').innerHTML = html;
+    if (!selectedDate) {
+        alert("कृपया पहले तारीख चुनें!");
+        document.getElementById('classFilter').value = "";
+        return;
+    }
+
+    container.innerHTML = `<div style="color:#1e3a8a; font-weight:bold;"><i class="fa-solid fa-spinner fa-spin"></i> लॉक स्टेटस चेक किया जा रहा है...</div>`;
+
+    try {
+        // Attendance Web App URL पर लॉक स्टेटस चेक करने के लिए रिक्वेस्ट भेज रहे हैं
+        const url = `${sheetUrls['Attendance']}?action=checkLock&date=${selectedDate}&class=${encodeURIComponent(selectedClass)}`;
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (result.isLocked === true || result.status === "locked") {
+            // अगर उस तारीख और क्लास की उपस्थिति पहले से लॉक है
+            container.innerHTML = `
+                <div style="background:#fee2e2; border:1px solid #f87171; color:#991b1b; padding:15px; border-radius:6px; margin-top:10px; font-weight:bold;">
+                    ⚠️ लॉक नोटिस: कक्षा ${selectedClass} की दिनांक ${selectedDate} की उपस्थिति पहले ही सबमिट करके लॉक की जा चुकी है! इसमें दोबारा बदलाव नहीं किया जा सकता।
+                </div>`;
+        } else {
+            // अगर लॉक नहीं है, तो छात्रों की लिस्ट लोड करें
+            filterStudentsByClass();
+        }
+    } catch (e) {
+        console.error(e);
+        // अगर सर्वर से लॉक चेक करने में कोई एरर आए, तो सुरक्षा के लिए लिस्ट लोड कर देते हैं
+        filterStudentsByClass();
+    }
 }
 
-// 2. क्लास के हिसाब से टेबल फिल्टर करना (खाली बॉक्स और अलर्ट लॉजिक के साथ)
+// 2. क्लास के हिसाब से टेबल फिल्टर करना (खाली बॉक्स, अलर्ट लॉजिक और शुरुआत में वाइट टेबल के साथ)
 function filterStudentsByClass() {
     let selectedClass = document.getElementById('classFilter').value;
     if (!selectedClass) {
@@ -256,11 +272,21 @@ function filterStudentsByClass() {
         return;
     }
 
+    if (!window.lastData) {
+        document.getElementById('attendanceTableContainer').innerHTML = "<span style='color:red;'>छात्र डेटा उपलब्ध नहीं है। कृपया पेज रिफ्रेश करें।</span>";
+        return;
+    }
+
     // डेटा को फिल्टर करें (स्पेलिंग की किसी भी गलती को हैंडल करने के लिए)
     let filteredStudents = window.lastData.filter(s => {
         let cls = s['Class'] || s['class'] || s['CLASS'] || "";
-        return cls == selectedClass;
+        return cls.toString().trim() == selectedClass.toString().trim();
     });
+
+    if (filteredStudents.length === 0) {
+        document.getElementById('attendanceTableContainer').innerHTML = "<span style='color:red;'>इस कक्षा में कोई छात्र नहीं मिले।</span>";
+        return;
+    }
 
     let html = `
         <table id="attTable">
@@ -283,7 +309,7 @@ function filterStudentsByClass() {
                     let medium = s['Medium'] || s['medium'] || '-';
                     let cls = s['Class'] || s['class'] || '-';
 
-                    // सुधार: यहाँ से 'row-present' हटा दिया गया है ताकि शुरू में टेबल सफेद रहे
+                    // टेबल शुरू में सफेद रहेगी (row-present हटा दिया गया है)
                     return `
                     <tr>
                         <td>${id}</td>
@@ -302,11 +328,11 @@ function filterStudentsByClass() {
                 }).join('')}
             </tbody>
         </table>
-     <button onclick="saveAttendance(event)" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
-  `;
+        <button onclick="saveAttendance(event)" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
+    `;
     document.getElementById('attendanceTableContainer').innerHTML = html;
 }
-  
+       
 // 🎯 इस अपडेटेड फ़ंक्शन को पुराने updateRowColor की जगह पेस्ट करें:
 function updateRowColor(selectElement) {
     let row = selectElement.closest('tr');
