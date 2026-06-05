@@ -248,7 +248,7 @@ function showAttendanceForm() {
     document.getElementById('contentArea').innerHTML = html;
 }
 
-// 2. क्लास के हिसाब से टेबल फिल्टर करना (रंग बदलने वाले लॉजिक के साथ)
+// 2. क्लास के हिसाब से टेबल फिल्टर करना (खाली बॉक्स और अलर्ट लॉजिक के साथ)
 function filterStudentsByClass() {
     let selectedClass = document.getElementById('classFilter').value;
     if (!selectedClass) {
@@ -283,9 +283,9 @@ function filterStudentsByClass() {
                     let medium = s['Medium'] || s['medium'] || '-';
                     let cls = s['Class'] || s['class'] || '-';
 
-                    // डिफ़ॉल्ट रूप से tr पर row-present (हरा) क्लास दी गई है
+                    // सुधार: यहाँ से 'row-present' हटा दिया गया है ताकि शुरू में टेबल सफेद रहे
                     return `
-                    <tr class="row-present">
+                    <tr>
                         <td>${id}</td>
                         <td>${name}</td>
                         <td>${father}</td>
@@ -293,6 +293,7 @@ function filterStudentsByClass() {
                         <td>${cls}</td>
                         <td>
                             <select class="attStatus" onchange="updateRowColor(this)">
+                                <option value="">-- चुनें --</option>
                                 <option value="P">Present (P)</option>
                                 <option value="A">Absent (A)</option>
                             </select>
@@ -305,46 +306,65 @@ function filterStudentsByClass() {
   `;
     document.getElementById('attendanceTableContainer').innerHTML = html;
 }
-
-   // ... ऊपर आपका filterStudentsByClass() फ़ंक्शन होगा ...
-function filterStudentsByClass() {
-    // पुराना कोड यहाँ खत्म हो रहा है
-} 
-
-// 🎯 यहाँ पर इस नए फ़ंक्शन को पेस्ट कर दीजिए:
+  
+// 🎯 इस अपडेटेड फ़ंक्शन को पुराने updateRowColor की जगह पेस्ट करें:
 function updateRowColor(selectElement) {
     let row = selectElement.closest('tr');
+    
+    // बॉर्डर को वापस सामान्य करें (यदि पहले अलर्ट के कारण लाल बॉर्डर आई हो)
+    row.style.border = ""; 
+
     if (selectElement.value === 'P') {
         row.classList.add('row-present');
         row.classList.remove('row-absent');
     } else if (selectElement.value === 'A') {
         row.classList.add('row-absent');
         row.classList.remove('row-present');
+    } else {
+        // अगर वापस "-- चुनें --" (खाली) कर दिया जाए, तो सारे रंग हट जाएंगे
+        row.classList.remove('row-present', 'row-absent');
     }
 }
    
-// 3. डेटा सेव करना (इसे अपने पुराने फंक्शन से बदलें)
+// 3. डेटा सेव करना (अलर्ट और खाली बॉक्स चेकिंग के साथ)
 function saveAttendance(event) {
-    let btn = event.target; // अब यहाँ बटन की सही पहचान होगी
+    let btn = event.target; // बटन की पहचान
     let date = document.getElementById("attDate").value;
     let rows = document.querySelectorAll("#attTable tbody tr");
     
     if (!date) { alert("कृपया तारीख चुनें!"); return; }
 
     let attendance = [];
+    let hasEmptyStatus = false; // यह चेक करने के लिए कि कोई छात्र छूटा तो नहीं
+
     rows.forEach(row => {
+        let statusValue = row.querySelector('.attStatus').value;
+        let studentName = row.cells[1].innerText.trim();
+
+        // 🚨 यदि किसी छात्र का स्टेटस अभी भी खाली "" है (यानी -- चुनें --)
+        if (statusValue === "") {
+            hasEmptyStatus = true;
+            row.style.border = "2px solid #dc2626"; // छूटे हुए छात्र की रो पर लाल बॉर्डर देगा
+        }
+
         attendance.push({
             date: date,
             "Student ID": row.cells[0].innerText.trim(),
-            "Student Name": row.cells[1].innerText.trim(),
+            "Student Name": studentName,
             "Father Name": row.cells[2].innerText.trim(),
             "Medium": row.cells[3].innerText.trim(),
             "Class": row.cells[4].innerText.trim(),
-            "Status": row.querySelector('.attStatus').value
+            "Status": statusValue
         });
     });
 
-    // अपना सही वेब ऐप URL यहाँ डालें
+    // 🛑 अगर एक भी छात्र छूट गया है, तो कोड यहीं रुक जाएगा और गूगल शीट में डेटा नहीं जाएगा
+    if (hasEmptyStatus) {
+        alert("⚠️ ध्यान दें: कुछ छात्रों की उपस्थिति दर्ज करना छूट गया है! कृपया पहले सभी छात्रों का Present (P) या Absent (A) चुनें, उसके बाद ही सबमिट करें।");
+        return; 
+    }
+
+    // आपका सही वेब ऐप URL सुरक्षित है
     const url = "https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec";
 
     btn.innerText = "सेव हो रहा है...";
@@ -352,7 +372,7 @@ function saveAttendance(event) {
 
     fetch(url, {
         method: 'POST',
-        mode: 'no-cors', // इसे जरूर जोड़ें
+        mode: 'no-cors', // नो-कोर्स मोड चालू है
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(attendance)
     })
@@ -367,9 +387,8 @@ function saveAttendance(event) {
         btn.disabled = false;
     });
 }
-    
+       
 function showDashboard() {
-
     document.getElementById('pageTitle').innerText =
         translations[currentLang]['डैशबोर्ड'];
 
