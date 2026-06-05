@@ -224,113 +224,165 @@ function renderTable(data) {
        
 // 1. लॉक सिस्टम चेक करने वाला फ़ंक्शन (जो ऑनचेंज पर कॉल हो रहा है)
 async function checkLockAndLoadStudents() {
-    let selectedClass = document.getElementById('classFilter').value;
-    let selectedDate = document.getElementById('attDate').value;
-    let container = document.getElementById('attendanceTableContainer');
+    let selectedClass = document.getElementById('classFilter').value;
+    let selectedDate = document.getElementById('attDate').value;
+    let container = document.getElementById('attendanceTableContainer');
 
-    if (!selectedClass) {
-        container.innerHTML = "";
-        return;
-    }
+    if (!selectedClass) {
+        container.innerHTML = "";
+        return;
+    }
 
-    if (!selectedDate) {
-        alert("कृपया पहले तारीख चुनें!");
-        document.getElementById('classFilter').value = "";
-        return;
-    }
+    if (!selectedDate) {
+        alert("कृपया पहले तारीख चुनें!");
+        document.getElementById('classFilter').value = "";
+        return;
+    }
 
-    container.innerHTML = `<div style="color:#1e3a8a; font-weight:bold;"><i class="fa-solid fa-spinner fa-spin"></i> लॉक स्टेटस चेक किया जा रहा है...</div>`;
+    container.innerHTML = `<div style="color:#1e3a8a; font-weight:bold;"><i class="fa-solid fa-spinner fa-spin"></i> लॉक स्टेटस चेक किया जा रहा है...</div>`;
 
-    try {
-        // Attendance Web App URL पर लॉक स्टेटस चेक करने के लिए रिक्वेस्ट भेज रहे हैं
-        const url = `${sheetUrls['Attendance']}?action=checkLock&date=${selectedDate}&class=${encodeURIComponent(selectedClass)}`;
-        const response = await fetch(url);
-        const result = await response.json();
+    try {
+        // Attendance Web App URL पर लॉक स्टेटस चेक करने के लिए रिक्वेस्ट भेज रहे हैं
+        const url = `${sheetUrls['Attendance']}?action=checkLock&date=${selectedDate}&class=${encodeURIComponent(selectedClass)}`;
+        const response = await fetch(url);
+        const result = await response.json();
 
-        if (result.isLocked === true || result.status === "locked") {
-            // अगर उस तारीख और क्लास की उपस्थिति पहले से लॉक है
-            container.innerHTML = `
-                <div style="background:#fee2e2; border:1px solid #f87171; color:#991b1b; padding:15px; border-radius:6px; margin-top:10px; font-weight:bold;">
-                    ⚠️ लॉक नोटिस: कक्षा ${selectedClass} की दिनांक ${selectedDate} की उपस्थिति पहले ही सबमिट करके लॉक की जा चुकी है! इसमें दोबारा बदलाव नहीं किया जा सकता।
-                </div>`;
-        } else {
-            // अगर लॉक नहीं है, तो छात्रों की लिस्ट लोड करें
-            filterStudentsByClass();
-        }
-    } catch (e) {
-        console.error(e);
-        // अगर सर्वर से लॉक चेक करने में कोई एरर आए, तो सुरक्षा के लिए लिस्ट लोड कर देते हैं
-        filterStudentsByClass();
-    }
+        if (result.isLocked === true || result.status === "locked") {
+            // अगर उस तारीख और क्लास की उपस्थिति पहले से लॉक है
+            container.innerHTML = `
+                <div style="background:#fee2e2; border:1px solid #f87171; color:#991b1b; padding:15px; border-radius:6px; margin-top:10px; font-weight:bold;">
+                    ⚠️ लॉक नोटिस: कक्षा ${selectedClass} की दिनांक ${selectedDate} की उपस्थिति पहले ही सबमिट करके लॉक की जा चुकी है! इसमें दोबारा बदलाव नहीं किया जा सकता।
+                </div>`;
+        } else {
+            // अगर लॉक नहीं है, तो छात्रों की लिस्ट लोड करें
+            filterStudentsByClass();
+        }
+    } catch (e) {
+        console.error(e);
+        // अगर सर्वर से लॉक चेक करने में कोई एरर आए, तो सुरक्षा के लिए लिस्ट लोड कर देते हैं (या आप अलर्ट दिखा सकते हैं)
+        filterStudentsByClass();
+    }
 }
 
-// 2. क्लास के हिसाब से टेबल फिल्टर करना (खाली बॉक्स, अलर्ट लॉजिक और शुरुआत में वाइट टेबल के साथ)
+// 2. छात्रों की लिस्ट दिखाने वाला फ़ंक्शन (जो लॉक न होने पर कॉल होगा)
 function filterStudentsByClass() {
-    let selectedClass = document.getElementById('classFilter').value;
-    if (!selectedClass) {
-        document.getElementById('attendanceTableContainer').innerHTML = "";
-        return;
-    }
+    let selectedClass = document.getElementById('classFilter').value;
+    
+    if (!window.lastData) {
+        document.getElementById('attendanceTableContainer').innerHTML = "<span style='color:red;'>छात्र डेटा उपलब्ध नहीं है। कृपया पेज रिफ्रेश करें।</span>";
+        return;
+    }
 
-    if (!window.lastData) {
-        document.getElementById('attendanceTableContainer').innerHTML = "<span style='color:red;'>छात्र डेटा उपलब्ध नहीं है। कृपया पेज रिफ्रेश करें।</span>";
-        return;
-    }
+    let filteredStudents = window.lastData.filter(s => {
+        let cls = s['Class'] || s['class'] || s['CLASS'] || "";
+        return cls.toString().trim() == selectedClass.toString().trim();
+    });
 
-    // डेटा को फिल्टर करें (स्पेलिंग की किसी भी गलती को हैंडल करने के लिए)
-    let filteredStudents = window.lastData.filter(s => {
-        let cls = s['Class'] || s['class'] || s['CLASS'] || "";
-        return cls.toString().trim() == selectedClass.toString().trim();
-    });
+    if (filteredStudents.length === 0) {
+        document.getElementById('attendanceTableContainer').innerHTML = "<span style='color:red;'>इस कक्षा में कोई छात्र नहीं मिले।</span>";
+        return;
+    }
 
-    if (filteredStudents.length === 0) {
-        document.getElementById('attendanceTableContainer').innerHTML = "<span style='color:red;'>इस कक्षा में कोई छात्र नहीं मिले।</span>";
-        return;
-    }
+    let html = `
+        <table id="attTable">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Father Name</th>
+                    <th>Medium</th>
+                    <th>Class</th>
+                    <th>Status (P/A)</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${filteredStudents.map(s => {
+                    let id = s['Student ID'] || s['ID'] || s['id'] || '-';
+                    let name = s['Student Name'] || s['Name'] || s['name'] || '-';
+                    let father = s['Father Name'] || s['FatherName'] || s['father'] || '-';
+                    let medium = s['Medium'] || s['medium'] || '-';
+                    let cls = s['Class'] || s['class'] || '-';
 
-    let html = `
-        <table id="attTable">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Father Name</th>
-                    <th>Medium</th>
-                    <th>Class</th>
-                    <th>Status (P/A)</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${filteredStudents.map(s => {
-                    // डेटा सुरक्षित रूप से निकालने के लिए (Fallback logic)
-                    let id = s['Student ID'] || s['ID'] || s['id'] || '-';
-                    let name = s['Student Name'] || s['Name'] || s['name'] || '-';
-                    let father = s['Father Name'] || s['FatherName'] || s['father'] || '-';
-                    let medium = s['Medium'] || s['medium'] || '-';
-                    let cls = s['Class'] || s['class'] || '-';
+                    return `
+                    <tr>
+                        <td>${id}</td>
+                        <td>${name}</td>
+                        <td>${father}</td>
+                        <td>${medium}</td>
+                        <td>${cls}</td>
+                        <td>
+                            <select class="attStatus" onchange="updateRowColor(this)">
+                                <option value="">-- चुनें --</option>
+                                <option value="P">Present (P)</option>
+                                <option value="A">Absent (A)</option>
+                            </select>
+                        </td>
+                    </tr>`;
+                }).join('')}
+            </tbody>
+        </table>
+        <button onclick="saveAttendance(event)" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
+    `;
+    document.getElementById('attendanceTableContainer').innerHTML = html;
+}
+       
+// 2. क्लास के हिसाब से टेबल फिल्टर करना (खाली बॉक्स और अलर्ट लॉजिक के साथ)
+function filterStudentsByClass() {
+    let selectedClass = document.getElementById('classFilter').value;
+    if (!selectedClass) {
+        document.getElementById('attendanceTableContainer').innerHTML = "";
+        return;
+    }
 
-                    // टेबल शुरू में सफेद रहेगी (row-present हटा दिया गया है)
-                    return `
-                    <tr>
-                        <td>${id}</td>
-                        <td>${name}</td>
-                        <td>${father}</td>
-                        <td>${medium}</td>
-                        <td>${cls}</td>
-                        <td>
-                            <select class="attStatus" onchange="updateRowColor(this)">
-                                <option value="">-- चुनें --</option>
-                                <option value="P">Present (P)</option>
-                                <option value="A">Absent (A)</option>
-                            </select>
-                        </td>
-                    </tr>`;
-                }).join('')}
-            </tbody>
-        </table>
-        <button onclick="saveAttendance(event)" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
-    `;
-    document.getElementById('attendanceTableContainer').innerHTML = html;
+    // डेटा को फिल्टर करें (स्पेलिंग की किसी भी गलती को हैंडल करने के लिए)
+    let filteredStudents = window.lastData.filter(s => {
+        let cls = s['Class'] || s['class'] || s['CLASS'] || "";
+        return cls == selectedClass;
+    });
+
+    let html = `
+        <table id="attTable">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Father Name</th>
+                    <th>Medium</th>
+                    <th>Class</th>
+                    <th>Status (P/A)</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${filteredStudents.map(s => {
+                    // डेटा सुरक्षित रूप से निकालने के लिए (Fallback logic)
+                    let id = s['Student ID'] || s['ID'] || s['id'] || '-';
+                    let name = s['Student Name'] || s['Name'] || s['name'] || '-';
+                    let father = s['Father Name'] || s['FatherName'] || s['father'] || '-';
+                    let medium = s['Medium'] || s['medium'] || '-';
+                    let cls = s['Class'] || s['class'] || '-';
+
+                    // सुधार: यहाँ से 'row-present' हटा दिया गया है ताकि शुरू में टेबल सफेद रहे
+                    return `
+                    <tr>
+                        <td>${id}</td>
+                        <td>${name}</td>
+                        <td>${father}</td>
+                        <td>${medium}</td>
+                        <td>${cls}</td>
+                        <td>
+                            <select class="attStatus" onchange="updateRowColor(this)">
+                                <option value="">-- चुनें --</option>
+                                <option value="P">Present (P)</option>
+                                <option value="A">Absent (A)</option>
+                            </select>
+                        </td>
+                    </tr>`;
+                }).join('')}
+            </tbody>
+        </table>
+     <button onclick="saveAttendance(event)" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white;">सबमिट उपस्थिति</button>
+  `;
+    document.getElementById('attendanceTableContainer').innerHTML = html;
 }
        
 // 🎯 इस अपडेटेड फ़ंक्शन को पुराने updateRowColor की जगह पेस्ट करें:
