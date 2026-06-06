@@ -1142,49 +1142,39 @@ async function loadClassAttendanceForCorrection() {
 
     const container = document.getElementById("classCorrectionTable");
 
-    // ❗ Auto-load friendly (NO alert)
     if (!date || !cls || !medium) {
-        container.innerHTML = `
-            <p style="text-align:center;color:#64748b;">
-                Date + Class + Medium select करें
-            </p>`;
+        container.innerHTML = `<p style="text-align:center;color:#64748b;">Date + Class + Medium select करें</p>`;
         return;
     }
 
-    container.innerHTML = `
-        <p style="text-align:center;">
-            ⏳ डेटा लोड हो रहा है...
-        </p>
-    `;
+    container.innerHTML = `<p style="text-align:center;">⏳ Loading...</p>`;
 
     try {
+
         const url = `${sheetUrls['Attendance']}?action=getClassAttendance&date=${date}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
 
         const res = await fetch(url);
         const data = await res.json();
 
-        console.log("Attendance Data:", data);
-
         if (!Array.isArray(data) || data.length === 0) {
-            container.innerHTML = `<p style="color:red;text-align:center;">कोई attendance नहीं मिली</p>`;
+            container.innerHTML = `<p style="color:red;text-align:center;">No Attendance Found</p>`;
             return;
         }
 
         let html = `
-        <table border="1" style="width:100%; border-collapse:collapse;">
+        <table border="1" style="width:100%;border-collapse:collapse;">
             <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Class</th>
                 <th>Medium</th>
                 <th>Status</th>
-                <th>Action</th>
             </tr>
         `;
 
         data.forEach((s, i) => {
 
-            let status = String(s.Status || s.status || "").trim();
+            let status = (s.Status || s.status || "").toString().trim();
 
             html += `
             <tr>
@@ -1192,40 +1182,29 @@ async function loadClassAttendanceForCorrection() {
                 <td>${s["Student Name"] || ""}</td>
                 <td>${s["Class"] || ""}</td>
                 <td>${s["Medium"] || ""}</td>
-
                 <td>
                     <select id="st_${i}">
-                        <option value="P" ${status === "P" ? "selected" : ""}>P</option>
-                        <option value="A" ${status === "A" ? "selected" : ""}>A</option>
+                        <option value="P" ${status==="P"?"selected":""}>P</option>
+                        <option value="A" ${status==="A"?"selected":""}>A</option>
                     </select>
-                </td>
-
-                <td>
-                    <button onclick="updateSingleRow(${s.rowIndex}, document.getElementById('st_${i}').value)">
-                        Save
-                    </button>
                 </td>
             </tr>
             `;
         });
 
-        html += "</table>";
-
+        html += `</table>`;
         container.innerHTML = html;
 
     } catch (e) {
-        console.error(e);
         container.innerHTML = `<p style="color:red;text-align:center;">Server Error</p>`;
     }
-}
-       
+}       
 async function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
 
     let data = [];
 
-    // 👉 ALWAYS fresh data (important fix)
     try {
         const res = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
         data = await res.json();
@@ -1236,21 +1215,11 @@ async function showCorrectionPortal() {
         return;
     }
 
-    let allClasses = [...new Set(
-        data.map(s => (s.Class || s.class || "").toString().trim()).filter(Boolean)
-    )];
+    let allClasses = [...new Set(data.map(s => (s.Class || s.class || "").toString().trim()).filter(Boolean))];
+    let allMediums = [...new Set(data.map(s => (s.Medium || s.medium || "").toString().trim()).filter(Boolean))];
 
-    let allMediums = [...new Set(
-        data.map(s => (s.Medium || s.medium || "").toString().trim()).filter(Boolean)
-    )];
-
-    const classOptions = allClasses.map(cls =>
-        `<option value="${cls}">${cls}</option>`
-    ).join('');
-
-    const mediumOptions = allMediums.map(med =>
-        `<option value="${med}">${med}</option>`
-    ).join('');
+    const classOptions = allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('');
+    const mediumOptions = allMediums.map(med => `<option value="${med}">${med}</option>`).join('');
 
     document.getElementById("contentArea").innerHTML = `
     <style>
@@ -1271,9 +1240,14 @@ async function showCorrectionPortal() {
         }
 
         .correction-row{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
             gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .correction-group{
+            flex: 1;
+            min-width: 200px;
         }
 
         .correction-group label{
@@ -1289,12 +1263,6 @@ async function showCorrectionPortal() {
             border-radius: 6px;
             padding: 8px;
         }
-
-        @media(max-width:768px){
-            .correction-row{
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 
     <div class="correction-card">
@@ -1305,15 +1273,14 @@ async function showCorrectionPortal() {
 
             <div class="correction-group">
                 <label>📅 Date</label>
-                <input type="date"
-                    id="searchDate"
+                <input type="date" id="searchDate"
                     value="${today}"
-                    onchange="autoLoadCorrection()">
+                    onchange="loadClassAttendanceForCorrection()">
             </div>
 
             <div class="correction-group">
                 <label>📚 Class</label>
-                <select id="searchClass" onchange="autoLoadCorrection()">
+                <select id="searchClass" onchange="loadClassAttendanceForCorrection()">
                     <option value="">-- Class चुनें --</option>
                     ${classOptions}
                 </select>
@@ -1321,7 +1288,7 @@ async function showCorrectionPortal() {
 
             <div class="correction-group">
                 <label>🧾 Medium</label>
-                <select id="searchMedium" onchange="autoLoadCorrection()">
+                <select id="searchMedium" onchange="loadClassAttendanceForCorrection()">
                     <option value="">-- Medium चुनें --</option>
                     ${mediumOptions}
                 </select>
@@ -1337,8 +1304,116 @@ async function showCorrectionPortal() {
 
     </div>
     `;
-}    
+}
     
+    async function showCorrectionPortal() {
+
+    const today = new Date().toISOString().split('T')[0];
+
+    let data = [];
+
+    try {
+        const res = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
+        data = await res.json();
+        window.lastData = data;
+    } catch (e) {
+        document.getElementById("contentArea").innerHTML =
+            "<p style='color:red;text-align:center;'>Student data load नहीं हुआ</p>";
+        return;
+    }
+
+    let allClasses = [...new Set(data.map(s => (s.Class || s.class || "").toString().trim()).filter(Boolean))];
+    let allMediums = [...new Set(data.map(s => (s.Medium || s.medium || "").toString().trim()).filter(Boolean))];
+
+    const classOptions = allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('');
+    const mediumOptions = allMediums.map(med => `<option value="${med}">${med}</option>`).join('');
+
+    document.getElementById("contentArea").innerHTML = `
+    <style>
+        .correction-card{
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .correction-title{
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .correction-row{
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .correction-group{
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .correction-group label{
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .correction-group input,
+        .correction-group select{
+            width: 100%;
+            height: 45px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 8px;
+        }
+    </style>
+
+    <div class="correction-card">
+
+        <div class="correction-title">📌 उपस्थिति सुधार (Auto Load)</div>
+
+        <div class="correction-row">
+
+            <div class="correction-group">
+                <label>📅 Date</label>
+                <input type="date" id="searchDate"
+                    value="${today}"
+                    onchange="loadClassAttendanceForCorrection()">
+            </div>
+
+            <div class="correction-group">
+                <label>📚 Class</label>
+                <select id="searchClass" onchange="loadClassAttendanceForCorrection()">
+                    <option value="">-- Class चुनें --</option>
+                    ${classOptions}
+                </select>
+            </div>
+
+            <div class="correction-group">
+                <label>🧾 Medium</label>
+                <select id="searchMedium" onchange="loadClassAttendanceForCorrection()">
+                    <option value="">-- Medium चुनें --</option>
+                    ${mediumOptions}
+                </select>
+            </div>
+
+        </div>
+
+        <div id="classCorrectionTable" style="margin-top:20px;">
+            <p style="text-align:center;color:#64748b;">
+                Date + Class + Medium select करो
+            </p>
+        </div>
+
+    </div>
+    `;
+}
+       
+       
     window.onload = function() {
     buildMenu();
     showDashboard();
