@@ -1219,31 +1219,38 @@ async function loadClassAttendanceForCorrection() {
     }
 }
        
-function showCorrectionPortal() {
+async function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    const data = Array.isArray(window.lastData) ? window.lastData : [];
+    let data = [];
+
+    // 👉 ALWAYS fresh data (important fix)
+    try {
+        const res = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
+        data = await res.json();
+        window.lastData = data;
+    } catch (e) {
+        document.getElementById("contentArea").innerHTML =
+            "<p style='color:red;text-align:center;'>Student data load नहीं हुआ</p>";
+        return;
+    }
 
     let allClasses = [...new Set(
-        data
-            .map(s => (s.Class || s.class || "").toString().trim())
-            .filter(Boolean)
+        data.map(s => (s.Class || s.class || "").toString().trim()).filter(Boolean)
     )];
 
     let allMediums = [...new Set(
-        data
-            .map(s => (s.Medium || s.medium || s.MEDIUM || "").toString().trim())
-            .filter(Boolean)
+        data.map(s => (s.Medium || s.medium || "").toString().trim()).filter(Boolean)
     )];
 
-    const classOptions = allClasses.length
-        ? allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')
-        : `<option value="">No Class Found</option>`;
+    const classOptions = allClasses.map(cls =>
+        `<option value="${cls}">${cls}</option>`
+    ).join('');
 
-    const mediumOptions = allMediums.length
-        ? allMediums.map(med => `<option value="${med}">${med}</option>`).join('')
-        : `<option value="">No Medium Found</option>`;
+    const mediumOptions = allMediums.map(med =>
+        `<option value="${med}">${med}</option>`
+    ).join('');
 
     document.getElementById("contentArea").innerHTML = `
     <style>
@@ -1254,7 +1261,6 @@ function showCorrectionPortal() {
             padding: 20px;
             border-radius: 12px;
             border: 1px solid #ddd;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .correction-title{
@@ -1268,13 +1274,11 @@ function showCorrectionPortal() {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-bottom: 15px;
         }
 
         .correction-group label{
             font-size: 13px;
             font-weight: bold;
-            color: #444;
         }
 
         .correction-group input,
@@ -1284,8 +1288,6 @@ function showCorrectionPortal() {
             border: 1px solid #ccc;
             border-radius: 6px;
             padding: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
         }
 
         @media(max-width:768px){
@@ -1297,7 +1299,7 @@ function showCorrectionPortal() {
 
     <div class="correction-card">
 
-        <div class="correction-title">📌 उपस्थिति सुधार (Auto Load System)</div>
+        <div class="correction-title">📌 उपस्थिति सुधार (Auto Load)</div>
 
         <div class="correction-row">
 
@@ -1306,12 +1308,12 @@ function showCorrectionPortal() {
                 <input type="date"
                     id="searchDate"
                     value="${today}"
-                    onchange="loadClassAttendanceForCorrection()">
+                    onchange="autoLoadCorrection()">
             </div>
 
             <div class="correction-group">
                 <label>📚 Class</label>
-                <select id="searchClass" onchange="loadClassAttendanceForCorrection()">
+                <select id="searchClass" onchange="autoLoadCorrection()">
                     <option value="">-- Class चुनें --</option>
                     ${classOptions}
                 </select>
@@ -1319,7 +1321,7 @@ function showCorrectionPortal() {
 
             <div class="correction-group">
                 <label>🧾 Medium</label>
-                <select id="searchMedium" onchange="loadClassAttendanceForCorrection()">
+                <select id="searchMedium" onchange="autoLoadCorrection()">
                     <option value="">-- Medium चुनें --</option>
                     ${mediumOptions}
                 </select>
@@ -1328,15 +1330,14 @@ function showCorrectionPortal() {
         </div>
 
         <div id="classCorrectionTable" style="margin-top:20px;">
-            <p style="color:#64748b; text-align:center;">
-                Date + Class + Medium select करते ही data auto load होगा
+            <p style="text-align:center;color:#64748b;">
+                Date + Class + Medium select करो
             </p>
         </div>
 
     </div>
     `;
-}
-    
+}    
     
     window.onload = function() {
     buildMenu();
