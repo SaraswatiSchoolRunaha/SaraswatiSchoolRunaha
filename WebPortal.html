@@ -1474,7 +1474,50 @@ function renderAttendanceList(data) {
     buildMenu();
     showDashboard();
 };
-    
+       
+// 👇 HERE (सबसे नीचे paste करो)
+async function updateCorrectionAttendance(studentId) {
+    let select = document.getElementById(`st_${studentId}`);
+    let newStatus = select.value;
+
+    if (!newStatus) {
+        alert("Status select करें");
+        return;
+    }
+
+    const payload = {
+        action: "updateSingleAttendance",
+        studentId: studentId,
+        newStatus: newStatus
+    };
+
+    try {
+        const res = await fetch(sheetUrls['Attendance'], {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+            alert("✔ Updated Successfully");
+        } else {
+            alert("Update Failed: " + data.message);
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Server Error");
+    }
+}
+
+
+
+
+       
 </script>
 </body>
 </html>
