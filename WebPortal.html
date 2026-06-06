@@ -1170,18 +1170,67 @@ function submitAttendanceUpdate(event) {
 } 
        
 function showCorrectionPortal() {
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // safety check (important)
+    let allClasses = [];
+    let allMediums = [];
+
+    if (window.lastData && window.lastData.length > 0) {
+        allClasses = [...new Set(window.lastData.map(s => s.Class || s.class).filter(Boolean))];
+        allMediums = [...new Set(window.lastData.map(s => s.Medium || s.medium).filter(Boolean))];
+    }
+
+    const classOptions = allClasses.map(cls =>
+        `<option value="${cls}">${cls}</option>`
+    ).join('');
+
+    const mediumOptions = allMediums.map(med =>
+        `<option value="${med}">${med}</option>`
+    ).join('');
+
     document.getElementById("contentArea").innerHTML = `
         <h3>📌 उपस्थिति सुधार</h3>
 
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <input type="date" id="searchDate">
-            <input type="text" id="searchStudentId" placeholder="Student ID">
-            <button class="btn-action" onclick="searchAttendanceRecord()">
-                Search
-            </button>
+        <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:flex-end; margin-bottom:15px;">
+
+            <div>
+                <label>📅 Date</label><br>
+                <input type="date" id="searchDate" value="${today}">
+            </div>
+
+            <div>
+                <label>📚 Class</label><br>
+                <select id="searchClass">
+                    <option value="">-- Class चुनें --</option>
+                    ${classOptions}
+                </select>
+            </div>
+
+            <div>
+                <label>🧾 Medium</label><br>
+                <select id="searchMedium">
+                    <option value="">-- Medium चुनें --</option>
+                    ${mediumOptions}
+                </select>
+            </div>
+
+            <div>
+                <label>🔎 Student ID</label><br>
+                <input type="text" id="searchStudentId" placeholder="Student ID">
+            </div>
+
+            <div>
+                <button class="btn-action" onclick="searchAttendanceRecord()">
+                    Search
+                </button>
+            </div>
+
         </div>
 
         <div id="updateFormSection" style="margin-top:20px; display:none;">
+
             <p><b>नाम:</b> <span id="resName"></span></p>
             <p><b>कक्षा:</b> <span id="resClass"></span></p>
 
@@ -1195,11 +1244,11 @@ function showCorrectionPortal() {
             <button onclick="submitAttendanceUpdate(event)" class="btn-action">
                 Update
             </button>
+
         </div>
     `;
 }
-
-
+       
 window.onload = function() {
     buildMenu();
     showDashboard();
