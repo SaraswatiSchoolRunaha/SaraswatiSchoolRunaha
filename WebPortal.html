@@ -1213,7 +1213,6 @@ function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    // सुरक्षित data extraction
     const data = Array.isArray(window.lastData) ? window.lastData : [];
 
     let allClasses = [...new Set(
@@ -1279,45 +1278,30 @@ function showCorrectionPortal() {
             box-sizing: border-box;
         }
 
-        .correction-btn{
-            grid-column: span 3;
-            background: #1e3a8a;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .correction-btn:hover{
-            background: #0f2a66;
-        }
-
         @media(max-width:768px){
             .correction-row{
                 grid-template-columns: 1fr;
-            }
-            .correction-btn{
-                grid-column: span 1;
             }
         }
     </style>
 
     <div class="correction-card">
 
-        <div class="correction-title">📌 उपस्थिति सुधार (Class Wise)</div>
+        <div class="correction-title">📌 उपस्थिति सुधार (Auto Load System)</div>
 
         <div class="correction-row">
 
             <div class="correction-group">
                 <label>📅 Date</label>
-                <input type="date" id="searchDate" value="${today}">
+                <input type="date"
+                    id="searchDate"
+                    value="${today}"
+                    onchange="loadClassAttendanceForCorrection()">
             </div>
 
             <div class="correction-group">
                 <label>📚 Class</label>
-                <select id="searchClass">
+                <select id="searchClass" onchange="loadClassAttendanceForCorrection()">
                     <option value="">-- Class चुनें --</option>
                     ${classOptions}
                 </select>
@@ -1325,28 +1309,23 @@ function showCorrectionPortal() {
 
             <div class="correction-group">
                 <label>🧾 Medium</label>
-                <select id="searchMedium">
+                <select id="searchMedium" onchange="loadClassAttendanceForCorrection()">
                     <option value="">-- Medium चुनें --</option>
                     ${mediumOptions}
                 </select>
             </div>
 
-            <button class="correction-btn" onclick="loadClassAttendanceForCorrection()">
-                🔍 Search Attendance
-            </button>
-
         </div>
 
-        <div id="updateFormSection" style="margin-top:20px;">
+        <div id="classCorrectionTable" style="margin-top:20px;">
             <p style="color:#64748b; text-align:center;">
-                Date + Class + Medium select करके Search दबाएँ
+                Date + Class + Medium select करते ही data auto load होगा
             </p>
         </div>
 
     </div>
     `;
 }       
-       
     window.onload = function() {
     buildMenu();
     showDashboard();
