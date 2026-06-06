@@ -1145,13 +1145,14 @@ async function loadClassAttendanceForCorrection() {
         return;
     }
 
-    const container = document.getElementById("updateFormSection");
-
+    const container = document.getElementById("classCorrectionTable");
     container.innerHTML = "लोड हो रहा है...";
 
-    fetch(`${sheetUrls['Attendance']}?action=getClassAttendance&date=${date}&class=${cls}&medium=${medium}`)
-    .then(res => res.json())
-    .then(data => {
+    try {
+        const url = `${sheetUrls['Attendance']}?action=getClassAttendance&date=${date}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
 
         if (!data || data.length === 0) {
             container.innerHTML = "<p style='color:red;'>कोई attendance नहीं मिली</p>";
@@ -1166,23 +1167,25 @@ async function loadClassAttendanceForCorrection() {
                 <th>Class</th>
                 <th>Medium</th>
                 <th>Status</th>
-                <th>Update</th>
+                <th>Action</th>
             </tr>
         `;
 
         data.forEach((s, i) => {
 
+            let status = s.Status || s.status || "";
+
             html += `
             <tr>
-                <td>${s["Student ID"]}</td>
-                <td>${s["Student Name"]}</td>
-                <td>${s["Class"]}</td>
-                <td>${s["Medium"]}</td>
+                <td>${s["Student ID"] || ""}</td>
+                <td>${s["Student Name"] || ""}</td>
+                <td>${s["Class"] || ""}</td>
+                <td>${s["Medium"] || ""}</td>
 
                 <td>
                     <select id="st_${i}">
-                        <option value="P" ${s.Status=="P"?"selected":""}>P</option>
-                        <option value="A" ${s.Status=="A"?"selected":""}>A</option>
+                        <option value="P" ${status=="P"?"selected":""}>P</option>
+                        <option value="A" ${status=="A"?"selected":""}>A</option>
                     </select>
                 </td>
 
@@ -1198,9 +1201,13 @@ async function loadClassAttendanceForCorrection() {
         html += "</table>";
 
         container.innerHTML = html;
-    });
+
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = "Error loading data";
+    }
 }
-           
+       
 function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
