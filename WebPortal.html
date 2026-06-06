@@ -1215,18 +1215,28 @@ function showCorrectionPortal() {
     let allClasses = [];
     let allMediums = [];
 
-    if (window.lastData && window.lastData.length > 0) {
-        allClasses = [...new Set(window.lastData.map(s => s.Class || s.class).filter(Boolean))];
-        allMediums = [...new Set(window.lastData.map(s => s.Medium || s.medium).filter(Boolean))];
+    if (window.lastData && Array.isArray(window.lastData) && window.lastData.length > 0) {
+
+        allClasses = [...new Set(
+            window.lastData
+                .map(s => (s.Class || s.class || "").toString().trim())
+                .filter(v => v !== "")
+        )];
+
+        allMediums = [...new Set(
+            window.lastData
+                .map(s => (s.Medium || s.medium || s.MEDIUM || "").toString().trim())
+                .filter(v => v !== "")
+        )];
     }
 
-    const classOptions = allClasses.map(cls =>
-        `<option value="${cls}">${cls}</option>`
-    ).join('');
+    const classOptions = allClasses.length
+        ? allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')
+        : `<option value="">No Class Found</option>`;
 
-    const mediumOptions = allMediums.map(med =>
-        `<option value="${med}">${med}</option>`
-    ).join('');
+    const mediumOptions = allMediums.length
+        ? allMediums.map(med => `<option value="${med}">${med}</option>`).join('')
+        : `<option value="">No Medium Found</option>`;
 
     document.getElementById("contentArea").innerHTML = `
     
@@ -1339,6 +1349,8 @@ function showCorrectionPortal() {
     </div>
     `;
 }
+       
+       
     window.onload = function() {
     buildMenu();
     showDashboard();
