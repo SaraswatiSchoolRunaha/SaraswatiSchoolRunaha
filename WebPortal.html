@@ -1229,45 +1229,117 @@ function showCorrectionPortal() {
     ).join('');
 
     document.getElementById("contentArea").innerHTML = `
-        <h3>📌 उपस्थिति सुधार (Class Wise)</h3>
+    
+    <style>
+        .correction-card{
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
 
-        <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:flex-end; margin-bottom:15px;">
+        .correction-title{
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
 
-            <div>
-                <label>📅 Date</label><br>
+        .correction-row{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .correction-group label{
+            font-size: 13px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .correction-group input,
+        .correction-group select{
+            width: 100%;
+            height: 45px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .correction-btn{
+            grid-column: span 3;
+            background: #1e3a8a;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .correction-btn:hover{
+            background: #0f2a66;
+        }
+
+        @media(max-width:768px){
+            .correction-row{
+                grid-template-columns: 1fr;
+            }
+            .correction-btn{
+                grid-column: span 1;
+            }
+        }
+    </style>
+
+    <div class="correction-card">
+
+        <div class="correction-title">📌 उपस्थिति सुधार (Class Wise)</div>
+
+        <div class="correction-row">
+
+            <div class="correction-group">
+                <label>📅 Date</label>
                 <input type="date" id="searchDate" value="${today}">
             </div>
 
-            <div>
-                <label>📚 Class</label><br>
+            <div class="correction-group">
+                <label>📚 Class</label>
                 <select id="searchClass">
                     <option value="">-- Class चुनें --</option>
                     ${classOptions}
                 </select>
             </div>
 
-            <div>
-                <label>🧾 Medium</label><br>
+            <div class="correction-group">
+                <label>🧾 Medium</label>
                 <select id="searchMedium">
                     <option value="">-- Medium चुनें --</option>
                     ${mediumOptions}
                 </select>
             </div>
 
-            <div>
-                <button class="btn-action" onclick="loadClassAttendanceForCorrection()">
-                    🔍 Search
-                </button>
-            </div>
+            <button class="correction-btn" onclick="loadClassAttendanceForCorrection()">
+                🔍 Search Attendance
+            </button>
 
         </div>
 
         <div id="updateFormSection" style="margin-top:20px;">
-            <p style="color:#64748b;">Date + Class + Medium select करके Search दबाएँ</p>
+            <p style="color:#64748b; text-align:center;">
+                Date + Class + Medium select करके Search दबाएँ
+            </p>
         </div>
+
+    </div>
     `;
-}       
-window.onload = function() {
+}
+    window.onload = function() {
     buildMenu();
     showDashboard();
 };
