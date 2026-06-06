@@ -1153,8 +1153,9 @@ async function loadClassAttendanceForCorrection() {
 
         const res = await fetch(url);
         const data = await res.json();
-
-        if (!data || data.length === 0) {
+        console.log("Attendance Data:", data);
+        
+       if (!Array.isArray(data) || data.length === 0) {
             container.innerHTML = "<p style='color:red;'>कोई attendance नहीं मिली</p>";
             return;
         }
@@ -1207,7 +1208,7 @@ async function loadClassAttendanceForCorrection() {
         container.innerHTML = "Error loading data";
     }
 }
-       
+     
 function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
