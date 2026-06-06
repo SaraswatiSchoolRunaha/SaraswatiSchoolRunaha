@@ -1375,27 +1375,37 @@ function renderAttendanceList(data) {
     showDashboard();
 };
        
-async function updateCorrectionAttendance(rowIndex, i) {
+async function updateCorrectionAttendance(studentId, i, buttonElement) {
 
     let select = document.getElementById(`st_${i}`);
     let newStatus = select.value;
+
+    if (!studentId) {
+        alert("Student ID नहीं मिल सकी!");
+        return;
+    }
 
     if (!newStatus) {
         alert("Status select करें");
         return;
     }
 
+    // यहाँ पेलोड में 'studentId' भेजा जा रहा है (न कि लूप का इंडेक्स 'i')
     const payload = {
         action: "updateSingleAttendance",
-        rowIndex: rowIndex, 
+        studentId: studentId, 
         newStatus: newStatus
     };
 
+    // बटन को डिसेबल करना ताकि यूजर बार-बार क्लिक न कर सके
+    if (buttonElement) {
+        buttonElement.disabled = true;
+        buttonElement.innerText = "⏳...";
+    }
+
     try {
-        // --- IS WALE HISSE ME BADLAV KIYA HAI ---
         const res = await fetch(sheetUrls['Attendance'], {
             method: "POST",
-            // Google Script ko batana padta hai ki hum JSON data bhej rahe hain
             headers: {
                 "Content-Type": "text/plain;charset=utf-8" 
             },
@@ -1404,14 +1414,20 @@ async function updateCorrectionAttendance(rowIndex, i) {
 
         const data = await res.json();
 
-        if (data.status === "success") {
+        if (data.status === "success" || data.status === "found") {
             alert("✔ Updated Successfully");
         } else {
-            alert("Update Failed: " + data.message);
+            alert("Update Failed: " + (data.message || "Unknown Error"));
         }
 
     } catch (err) {
         alert("Server Error: " + err.message);
+    } finally {
+        // काम पूरा होने के बाद बटन को वापस सामान्य करना
+        if (buttonElement) {
+            buttonElement.disabled = false;
+            buttonElement.innerText = "Update";
+        }
     }
 }
        
