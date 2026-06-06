@@ -1179,13 +1179,19 @@ async function loadClassAttendanceForCorrection() {
         data.forEach((s, i) => {
 
             let status = (s.Status || s.status || "").toString().trim();
+            
+            // Student ID और बाकी फील्ड्स को सुरक्षित तरीके से निकालना
+            let currentId = s["Student ID"] || s["studentId"] || "";
+            let studentName = s["Student Name"] || s["name"] || "";
+            let studentClass = s["Class"] || s["class"] || "";
+            let studentMedium = s["Medium"] || s["medium"] || "";
 
             html += `
             <tr>
-                <td>${s["Student ID"] || ""}</td>
-                <td>${s["Student Name"] || ""}</td>
-                <td>${s["Class"] || ""}</td>
-                <td>${s["Medium"] || ""}</td>
+                <td>${currentId}</td>
+                <td>${studentName}</td>
+                <td>${studentClass}</td>
+                <td>${studentMedium}</td>
 
                 <td>
                     <select id="st_${i}">
@@ -1196,7 +1202,7 @@ async function loadClassAttendanceForCorrection() {
 
                 <td>
                     <button 
-                        onclick="updateCorrectionAttendance('${s["Student ID"]}', ${i})"
+                        onclick="updateCorrectionAttendance('${currentId}', ${i}, this)"
                         style="background:#1e3a8a;color:white;padding:6px 12px;border:none;border-radius:4px;cursor:pointer;">
                         Update
                     </button>
@@ -1213,7 +1219,7 @@ async function loadClassAttendanceForCorrection() {
         container.innerHTML = `<p style="color:red;text-align:center;">Server Error</p>`;
     }
 }
-    
+       
     async function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
