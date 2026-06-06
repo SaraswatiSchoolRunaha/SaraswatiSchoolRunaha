@@ -1212,23 +1212,20 @@ function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    let allClasses = [];
-    let allMediums = [];
+    // सुरक्षित data extraction
+    const data = Array.isArray(window.lastData) ? window.lastData : [];
 
-    if (window.lastData && Array.isArray(window.lastData) && window.lastData.length > 0) {
+    let allClasses = [...new Set(
+        data
+            .map(s => (s.Class || s.class || "").toString().trim())
+            .filter(Boolean)
+    )];
 
-        allClasses = [...new Set(
-            window.lastData
-                .map(s => (s.Class || s.class || "").toString().trim())
-                .filter(v => v !== "")
-        )];
-
-        allMediums = [...new Set(
-            window.lastData
-                .map(s => (s.Medium || s.medium || s.MEDIUM || "").toString().trim())
-                .filter(v => v !== "")
-        )];
-    }
+    let allMediums = [...new Set(
+        data
+            .map(s => (s.Medium || s.medium || s.MEDIUM || "").toString().trim())
+            .filter(Boolean)
+    )];
 
     const classOptions = allClasses.length
         ? allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')
@@ -1239,7 +1236,6 @@ function showCorrectionPortal() {
         : `<option value="">No Medium Found</option>`;
 
     document.getElementById("contentArea").innerHTML = `
-    
     <style>
         .correction-card{
             max-width: 900px;
@@ -1348,8 +1344,7 @@ function showCorrectionPortal() {
 
     </div>
     `;
-}
-       
+}       
        
     window.onload = function() {
     buildMenu();
