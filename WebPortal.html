@@ -1168,7 +1168,74 @@ function submitAttendanceUpdate(event) {
         }
     });
 } 
-       
+
+async function loadClassAttendanceForCorrection() {
+
+    const date = document.getElementById("searchDate").value;
+    const cls = document.getElementById("searchClass").value;
+    const medium = document.getElementById("searchMedium").value;
+
+    if (!date || !cls || !medium) {
+        alert("Date, Class और Medium चुनें");
+        return;
+    }
+
+    const container = document.getElementById("updateFormSection");
+
+    container.innerHTML = "लोड हो रहा है...";
+
+    fetch(`${sheetUrls['Attendance']}?action=getClassAttendance&date=${date}&class=${cls}&medium=${medium}`)
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data || data.length === 0) {
+            container.innerHTML = "<p style='color:red;'>कोई attendance नहीं मिली</p>";
+            return;
+        }
+
+        let html = `
+        <table border="1" style="width:100%; border-collapse:collapse;">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Medium</th>
+                <th>Status</th>
+                <th>Update</th>
+            </tr>
+        `;
+
+        data.forEach((s, i) => {
+
+            html += `
+            <tr>
+                <td>${s["Student ID"]}</td>
+                <td>${s["Student Name"]}</td>
+                <td>${s["Class"]}</td>
+                <td>${s["Medium"]}</td>
+
+                <td>
+                    <select id="st_${i}">
+                        <option value="P" ${s.Status=="P"?"selected":""}>P</option>
+                        <option value="A" ${s.Status=="A"?"selected":""}>A</option>
+                    </select>
+                </td>
+
+                <td>
+                    <button onclick="updateSingleRow(${s.rowIndex}, document.getElementById('st_${i}').value)">
+                        Save
+                    </button>
+                </td>
+            </tr>
+            `;
+        });
+
+        html += "</table>";
+
+        container.innerHTML = html;
+    });
+}
+           
 function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
