@@ -1049,42 +1049,7 @@ function showDeleteStudentList(){
         alert("सर्वर से कनेक्ट नहीं हो पाया");
     }
 }
-       
-function searchAttendanceRecord() {
-
-    let date = document.getElementById('searchDate').value;
-    let studentId = document.getElementById('searchStudentId').value;
-
-    if (!date || !studentId) {
-        alert("Date और Student ID भरें");
-        return;
-    }
-
-    fetch(`YOUR_API_URL?action=getStudentAttendanceRow&studentId=${studentId}&date=${date}`)
-    .then(res => res.json())
-    .then(data => {
-
-        // ❌ OLD: data.found
-        // ✅ NEW: data.status === "found"
-
-        if (!data || data.status !== "found") {
-            alert("Record नहीं मिला");
-            return;
-        }
-
-        document.getElementById('updateFormSection').style.display = "block";
-
-        document.getElementById('resName').innerText = data.name;
-        document.getElementById('resClass').innerText = data.class;
-        document.getElementById('resRowIndex').value = data.rowIndex;
-
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Server error");
-    });
-}
-       
+          
 // 2. बैकएंड से पुरानी रो (Row Number) खोजना
 function searchAttendanceRecord() {
     const date = document.getElementById("searchDate").value;
