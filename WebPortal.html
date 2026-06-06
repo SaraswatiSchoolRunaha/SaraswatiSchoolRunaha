@@ -1162,14 +1162,18 @@ async function loadClassAttendanceForCorrection() {
         }
 
         let html = `
-        <table border="1" style="width:100%;border-collapse:collapse;">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Class</th>
-                <th>Medium</th>
-                <th>Status</th>
-            </tr>
+        <table border="1" style="width:100%;border-collapse:collapse;text-align:center;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Medium</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
         `;
 
         data.forEach((s, i) => {
@@ -1182,20 +1186,30 @@ async function loadClassAttendanceForCorrection() {
                 <td>${s["Student Name"] || ""}</td>
                 <td>${s["Class"] || ""}</td>
                 <td>${s["Medium"] || ""}</td>
+
                 <td>
                     <select id="st_${i}">
-                        <option value="P" ${status==="P"?"selected":""}>P</option>
-                        <option value="A" ${status==="A"?"selected":""}>A</option>
+                        <option value="P" ${status === "P" ? "selected" : ""}>P</option>
+                        <option value="A" ${status === "A" ? "selected" : ""}>A</option>
                     </select>
+                </td>
+
+                <td>
+                    <button 
+                        onclick="updateCorrectionAttendance('${s["Student ID"]}', ${i})"
+                        style="background:#1e3a8a;color:white;padding:6px 12px;border:none;border-radius:4px;cursor:pointer;">
+                        Update
+                    </button>
                 </td>
             </tr>
             `;
         });
 
-        html += `</table>`;
+        html += `</tbody></table>`;
         container.innerHTML = html;
 
     } catch (e) {
+        console.error(e);
         container.innerHTML = `<p style="color:red;text-align:center;">Server Error</p>`;
     }
 }
