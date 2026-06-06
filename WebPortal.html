@@ -745,6 +745,10 @@ if (title === 'उपस्थिति डैशबोर्ड') {
 else if (title === 'उपस्थिति सुधार') {
     showCorrectionPortal();
 }
+    else if (title === 'अनुपस्थित छात्र सूची') {
+    showAbsentReport();
+}
+        
 else if (title === 'छात्र को जोड़ें') {
     document.getElementById('pageTitle').innerText = "नया छात्र जोड़ें";
     
@@ -1367,6 +1371,142 @@ function renderAttendanceList(data) {
   container.innerHTML = html;
 }
 
+       async function showAbsentReport() {
+
+    const today = new Date().toISOString().split('T')[0];
+
+    let data = window.lastData || [];
+
+    let allClasses = [...new Set(
+        data.map(s => (s.Class || s.class || "").trim())
+    )].filter(Boolean);
+
+    let allMediums = [...new Set(
+        data.map(s => (s.Medium || s.medium || "").trim())
+    )].filter(Boolean);
+
+    document.getElementById("contentArea").innerHTML = `
+    <div class="correction-card">
+
+        <h3>❌ अनुपस्थित छात्र सूची</h3>
+
+        <div class="correction-row">
+
+            <div class="correction-group">
+                <label>Date</label>
+                <input type="date"
+                       id="absDate"
+                       value="${today}"
+                       onchange="loadAbsentStudents()">
+            </div>
+
+            <div class="correction-group">
+                <label>Class</label>
+                <select id="absClass"
+                        onchange="loadAbsentStudents()">
+                    <option value="">Class</option>
+                    ${allClasses.map(c =>
+                        `<option value="${c}">${c}</option>`
+                    ).join('')}
+                </select>
+            </div>
+
+            <div class="correction-group">
+                <label>Medium</label>
+                <select id="absMedium"
+                        onchange="loadAbsentStudents()">
+                    <option value="">Medium</option>
+                    ${allMediums.map(m =>
+                        `<option value="${m}">${m}</option>`
+                    ).join('')}
+                </select>
+            </div>
+
+        </div>
+
+        <div id="absentListContainer"
+             style="margin-top:20px;">
+             Date + Class + Medium select करें
+        </div>
+
+    </div>
+    `;
+}
+       
+    async function loadAbsentStudents() {
+
+    const date =
+        document.getElementById("absDate").value;
+
+    const cls =
+        document.getElementById("absClass").value;
+
+    const medium =
+        document.getElementById("absMedium").value;
+
+    const container =
+        document.getElementById("absentListContainer");
+
+    if (!date || !cls || !medium) {
+        return;
+    }
+
+    container.innerHTML = "Loading...";
+
+    try {
+
+        const url =
+        `${sheetUrls['Attendance']}?action=getAbsentStudents&date=${date}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        if (!data || data.length === 0) {
+
+            container.innerHTML = `
+            <div style="color:green;">
+                इस दिन कोई छात्र अनुपस्थित नहीं था।
+            </div>`;
+            return;
+        }
+
+        let html = `
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th>Class</th>
+                <th>Medium</th>
+            </tr>
+        `;
+
+        data.forEach(stu => {
+
+            html += `
+            <tr>
+                <td>${stu["Student ID"]}</td>
+                <td>${stu["Student Name"]}</td>
+                <td>${stu["Father Name"]}</td>
+                <td>${stu["Class"]}</td>
+                <td>${stu["Medium"]}</td>
+            </tr>
+            `;
+        });
+
+        html += "</table>";
+
+        container.innerHTML = html;
+
+    } catch(err) {
+
+        container.innerHTML =
+        "<span style='color:red'>Server Error</span>";
+
+        console.error(err);
+    }
+}
 
 
        
