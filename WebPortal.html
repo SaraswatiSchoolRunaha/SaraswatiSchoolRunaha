@@ -1369,10 +1369,9 @@ function renderAttendanceList(data) {
     showDashboard();
 };
        
-// 👇 HERE (सबसे नीचे paste करो)
-async function updateCorrectionAttendance(studentId) {
+async function updateCorrectionAttendance(studentId, i) {
 
-    let select = document.getElementById(`st_${studentId}`);
+    let select = document.getElementById(`st_${i}`);
     let newStatus = select.value;
 
     if (!newStatus) {
@@ -1386,23 +1385,25 @@ async function updateCorrectionAttendance(studentId) {
         newStatus: newStatus
     };
 
-    const res = await fetch(sheetUrls['Attendance'], {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
+    try {
+        const res = await fetch(sheetUrls['Attendance'], {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (data.status === "success") {
-        alert("✔ Updated Successfully");
-    } else {
-        alert("Update Failed");
+        if (data.status === "success") {
+            alert("✔ Updated Successfully");
+        } else {
+            alert("Update Failed: " + data.message);
+        }
+
+    } catch (err) {
+        alert("Server Error: " + err.message);
     }
 }
-
-
-
        
 </script>
 </body>
