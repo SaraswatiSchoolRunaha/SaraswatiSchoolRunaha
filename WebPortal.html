@@ -1369,7 +1369,7 @@ function renderAttendanceList(data) {
     showDashboard();
 };
        
-async function updateCorrectionAttendance(studentId, i) {
+async function updateCorrectionAttendance(rowIndex, i) { // studentId ki jagah rowIndex pass karein
 
     let select = document.getElementById(`st_${i}`);
     let newStatus = select.value;
@@ -1379,16 +1379,16 @@ async function updateCorrectionAttendance(studentId, i) {
         return;
     }
 
+    // Backend (Google Script) ko rowIndex chahiye, isliye payload badla hai
     const payload = {
         action: "updateSingleAttendance",
-        studentId: studentId,
+        rowIndex: rowIndex, 
         newStatus: newStatus
     };
 
     try {
         const res = await fetch(sheetUrls['Attendance'], {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
@@ -1401,6 +1401,8 @@ async function updateCorrectionAttendance(studentId, i) {
         }
 
     } catch (err) {
+        // Jab mode 'no-cors' hota hai ya redirection hota hai, toh kabhi-kabhi JSON parse error aata hai.
+        // Agar sheet me data update ho raha hai aur fir bhi error aaye, toh is alert ko normal check karein.
         alert("Server Error: " + err.message);
     }
 }
