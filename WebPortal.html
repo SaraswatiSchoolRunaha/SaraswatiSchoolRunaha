@@ -1412,7 +1412,43 @@ async function loadClassAttendanceForCorrection() {
     </div>
     `;
 }
+       
+function renderAttendanceList(data) {
+  let container = document.getElementById("attendanceTableContainer");
 
+  if (!data || data.length === 0) {
+    container.innerHTML = "No Attendance Found";
+    return;
+  }
+
+  let html = `
+    <table border="1">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+  `;
+
+  data.forEach(row => {
+    html += `
+      <tr>
+        <td>${row["Student ID"]}</td>
+        <td>${row["Student Name"]}</td>
+        <td>${row.Status}</td>
+        <td>
+          <button onclick="updateAttendance(${row.rowIndex}, 'P')">P</button>
+          <button onclick="updateAttendance(${row.rowIndex}, 'A')">A</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += "</table>";
+
+  container.innerHTML = html;
+}
 
 
 
