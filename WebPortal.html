@@ -1371,143 +1371,130 @@ function renderAttendanceList(data) {
   container.innerHTML = html;
 }
 
-       async function showAbsentReport() {
+    async function showAbsentReport() {
 
-    const today = new Date().toISOString().split('T')[0];
+```
+const today = new Date().toISOString().split('T')[0];
 
-    let data = window.lastData || [];
+let data = window.lastData || [];
 
-    let allClasses = [...new Set(
-        data.map(s => (s.Class || s.class || "").trim())
-    )].filter(Boolean);
+let allClasses = [...new Set(
+    data.map(s => (s.Class || s.class || "").trim())
+)].filter(Boolean);
 
-    let allMediums = [...new Set(
-        data.map(s => (s.Medium || s.medium || "").trim())
-    )].filter(Boolean);
+let allMediums = [...new Set(
+    data.map(s => (s.Medium || s.medium || "").trim())
+)].filter(Boolean);
 
-    document.getElementById("contentArea").innerHTML = `
-    <div class="correction-card">
+document.getElementById("contentArea").innerHTML = `
+<div class="correction-card">
 
-        <h3>❌ अनुपस्थित छात्र सूची</h3>
+    <h3>❌ अनुपस्थित छात्र सूची</h3>
 
-        <div class="correction-row">
+    <div style="
+        display:flex;
+        gap:10px;
+        align-items:end;
+        flex-wrap:wrap;
+    ">
 
-            <div class="correction-group">
-                <label>Date</label>
-                <input type="date"
-                       id="absDate"
-                       value="${today}"
-                       onchange="loadAbsentStudents()">
-            </div>
-
-            <div class="correction-group">
-                <label>Class</label>
-                <select id="absClass"
-                        onchange="loadAbsentStudents()">
-                    <option value="">Class</option>
-                    ${allClasses.map(c =>
-                        `<option value="${c}">${c}</option>`
-                    ).join('')}
-                </select>
-            </div>
-
-            <div class="correction-group">
-                <label>Medium</label>
-                <select id="absMedium"
-                        onchange="loadAbsentStudents()">
-                    <option value="">Medium</option>
-                    ${allMediums.map(m =>
-                        `<option value="${m}">${m}</option>`
-                    ).join('')}
-                </select>
-            </div>
-
+        <div>
+            <label>Date</label>
+            <input type="date"
+                   id="absDate"
+                   value="${today}"
+                   onchange="loadAbsentStudents()">
         </div>
 
-        <div id="absentListContainer"
-             style="margin-top:20px;">
-             Date + Class + Medium select करें
+        <div>
+            <label>Class</label>
+            <select id="absClass"
+                    onchange="loadAbsentStudents()">
+                <option value="">Class</option>
+                ${allClasses.map(c =>
+                    `<option value="${c}">${c}</option>`
+                ).join('')}
+            </select>
         </div>
+
+        <div>
+            <label>Medium</label>
+            <select id="absMedium"
+                    onchange="loadAbsentStudents()">
+                <option value="">Medium</option>
+                ${allMediums.map(m =>
+                    `<option value="${m}">${m}</option>`
+                ).join('')}
+            </select>
+        </div>
+
+        <button onclick="loadAbsentStudents()">
+            Search
+        </button>
+
+        <button onclick="printAbsentList()">
+            🖨️ Print
+        </button>
 
     </div>
-    `;
-}
-       
-    async function loadAbsentStudents() {
 
-    const date =
-        document.getElementById("absDate").value;
+    <div id="absentListContainer"
+         style="margin-top:20px;">
+         Date + Class + Medium select करें
+    </div>
 
-    const cls =
-        document.getElementById("absClass").value;
+</div>
+`;
+```
 
-    const medium =
-        document.getElementById("absMedium").value;
-
-    const container =
-        document.getElementById("absentListContainer");
-
-    if (!date || !cls || !medium) {
-        return;
-    }
-
-    container.innerHTML = "Loading...";
-
-    try {
-
-        const url =
-        `${sheetUrls['Attendance']}?action=getAbsentStudents&date=${date}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
-
-        const response = await fetch(url);
-
-        const data = await response.json();
-
-        if (!data || data.length === 0) {
-
-            container.innerHTML = `
-            <div style="color:green;">
-                इस दिन कोई छात्र अनुपस्थित नहीं था।
-            </div>`;
-            return;
-        }
-
-        let html = `
-        <table>
-            <tr>
-                <th>Student ID</th>
-                <th>Student Name</th>
-                <th>Father Name</th>
-                <th>Class</th>
-                <th>Medium</th>
-            </tr>
-        `;
-
-        data.forEach(stu => {
-
-            html += `
-            <tr>
-                <td>${stu["Student ID"]}</td>
-                <td>${stu["Student Name"]}</td>
-                <td>${stu["Father Name"]}</td>
-                <td>${stu["Class"]}</td>
-                <td>${stu["Medium"]}</td>
-            </tr>
-            `;
-        });
-
-        html += "</table>";
-
-        container.innerHTML = html;
-
-    } catch(err) {
-
-        container.innerHTML =
-        "<span style='color:red'>Server Error</span>";
-
-        console.error(err);
-    }
 }
 
+function printAbsentList() {
+
+```
+const content =
+    document.getElementById("absentListContainer").innerHTML;
+
+const win = window.open("", "", "width=900,height=700");
+
+win.document.write(`
+    <html>
+    <head>
+        <title>अनुपस्थित छात्र सूची</title>
+        <style>
+            body{
+                font-family:Arial;
+                padding:20px;
+            }
+
+            table{
+                width:100%;
+                border-collapse:collapse;
+            }
+
+            th,td{
+                border:1px solid #000;
+                padding:8px;
+                text-align:center;
+            }
+
+            h2{
+                text-align:center;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>अनुपस्थित छात्र सूची</h2>
+        ${content}
+    </body>
+    </html>
+`);
+
+win.document.close();
+win.print();
+```
+
+}
 
        
     window.onload = function() {
