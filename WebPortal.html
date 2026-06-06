@@ -1371,58 +1371,176 @@ function renderAttendanceList(data) {
   container.innerHTML = html;
 }
 
- function loadAbsentStudents() {
-    const date = document.getElementById("absDate").value;
-    const cls = document.getElementById("absClass").value;
-    const med = document.getElementById("absMedium").value;
-    const container = document.getElementById("absentListContainer");
+ async function showAbsentReport() {
+    const today = new Date().toISOString().split('T')[0];
 
-    if (!date || !cls || !med) {
-        container.innerHTML = "कृपया Date, Class और Medium चुनें।";
-        return;
-    }
+    let data = window.lastData || [];
 
-    // डेटा फ़िल्टर करना
-    // शर्त: डेट मैच हो, क्लास मैच हो, मीडियम मैच हो और स्टेटस 'A' या 'Absent' हो
-    const absentStudents = (window.lastData || []).filter(s => {
-        let sDate = s.Date || s.date || ""; 
-        let sClass = (s.Class || s.class || "").trim();
-        let sMedium = (s.Medium || s.medium || "").trim();
-        let sStatus = (s.Status || s.status || "").trim().toUpperCase();
+    let allClasses = [...new Set(
+        data.map(s => (s.Class || s.class || "").trim())
+    )].filter(Boolean);
 
-        // डेट फॉर्मेट को पोर्टल के डेट (YYYY-MM-DD) से मैच करना
-        // अगर आपकी शीट की डेट का फॉर्मेट अलग है, तो यहाँ थोड़ा बदलाव करना होगा
-        return sDate === date && sClass === cls && sMedium === med && (sStatus === 'A' || sStatus === 'ABSENT');
-    });
+    let allMediums = [...new Set(
+        data.map(s => (s.Medium || s.medium || "").trim())
+    )].filter(Boolean);
 
-    if (absentStudents.length === 0) {
-        container.innerHTML = `<p style="color:red;">इस क्राइटेरिया पर कोई अनुपस्थित छात्र नहीं मिला।</p>`;
-        return;
-    }
+    document.getElementById("contentArea").innerHTML = `
 
-    // टेबल बनाना
-    let html = `
-        <table border="1" style="width:100%; border-collapse:collapse; margin-top:10px;">
-            <thead>
-                <tr style="background:#eee;">
-                    <th>Roll/ID</th>
-                    <th>Name</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${absentStudents.map(s => `
-                    <tr>
-                        <td>${s.ID || s.id || '-'}</td>
-                        <td>${s.Name || s.name || '-'}</td>
-                        <td style="color:red; font-weight:bold;">Absent</td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
+    <style>
+        .absent-card{
+            background:#fff;
+            padding:20px;
+            border-radius:10px;
+            border:1px solid #ddd;
+        }
+
+        .absent-row{
+            display:flex;
+            gap:15px;
+            align-items:flex-end;
+            flex-wrap:nowrap;
+        }
+
+        .absent-group{
+            flex:1;
+        }
+
+        .absent-group label{
+            display:block;
+            margin-bottom:6px;
+            font-weight:bold;
+            font-size:14px;
+        }
+
+        .absent-group input,
+        .absent-group select{
+            width:100%;
+            height:45px;
+            padding:8px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            box-sizing:border-box;
+        }
+
+        .absent-btn{
+            height:45px;
+            padding:0 20px;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        .search-btn{
+            background:#1e3a8a;
+            color:white;
+        }
+
+        .print-btn{
+            background:#16a34a;
+            color:white;
+        }
+
+        @media(max-width:768px){
+
+            .absent-row{
+                flex-wrap:wrap;
+            }
+
+            .absent-group{
+                width:100%;
+                flex:none;
+            }
+
+            .absent-btn{
+                width:100%;
+            }
+        }
+    </style>
+
+    <div class="absent-card">
+
+        <h3 style="margin-top:0;color:#1e3a8a;">
+            ❌ अनुपस्थित छात्र सूची
+        </h3>
+
+        <div class="absent-row">
+
+            <div class="absent-group">
+                <label>📅 Date</label>
+                <input
+                    type="date"
+                    id="absDate"
+                    value="${today}"
+                    onchange="loadAbsentStudents()">
+            </div>
+
+            <div class="absent-group">
+                <label>📚 Class</label>
+                <select
+                    id="absClass"
+                    onchange="loadAbsentStudents()">
+
+                    <option value="">Class</option>
+
+                    ${allClasses.map(c =>
+                        `<option value="${c}">${c}</option>`
+                    ).join('')}
+
+                </select>
+            </div>
+
+            <div class="absent-group">
+                <label>🧾 Medium</label>
+                <select
+                    id="absMedium"
+                    onchange="loadAbsentStudents()">
+
+                    <option value="">Medium</option>
+
+                    ${allMediums.map(m =>
+                        `<option value="${m}">${m}</option>`
+                    ).join('')}
+
+                </select>
+            </div>
+
+            <div>
+                <button
+                    class="absent-btn search-btn"
+                    onclick="loadAbsentStudents()">
+                    🔍 Search
+                </button>
+            </div>
+
+            <div>
+                <button
+                    class="absent-btn print-btn"
+                    onclick="printAbsentList()">
+                    🖨️ Print
+                </button>
+            </div>
+
+        </div>
+
+        <div
+            id="absentListContainer"
+            style="margin-top:25px;">
+
+            <div style="
+                text-align:center;
+                color:#64748b;
+                padding:30px;
+                border:1px dashed #cbd5e1;
+                border-radius:8px;
+            ">
+                Date + Class + Medium select करें
+            </div>
+
+        </div>
+
+    </div>
     `;
-
-    container.innerHTML = html;
 }
        
        
