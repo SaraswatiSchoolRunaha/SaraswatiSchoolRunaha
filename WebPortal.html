@@ -1167,8 +1167,39 @@ function submitAttendanceUpdate(event) {
             btn.innerText = "स्थिति सुधारें (Update)";
         }
     });
-}
+} 
        
+function showCorrectionPortal() {
+    document.getElementById("contentArea").innerHTML = `
+        <h3>📌 उपस्थिति सुधार</h3>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <input type="date" id="searchDate">
+            <input type="text" id="searchStudentId" placeholder="Student ID">
+            <button class="btn-action" onclick="searchAttendanceRecord()">
+                Search
+            </button>
+        </div>
+
+        <div id="updateFormSection" style="margin-top:20px; display:none;">
+            <p><b>नाम:</b> <span id="resName"></span></p>
+            <p><b>कक्षा:</b> <span id="resClass"></span></p>
+
+            <input type="hidden" id="resRowIndex">
+
+            <select id="newStatusSelect">
+                <option value="P">Present</option>
+                <option value="A">Absent</option>
+            </select>
+
+            <button onclick="submitAttendanceUpdate(event)" class="btn-action">
+                Update
+            </button>
+        </div>
+    `;
+}
+
+
 window.onload = function() {
     buildMenu();
     showDashboard();
