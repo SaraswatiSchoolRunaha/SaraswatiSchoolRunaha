@@ -1140,23 +1140,33 @@ async function loadClassAttendanceForCorrection() {
     const cls = document.getElementById("searchClass").value;
     const medium = document.getElementById("searchMedium").value;
 
+    const container = document.getElementById("classCorrectionTable");
+
+    // ❗ Auto-load friendly (NO alert)
     if (!date || !cls || !medium) {
-        alert("Date, Class और Medium चुनें");
+        container.innerHTML = `
+            <p style="text-align:center;color:#64748b;">
+                Date + Class + Medium select करें
+            </p>`;
         return;
     }
 
-    const container = document.getElementById("classCorrectionTable");
-    container.innerHTML = "लोड हो रहा है...";
+    container.innerHTML = `
+        <p style="text-align:center;">
+            ⏳ डेटा लोड हो रहा है...
+        </p>
+    `;
 
     try {
         const url = `${sheetUrls['Attendance']}?action=getClassAttendance&date=${date}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
 
         const res = await fetch(url);
         const data = await res.json();
+
         console.log("Attendance Data:", data);
-        
-       if (!Array.isArray(data) || data.length === 0) {
-            container.innerHTML = "<p style='color:red;'>कोई attendance नहीं मिली</p>";
+
+        if (!Array.isArray(data) || data.length === 0) {
+            container.innerHTML = `<p style="color:red;text-align:center;">कोई attendance नहीं मिली</p>`;
             return;
         }
 
@@ -1174,7 +1184,7 @@ async function loadClassAttendanceForCorrection() {
 
         data.forEach((s, i) => {
 
-            let status = s.Status || s.status || "";
+            let status = String(s.Status || s.status || "").trim();
 
             html += `
             <tr>
@@ -1185,8 +1195,8 @@ async function loadClassAttendanceForCorrection() {
 
                 <td>
                     <select id="st_${i}">
-                        <option value="P" ${status=="P"?"selected":""}>P</option>
-                        <option value="A" ${status=="A"?"selected":""}>A</option>
+                        <option value="P" ${status === "P" ? "selected" : ""}>P</option>
+                        <option value="A" ${status === "A" ? "selected" : ""}>A</option>
                     </select>
                 </td>
 
@@ -1205,10 +1215,10 @@ async function loadClassAttendanceForCorrection() {
 
     } catch (e) {
         console.error(e);
-        container.innerHTML = "Error loading data";
+        container.innerHTML = `<p style="color:red;text-align:center;">Server Error</p>`;
     }
 }
-     
+       
 function showCorrectionPortal() {
 
     const today = new Date().toISOString().split('T')[0];
