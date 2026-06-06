@@ -1371,9 +1371,7 @@ function renderAttendanceList(data) {
   container.innerHTML = html;
 }
 
-    async function showAbsentReport() {
-
-```
+ async function showAbsentReport() {
 const today = new Date().toISOString().split('T')[0];
 
 let data = window.lastData || [];
@@ -1445,13 +1443,10 @@ document.getElementById("contentArea").innerHTML = `
 
 </div>
 `;
-```
-
+     
 }
 
 function printAbsentList() {
-
-```
 const content =
     document.getElementById("absentListContainer").innerHTML;
 
@@ -1492,7 +1487,6 @@ win.document.write(`
 
 win.document.close();
 win.print();
-```
 
 }
 
