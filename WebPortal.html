@@ -1379,6 +1379,14 @@ async function updateCorrectionAttendance(studentId, i, buttonElement) {
 
     let select = document.getElementById(`st_${i}`);
     let newStatus = select.value;
+    
+    // 1. आपके पोर्टल के डेट पिकर (input type="date") से चुनी गई तारीख को यहाँ निकाला
+    let selectedDate = document.getElementById("searchDate").value; 
+
+    if (!selectedDate) {
+        alert("कृपया पहले तारीख (Date) चुनें!");
+        return;
+    }
 
     if (!studentId) {
         alert("Student ID नहीं मिल सकी!");
@@ -1390,10 +1398,11 @@ async function updateCorrectionAttendance(studentId, i, buttonElement) {
         return;
     }
 
-    // यहाँ पेलोड में 'studentId' भेजा जा रहा है (न कि लूप का इंडेक्स 'i')
+    // 2. पेलोड में अब 'studentId' और 'newStatus' के साथ 'date' भी भेजी जा रही है
     const payload = {
         action: "updateSingleAttendance",
         studentId: studentId, 
+        date: selectedDate, // तारीख यहाँ जुड़ गई
         newStatus: newStatus
     };
 
@@ -1414,8 +1423,9 @@ async function updateCorrectionAttendance(studentId, i, buttonElement) {
 
         const data = await res.json();
 
-        if (data.status === "success" || data.status === "found") {
-            alert("✔ Updated Successfully");
+        // यहाँ बैकएंड केवल "success" भेज रहा है, इसलिए स्थिति को साफ रखा है
+        if (data.status === "success") {
+            alert(`✔ ${selectedDate} की उपस्थिति सफलतापूर्वक सुधारी गई।`);
         } else {
             alert("Update Failed: " + (data.message || "Unknown Error"));
         }
@@ -1429,8 +1439,7 @@ async function updateCorrectionAttendance(studentId, i, buttonElement) {
             buttonElement.innerText = "Update";
         }
     }
-}
-       
+}       
 </script>
 </body>
 </html>
