@@ -1210,16 +1210,6 @@ async function loadClassAttendanceForCorrection() {
        
 function showCorrectionPortal() {
 
-if (!window.lastData || window.lastData.length === 0) {
-    try {
-        const res = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
-        window.lastData = await res.json();
-    } catch (e) {
-        alert("Student data load नहीं हो पाया");
-        return;
-    }
-}
-    
     const today = new Date().toISOString().split('T')[0];
 
     let allClasses = [];
