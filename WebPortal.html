@@ -1371,28 +1371,53 @@ function renderAttendanceList(data) {
   container.innerHTML = html;
 }
 
-function showAbsentReport() {
+async function showAbsentReport() {
     const today = new Date().toISOString().split('T')[0];
     
-    document.getElementById('contentArea').innerHTML = `
-        <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd;">
-            <h3 style="color:#1e3a8a;">अनुपस्थित छात्रों की रिपोर्ट</h3>
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
-                <input type="date" id="absDate" value="${today}">
-                <input type="text" id="absClass" placeholder="कक्षा (जैसे: 10)">
-                <input type="text" id="absMedium" placeholder="माध्यम (जैसे: Hindi)">
-                <button onclick="loadAbsentStudents()" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">
-                    खोजें
-                </button>
-                <button onclick="printAbsentList()" style="background:#28a745; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">
-                    प्रिंट करें
-                </button>
+    // डेटा लोड करने का मैसेज
+    document.getElementById('contentArea').innerHTML = `<p>डेटा लोड हो रहा है...</p>`;
+
+    try {
+        // डेटाबेस से लिस्ट fetch करें (जो आपने पहले इस्तेमाल की थी)
+        const response = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
+        const data = await response.json();
+        
+        // यूनिक क्लासेस और माध्यम निकालें
+        const classes = [...new Set(data.map(s => s.Class || s.class).filter(Boolean))].sort();
+        const mediums = [...new Set(data.map(s => s.Medium || s.medium).filter(Boolean))].sort();
+
+        // HTML ड्रा करें
+        document.getElementById('contentArea').innerHTML = `
+            <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd;">
+                <h3 style="color:#1e3a8a;">अनुपस्थित छात्रों की रिपोर्ट</h3>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+                    <input type="date" id="absDate" value="${today}">
+                    
+                    <select id="absClass" style="padding:8px;">
+                        <option value="">कक्षा चुनें</option>
+                        ${classes.map(c => `<option value="${c}">${c}</option>`).join('')}
+                    </select>
+
+                    <select id="absMedium" style="padding:8px;">
+                        <option value="">माध्यम चुनें</option>
+                        ${mediums.map(m => `<option value="${m}">${m}</option>`).join('')}
+                    </select>
+
+                    <button onclick="loadAbsentStudents()" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">
+                        खोजें
+                    </button>
+                    <button onclick="printAbsentList()" style="background:#28a745; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">
+                        प्रिंट करें
+                    </button>
+                </div>
+                <div id="absentListContainer"></div>
             </div>
-            <div id="absentListContainer"></div>
-        </div>
-    `;
+        `;
+    } catch (err) {
+        document.getElementById('contentArea').innerHTML = `<p style="color:red;">Error: डेटा लोड करने में समस्या आई।</p>`;
+    }
 }
- 
+       
  async function loadAbsentStudents() {
     const date = document.getElementById("absDate").value;
     const className = document.getElementById("absClass").value;
@@ -1404,9 +1429,7 @@ function showAbsentReport() {
     container.innerHTML = `<div style="text-align:center;">Loading...</div>`;
 
     try {
-        // यहाँ अपने वेब एप का URL डालें
-      // सही तरीका:
-    const url = `https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec?action=getAbsentStudents&date=${date}&class=${className}&medium=${medium}`;
+        const url = `https://script.google.com/macros/s/AKfycbxZJYBYZKp4iaAqiTeSlEJ-iR6J43kEDUH6COhy_jxm8eqvxBmybdmedyxqbYD8DI6y/exec?action=getAbsentStudents&date=${date}&class=${className}&medium=${medium}`;
         const response = await fetch(url);
         const data = await response.json();
 
@@ -1422,6 +1445,8 @@ function showAbsentReport() {
                         <th style="padding:10px; border:1px solid #ddd;">ID</th>
                         <th style="padding:10px; border:1px solid #ddd;">नाम</th>
                         <th style="padding:10px; border:1px solid #ddd;">पिता का नाम</th>
+                        <th style="padding:10px; border:1px solid #ddd;">कक्षा</th>
+                        <th style="padding:10px; border:1px solid #ddd;">माध्यम</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1430,6 +1455,8 @@ function showAbsentReport() {
                             <td style="padding:10px; border:1px solid #ddd; text-align:center;">${s["Student ID"]}</td>
                             <td style="padding:10px; border:1px solid #ddd;">${s["Student Name"]}</td>
                             <td style="padding:10px; border:1px solid #ddd;">${s["Father Name"]}</td>
+                            <td style="padding:10px; border:1px solid #ddd; text-align:center;">${s["Class"] || className}</td>
+                            <td style="padding:10px; border:1px solid #ddd; text-align:center;">${s["Medium"] || medium}</td>
                         </tr>
                     `).join('')}
                 </tbody>
