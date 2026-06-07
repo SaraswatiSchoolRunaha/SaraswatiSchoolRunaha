@@ -746,7 +746,7 @@ else if (title === 'उपस्थिति सुधार') {
     showCorrectionPortal();
 }
     else if (title === 'अनुपस्थित छात्रों की सूची') {
-    loadAbsentStudents();
+    showAbsentReport();
 }
         
 else if (title === 'छात्र को जोड़ें') {
@@ -1371,6 +1371,28 @@ function renderAttendanceList(data) {
   container.innerHTML = html;
 }
 
+function showAbsentReport() {
+    const today = new Date().toISOString().split('T')[0];
+    
+    document.getElementById('contentArea').innerHTML = `
+        <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ddd;">
+            <h3 style="color:#1e3a8a;">अनुपस्थित छात्रों की रिपोर्ट</h3>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+                <input type="date" id="absDate" value="${today}">
+                <input type="text" id="absClass" placeholder="कक्षा (जैसे: 10)">
+                <input type="text" id="absMedium" placeholder="माध्यम (जैसे: Hindi)">
+                <button onclick="loadAbsentStudents()" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">
+                    खोजें
+                </button>
+                <button onclick="printAbsentList()" style="background:#28a745; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">
+                    प्रिंट करें
+                </button>
+            </div>
+            <div id="absentListContainer"></div>
+        </div>
+    `;
+}
+ 
  async function loadAbsentStudents() {
     const date = document.getElementById("absDate").value;
     const className = document.getElementById("absClass").value;
