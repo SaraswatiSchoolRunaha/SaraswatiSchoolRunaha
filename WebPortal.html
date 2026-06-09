@@ -353,7 +353,6 @@ let filteredStudents = window.lastData.filter(s => {
                     let father = s['Father Name'] || s['FatherName'] || s['father'] || '-';
                     let medium = s['Medium'] || s['medium'] || '-';
                     let cls = s['Class'] || s['class'] || '-';
-
                     return `
                     <tr>
                         <td>${id}</td>
@@ -383,7 +382,6 @@ function updateRowColor(selectElement) {
     
     // बॉर्डर को वापस सामान्य करें (यदि पहले अलर्ट के कारण लाल बॉर्डर आई हो)
     row.style.border = ""; 
-
     if (selectElement.value === 'P') {
         row.classList.add('row-present');
         row.classList.remove('row-absent');
@@ -403,7 +401,6 @@ function saveAttendance(event) {
     let rows = document.querySelectorAll("#attTable tbody tr");
     
     if (!date) { alert("कृपया तारीख चुनें!"); return; }
-
     let attendance = [];
     let hasEmptyStatus = false; // यह चेक करने के लिए कि कोई छात्र छूटा तो नहीं
 
@@ -487,9 +484,7 @@ function showDashboard() {
             }
 
             window.lastData = data;
-
             let classCount = {};
-
             data.forEach(student => {
                 const cls =
                     student.Class ||
