@@ -91,11 +91,11 @@ document.getElementById('brandLogo').addEventListener('click', showDashboard);
 document.getElementById('btnLangEN').addEventListener('click', () => { state.currentLang = 'EN'; buildPortalMenu(); showDashboard(); });
 document.getElementById('btnLangHN').addEventListener('click', () => { state.currentLang = 'HN'; buildPortalMenu(); showDashboard(); });
 
-// ✅ FIXED LOGOUT: Ab yeh refresh karne ke bajaye user ko wapas login page par bhej dega
+// ✅ FIXED LOGOUT: Ab yeh refresh karne ke bajaye user ko seedhe aapki school website par bhej dega
 document.getElementById('btnLogout').addEventListener('click', () => { 
     if(confirm("क्या आप लॉग आउट करना चाहते हैं?")) {
-        // Agar aapke login file ka naam login.html hai, toh index.html ki jagah login.html likhein
-        window.location.href = "index.html"; 
+        // Aapki school ki website ka asli link yahan set kar diya hai
+        window.location.href = "https://saraswatischoolruanaha.in"; 
     } 
 });
 
