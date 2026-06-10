@@ -143,15 +143,27 @@ td {
 .row-absent { background-color: #fee2e2 !important; }
 
 
-/* Purane th wale code ko overwrite karne ke liye ye add karein */
-table .custom-header {
+/* Table ki basic styling */
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 15px; 
+    background: #fff; 
+}
+
+/* Dashboard Table Header (Dark Blue) */
+.custom-header {
     background-color: #1e3a8a !important;
     color: #ffffff !important;
+    padding: 15px !important;
+    text-align: left !important;
     border: 1px solid #1e3a8a !important;
 }
 
-/* Agar table body ka color bhi white ho raha hai, toh ye bhi add karein */
+/* Table Body Cells (White Background + Dark Text) */
 table tbody tr td {
+    padding: 10px !important;
+    border: 1px solid #ddd !important;
     background-color: #ffffff !important;
     color: #1e3a8a !important;
 }
