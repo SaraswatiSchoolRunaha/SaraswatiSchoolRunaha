@@ -34,41 +34,39 @@ export function showDashboard() {
             const totalStudents = data.length;
             const totalClasses = Object.keys(classCount).length;
 
-            const html = `
-                <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; flex-wrap: wrap;">
-                    <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">📊 कुल पंजीकृत छात्र (Total Registered Students)</div>
-                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalStudents}</div>
-                    </div>
-                    <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">🏫 कुल सक्रिय कक्षाएं (Total Active Classes)</div>
-                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
-                    </div>
-                </div>
-                
-                <h3 style="color:#1e3a8a; margin-bottom:15px; padding-top:10px; border-top:2px dashed #e2e8f0;">📊 कक्षा अनुसार छात्र विवरण (कक्षा पर क्लिक करें)</h3>
-                <table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <thead>
-                        <tr style="background:#1e3a8a; color:white;">
-                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd; font-weight:bold;">Class</th>
-                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd; font-weight:bold;">Total Students</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${Object.keys(classCount).map(cls => {
-                            const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
-                            return `
-                                <tr style="cursor:pointer; background:#fff;" id="row_cls_${safeId}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
-                                    <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a;"><i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}</td>
-                                    <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold;">${classCount[cls]} Students</td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>`;
-            
-            document.getElementById('dashboardResults').innerHTML = html;
+           // Purane code ki jagah ye likhein:
+let html = `<div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; flex-wrap: wrap;">
+    <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">📊 कुल पंजीकृत छात्र</div>
+        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalStudents}</div>
+    </div>
+    <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">🏫 कुल सक्रिय कक्षाएं</div>
+        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
+    </div>
+</div>`; 
 
+html += `<h3 style="color:#1e3a8a; margin-bottom:15px; padding-top:10px; border-top:2px dashed #e2e8f0;">📊 कक्षा अनुसार छात्र विवरण</h3>
+<table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden;">
+    <thead>
+        <tr style="background:#1e3a8a; color:white;">
+            <th style="padding:12px;">Class</th>
+            <th style="padding:12px;">Total Students</th>
+        </tr>
+    </thead>
+    <tbody>
+        ${Object.keys(classCount).map(cls => {
+            const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
+            return `<tr style="cursor:pointer; background:#fff;" id="row_cls_${safeId}">
+                        <td style="padding:12px; border-bottom:1px solid #ddd;">Class ${cls}</td>
+                        <td style="padding:12px; border-bottom:1px solid #ddd;">${classCount[cls]}</td>
+                    </tr>`;
+        }).join('')}
+    </tbody>
+</table>`;
+
+document.getElementById('dashboardResults').innerHTML = html;
+            
             Object.keys(classCount).forEach(cls => {
                 const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
                 const rowElement = document.getElementById(`row_cls_${safeId}`);
