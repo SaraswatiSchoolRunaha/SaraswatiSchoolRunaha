@@ -108,15 +108,16 @@ table {
     margin-top: 15px; 
     background: #fff; 
 }
-th, td { 
-    border: 1px solid #ddd; 
-    padding: 10px; 
-    text-align: left; 
-}
+/* Purane code ko hatakar ye likhein */
 th { 
-    background: #f8fafc; 
+    background: #f8fafc !important; 
+    color: #1e3a8a !important; /* Ye line header text ko dark blue kar degi */
+    font-weight: bold !important;
 }
 
+td {
+    color: #334155 !important; /* Table ke andar ke text ko bhi dark rakhne ke liye */
+}
 /* News Ticker CSS Code */
 .news-ticker { 
     background: #1e3a8a; 
