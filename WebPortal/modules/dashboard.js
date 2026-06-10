@@ -24,24 +24,28 @@ export function showDashboard() {
 
             let classCount = {};
             data.forEach(student => {
-                const cls = student.Class || student.class || "N/A";
+                // Sahi string parsing aur trim taaki dynamic spaces handle ho sakein
+                const cls = String(student.Class || student.class || "N/A").trim();
                 classCount[cls] = (classCount[cls] || 0) + 1;
             });
 
             const totalStudents = data.length;
+            const totalClasses = Object.keys(classCount).length;
+
+            // 🌟 FIXED HEADER CARDS LAYOUT: Ab CSS blocks bilkul sahi aur humesha top par dikhenge
             const html = `
-                <div style="display:flex; gap:20px; margin-bottom:25px; flex-wrap:wrap;">
-                    <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex:1; min-width:200px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <div style="font-size:14px; text-transform:uppercase; opacity:0.8;">कुल पंजीकृत छात्र</div>
-                        <div style="font-size:36px; font-weight:700; margin-top:5px;">${totalStudents}</div>
+                <div style="width:100%; display:block; margin-bottom:25px;">
+                    <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; margin-bottom:12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">📊 कुल पंजीकृत छात्र (Total Registered Students)</div>
+                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalStudents}</div>
                     </div>
-                    <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex:1; min-width:200px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <div style="font-size:14px; text-transform:uppercase; opacity:0.8;">कुल सक्रिय कक्षाएं</div>
-                        <div style="font-size:36px; font-weight:700; margin-top:5px;">${Object.keys(classCount).length}</div>
+                    <div style="background:#334155; color:white; padding:20px; border-radius:12px; margin-bottom:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">🏫 कुल सक्रिय कक्षाएं (Total Active Classes)</div>
+                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
                     </div>
                 </div>
                 
-                <h3 style="color:#1e3a8a; margin-bottom:15px;">📊 कक्षा अनुसार छात्र विवरण (कक्षा पर क्लिक करें)</h3>
+                <h3 style="color:#1e3a8a; margin-bottom:15px; padding-top:10px; border-top:2px dashed #e2e8f0;">📊 कक्षा अनुसार छात्र विवरण (कक्षा पर क्लिक करें)</h3>
                 <table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <thead>
                         <tr style="background:#1e3a8a; color:white;">
@@ -61,9 +65,12 @@ export function showDashboard() {
             
             document.getElementById('dashboardResults').innerHTML = html;
 
-            // Row click event bindings
+            // Row click event bindings safely applied after DOM render
             Object.keys(classCount).forEach(cls => {
-                document.getElementById(`row_cls_${cls}`).addEventListener('click', () => showClassList(cls));
+                const rowElement = document.getElementById(`row_cls_${cls}`);
+                if (rowElement) {
+                    rowElement.addEventListener('click', () => showClassList(cls));
+                }
             });
         })
         .catch(error => {
@@ -72,29 +79,43 @@ export function showDashboard() {
 }
 
 function showClassList(cls) {
-    let filtered = state.lastData.filter(item => (item['Class'] || item['class'] || 'N/A') === cls);
-    if(filtered.length === 0) return;
+    // 1. Safe guard check agar data load na hua ho
+    if (!state.lastData || state.lastData.length === 0) {
+        alert("त्रुटि: मास्टर डेटाबेस उपलब्ध नहीं है। कृपया पेज रिफ्रेश करें।");
+        return;
+    }
+    
+    // 2. Strict Matching string spaces aur numeric data dono ko dhyan me rakhkar
+    let filtered = state.lastData.filter(item => {
+        const studentClass = String(item['Class'] || item['class'] || '').trim();
+        return studentClass === String(cls).trim();
+    });
+    
+    // 3. Agar koi technical mismatch ho toh report karein
+    if (filtered.length === 0) {
+        alert(`कक्षा ${cls} में कोई छात्र नहीं मिला!`);
+        return;
+    }
     
     let headers = Object.keys(filtered[0]);
     
-    // Modern styled table with borders for student list
     let html = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="color:#1e3a8a; margin:0;">📋 Class ${cls} Student List</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+            <h3 style="color:#1e3a8a; margin:0;">📋 Class ${cls} Student List (${filtered.length} Students)</h3>
             <button id="btnBackToDashboard" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> वापस डैशबोर्ड</button>
         </div>
-        <div style="overflow-x:auto; border:1px solid #e2e8f0; border-radius:8px;">
-            <table style="width:100%; border-collapse: collapse; text-align:left;">
+        <div style="overflow-x:auto; border:1px solid #e2e8f0; border-radius:8px; background:#fff;">
+            <table style="width:100%; border-collapse: collapse; text-align:left; font-size:14px;">
                 <thead>
                     <tr style="background:#f1f5f9; color:#1e3a8a;">
-                        ${headers.map(h => `<th style="padding:12px; border-bottom:2px solid #e2e8f0; font-weight:bold;">${h}</th>`).join('')}
+                        ${headers.map(h => `<th style="padding:12px; border-bottom:2px solid #e2e8f0; font-weight:bold; white-space:nowrap;">${h}</th>`).join('')}
                     </tr>
                 </thead>
                 <tbody>`;
     
     filtered.forEach(row => {
         html += `<tr style="background:#fff;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">` + 
-                headers.map(h => `<td style="padding:12px; border-bottom:1px solid #e2e8f0;">${row[h] !== undefined ? row[h] : ''}</td>`).join('') + 
+                headers.map(h => `<td style="padding:12px; border-bottom:1px solid #e2e8f0; white-space:nowrap;">${row[h] !== undefined ? row[h] : ''}</td>`).join('') + 
                 "</tr>";
     });
     
