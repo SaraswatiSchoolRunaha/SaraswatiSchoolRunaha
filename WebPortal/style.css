@@ -141,3 +141,17 @@ td {
 /* Attendance row-wise status highlighting colors */
 .row-present { background-color: #d1fae5 !important; } 
 .row-absent { background-color: #fee2e2 !important; }
+
+
+/* Purane th wale code ko overwrite karne ke liye ye add karein */
+table .custom-header {
+    background-color: #1e3a8a !important;
+    color: #ffffff !important;
+    border: 1px solid #1e3a8a !important;
+}
+
+/* Agar table body ka color bhi white ho raha hai, toh ye bhi add karein */
+table tbody tr td {
+    background-color: #ffffff !important;
+    color: #1e3a8a !important;
+}
