@@ -47,11 +47,11 @@ export function showDashboard() {
                 </div>
                 
                 <h3 style="color:#1e3a8a; margin-bottom:15px; padding-top:10px; border-top:2px dashed #e2e8f0;">📊 कक्षा अनुसार छात्र विवरण</h3>
-                <table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <table style="width:100% !important; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <thead>
-                        <tr style="background:#1e3a8a !important; color:#ffffff !important;">
-                            <th style="padding:15px; text-align:left; color:#ffffff !important;">Class</th>
-                            <th style="padding:15px; text-align:right; color:#ffffff !important;">Total Students</th>
+                        <tr style="background:#1e3a8a !important;">
+                            <th style="padding:15px !important; text-align:left !important; color:#ffffff !important; background:#1e3a8a !important;">Class</th>
+                            <th style="padding:15px !important; text-align:right !important; color:#ffffff !important; background:#1e3a8a !important;">Total Students</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,12 +61,12 @@ export function showDashboard() {
                             <tr style="cursor:pointer; background:#ffffff; transition:0.2s;" id="row_cls_${safeId}" 
                             onmouseover="this.style.background='#f1f5f9'" 
                             onmouseout="this.style.background='#ffffff'">
-                                <td style="padding:15px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a !important;">
+                                <td style="padding:15px !important; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a !important;">
                                     <i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}
                                 </td>
-                                <td style="padding:15px; border-bottom:1px solid #e2e8f0; text-align:right; color:#1e3a8a !important;">
+                                <td style="padding:15px !important; border-bottom:1px solid #e2e8f0; text-align:right; color:#1e3a8a !important;">
                                     <span style="background:#dbeafe; padding:5px 12px; border-radius:15px; color:#1e40af !important; font-weight:bold;">
-                                        ${classCount[cls]} Students
+                                       ${classCount[cls]} Students
                                     </span>
                                 </td>
                             </tr>`;
@@ -101,14 +101,14 @@ function showClassList(cls) {
             <button id="btnBackToDashboard" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> वापस डैशबोर्ड</button>
         </div>
         <div style="overflow-x:auto; border:1px solid #e2e8f0; border-radius:8px; background:#fff;">
-            <table style="width:100%; border-collapse: collapse; text-align:left; font-size:14px;">
+            <table style="width:100% !important; border-collapse: collapse; text-align:left; font-size:14px;">
                 <thead>
-                    <tr style="background:#1e3a8a !important; color:#ffffff !important;">
-                        ${headers.map(h => `<th style="padding:12px; border-bottom:2px solid #e2e8f0; color:#ffffff !important;">${h}</th>`).join('')}
+                    <tr style="background:#1e3a8a !important;">
+                        ${headers.map(h => `<th style="padding:12px !important; border-bottom:2px solid #e2e8f0; color:#ffffff !important; background:#1e3a8a !important;">${h}</th>`).join('')}
                     </tr>
                 </thead>
                 <tbody>
-                    ${filtered.map(row => `<tr>${headers.map(h => `<td style="padding:12px; border-bottom:1px solid #e2e8f0; color:#1e3a8a !important;">${row[h] || ''}</td>`).join('')}</tr>`).join('')}
+                    ${filtered.map(row => `<tr>${headers.map(h => `<td style="padding:12px !important; border-bottom:1px solid #e2e8f0; color:#1e3a8a !important;">${row[h] || ''}</td>`).join('')}</tr>`).join('')}
                 </tbody>
             </table>
         </div>`;
