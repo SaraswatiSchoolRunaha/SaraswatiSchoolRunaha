@@ -1,1 +1,139 @@
+/* General Page Styling */
+body { 
+    display: flex; 
+    height: 100vh; 
+    background: #f4f6f9; 
+    font-family: sans-serif; 
+    margin: 0; 
+}
 
+/* Sidebar Styling */
+.sidebar { 
+    width: 260px; 
+    background: #fff; 
+    border-right: 1px solid #ddd; 
+}
+.sidebar-brand { 
+    padding: 20px; 
+    font-weight: bold; 
+    color: #1e3a8a; 
+    border-bottom: 1px solid #ddd; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    cursor: pointer; 
+}
+.sidebar-menu { 
+    list-style: none; 
+    padding: 15px 0; 
+}
+.module-btn { 
+    padding: 12px 25px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    color: #64748b; 
+    cursor: pointer; 
+}
+.sub-menu { 
+    display: none; 
+    background: #f8fafc; 
+}
+.sub-menu a { 
+    padding: 10px 25px 10px 50px; 
+    display: block; 
+    color: #64748b; 
+    text-decoration: none; 
+    font-size: 0.9rem; 
+}
+
+/* Main Content Layout */
+.main-content { 
+    flex-grow: 1; 
+    display: flex; 
+    flex-direction: column; 
+}
+.top-navbar { 
+    height: 70px; 
+    background: #fff; 
+    border-bottom: 1px solid #ddd; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 40px; 
+}
+.user-profile { 
+    font-weight: 500; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+.btn-action { 
+    padding: 8px 16px; 
+    border: 1px solid #ddd; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    background: #fff; 
+}
+.page-body { 
+    padding: 30px; 
+}
+.role-badge { 
+    padding: 4px 10px; 
+    background: #e0e7ff; 
+    color: #1e3a8a; 
+    border-radius: 12px; 
+    font-size: 0.85rem; 
+}
+.lang-btn { 
+    cursor: pointer; 
+    padding: 5px 10px; 
+    border: 1px solid #ccc; 
+    background: #fff; 
+    border-radius: 4px; 
+    font-size: 12px; 
+    font-weight: bold; 
+}
+
+/* Table Design */
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 15px; 
+    background: #fff; 
+}
+th, td { 
+    border: 1px solid #ddd; 
+    padding: 10px; 
+    text-align: left; 
+}
+th { 
+    background: #f8fafc; 
+}
+
+/* News Ticker Animation */
+.news-ticker { 
+    background: #1e3a8a; 
+    color: white; 
+    padding: 10px; 
+    overflow: hidden; 
+    white-space: nowrap; 
+    border-radius: 4px; 
+    margin-bottom: 20px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 100;
+}
+.news-ticker span { 
+    display: inline-block; 
+    padding-left: 100%; 
+    animation: ticker 20s linear infinite; 
+}
+@keyframes ticker { 
+    0% { transform: translate(0, 0); } 
+    100% { transform: translate(-100%, 0); } 
+}
+
+/* Attendance Row Colors */
+.row-present { background-color: #d1fae5 !important; } /* Light Green */
+.row-absent { background-color: #fee2e2 !important; }  /* Light Red */
