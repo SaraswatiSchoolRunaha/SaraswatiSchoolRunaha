@@ -95,7 +95,7 @@ document.getElementById('btnLangHN').addEventListener('click', () => { state.cur
 document.getElementById('btnLogout').addEventListener('click', () => { 
     if(confirm("क्या आप लॉग आउट करना चाहते हैं?")) {
         // Aapki school ki website ka asli link yahan set kar diya hai
-        window.location.href = "https://saraswatischoolruanaha.in"; 
+        window.location.href = "https://saraswatischoolrunaha.in"; 
     } 
 });
 
