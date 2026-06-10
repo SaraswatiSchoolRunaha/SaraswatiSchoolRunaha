@@ -31,18 +31,19 @@ export function showDashboard() {
             const totalStudents = data.length;
             const totalClasses = Object.keys(classCount).length;
 
-            const html = `
-                <div style="width:100%; display:block; margin-bottom:25px;">
-                    <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; margin-bottom:12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">📊 कुल पंजीकृत छात्र (Total Registered Students)</div>
-                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalStudents}</div>
-                    </div>
-                    <div style="background:#334155; color:white; padding:20px; border-radius:12px; margin-bottom:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">🏫 कुल सक्रिय कक्षाएं (Total Active Classes)</div>
-                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
-                    </div>
-                </div>
-                
+            // 📑 Is CSS Line ko dhundhein aur isse replace karein
+    const html = `
+    <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; flex-wrap: wrap;">
+        <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">📊 कुल पंजीकृत छात्र (Total Registered Students)</div>
+            <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalStudents}</div>
+        </div>
+        <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">🏫 कुल सक्रिय कक्षाएं (Total Active Classes)</div>
+            <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
+        </div>
+    </div>
+`;                
                 <h3 style="color:#1e3a8a; margin-bottom:15px; padding-top:10px; border-top:2px dashed #e2e8f0;">📊 कक्षा अनुसार छात्र विवरण (कक्षा पर क्लिक करें)</h3>
                 <table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <thead>
