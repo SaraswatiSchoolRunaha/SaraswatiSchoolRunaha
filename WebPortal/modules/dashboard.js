@@ -59,14 +59,20 @@ export function showDashboard() {
                         ${Object.keys(classCount).map(cls => {
                             const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
                             return `
-                                <tr style="cursor:pointer; background:#fff; transition:0.2s;" id="row_cls_${safeId}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
-                                    <td style="padding:15px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a;">
-                                        <i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}
-                                    </td>
-                                    <td style="padding:15px; border-bottom:1px solid #e2e8f0; text-align:right;">
-                                        <span style="background:#e2e8f0; padding:5px 12px; border-radius:15px; color:#1e3a8a; font-weight:bold;">${classCount[cls]} Students</span>
-                                    </td>
-                                </tr>`;
+                            <tr style="cursor:pointer; background:#ffffff; transition:0.2s;" id="row_cls_${safeId}" 
+                            onmouseover="this.style.background='#f1f5f9'" 
+                            onmouseout="this.style.background='#ffffff'">
+            
+                        <td style="padding:15px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a;">
+                        <i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}
+                        </td>
+            
+                        <td style="padding:15px; border-bottom:1px solid #e2e8f0; text-align:right;">
+                        <span style="background:#dbeafe; padding:5px 12px; border-radius:15px; color:#1e40af; font-weight:bold;">
+                         ${classCount[cls]} Students
+                        </span>
+                        </td>
+                        </tr>`;
                         }).join('')}
                     </tbody>
                 </table>`;
