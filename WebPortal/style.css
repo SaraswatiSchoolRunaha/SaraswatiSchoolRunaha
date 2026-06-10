@@ -143,7 +143,7 @@ td {
 .row-absent { background-color: #fee2e2 !important; }
 
 
-/* Table ki basic styling */
+/* Table Layout */
 table { 
     width: 100%; 
     border-collapse: collapse; 
@@ -151,7 +151,7 @@ table {
     background: #fff; 
 }
 
-/* Dashboard Table Header (Dark Blue) */
+/* Dashboard Table Header (Dashboard ke liye specialized) */
 .custom-header {
     background-color: #1e3a8a !important;
     color: #ffffff !important;
@@ -160,8 +160,8 @@ table {
     border: 1px solid #1e3a8a !important;
 }
 
-/* Table Body Cells (White Background + Dark Text) */
-table tbody tr td {
+/* Table Body Cells (Dashboard ke liye specialized) */
+.dashboard-table-body td {
     padding: 10px !important;
     border: 1px solid #ddd !important;
     background-color: #ffffff !important;
