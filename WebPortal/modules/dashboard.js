@@ -2,13 +2,16 @@ import { sheetUrls, translations, state } from './config.js';
 
 export function showDashboard() {
     document.getElementById('pageTitle').innerText = translations[state.currentLang]['डैशबोर्ड'];
+    
+    // Yahan string ko band karna bhool gaye the (Added backtick after </div>)
     document.getElementById('contentArea').innerHTML = `
         <div id="dashboardResults">
             <div style="text-align:center; padding:50px; color:#1e3a8a; font-weight:bold;">
                 <i class="fa-solid fa-spinner fa-spin fa-2xl"></i><br><br>मास्टर डेटाबेस लोड हो रहा है...
             </div>
-        </div>
+        </div>`; 
 
+    // Ab fetch yahan se alag block mein shuru hoga
     fetch(sheetUrls['Database'] + "?action=getDashboard")
         .then(response => {
             if (!response.ok) throw new Error("डेटाबेस कनेक्शन एरर!");
@@ -20,7 +23,7 @@ export function showDashboard() {
                 return;
             }
 
-            state.lastData = data; // Cache data internally for other screens
+            state.lastData = data;
 
             let classCount = {};
             data.forEach(student => {
@@ -31,19 +34,18 @@ export function showDashboard() {
             const totalStudents = data.length;
             const totalClasses = Object.keys(classCount).length;
 
-            // 📑 Is CSS Line ko dhundhein aur isse replace karein
-    const html = `
-    <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; flex-wrap: wrap;">
-        <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">📊 कुल पंजीकृत छात्र (Total Registered Students)</div>
-            <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalStudents}</div>
-        </div>
-        <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">🏫 कुल सक्रिय कक्षाएं (Total Active Classes)</div>
-            <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
-        </div>
-    </div>
-`;                
+            const html = `
+                <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; flex-wrap: wrap;">
+                    <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">📊 कुल पंजीकृत छात्र (Total Registered Students)</div>
+                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalStudents}</div>
+                    </div>
+                    <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <div style="font-size:14px; text-transform:uppercase; opacity:0.9; font-weight:bold;">🏫 कुल सक्रिय कक्षाएं (Total Active Classes)</div>
+                        <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
+                    </div>
+                </div>
+                
                 <h3 style="color:#1e3a8a; margin-bottom:15px; padding-top:10px; border-top:2px dashed #e2e8f0;">📊 कक्षा अनुसार छात्र विवरण (कक्षा पर क्लिक करें)</h3>
                 <table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <thead>
@@ -54,7 +56,6 @@ export function showDashboard() {
                     </thead>
                     <tbody>
                         ${Object.keys(classCount).map(cls => {
-                            // Safe ID encoding taaki click event dot ya space se na toote
                             const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
                             return `
                                 <tr style="cursor:pointer; background:#fff;" id="row_cls_${safeId}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
@@ -68,7 +69,6 @@ export function showDashboard() {
             
             document.getElementById('dashboardResults').innerHTML = html;
 
-            // Row click event bindings using the same safe ID pattern
             Object.keys(classCount).forEach(cls => {
                 const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
                 const rowElement = document.getElementById(`row_cls_${safeId}`);
@@ -83,6 +83,7 @@ export function showDashboard() {
 }
 
 function showClassList(cls) {
+    // ... baaki ka function waisa hi rahega
     if (!state.lastData || state.lastData.length === 0) {
         alert("त्रुटि: मास्टर डेटाबेस उपलब्ध नहीं है। कृपया पेज रिफ्रेश करें।");
         return;
