@@ -1,0 +1,94 @@
+import { sheetUrls, translations, state } from './config.js';
+
+export function showDashboard() {
+    document.getElementById('pageTitle').innerText = translations[state.currentLang]['डैशबोर्ड'];
+    document.getElementById('contentArea').innerHTML = `
+        <div id="dashboardResults">
+            <div style="text-align:center; padding:50px; color:#1e3a8a; font-weight:bold;">
+                <i class="fa-solid fa-spinner fa-spin fa-2xl"></i><br><br>मास्टर डेटाबेस लोड हो रहा है...
+            </div>
+        </div>`;
+
+    fetch(sheetUrls['Database'] + "?action=getDashboard")
+        .then(response => {
+            if (!response.ok) throw new Error("डेटाबेस कनेक्शन एरर!");
+            return response.json();
+        })
+        .then(data => {
+            if (!Array.isArray(data) || data.length === 0) {
+                document.getElementById('dashboardResults').innerHTML = "<div style='padding:20px;color:red;font-weight:bold;'>कोई छात्र रिकॉर्ड नहीं मिल सका।</div>";
+                return;
+            }
+
+            state.lastData = data; // Cache data internally for other screens
+
+            let classCount = {};
+            data.forEach(student => {
+                const cls = student.Class || student.class || "N/A";
+                classCount[cls] = (classCount[cls] || 0) + 1;
+            });
+
+            const totalStudents = data.length;
+            const html = `
+                <div style="display:flex; gap:20px; margin-bottom:25px; flex-wrap:wrap;">
+                    <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; flex:1; min-width:200px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <div style="font-size:14px; text-transform:uppercase; opacity:0.8;">कुल पंजीकृत छात्र</div>
+                        <div style="font-size:36px; font-weight:700; margin-top:5px;">${totalStudents}</div>
+                    </div>
+                    <div style="background:#334155; color:white; padding:20px; border-radius:12px; flex:1; min-width:200px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <div style="font-size:14px; text-transform:uppercase; opacity:0.8;">कुल सक्रिय कक्षाएं</div>
+                        <div style="font-size:36px; font-weight:700; margin-top:5px;">${Object.keys(classCount).length}</div>
+                    </div>
+                </div>
+                
+                <h3 style="color:#1e3a8a; margin-bottom:15px;">📊 कक्षा अनुसार छात्र विवरण (कक्षा पर क्लिक करें)</h3>
+                <table style="width:100%; border-radius:8px; overflow:hidden;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white;">
+                            <th style="padding:12px; text-align:left;">कक्षा (Class)</th>
+                            <th style="padding:12px; text-align:left;">कुल नामांकित छात्र संख्या</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${Object.keys(classCount).map(cls => `
+                            <tr style="cursor:pointer;" id="row_cls_${cls}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
+                                <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a;"><i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}</td>
+                                <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold;">${classCount[cls]} Students</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+            
+            document.getElementById('dashboardResults').innerHTML = html;
+
+            // Row click event bindings
+            Object.keys(classCount).forEach(cls => {
+                document.getElementById(`row_cls_${cls}`).addEventListener('click', () => showClassList(cls));
+            });
+        })
+        .catch(error => {
+            document.getElementById('dashboardResults').innerHTML = `<div style="color:red; padding:20px; font-weight:bold;">⚠️ त्रुटि: डेटा लोड करने में विफलता।<br><small>${error.message}</small></div>`;
+        });
+}
+
+function showClassList(cls) {
+    let filtered = state.lastData.filter(item => (item['Class'] || item['class'] || 'N/A') === cls);
+    if(filtered.length === 0) return;
+    
+    let headers = Object.keys(filtered[0]);
+    let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="color:#1e3a8a; margin:0;">📋 Class ${cls} Student List</h3>
+            <button id="btnBackToDashboard" class="btn-action" style="background:#1e3a8a; color:white; border:none;"><i class="fa-solid fa-arrow-left"></i> वापस डैशबोर्ड</button>
+        </div>
+        <div style="overflow-x:auto;">
+            <table>
+                <tr style="background:#f1f5f9;">${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+    
+    filtered.forEach(row => {
+        html += "<tr>" + headers.map(h => `<td>${row[h] !== undefined ? row[h] : ''}</td>`).join('') + "</tr>";
+    });
+    
+    document.getElementById('contentArea').innerHTML = html + "</table></div>";
+    document.getElementById('btnBackToDashboard').addEventListener('click', showDashboard);
+}
