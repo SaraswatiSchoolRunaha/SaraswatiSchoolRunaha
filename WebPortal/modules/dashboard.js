@@ -24,7 +24,6 @@ export function showDashboard() {
 
             let classCount = {};
             data.forEach(student => {
-                // Sahi string parsing aur trim taaki dynamic spaces handle ho sakein
                 const cls = String(student.Class || student.class || "N/A").trim();
                 classCount[cls] = (classCount[cls] || 0) + 1;
             });
@@ -32,7 +31,6 @@ export function showDashboard() {
             const totalStudents = data.length;
             const totalClasses = Object.keys(classCount).length;
 
-            // 🌟 FIXED HEADER CARDS LAYOUT: Ab CSS blocks bilkul sahi aur humesha top par dikhenge
             const html = `
                 <div style="width:100%; display:block; margin-bottom:25px;">
                     <div style="background:#1e3a8a; color:white; padding:20px; border-radius:12px; margin-bottom:12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
@@ -49,25 +47,30 @@ export function showDashboard() {
                 <table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <thead>
                         <tr style="background:#1e3a8a; color:white;">
-                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd;">कक्षा (Class)</th>
-                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd;">कुल नामांकित छात्र संख्या</th>
+                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd; font-weight:bold;">Class</th>
+                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd; font-weight:bold;">Total Students</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${Object.keys(classCount).map(cls => `
-                            <tr style="cursor:pointer; background:#fff;" id="row_cls_${cls}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
-                                <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a;"><i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}</td>
-                                <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold;">${classCount[cls]} Students</td>
-                            </tr>
-                        `).join('')}
+                        ${Object.keys(classCount).map(cls => {
+                            // Safe ID encoding taaki click event dot ya space se na toote
+                            const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
+                            return `
+                                <tr style="cursor:pointer; background:#fff;" id="row_cls_${safeId}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
+                                    <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a;"><i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}</td>
+                                    <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold;">${classCount[cls]} Students</td>
+                                </tr>
+                            `;
+                        }).join('')}
                     </tbody>
                 </table>`;
             
             document.getElementById('dashboardResults').innerHTML = html;
 
-            // Row click event bindings safely applied after DOM render
+            // Row click event bindings using the same safe ID pattern
             Object.keys(classCount).forEach(cls => {
-                const rowElement = document.getElementById(`row_cls_${cls}`);
+                const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
+                const rowElement = document.getElementById(`row_cls_${safeId}`);
                 if (rowElement) {
                     rowElement.addEventListener('click', () => showClassList(cls));
                 }
@@ -79,19 +82,16 @@ export function showDashboard() {
 }
 
 function showClassList(cls) {
-    // 1. Safe guard check agar data load na hua ho
     if (!state.lastData || state.lastData.length === 0) {
         alert("त्रुटि: मास्टर डेटाबेस उपलब्ध नहीं है। कृपया पेज रिफ्रेश करें।");
         return;
     }
     
-    // 2. Strict Matching string spaces aur numeric data dono ko dhyan me rakhkar
     let filtered = state.lastData.filter(item => {
         const studentClass = String(item['Class'] || item['class'] || '').trim();
         return studentClass === String(cls).trim();
     });
     
-    // 3. Agar koi technical mismatch ho toh report karein
     if (filtered.length === 0) {
         alert(`कक्षा ${cls} में कोई छात्र नहीं मिला!`);
         return;
@@ -101,7 +101,7 @@ function showClassList(cls) {
     
     let html = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-            <h3 style="color:#1e3a8a; margin:0;">📋 Class ${cls} Student List (${filtered.length} Students)</h3>
+            <h3 style="color:#1e3a8a; margin:0; font-weight:bold;">📋 Class ${cls} Student List (${filtered.length} Students)</h3>
             <button id="btnBackToDashboard" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> वापस डैशबोर्ड</button>
         </div>
         <div style="overflow-x:auto; border:1px solid #e2e8f0; border-radius:8px; background:#fff;">
