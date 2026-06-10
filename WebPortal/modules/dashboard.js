@@ -7,7 +7,7 @@ export function showDashboard() {
             <div style="text-align:center; padding:50px; color:#1e3a8a; font-weight:bold;">
                 <i class="fa-solid fa-spinner fa-spin fa-2xl"></i><br><br>मास्टर डेटाबेस लोड हो रहा है...
             </div>
-        </div>`;
+        </div>
 
     fetch(sheetUrls['Database'] + "?action=getDashboard")
         .then(response => {
