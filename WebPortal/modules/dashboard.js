@@ -42,16 +42,16 @@ export function showDashboard() {
                 </div>
                 
                 <h3 style="color:#1e3a8a; margin-bottom:15px;">📊 कक्षा अनुसार छात्र विवरण (कक्षा पर क्लिक करें)</h3>
-                <table style="width:100%; border-radius:8px; overflow:hidden;">
+                <table style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <thead>
                         <tr style="background:#1e3a8a; color:white;">
-                            <th style="padding:12px; text-align:left;">कक्षा (Class)</th>
-                            <th style="padding:12px; text-align:left;">कुल नामांकित छात्र संख्या</th>
+                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd;">कक्षा (Class)</th>
+                            <th style="padding:12px; text-align:left; border-bottom:2px solid #ddd;">कुल नामांकित छात्र संख्या</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${Object.keys(classCount).map(cls => `
-                            <tr style="cursor:pointer;" id="row_cls_${cls}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
+                            <tr style="cursor:pointer; background:#fff;" id="row_cls_${cls}" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
                                 <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e3a8a;"><i class="fa-solid fa-folder-open" style="margin-right:8px;"></i> Class ${cls}</td>
                                 <td style="padding:12px; border-bottom:1px solid #e2e8f0; font-weight:bold;">${classCount[cls]} Students</td>
                             </tr>
@@ -76,19 +76,30 @@ function showClassList(cls) {
     if(filtered.length === 0) return;
     
     let headers = Object.keys(filtered[0]);
+    
+    // Modern styled table with borders for student list
     let html = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <h3 style="color:#1e3a8a; margin:0;">📋 Class ${cls} Student List</h3>
-            <button id="btnBackToDashboard" class="btn-action" style="background:#1e3a8a; color:white; border:none;"><i class="fa-solid fa-arrow-left"></i> वापस डैशबोर्ड</button>
+            <button id="btnBackToDashboard" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> वापस डैशबोर्ड</button>
         </div>
-        <div style="overflow-x:auto;">
-            <table>
-                <tr style="background:#f1f5f9;">${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+        <div style="overflow-x:auto; border:1px solid #e2e8f0; border-radius:8px;">
+            <table style="width:100%; border-collapse: collapse; text-align:left;">
+                <thead>
+                    <tr style="background:#f1f5f9; color:#1e3a8a;">
+                        ${headers.map(h => `<th style="padding:12px; border-bottom:2px solid #e2e8f0; font-weight:bold;">${h}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>`;
     
     filtered.forEach(row => {
-        html += "<tr>" + headers.map(h => `<td>${row[h] !== undefined ? row[h] : ''}</td>`).join('') + "</tr>";
+        html += `<tr style="background:#fff;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">` + 
+                headers.map(h => `<td style="padding:12px; border-bottom:1px solid #e2e8f0;">${row[h] !== undefined ? row[h] : ''}</td>`).join('') + 
+                "</tr>";
     });
     
-    document.getElementById('contentArea').innerHTML = html + "</table></div>";
+    html += `</tbody></table></div>`;
+    
+    document.getElementById('contentArea').innerHTML = html;
     document.getElementById('btnBackToDashboard').addEventListener('click', showDashboard);
 }
