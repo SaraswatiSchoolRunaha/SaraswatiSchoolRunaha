@@ -385,47 +385,44 @@ function printAbsentListWindow() {
 // 4. ATTENDANCE ANALYTICS DASHBOARD
 // ==========================================
 export async function showAttendanceDashboard() {
-    document.getElementById('contentArea').innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> आज की लाइव अटेंडेंस समरी आ रही है...</p>";
+    document.getElementById('contentArea').innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> लोड हो रहा है...</p>";
     
     try {
         const response = await fetch(sheetUrls['Attendance'] + "?action=getAttendanceSummary");
         const data = await response.json();
 
         if (!data || data.length === 0) { 
-            document.getElementById('contentArea').innerHTML = "<p style='color:orange; font-weight:bold;'>आज की तारीख में अभी तक किसी भी कक्षा की उपस्थिति दर्ज नहीं हुई है।</p>"; 
+            document.getElementById('contentArea').innerHTML = "<p>डेटा उपलब्ध नहीं है।</p>"; 
             return; 
         }
         
-        // टेबल स्ट्रक्चर को फिक्स करने के लिए 'border-collapse: collapse' और 'width: 100%' का उपयोग किया है
+        // table-layout: fixed और display: table का उपयोग करना सबसे सुरक्षित है
         let html = `
-            <h3 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-chart-pie"></i> आज की कक्षा-वार उपस्थिति समरी रिपोर्ट</h3>
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; font-family: Arial, sans-serif;">
-                <thead>
-                    <tr style="background:#f1f5f9; border-bottom: 2px solid #ccc;">
-                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">कक्षा (Class)</th>
-                        <th style="padding: 12px; text-align: center; color:green; border: 1px solid #ddd;">उपस्थित छात्र (P)</th>
-                        <th style="padding: 12px; text-align: center; color:red; border: 1px solid #ddd;">अनुपस्थित छात्र (A)</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+            <h3 style="color:#1e3a8a;">आज की उपस्थिति समरी</h3>
+            <div style="width: 100%; overflow-x: auto;">
+                <table style="width: 100%; table-layout: fixed; border-collapse: collapse; border: 1px solid #ccc;">
+                    <thead>
+                        <tr style="background:#334155; color: white;">
+                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 40%;">कक्षा</th>
+                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 30%;">उपस्थित (P)</th>
+                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 30%;">अनुपस्थित (A)</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
         
         data.forEach(row => {
             html += `
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Class ${row.Class}</strong></td>
-                    <td style="padding: 10px; text-align: center; color:green; font-weight:bold; border: 1px solid #ddd;">
-                        <i class="fa-solid fa-circle-check"></i> ${row.P}
-                    </td>
-                    <td style="padding: 10px; text-align: center; color:red; font-weight:bold; border: 1px solid #ddd;">
-                        <i class="fa-solid fa-circle-xmark"></i> ${row.A}
-                    </td>
+                <tr style="background: #ffffff; border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center;"><strong>${row.Class}</strong></td>
+                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: green;">${row.P}</td>
+                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: red;">${row.A}</td>
                 </tr>`;
         });
         
-        document.getElementById('contentArea').innerHTML = html + `</tbody></table>`;
+        document.getElementById('contentArea').innerHTML = html + `</tbody></table></div>`;
         
     } catch (e) { 
-        document.getElementById('contentArea').innerHTML = "<p style='color:red;'>समरी डेटा लोड करने में त्रुटि आई!</p>"; 
+        document.getElementById('contentArea').innerHTML = "त्रुटि!"; 
     }
 }
 // ==========================================
