@@ -385,27 +385,31 @@ function printAbsentListWindow() {
 // 4. ATTENDANCE ANALYTICS DASHBOARD
 // ==========================================
 export async function showAttendanceDashboard() {
-    document.getElementById('contentArea').innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> लोड हो रहा है...</p>";
+    const contentArea = document.getElementById('contentArea');
+    
+    // 1. एक निश्चित ऊँचाई सेट करें ताकि लोडिंग के दौरान कंटेंट हिले नहीं
+    contentArea.style.minHeight = "200px"; 
+    contentArea.innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> लोड हो रहा है...</p>";
     
     try {
         const response = await fetch(sheetUrls['Attendance'] + "?action=getAttendanceSummary");
         const data = await response.json();
 
         if (!data || data.length === 0) { 
-            document.getElementById('contentArea').innerHTML = "<p>डेटा उपलब्ध नहीं है।</p>"; 
+            contentArea.innerHTML = "<p>डेटा उपलब्ध नहीं है।</p>"; 
             return; 
         }
         
-        // table-layout: fixed और display: table का उपयोग करना सबसे सुरक्षित है
+        // 2. table-layout: auto का उपयोग करें और टेबल को सुव्यवस्थित करें
         let html = `
-            <h3 style="color:#1e3a8a;">आज की उपस्थिति समरी</h3>
+            <h3 style="color:#1e3a8a; margin-top: 0;">आज की उपस्थिति समरी</h3>
             <div style="width: 100%; overflow-x: auto;">
-                <table style="width: 100%; table-layout: fixed; border-collapse: collapse; border: 1px solid #ccc;">
+                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc; table-layout: auto;">
                     <thead>
                         <tr style="background:#334155; color: white;">
-                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 40%;">कक्षा</th>
-                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 30%;">उपस्थित (P)</th>
-                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 30%;">अनुपस्थित (A)</th>
+                            <th style="padding: 12px; border: 1px solid #94a3b8;">कक्षा</th>
+                            <th style="padding: 12px; border: 1px solid #94a3b8;">उपस्थित (P)</th>
+                            <th style="padding: 12px; border: 1px solid #94a3b8;">अनुपस्थित (A)</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -419,13 +423,12 @@ export async function showAttendanceDashboard() {
                 </tr>`;
         });
         
-        document.getElementById('contentArea').innerHTML = html + `</tbody></table></div>`;
+        contentArea.innerHTML = html + `</tbody></table></div>`;
         
     } catch (e) { 
-        document.getElementById('contentArea').innerHTML = "त्रुटि!"; 
+        contentArea.innerHTML = "<p style='color:red;'>डेटा लोड करने में त्रुटि!</p>"; 
     }
-} 
-
+}
 // ==========================================
 // 5. MASTER DATA SYNC (ADD STUDENT ROW)
 // ==========================================
