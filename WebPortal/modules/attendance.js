@@ -545,53 +545,86 @@ async function executeDeleteRowOperation(studentId, btnElement) {
 export function showAddStudentForm() {
     const contentArea = document.getElementById("contentArea");
     contentArea.innerHTML = `
-        <div style="max-width: 450px; margin: 20px auto; padding: 25px; background: #fff; border: 1px solid #ddd; border-radius: 12px;">
-            <h3><i class="fa-solid fa-user-plus"></i> छात्र सिंक (Sync)</h3>
-            <input type="text" id="sid" placeholder="Student ID डालें" style="width:100%; padding:10px; margin-bottom:10px;">
-            <button id="btnSearch" onclick="window.searchStudent()" style="width:100%; padding:10px; background:#1e3a8a; color:white; border:none;">सर्च करें</button>
-            <div id="studentDetails" style="margin-top:15px; padding:10px; border:1px solid #ccc; display:none;"></div>
-            <button id="btnSync" onclick="window.confirmSync()" style="display:none; width:100%; padding:10px; margin-top:10px; background:#16a34a; color:white; border:none;">डेटा सेव करें</button>
+        <div style="max-width: 450px; margin: 30px auto; padding: 25px; background: #ffffff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <h3 style="margin-top:0; color: #1e3a8a;"><i class="fa-solid fa-user-plus"></i> छात्र सिंक (Sync) करें</h3>
+            
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="sid" placeholder="Student ID दर्ज करें" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; margin-bottom:10px;">
+                <button id="btnSearch" onclick="window.searchStudent()" style="width:100%; padding:12px; background:#1e3a8a; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">सर्च करें</button>
+            </div>
+
+            <div id="studentDetails" style="display:none; padding:15px; background:#f8fafc; border-left:5px solid #1e3a8a; border-radius:4px; margin-bottom:15px;"></div>
+            
+            <button id="btnSync" onclick="window.confirmSync()" style="display:none; width:100%; padding:12px; background:#16a34a; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+                <i class="fa-solid fa-check-circle"></i> डेटा सेव (Sync) करें
+            </button>
+            <div id="syncStatus" style="margin-top:10px; font-size:14px; text-align:center;"></div>
         </div>
     `;
 }
 
 // 1. सर्च करने का लॉजिक
 window.searchStudent = async () => {
-    const id = document.getElementById("sid").value;
+    const id = document.getElementById("sid").value.trim();
     const details = document.getElementById("studentDetails");
-    
-    // यहाँ अपनी Database शीट का URL इस्तेमाल करें
-    const response = await fetch(`${sheetUrls['Database']}?action=searchById&studentId=${id}`);
-    const data = await response.json();
+    const btnSync = document.getElementById("btnSync");
+    const status = document.getElementById("syncStatus");
 
-    if (data.status === "found") {
-        details.style.display = "block";
-        details.innerHTML = `
-            <p><b>नाम:</b> ${data.name}</p>
-            <p><b>पिता:</b> ${data.father}</p>
-            <p><b>माध्यम:</b> ${data.medium}</p>
-            <p><b>कक्षा:</b> ${data.class}</p>
-        `;
-        document.getElementById("btnSync").style.display = "block";
-        // सेव के लिए डेटा को ग्लोबल स्टोर करें
-        window.tempStudentData = data; 
-    } else {
-        alert("छात्र नहीं मिला!");
+    if (!id) { alert("कृपया Student ID दर्ज करें!"); return; }
+
+    status.innerText = "खोजा जा रहा है...";
+    
+    try {
+        const response = await fetch(`${sheetUrls['Database']}?action=searchById&studentId=${id}`);
+        const data = await response.json();
+
+        if (data.status === "found") {
+            details.style.display = "block";
+            details.innerHTML = `
+                <p style="margin:5px 0;"><b>नाम:</b> ${data.name}</p>
+                <p style="margin:5px 0;"><b>पिता:</b> ${data.father}</p>
+                <p style="margin:5px 0;"><b>माध्यम:</b> ${data.medium}</p>
+                <p style="margin:5px 0;"><b>कक्षा:</b> ${data.class}</p>
+            `;
+            btnSync.style.display = "block";
+            status.innerText = "";
+            window.tempStudentData = data; 
+        } else {
+            alert("छात्र नहीं मिला!");
+            details.style.display = "none";
+            btnSync.style.display = "none";
+        }
+    } catch (e) {
+        alert("सर्च करने में त्रुटि आई!");
     }
 };
 
 // 2. सेव (Sync) करने का लॉजिक
 window.confirmSync = async () => {
+    const btn = document.getElementById("btnSync");
+    const status = document.getElementById("syncStatus");
+    
+    btn.disabled = true;
+    btn.innerText = "सिंक हो रहा है...";
+    
     const s = window.tempStudentData;
-    await fetch(sheetUrls['StudentData'], {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            action: "saveToStudentData", 
-            studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class 
-        })
-    });
-    alert("सफलतापूर्वक सिंक हो गया!");
-    showAddStudentForm(); // फॉर्म रीसेट करें
+    
+    try {
+        await fetch(sheetUrls['StudentData'], {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                action: "saveToStudentData", 
+                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class 
+            })
+        });
+        
+        status.innerHTML = `<span style="color:green;">✔ सफलतापूर्वक सिंक हो गया!</span>`;
+        setTimeout(() => showAddStudentForm(), 2000); // 2 सेकंड बाद फॉर्म रीसेट
+    } catch (e) {
+        status.innerHTML = `<span style="color:red;">❌ सिंक करने में विफल!</span>`;
+        btn.disabled = false;
+        btn.innerText = "डेटा सेव करें";
+    }
 };
