@@ -387,48 +387,48 @@ function printAbsentListWindow() {
 export async function showAttendanceDashboard() {
     const contentArea = document.getElementById('contentArea');
     
-    // 1. एक निश्चित ऊँचाई सेट करें ताकि लोडिंग के दौरान कंटेंट हिले नहीं
+    // यह लाइन लेआउट को स्थिर रखेगी (Layout Shift से बचाएगी)
     contentArea.style.minHeight = "200px"; 
-    contentArea.innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> लोड हो रहा है...</p>";
+    contentArea.innerHTML = "<p style='text-align:center; padding: 20px;'><i class='fa-solid fa-spinner fa-spin'></i> डेटा लोड हो रहा है...</p>";
     
     try {
         const response = await fetch(sheetUrls['Attendance'] + "?action=getAttendanceSummary");
         const data = await response.json();
 
         if (!data || data.length === 0) { 
-            contentArea.innerHTML = "<p>डेटा उपलब्ध नहीं है।</p>"; 
+            contentArea.innerHTML = "<p style='padding: 20px; text-align: center;'>डेटा उपलब्ध नहीं है।</p>"; 
             return; 
         }
         
-        // 2. table-layout: auto का उपयोग करें और टेबल को सुव्यवस्थित करें
         let html = `
-            <h3 style="color:#1e3a8a; margin-top: 0;">आज की उपस्थिति समरी</h3>
-            <div style="width: 100%; overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc; table-layout: auto;">
+            <h3 style="color:#1e3a8a; margin-bottom: 15px;">आज की उपस्थिति समरी</h3>
+            <div style="width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                     <thead>
-                        <tr style="background:#334155; color: white;">
-                            <th style="padding: 12px; border: 1px solid #94a3b8;">कक्षा</th>
-                            <th style="padding: 12px; border: 1px solid #94a3b8;">उपस्थित (P)</th>
-                            <th style="padding: 12px; border: 1px solid #94a3b8;">अनुपस्थित (A)</th>
+                        <tr style="background:#f8fafc; color: #475569; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 15px; text-align: center; width: 40%;">कक्षा</th>
+                            <th style="padding: 15px; text-align: center; width: 30%;">उपस्थित (P)</th>
+                            <th style="padding: 15px; text-align: center; width: 30%;">अनुपस्थित (A)</th>
                         </tr>
                     </thead>
                     <tbody>`;
         
         data.forEach(row => {
             html += `
-                <tr style="background: #ffffff; border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center;"><strong>${row.Class}</strong></td>
-                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: green;">${row.P}</td>
-                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: red;">${row.A}</td>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 15px; text-align: center; font-weight: bold; color: #1e293b;">${row.Class}</td>
+                    <td style="padding: 15px; text-align: center; color: #16a34a; font-weight: bold;">${row.P}</td>
+                    <td style="padding: 15px; text-align: center; color: #dc2626; font-weight: bold;">${row.A}</td>
                 </tr>`;
         });
         
         contentArea.innerHTML = html + `</tbody></table></div>`;
         
     } catch (e) { 
-        contentArea.innerHTML = "<p style='color:red;'>डेटा लोड करने में त्रुटि!</p>"; 
+        contentArea.innerHTML = "<p style='color:red; padding: 20px; text-align: center;'>डेटा लोड करने में त्रुटि हुई।</p>"; 
     }
 }
+
 // ==========================================
 // 5. MASTER DATA SYNC (ADD STUDENT ROW)
 // ==========================================
