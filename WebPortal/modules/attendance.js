@@ -57,35 +57,42 @@ async function checkLockAndLoadStudents() {
     const selectedMedium = document.getElementById('mediumFilter').value;
     const container = document.getElementById('attendanceTableContainer');
 
-    // 1. वैलिडेशन (अगर क्लास या मीडियम नहीं है तो खाली छोड़ें)
+    // 1. वैलिडेशन
     if (!selectedClass || !selectedMedium) { 
         container.innerHTML = "<p style='text-align:center; color:#64748b;'>कृपया कक्षा और माध्यम चुनें।</p>"; 
         return; 
     }
     if (!selectedDate) { alert("कृपया तारीख चुनें!"); return; }
 
+    // 2. लोडिंग स्टेटस
     container.innerHTML = `<div style="color:#1e3a8a; font-weight:bold; text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> लॉक स्टेटस जांचा जा रहा है...</div>`;
 
     try {
-        // 2. URL में date पैरामीटर का सही उपयोग
+        // 3. API कॉल
         const url = `${sheetUrls['Attendance']}?action=checkLock&date=${selectedDate}&class=${encodeURIComponent(selectedClass)}&medium=${encodeURIComponent(selectedMedium)}`;
         const response = await fetch(url);
+        
+        if (!response.ok) throw new Error("सर्वर रिस्पॉन्स में समस्या");
+
         const result = await response.json();
 
-        // 3. लॉक स्टेटस चेक
+        // 4. लॉक स्टेटस चेक
         if (result && result.exists === true) {
             container.innerHTML = `
             <div style="background:#fee2e2; border:2px solid #dc2626; color:#991b1b; padding:20px; border-radius:8px; text-align:center; font-weight:bold;">
                 ⚠️ इस कक्षा और माध्यम की अटेंडेंस ${selectedDate} के लिए लॉक की जा चुकी है। संशोधन हेतु 'उपस्थिति सुधार' मेनू का उपयोग करें।
             </div>`;
         } else {
-            // 4. अगर लॉक नहीं है, तो ग्रिड लोड करें
+            // लॉक नहीं है, सुरक्षित रूप से ग्रिड लोड करें
             generateAttendanceGrid(selectedClass, selectedMedium);
         }
     } catch (e) {
         console.error("Lock check error:", e);
-        // एरर आने पर भी ग्रिड लोड करने का प्रयास करें या यूजर को बताएं
-        generateAttendanceGrid(selectedClass, selectedMedium);
+        // एरर आने पर ग्रिड लोड न करें, यूजर को सूचित करें
+        container.innerHTML = `
+        <div style="background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:15px; border-radius:8px; text-align:center;">
+            ⚠️ <b>त्रुटि:</b> लॉक स्टेटस चेक नहीं हो सका। कृपया अपना इंटरनेट कनेक्शन चेक करें या बाद में प्रयास करें।
+        </div>`;
     }
 }
 function generateAttendanceGrid(selectedClass, selectedMedium) {
