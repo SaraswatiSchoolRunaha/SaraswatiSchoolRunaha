@@ -551,21 +551,40 @@ async function executeDeleteRowOperation(studentId, btnElement) {
 export function showAddStudentForm() {
     const contentArea = document.getElementById("contentArea");
     
+    // फॉर्म का लेआउट
     contentArea.innerHTML = `
-        <div style="max-width: 400px; margin: auto; padding: 20px; background: #fff; border-radius: 8px; border: 1px solid #ccc;">
-            <h3><i class="fa-solid fa-user-plus"></i> छात्र सिंक (Sync) करें</h3>
-            <input type="text" id="sid" placeholder="Student ID" style="width:100%; margin-bottom:10px; padding:8px;">
-            <input type="text" id="sname" placeholder="नाम" style="width:100%; margin-bottom:10px; padding:8px;">
-            <input type="text" id="fname" placeholder="पिता का नाम" style="width:100%; margin-bottom:10px; padding:8px;">
-            <input type="text" id="med" placeholder="माध्यम" style="width:100%; margin-bottom:10px; padding:8px;">
-            <input type="text" id="cls" placeholder="कक्षा" style="width:100%; margin-bottom:10px; padding:8px;">
-            
-            <button id="btnTransferData" style="width:100%; padding:10px; background:#1e3a8a; color:white; border:none; border-radius:4px; cursor:pointer;">
-                डेटा StudentData टैब में ट्रांसफर करें
+        <div style="max-width: 400px; margin: 20px auto; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px;">
+            <h3 style="margin-top:0;">छात्र को सिंक (Sync) करें</h3>
+            <input type="text" id="sid" placeholder="Student ID यहाँ डालें" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;">
+            <button id="btnSync" onclick="window.processStudentSync()" style="width:100%; padding:10px; background:#2563eb; color:white; border:none; border-radius:5px; cursor:pointer;">
+                डेटा सिंक करें
             </button>
+            <p id="statusMsg" style="margin-top:10px; font-weight:bold;"></p>
         </div>
     `;
-
-    // बटन के लिए इवेंट लिसनर जोड़ें
-    document.getElementById('btnTransferData').addEventListener('click', transferStudentRowSync);
 }
+
+// यह फंक्शन बटन के क्लिक होने पर काम करेगा
+window.processStudentSync = function() {
+    const id = document.getElementById("sid").value;
+    const msg = document.getElementById("statusMsg");
+    
+    if(!id) {
+        alert("कृपया ID भरें!");
+        return;
+    }
+    
+    msg.innerText = "सिंक हो रहा है...";
+    
+    // Google Apps Script को बुलाएं
+    google.script.run
+        .withSuccessHandler((response) => {
+            msg.innerText = response;
+            msg.style.color = "green";
+        })
+        .withFailureHandler((err) => {
+            msg.innerText = "Error: " + err;
+            msg.style.color = "red";
+        })
+        .transferStudentData(id); // यह फंक्शन आपके .gs फाइल में होगा
+};
