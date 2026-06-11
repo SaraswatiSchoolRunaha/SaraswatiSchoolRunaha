@@ -12,7 +12,20 @@ export function showAttendanceForm() {
     }
 
     let allClasses = [...new Set(state.lastData.map(s => s.Class || s.class).filter(Boolean))].sort();
-    let allMediums = [...new Set(state.lastData.map(s => s.Medium || s.medium).filter(Boolean))].sort();
+   // 1. सुनिश्चित करें कि डेटा उपलब्ध है
+if (!state.lastData || state.lastData.length === 0) {
+    console.error("Data is empty!");
+    return;
+}
+
+// 2. सुरक्षित तरीके से मीडियम्स निकालना
+let allMediums = [...new Set(state.lastData.map(s => {
+    // यहाँ अपनी शीट की असली हेडिंग चेक करें (जैसे 'Medium' या 'medium')
+    let val = s.Medium || s.medium || s.med || ""; 
+    return val.toString().trim();
+}).filter(m => m !== ""))].sort();
+
+console.log("Found Mediums:", allMediums); // यह कंसोल में चेक करें कि क्या आ रहा है
 
     document.getElementById("contentArea").innerHTML = `
         <div>
