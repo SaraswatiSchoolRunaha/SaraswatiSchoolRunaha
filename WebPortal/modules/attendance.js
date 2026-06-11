@@ -387,11 +387,11 @@ function printAbsentListWindow() {
 export async function showAttendanceDashboard() {
     const contentArea = document.getElementById('contentArea');
     
-    // 1. कंटेंट एरिया को एक फिक्स बाउंड्री दें
+    // कंटेंट एरिया के लिए एक स्थिर आधार (यह लेआउट को हिलने से रोकेगा)
     contentArea.style.minHeight = "300px";
-    contentArea.style.overflow = "hidden"; // बाहर जाने वाली चीज़ को काट देगा (Shift होने से बचाएगा)
+    contentArea.style.display = "block"; // सुनिश्चित करें कि ब्लॉक हो
     
-    contentArea.innerHTML = `<p style='text-align:center; padding:20px;'><i class='fa-solid fa-spinner fa-spin'></i> लोड हो रहा है...</p>`;
+    contentArea.innerHTML = `<p style='text-align:center; padding:20px;'>लोड हो रहा है...</p>`;
     
     try {
         const response = await fetch(sheetUrls['Attendance'] + "?action=getAttendanceSummary");
@@ -402,34 +402,33 @@ export async function showAttendanceDashboard() {
             return; 
         }
         
-        // 2. टेबल के लिए एक 'Safe container'
-        // हमने यहाँ 'overflow-x: auto' हटाकर इसे 'hidden' कर दिया है ताकि लेआउट न हिले
+        // हमने टेबल को एक 'card' के अंदर डाला है जो मेनू को धक्का नहीं देगा
         let html = `
-            <h3 style="color:#1e3a8a; margin-bottom: 15px;">आज की उपस्थिति समरी</h3>
-            <div style="width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <table style="width: 100%; border-collapse: collapse; table-layout: fixed; word-wrap: break-word;">
+            <h3 style="color:#1e3a8a; margin: 0 0 15px 0;">आज की उपस्थिति समरी</h3>
+            <div style="width: 100%; border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; background: #fff;">
+                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                     <thead>
-                        <tr style="background:#f8fafc; color: #475569; border-bottom: 2px solid #e2e8f0;">
-                            <th style="padding: 12px; width: 40%; text-align: center; border-right: 1px solid #e2e8f0;">कक्षा</th>
-                            <th style="padding: 12px; width: 30%; text-align: center; border-right: 1px solid #e2e8f0;">उपस्थित (P)</th>
-                            <th style="padding: 12px; width: 30%; text-align: center;">अनुपस्थित (A)</th>
+                        <tr style="background:#f3f4f6; color: #374151;">
+                            <th style="padding: 12px; width: 40%; text-align: center; border-bottom: 1px solid #d1d5db;">कक्षा</th>
+                            <th style="padding: 12px; width: 30%; text-align: center; border-bottom: 1px solid #d1d5db; border-left: 1px solid #d1d5db;">उपस्थित (P)</th>
+                            <th style="padding: 12px; width: 30%; text-align: center; border-bottom: 1px solid #d1d5db; border-left: 1px solid #d1d5db;">अनुपस्थित (A)</th>
                         </tr>
                     </thead>
                     <tbody>`;
         
         data.forEach(row => {
             html += `
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 12px; text-align: center; font-weight: bold; color: #1e293b; border-right: 1px solid #e2e8f0;">${row.Class}</td>
-                    <td style="padding: 12px; text-align: center; color: #16a34a; font-weight: bold; border-right: 1px solid #e2e8f0;">${row.P}</td>
-                    <td style="padding: 12px; text-align: center; color: #dc2626; font-weight: bold;">${row.A}</td>
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td style="padding: 12px; text-align: center; font-weight: bold; border-right: 1px solid #f3f4f6;">${row.Class}</td>
+                    <td style="padding: 12px; text-align: center; color: #059669; border-left: 1px solid #f3f4f6;">${row.P}</td>
+                    <td style="padding: 12px; text-align: center; color: #dc2626; border-left: 1px solid #f3f4f6;">${row.A}</td>
                 </tr>`;
         });
         
         contentArea.innerHTML = html + `</tbody></table></div>`;
         
     } catch (e) { 
-        contentArea.innerHTML = "<p style='color:red; padding:20px; text-align:center;'>त्रुटि: लोड करने में विफलता।</p>"; 
+        contentArea.innerHTML = "<p style='color:red; padding:20px; text-align:center;'>त्रुटि हुई!</p>"; 
     }
 }
 
