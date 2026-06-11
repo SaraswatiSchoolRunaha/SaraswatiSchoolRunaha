@@ -405,7 +405,7 @@ export async function showAttendanceDashboard() {
         }
         
         let html = `
-            <h3 style="color:#1e3a8a; margin: 0 0 15px 0;"><i class="fa-solid fa-chart-line"></i> आज की उपस्थिति समरी</h3>
+            <h3 style="color:#1e3a8a; margin: 0 0 15px 0;"><i class="fa-solid fa-chart-line"></i> आज की उपस्थिति Summary </h3>
             <div style="overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                 <table style="width: 100%; border-collapse: collapse; min-width: 400px;">
                     <thead>
