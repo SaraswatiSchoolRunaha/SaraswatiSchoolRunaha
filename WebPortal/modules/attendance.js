@@ -398,33 +398,52 @@ export async function showAttendanceDashboard() {
         
         // table-layout: fixed और display: table का उपयोग करना सबसे सुरक्षित है
         let html = `
-            <h3 style="color:#1e3a8a;">आज की उपस्थिति समरी</h3>
-            <div style="width: 100%; overflow-x: auto;">
-                <table style="width: 100%; table-layout: fixed; border-collapse: collapse; border: 1px solid #ccc;">
-                    <thead>
-                        <tr style="background:#334155; color: white;">
-                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 40%;">कक्षा</th>
-                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 30%;">उपस्थित (P)</th>
-                            <th style="padding: 12px; border: 1px solid #94a3b8; width: 30%;">अनुपस्थित (A)</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
+<h3 style="color:#1e3a8a;">
+    <i class="fa-solid fa-chart-pie"></i> आज की उपस्थिति समरी
+</h3>
+
+<div style="width:100%; overflow-x:auto;">
+<table style="width:100%; border-collapse:collapse; border:1px solid #ccc;">
+    <thead>
+        <tr style="background:#334155; color:white;">
+            <th style="padding:12px; border:1px solid #94a3b8;">कक्षा</th>
+            <th style="padding:12px; border:1px solid #94a3b8;">माध्यम</th>
+            <th style="padding:12px; border:1px solid #94a3b8;">उपस्थित (P)</th>
+            <th style="padding:12px; border:1px solid #94a3b8;">अनुपस्थित (A)</th>
+        </tr>
+    </thead>
+    <tbody>
+`;
+
+data.forEach(row => {
+    html += `
+    <tr style="background:#ffffff;">
+        <td style="padding:10px; border:1px solid #e2e8f0; text-align:center;">
+            <strong>${row.Class || "-"}</strong>
+        </td>
+
+        <td style="padding:10px; border:1px solid #e2e8f0; text-align:center;">
+            ${row.Medium || "-"}
+        </td>
+
+        <td style="padding:10px; border:1px solid #e2e8f0; text-align:center; color:green; font-weight:bold;">
+            ${row.P}
+        </td>
+
+        <td style="padding:10px; border:1px solid #e2e8f0; text-align:center; color:red; font-weight:bold;">
+            ${row.A}
+        </td>
+    </tr>`;
+});
+
+html += `
+    </tbody>
+</table>
+</div>
+`;
+
+document.getElementById('contentArea').innerHTML = html;
         
-        data.forEach(row => {
-            html += `
-                <tr style="background: #ffffff; border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center;"><strong>${row.Class}</strong></td>
-                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: green;">${row.P}</td>
-                    <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: red;">${row.A}</td>
-                </tr>`;
-        });
-        
-        document.getElementById('contentArea').innerHTML = html + `</tbody></table></div>`;
-        
-    } catch (e) { 
-        document.getElementById('contentArea').innerHTML = "त्रुटि!"; 
-    }
-}
 // ==========================================
 // 5. MASTER DATA SYNC (ADD STUDENT ROW)
 // ==========================================
