@@ -551,40 +551,55 @@ async function executeDeleteRowOperation(studentId, btnElement) {
 export function showAddStudentForm() {
     const contentArea = document.getElementById("contentArea");
     
-    // फॉर्म का लेआउट
     contentArea.innerHTML = `
-        <div style="max-width: 400px; margin: 20px auto; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px;">
-            <h3 style="margin-top:0;">छात्र को सिंक (Sync) करें</h3>
-            <input type="text" id="sid" placeholder="Student ID यहाँ डालें" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;">
-            <button id="btnSync" onclick="window.processStudentSync()" style="width:100%; padding:10px; background:#2563eb; color:white; border:none; border-radius:5px; cursor:pointer;">
-                डेटा सिंक करें
+        <div style="max-width: 450px; margin: 20px auto; padding: 25px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3 style="margin-top:0; color: #1e3a8a;"><i class="fa-solid fa-user-plus"></i> नया छात्र सिंक (Sync) करें</h3>
+            <p style="color: #64748b; font-size: 14px;">डेटाबेस ID डालकर छात्र को एक्टिव लिस्ट में जोड़ें:</p>
+            
+            <input type="text" id="sid" placeholder="Student ID (जैसे: 101)" 
+                style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
+            
+            <button id="btnSync" onclick="window.triggerSync()" 
+                style="width:100%; padding:12px; background:#1e3a8a; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">
+                <i class="fa-solid fa-sync"></i> डेटा सिंक करें
             </button>
-            <p id="statusMsg" style="margin-top:10px; font-weight:bold;"></p>
+            <div id="statusMsg" style="margin-top:15px; padding:10px; border-radius:6px; display:none; text-align:center;"></div>
         </div>
     `;
 }
 
-// यह फंक्शन बटन के क्लिक होने पर काम करेगा
-window.processStudentSync = function() {
-    const id = document.getElementById("sid").value;
-    const msg = document.getElementById("statusMsg");
-    
-    if(!id) {
-        alert("कृपया ID भरें!");
-        return;
+// यह फंक्शन बटन के क्लिक पर कॉल होगा
+window.triggerSync = async function() {
+    const id = document.getElementById("sid").value.trim();
+    const statusMsg = document.getElementById("statusMsg");
+    const btn = document.getElementById("btnSync");
+
+    if (!id) { alert("कृपया Student ID दर्ज करें!"); return; }
+
+    // UI अपडेट करें
+    btn.disabled = true;
+    btn.innerText = "प्रोसेसिंग...";
+    statusMsg.style.display = "block";
+    statusMsg.style.backgroundColor = "#fef3c7";
+    statusMsg.innerText = "डेटाबेस से सर्च किया जा रहा है...";
+
+    try {
+        const response = await fetch(sheetUrls['StudentData'], {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "saveToStudentData", studentId: id })
+        });
+        
+        statusMsg.style.backgroundColor = "#d1fae5";
+        statusMsg.style.color = "#065f46";
+        statusMsg.innerText = "✔ छात्र सफलतापूर्वक सिंक हो गया!";
+    } catch (err) {
+        statusMsg.style.backgroundColor = "#fee2e2";
+        statusMsg.style.color = "#991b1b";
+        statusMsg.innerText = "❌ त्रुटि: डेटा ट्रांसफर नहीं हो सका।";
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "डेटा सिंक करें";
     }
-    
-    msg.innerText = "सिंक हो रहा है...";
-    
-    // Google Apps Script को बुलाएं
-    google.script.run
-        .withSuccessHandler((response) => {
-            msg.innerText = response;
-            msg.style.color = "green";
-        })
-        .withFailureHandler((err) => {
-            msg.innerText = "Error: " + err;
-            msg.style.color = "red";
-        })
-        .transferStudentData(id); // यह फंक्शन आपके .gs फाइल में होगा
 };
