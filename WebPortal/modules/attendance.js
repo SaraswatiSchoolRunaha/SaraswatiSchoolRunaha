@@ -545,3 +545,22 @@ async function executeDeleteRowOperation(studentId, btnElement) {
         btnElement.disabled = false; btnElement.innerHTML = "Delete";
     }
 }
+
+
+// छात्र जोड़ने (Sync) के लिए UI और लॉजिक
+export function showAddStudentForm() {
+    document.getElementById("contentArea").innerHTML = `
+        <div style="max-width: 400px; margin: auto; padding: 20px; background: #fff; border-radius: 8px; border: 1px solid #ccc;">
+            <h3><i class="fa-solid fa-user-plus"></i> छात्र सिंक (Sync) करें</h3>
+            <input type="text" id="sid" placeholder="Student ID" style="width:100%; margin-bottom:10px; padding:8px;">
+            <input type="text" id="sname" placeholder="नाम" style="width:100%; margin-bottom:10px; padding:8px;">
+            <input type="text" id="fname" placeholder="पिता का नाम" style="width:100%; margin-bottom:10px; padding:8px;">
+            <input type="text" id="med" placeholder="माध्यम" style="width:100%; margin-bottom:10px; padding:8px;">
+            <input type="text" id="cls" placeholder="कक्षा" style="width:100%; margin-bottom:10px; padding:8px;">
+            
+            <button id="btnTransferData" onclick="transferStudentRowSync()" style="width:100%; padding:10px; background:#1e3a8a; color:white; border:none; border-radius:4px;">
+                डेटा StudentData टैब में ट्रांसफर करें
+            </button>
+        </div>
+    `;
+}
