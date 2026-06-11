@@ -6,45 +6,46 @@ import { showDashboard } from './dashboard.js';
 // ==========================================
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
+
+    // 1. डेटा वैलिडेशन: चेक करें कि क्या डेटा मौजूद है
     if (!state.lastData || state.lastData.length === 0) {
-        document.getElementById("contentArea").innerHTML = "<p style='color:red; font-weight:bold;'>⚠️ त्रुटि: पहले डैशबोर्ड लोड होने दें!</p>";
+        document.getElementById("contentArea").innerHTML = 
+            "<p style='color:red; font-weight:bold;'>⚠️ त्रुटि: पहले डैशबोर्ड लोड होने दें!</p>";
         return;
     }
 
-    let allClasses = [...new Set(state.lastData.map(s => s.Class || s.class).filter(Boolean))].sort();
-   // 1. सुनिश्चित करें कि डेटा उपलब्ध है
-if (!state.lastData || state.lastData.length === 0) {
-    console.error("Data is empty!");
-    return;
-}
+    // 2. सुरक्षित तरीके से डेटा निकालना (Classes और Mediums)
+    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()).filter(c => c !== ""))].sort();
+    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()).filter(m => m !== ""))].sort();
 
-// 2. सुरक्षित तरीके से मीडियम्स निकालना
-// मौजूदा `allMediums` वाले हिस्से को इस कोड से बदलें:
-let allMediums = [...new Set(state.lastData.map(s => {
-    // यहाँ साफ़ तौर पर चेक करें कि डेटा कहाँ से आ रहा है
-    let value = s.Medium || s.medium || ""; 
-    return value.toString().trim();
-}).filter(m => m !== ""))].sort();
-
-// यही तरीका `allClasses` के लिए भी अपनाएं:
-let allClasses = [...new Set(state.lastData.map(s => {
-    let value = s.Class || s.class || "";
-    return value.toString().trim();
-}).filter(c => c !== ""))].sort();
-
-console.log("Found Mediums:", allMediums); // यह कंसोल में चेक करें कि क्या आ रहा है
-
+    // 3. UI जनरेट करें
     document.getElementById("contentArea").innerHTML = `
         <div>
             <h2 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी</h2>
             <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
-                <div style="flex:1; min-width:150px;"><label style="font-weight:bold; display:block; margin-bottom:6px;">तारीख (Date)</label><input type="date" id="attDate" value="${today}" style="width:100%; height:40px; padding:5px; border-radius:6px; border:1px solid #ccc; box-sizing:border-box;"></div>
-                <div style="flex:1; min-width:150px;"><label style="font-weight:bold; display:block; margin-bottom:6px;">कक्षा (Class)</label><select id="classFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;"><option value="">-- कक्षा चुनें --</option>${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}</select></div>
-                <div style="flex:1; min-width:150px;"><label style="font-weight:bold; display:block; margin-bottom:6px;">माध्यम (Medium)</label><select id="mediumFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;"><option value="">-- माध्यम चुनें --</option>${allMediums.map(med => `<option value="${med}">${med}</option>`).join('')}</select></div>
+                <div style="flex:1; min-width:150px;">
+                    <label style="font-weight:bold; display:block; margin-bottom:6px;">तारीख (Date)</label>
+                    <input type="date" id="attDate" value="${today}" style="width:100%; height:40px; padding:5px; border-radius:6px; border:1px solid #ccc; box-sizing:border-box;">
+                </div>
+                <div style="flex:1; min-width:150px;">
+                    <label style="font-weight:bold; display:block; margin-bottom:6px;">कक्षा (Class)</label>
+                    <select id="classFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;">
+                        <option value="">-- कक्षा चुनें --</option>
+                        ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
+                    </select>
+                </div>
+                <div style="flex:1; min-width:150px;">
+                    <label style="font-weight:bold; display:block; margin-bottom:6px;">माध्यम (Medium)</label>
+                    <select id="mediumFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;">
+                        <option value="">-- माध्यम चुनें --</option>
+                        ${allMediums.map(med => `<option value="${med}">${med}</option>`).join('')}
+                    </select>
+                </div>
             </div>
             <div id="attendanceTableContainer"><p style="text-align:center; color:#64748b;">उपस्थिति शीट ग्रिड जनरेट करने हेतु फिल्टर्स का चयन करें...</p></div>
         </div>`;
 
+    // 4. इवेंट लिसनर्स अटैच करें
     document.getElementById('attDate').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('classFilter').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('mediumFilter').addEventListener('change', checkLockAndLoadStudents);
