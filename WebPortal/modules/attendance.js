@@ -402,8 +402,8 @@ export async function showAttendanceDashboard() {
     <i class="fa-solid fa-chart-pie"></i> आज की उपस्थिति समरी
 </h3>
 
-<div style="width:70%; overflow-x:auto;">
-<table style="width:100%; border-collapse:collapse; border:1px solid #ccc;">
+<div style="width:100%; display:flex; justify-content:center;">
+<table style="width:80%; max-width:700px; border-collapse:collapse; border:1px solid #ccc;">
     <thead>
         <tr style="background:#334155; color:white;">
             <th style="padding:12px; border:1px solid #94a3b8;">कक्षा</th>
