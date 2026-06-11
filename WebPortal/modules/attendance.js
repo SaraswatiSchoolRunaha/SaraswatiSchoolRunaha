@@ -432,6 +432,7 @@ export async function showAttendanceDashboard() {
         contentArea.innerHTML = "<p style='color:red; padding:20px; text-align:center;'>डेटा लोड करने में त्रुटि हुई!</p>"; 
     }
 }
+
 async function searchCentralDatabaseId() {
     let searchId = document.getElementById('searchInput').value.trim();
     if (!searchId) { alert("कृपया ID दर्ज करें!"); return; }
