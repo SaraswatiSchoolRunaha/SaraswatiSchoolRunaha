@@ -399,7 +399,7 @@ export async function showAttendanceDashboard() {
         // table-layout: fixed और display: table का उपयोग करना सबसे सुरक्षित है
         let html = `
 <h3 style="color:#1e3a8a;">
-    <i class="fa-solid fa-chart-pie"></i> आज की उपस्थिति समरी
+    <i class="fa-solid fa-chart-pie"></i> आज की उपस्थिति Summary
 </h3>
 
 <div style="width:100%; display:flex; justify-content:center;">
