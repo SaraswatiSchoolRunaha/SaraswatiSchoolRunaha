@@ -386,6 +386,7 @@ function printAbsentListWindow() {
 // ==========================================
 export async function showAttendanceDashboard() {
     document.getElementById('contentArea').innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> आज की लाइव अटेंडेंस समरी आ रही है...</p>";
+    
     try {
         const response = await fetch(sheetUrls['Attendance'] + "?action=getAttendanceSummary");
         const data = await response.json();
@@ -395,19 +396,38 @@ export async function showAttendanceDashboard() {
             return; 
         }
         
+        // टेबल स्ट्रक्चर को फिक्स करने के लिए 'border-collapse: collapse' और 'width: 100%' का उपयोग किया है
         let html = `
             <h3 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-chart-pie"></i> आज की कक्षा-वार उपस्थिति समरी रिपोर्ट</h3>
-            <table>
-                <tr style="background:#f1f5f9;"><th>कक्षा (Class)</th><th style="color:green;">उपस्थित छात्र (P)</th><th style="color:red;">अनुपस्थित छात्र (A)</th></tr>`;
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; font-family: Arial, sans-serif;">
+                <thead>
+                    <tr style="background:#f1f5f9; border-bottom: 2px solid #ccc;">
+                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">कक्षा (Class)</th>
+                        <th style="padding: 12px; text-align: center; color:green; border: 1px solid #ddd;">उपस्थित छात्र (P)</th>
+                        <th style="padding: 12px; text-align: center; color:red; border: 1px solid #ddd;">अनुपस्थित छात्र (A)</th>
+                    </tr>
+                </thead>
+                <tbody>`;
         
         data.forEach(row => {
-            html += `<tr><td><strong>Class ${row.Class}</strong></td><td style="color:green; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> ${row.P}</td><td style="color:red; font-weight:bold;"><i class="fa-solid fa-circle-xmark"></i> ${row.A}</td></tr>`;
+            html += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Class ${row.Class}</strong></td>
+                    <td style="padding: 10px; text-align: center; color:green; font-weight:bold; border: 1px solid #ddd;">
+                        <i class="fa-solid fa-circle-check"></i> ${row.P}
+                    </td>
+                    <td style="padding: 10px; text-align: center; color:red; font-weight:bold; border: 1px solid #ddd;">
+                        <i class="fa-solid fa-circle-xmark"></i> ${row.A}
+                    </td>
+                </tr>`;
         });
-        document.getElementById('contentArea').innerHTML = html + `</table>`;
-    } catch (e) { document.getElementById('contentArea').innerHTML = "समरी डेटा एरर।"; }
+        
+        document.getElementById('contentArea').innerHTML = html + `</tbody></table>`;
+        
+    } catch (e) { 
+        document.getElementById('contentArea').innerHTML = "<p style='color:red;'>समरी डेटा लोड करने में त्रुटि आई!</p>"; 
+    }
 }
-
-
 // ==========================================
 // 5. MASTER DATA SYNC (ADD STUDENT ROW)
 // ==========================================
