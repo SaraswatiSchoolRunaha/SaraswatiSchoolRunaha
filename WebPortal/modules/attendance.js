@@ -386,87 +386,52 @@ function printAbsentListWindow() {
 // ==========================================
 export async function showAttendanceDashboard() {
     const contentArea = document.getElementById('contentArea');
-    
-    // कंटेंट एरिया के लिए एक स्थिर आधार (यह लेआउट को हिलने से रोकेगा)
     contentArea.style.minHeight = "300px";
-    contentArea.style.display = "block"; // सुनिश्चित करें कि ब्लॉक हो
-    
-    contentArea.innerHTML = `<p style='text-align:center; padding:20px;'>लोड हो रहा है...</p>`;
+    contentArea.innerHTML = `<p style='text-align:center; padding:40px;'><i class='fa-solid fa-spinner fa-spin'></i> डेटा लोड हो रहा है...</p>`;
     
     try {
         const response = await fetch(sheetUrls['Attendance'] + "?action=getAttendanceSummary");
         const data = await response.json();
 
         if (!data || data.length === 0) { 
-            contentArea.innerHTML = "<p style='padding:20px; text-align:center;'>डेटा उपलब्ध नहीं है।</p>"; 
+            contentArea.innerHTML = "<p style='padding:20px; text-align:center; color:#666;'>डेटा उपलब्ध नहीं है।</p>"; 
             return; 
         }
         
-        // हमने टेबल को एक 'card' के अंदर डाला है जो मेनू को धक्का नहीं देगा
         let html = `
-            <h3 style="color:#1e3a8a; margin: 0 0 15px 0;">आज की उपस्थिति समरी</h3>
-            <div style="width: 100%; border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; background: #fff;">
-                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+            <h3 style="color:#1e3a8a; margin: 0 0 15px 0;"><i class="fa-solid fa-chart-line"></i> आज की उपस्थिति समरी</h3>
+            <div style="overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <table style="width: 100%; border-collapse: collapse; min-width: 400px;">
                     <thead>
-                        <tr style="background:#f3f4f6; color: #374151;">
-                            <th style="padding: 12px; width: 40%; text-align: center; border-bottom: 1px solid #d1d5db;">कक्षा</th>
-                            <th style="padding: 12px; width: 30%; text-align: center; border-bottom: 1px solid #d1d5db; border-left: 1px solid #d1d5db;">उपस्थित (P)</th>
-                            <th style="padding: 12px; width: 30%; text-align: center; border-bottom: 1px solid #d1d5db; border-left: 1px solid #d1d5db;">अनुपस्थित (A)</th>
+                        <tr style="background:#f8fafc; color: #475569; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 15px; text-align: left;">कक्षा</th>
+                            <th style="padding: 15px; text-align: center;">माध्यम</th>
+                            <th style="padding: 15px; text-align: center;">उपस्थित</th>
+                            <th style="padding: 15px; text-align: center;">अनुपस्थित</th>
                         </tr>
                     </thead>
                     <tbody>`;
         
         data.forEach(row => {
             html += `
-                <tr style="border-bottom: 1px solid #f3f4f6;">
-                    <td style="padding: 12px; text-align: center; font-weight: bold; border-right: 1px solid #f3f4f6;">${row.Class}</td>
-                    <td style="padding: 12px; text-align: center; color: #059669; border-left: 1px solid #f3f4f6;">${row.P}</td>
-                    <td style="padding: 12px; text-align: center; color: #dc2626; border-left: 1px solid #f3f4f6;">${row.A}</td>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 14px; font-weight: 600;">${row.Class}</td>
+                    <td style="padding: 14px; text-align: center; color: #64748b;">${row.Medium || '-'}</td>
+                    <td style="padding: 14px; text-align: center; color: #059669;">
+                        <i class="fa-solid fa-check-circle"></i> ${row.P}
+                    </td>
+                    <td style="padding: 14px; text-align: center; color: #dc2626;">
+                        <i class="fa-solid fa-times-circle"></i> ${row.A}
+                    </td>
                 </tr>`;
         });
         
         contentArea.innerHTML = html + `</tbody></table></div>`;
         
     } catch (e) { 
-        contentArea.innerHTML = "<p style='color:red; padding:20px; text-align:center;'>त्रुटि हुई!</p>"; 
+        contentArea.innerHTML = "<p style='color:red; padding:20px; text-align:center;'>डेटा लोड करने में त्रुटि हुई!</p>"; 
     }
 }
-
-// ==========================================
-// 5. MASTER DATA SYNC (ADD STUDENT ROW)
-// ==========================================
-export function showAddStudentForm() {
-    document.getElementById('contentArea').innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> सिंक आर्काइव लोड हो रहा है...</p>";
-    fetch(sheetUrls['Database'] + "?action=getDashboard")
-        .then(res => res.json())
-        .then(data => {
-            state.lastData = data;
-            document.getElementById('contentArea').innerHTML = `
-                <div style="background:#fff; border:1px solid #ddd; margin-bottom:20px; padding:15px; border-radius:6px;">
-                    <h3 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-network-wired"></i> केंद्रीय डेटाबेस से छात्र रिकॉर्ड खोजें (Sync)</h3>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="searchInput" placeholder="Student ID दर्ज करें (e.g. SBVM-101)" style="flex:1; padding:10px; border-radius:4px; border:1px solid #ccc;">
-                        <button id="btnSearchSync" style="background:#1e3a8a; color:white; padding:10px 20px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;"><i class="fa-solid fa-magnifying-glass"></i> खोजें</button>
-                    </div>
-                </div>
-                
-                <div style="background:#fff; border:1px solid #ddd; padding:20px; border-radius:6px;">
-                    <h3 style="color:#334155; margin-top:0;">📋 छात्र का विवरण (सिंक हेतु)</h3>
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:20px;">
-                        <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Student ID *</label><input type="text" id="sid" readonly style="background:#e2e8f0; width:100%; padding:10px; border-radius:4px; font-weight:bold;"></div>
-                        <div><label style="font-weight:bold;display:block;margin-bottom:5px;">छात्र का नाम</label><input type="text" id="sname" readonly style="background:#e2e8f0; width:100%; padding:10px; border-radius:4px;"></div>
-                        <div><label style="font-weight:bold;display:block;margin-bottom:5px;">पिता का नाम</label><input type="text" id="fname" readonly style="background:#e2e8f0; width:100%; padding:10px; border-radius:4px;"></div>
-                        <div><label style="font-weight:bold;display:block;margin-bottom:5px;">माध्यम</label><input type="text" id="med" readonly style="background:#e2e8f0; width:100%; padding:10px; border-radius:4px;"></div>
-                        <div><label style="font-weight:bold;display:block;margin-bottom:5px;">कक्षा</label><input type="text" id="cls" readonly style="background:#e2e8f0; width:100%; padding:10px; border-radius:4px;"></div>
-                    </div>
-                    <button id="btnTransferData" style="background:#16a34a; color:white; padding:12px 25px; border:none; border-radius:6px; width:100%; font-size:16px; font-weight:bold;"><i class="fa-solid fa-rotate"></i> डेटा StudentData टैब में ट्रांसफर करें</button>
-                </div>`;
-
-            document.getElementById('btnSearchSync').addEventListener('click', searchCentralDatabaseId);
-            document.getElementById('btnTransferData').addEventListener('click', transferStudentRowSync);
-        });
-}
-
 async function searchCentralDatabaseId() {
     let searchId = document.getElementById('searchInput').value.trim();
     if (!searchId) { alert("कृपया ID दर्ज करें!"); return; }
