@@ -16,8 +16,10 @@ export function showAttendanceForm() {
     }
 
     // 2. सुरक्षित तरीके से डेटा निकालना
-    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim())).filter(c => c !== "")].sort();
-    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim())).filter(m => m !== "")].sort();
+    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()))]
+    .filter(c => c !== "");
+    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()))]
+    .filter(m => m !== "");
 
     // 3. UI जनरेट करें
     document.getElementById("contentArea").innerHTML = `
