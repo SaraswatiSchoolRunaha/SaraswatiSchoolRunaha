@@ -585,7 +585,7 @@ window.searchStudent = async () => {
                 <p style="margin:5px 0;"><b>पिता:</b> ${data.father}</p>
                 <p style="margin:5px 0;"><b>माध्यम:</b> ${data.medium}</p>
                 <p style="margin:5px 0;"><b>कक्षा:</b> ${data.class}</p>
-                <p style="margin:5px 0;"><b>मोबाइल:</b> ${data.mobile}</p>
+                <p style="margin:5px 0;"><b>मोबाइल:</b> ${data.mobile1}</p>
             `;
             btnSync.style.display = "block";
             status.innerText = "";
@@ -617,7 +617,7 @@ window.confirmSync = async () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
                 action: "saveToStudentData", 
-                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class, mobile: S.mobile,
+                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class, mobile1: S.mobile1,
             })
         });
         
