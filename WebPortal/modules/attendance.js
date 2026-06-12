@@ -505,20 +505,51 @@ function renderDeleteGridList() {
     if(!cls) { container.innerHTML = ""; return; }
     
     let students = state.studentDataList.filter(s => (s.Class || s.class) == cls);
-    if(students.length === 0){ container.innerHTML = "<p style='color:orange;'>इस कक्षा में कोई छात्र नहीं मिला।</p>"; return; }
+    if(students.length === 0){ 
+        container.innerHTML = "<p style='color:orange; text-align:center;'>इस कक्षा में कोई छात्र नहीं मिला।</p>"; 
+        return; 
+    }
 
-    let html = `<table><tr style="background:#cbd5e1;"><th>Student ID</th><th>छात्र का नाम</th><th>एक्शन</th></tr>`;
-    students.forEach((stu, i) => {
-        html += `<tr>
-            <td><strong>${stu["Student ID"]}</strong></td>
-            <td>${stu["Student Name"]}</td>
-            <td><button class="del-action-btn" data-id="${stu["Student ID"]}" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold;"><i class="fa-solid fa-trash-can"></i> Delete</button></td>
-        </tr>`;
+    // टेबल का लेआउट (CSS के साथ ताकि यह प्रोफेशनल दिखे)
+    let html = `
+    <table style="width:100%; border-collapse:collapse; margin-top:15px; font-size:14px;">
+        <thead>
+            <tr style="background:#334155; color:white; text-align:left;">
+                <th style="padding:10px;">ID</th>
+                <th style="padding:10px;">नाम</th>
+                <th style="padding:10px;">पिता का नाम</th>
+                <th style="padding:10px;">माध्यम</th>
+                <th style="padding:10px;">कक्षा</th>
+                <th style="padding:10px;">एक्शन</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    students.forEach((stu) => {
+        html += `
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:10px;"><strong>${stu["Student ID"] || stu["id"]}</strong></td>
+                <td style="padding:10px;">${stu["Student Name"] || stu["name"]}</td>
+                <td style="padding:10px;">${stu["Father Name"] || stu["father"]}</td>
+                <td style="padding:10px;">${stu["Medium"] || stu["medium"]}</td>
+                <td style="padding:10px;">${stu["Class"] || stu["class"]}</td>
+                <td style="padding:10px;">
+                    <button class="del-action-btn" data-id="${stu["Student ID"] || stu["id"]}" 
+                        style="background:#dc2626; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">
+                        <i class="fa-solid fa-trash-can"></i> डिलीट
+                    </button>
+                </td>
+            </tr>`;
     });
-    container.innerHTML = html + "</table>";
 
+    container.innerHTML = html + "</tbody></table>";
+
+    // बटन क्लिक इवेंट
     document.querySelectorAll('.del-action-btn').forEach(btn => {
-        btn.addEventListener('click', function() { executeDeleteRowOperation(this.getAttribute('data-id'), this); });
+        btn.addEventListener('click', function() { 
+            executeDeleteRowOperation(this.getAttribute('data-id'), this); 
+        });
     });
 }
 
