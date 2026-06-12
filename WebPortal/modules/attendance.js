@@ -188,7 +188,7 @@ function saveAttendanceToSheets() {
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
 // ==========================================
-async function loadClassAttendanceForCorrection() {
+export async function showCorrectionPortal() {
     const date = document.getElementById("searchDate").value;
     const cls = document.getElementById("searchClass").value;
     const medium = document.getElementById("searchMedium").value;
