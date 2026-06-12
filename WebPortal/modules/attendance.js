@@ -89,14 +89,17 @@ async function checkLockAndLoadStudents() {
 
 function generateAttendanceGrid(selectedClass, selectedMedium) {
     let container = document.getElementById('attendanceTableContainer');
+    
+    // डेटा को फिल्टर करें
     let filteredStudents = state.lastData.filter(s => {
         let cls = (s['Class'] || s['class'] || "").toString().trim();
         let med = (s['Medium'] || s['medium'] || "").toString().trim();
-        return (cls.toLowerCase() === selectedClass.trim().toLowerCase() && med.toLowerCase() === selectedMedium.trim().toLowerCase());
+        return (cls.toLowerCase() === selectedClass.trim().toLowerCase() && 
+                med.toLowerCase() === selectedMedium.trim().toLowerCase());
     });
 
     if(filteredStudents.length === 0) {
-        container.innerHTML = "<p style='color:red; font-weight:bold; text-align:center;'>इस कक्षा में कोई छात्र नहीं मिला।</p>";
+        container.innerHTML = "<p style='color:red; font-weight:bold; text-align:center;'>इस कक्षा/माध्यम में कोई छात्र नहीं मिला।</p>";
         return;
     }
 
@@ -105,23 +108,36 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
         <table id="attTable" style="width:100%; border-collapse:collapse; background:white; border:1px solid #e2e8f0;">
             <thead>
                 <tr style="background:#334155; color:white; text-align:left;">
-                    <th style="padding:12px;">ID</th><th style="padding:12px;">नाम</th><th style="padding:12px;">पिता का नाम</th><th style="padding:12px;">माध्यम</th><th style="padding:12px;">कक्षा</th><th style="padding:12px;">Status</th>
+                    <th style="padding:12px;">ID</th>
+                    <th style="padding:12px;">नाम</th>
+                    <th style="padding:12px;">पिता का नाम</th>
+                    <th style="padding:12px;">माध्यम</th>
+                    <th style="padding:12px;">कक्षा</th>
+                    <th style="padding:12px;">Status</th>
                 </tr>
             </thead>
             <tbody>
-                ${filteredStudents.map((s, i) => `
-                <tr style="border-bottom:1px solid #e2e8f0;">
-                    <td style="padding:10px;"><strong>${s['Student ID'] || s['ID'] || s['id']}</strong></td>
-                    <td style="padding:10px;">${s['Student Name'] || s['Name']}</td>
-                    <td style="padding:10px;">${s['Father Name'] || s['FatherName']}</td>
-                    <td style="padding:10px;">${s['Medium'] || s['medium']}</td>
-                    <td style="padding:10px;">${s['Class'] || s['class']}</td>
-                    <td style="padding:10px;">
-                        <select class="attStatus" id="sel_status_${i}" style="padding:5px; border-radius:4px; width:100%;">
-                            <option value="">--</option><option value="P">Present</option><option value="A">Absent</option>
-                        </select>
-                    </td>
-                </tr>`).join('')}
+                ${filteredStudents.map((s, i) => {
+                    // यहाँ सुरक्षित तरीके से वैल्यू निकाली जा रही है
+                    const medVal = s['Medium'] || s['medium'] || "N/A";
+                    const clsVal = s['Class'] || s['class'] || "N/A";
+                    
+                    return `
+                    <tr style="border-bottom:1px solid #e2e8f0;">
+                        <td style="padding:10px;">${s['Student ID'] || s['ID'] || s['id'] || '-'}</td>
+                        <td style="padding:10px;">${s['Student Name'] || s['Name'] || '-'}</td>
+                        <td style="padding:10px;">${s['Father Name'] || s['FatherName'] || '-'}</td>
+                        <td style="padding:10px;">${medVal}</td>
+                        <td style="padding:10px;">${clsVal}</td>
+                        <td style="padding:10px;">
+                            <select class="attStatus" id="sel_status_${i}" style="padding:5px; border-radius:4px; width:100%;">
+                                <option value="">--</option>
+                                <option value="P">Present</option>
+                                <option value="A">Absent</option>
+                            </select>
+                        </td>
+                    </tr>`;
+                }).join('')}
             </tbody>
         </table>
         </div>
@@ -131,7 +147,8 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
     `;
     container.innerHTML = html;
 
-    filteredStudents.forEach((s, i) => {
+    // इवेंट लिसनर जोड़ें
+    filteredStudents.forEach((_, i) => {
         document.getElementById(`sel_status_${i}`).addEventListener('change', function() {
             let row = this.closest('tr');
             row.style.backgroundColor = (this.value === 'P') ? '#dcfce7' : (this.value === 'A') ? '#fee2e2' : 'transparent';
