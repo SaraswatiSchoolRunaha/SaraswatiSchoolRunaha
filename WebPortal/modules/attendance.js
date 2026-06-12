@@ -16,7 +16,9 @@ export function showAttendanceForm() {
 
     const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()))].filter(c => c !== "").sort();
     const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()))].filter(m => m !== "").sort();
-
+    console.log("Full Data:", state.lastData);
+    console.log("First Student:", state.lastData[0]);
+    
     document.getElementById("contentArea").innerHTML = `
         <div>
             <h2 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी</h2>
