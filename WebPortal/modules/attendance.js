@@ -92,19 +92,31 @@ async function checkLockAndLoadStudents() {
 function generateAttendanceGrid(selectedClass, selectedMedium) {
     let container = document.getElementById('attendanceTableContainer');
     
-    // डेटा को फिल्टर करें
+    // 1. डेटा का डीबग करें (देखें कि अंदर क्या आ रहा है)
+    console.log("Input Parameters:", { selectedClass, selectedMedium });
+    console.log("Sample Data Row:", state.lastData[0]);
+
+    // 2. डेटा को फिल्टर करें (अधिक सुरक्षित तरीका)
     let filteredStudents = state.lastData.filter(s => {
-        let cls = (s['Class'] || s['class'] || "").toString().trim();
-        let med = (s['Medium'] || s['medium'] || "").toString().trim();
+        // यहाँ हम सभी संभावित नामों को चेक कर रहे हैं
+        let cls = (s['Class'] || s['class'] || s['CLASS'] || "").toString().trim();
+        let med = (s['Medium'] || s['medium'] || s['MED'] || "").toString().trim();
+        
         return (cls.toLowerCase() === selectedClass.trim().toLowerCase() && 
                 med.toLowerCase() === selectedMedium.trim().toLowerCase());
     });
 
+    // अगर डेटा नहीं मिला, तो विस्तार से बताएं कि क्या हुआ
     if(filteredStudents.length === 0) {
-        container.innerHTML = "<p style='color:red; font-weight:bold; text-align:center;'>इस कक्षा/माध्यम में कोई छात्र नहीं मिला।</p>";
+        container.innerHTML = `
+            <div style='color:red; font-weight:bold; text-align:center; padding:20px; border:1px solid red;'>
+                इस कक्षा (${selectedClass}) और माध्यम (${selectedMedium}) में कोई छात्र नहीं मिला।<br>
+                <small>टिप: अपने कंसोल (F12) में Sample Data Row चेक करें कि 'Class' और 'Medium' के लिए क्या की (key) इस्तेमाल हुई है।</small>
+            </div>`;
         return;
     }
 
+    // 3. टेबल रेंडर करें
     let html = `
         <div style="overflow-x: auto;">
         <table id="attTable" style="width:100%; border-collapse:collapse; background:white; border:1px solid #e2e8f0;">
@@ -112,27 +124,24 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
                 <tr style="background:#334155; color:white; text-align:left;">
                     <th style="padding:12px;">ID</th>
                     <th style="padding:12px;">नाम</th>
-                    <th style="padding:12px;">पिता का नाम</th>
                     <th style="padding:12px;">माध्यम</th>
-                    <th style="padding:12px;">कक्षा</th>
                     <th style="padding:12px;">Status</th>
                 </tr>
             </thead>
             <tbody>
                 ${filteredStudents.map((s, i) => {
-                    // यहाँ सुरक्षित तरीके से वैल्यू निकाली जा रही है
-                    const medVal = s['Medium'] || s['medium'] || "N/A";
-                    const clsVal = s['Class'] || s['class'] || "N/A";
+                    // डेटा से वैल्यू निकालना
+                    const id = s['Student ID'] || s['ID'] || s['id'] || '-';
+                    const name = s['Student Name'] || s['Name'] || '-';
+                    const med = s['Medium'] || s['medium'] || s['MED'] || 'N/A';
                     
                     return `
-                    <tr style="border-bottom:1px solid #e2e8f0;">
-                        <td style="padding:10px;">${s['Student ID'] || s['ID'] || s['id'] || '-'}</td>
-                        <td style="padding:10px;">${s['Student Name'] || s['Name'] || '-'}</td>
-                        <td style="padding:10px;">${s['Father Name'] || s['FatherName'] || '-'}</td>
-                        <td style="padding:10px;">${medVal}</td>
-                        <td style="padding:10px;">${clsVal}</td>
+                    <tr style="border-bottom:1px solid #e2e8f0;" id="row_${i}">
+                        <td style="padding:10px;">${id}</td>
+                        <td style="padding:10px;">${name}</td>
+                        <td style="padding:10px;">${med}</td>
                         <td style="padding:10px;">
-                            <select class="attStatus" id="sel_status_${i}" style="padding:5px; border-radius:4px; width:100%;">
+                            <select class="attStatus" id="sel_status_${i}" data-index="${i}" style="padding:5px; border-radius:4px; width:100%;">
                                 <option value="">--</option>
                                 <option value="P">Present</option>
                                 <option value="A">Absent</option>
@@ -144,22 +153,24 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
         </table>
         </div>
         <button id="btnSubmitAttendance" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white; width:100%; padding:15px; border:none; font-size:16px; border-radius:8px; cursor:pointer;">
-            <i class="fa-solid fa-cloud-arrow-up"></i> उपस्थिति सुरक्षित करें (Submit & Lock)
+            <i class="fa-solid fa-cloud-arrow-up"></i> उपस्थिति सुरक्षित करें
         </button>
     `;
+    
     container.innerHTML = html;
 
-    // इवेंट लिसनर जोड़ें
-    filteredStudents.forEach((_, i) => {
-        document.getElementById(`sel_status_${i}`).addEventListener('change', function() {
+    // 4. इवेंट लिसनर (रंग बदलने के लिए)
+    document.querySelectorAll('.attStatus').forEach(select => {
+        select.addEventListener('change', function() {
             let row = this.closest('tr');
             row.style.backgroundColor = (this.value === 'P') ? '#dcfce7' : (this.value === 'A') ? '#fee2e2' : 'transparent';
         });
     });
 
-    document.getElementById('btnSubmitAttendance').addEventListener('click', saveAttendanceToSheets);
+    document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
+        saveAttendanceToSheets(filteredStudents);
+    });
 }
-
 function saveAttendanceToSheets() {
     let date = document.getElementById("attDate").value;
     let rows = document.querySelectorAll("#attTable tbody tr");
