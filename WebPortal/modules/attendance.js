@@ -188,7 +188,27 @@ function saveAttendanceToSheets() {
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
 // ==========================================
-// 2. डेटा लोड करने वाला फंक्शन (पूर्ण)
+// 1. इंटरफेस दिखाने वाला फंक्शन
+export function showCorrectionPortal() {
+    const today = new Date().toISOString().split('T')[0];
+    
+    document.getElementById("contentArea").innerHTML = `
+        <h2 style="color:#1e3a8a;"><i class="fa-solid fa-pen-to-square"></i> उपस्थिति सुधार पोर्टल</h2>
+        <div style="display:flex; gap:10px; margin-bottom:20px; padding:15px; background:#f1f5f9; border-radius:8px; flex-wrap:wrap;">
+            <input type="date" id="searchDate" value="${today}">
+            <input type="text" id="searchClass" placeholder="कक्षा (उदा: 10)">
+            <input type="text" id="searchMedium" placeholder="माध्यम (उदा: Hindi)">
+            <button id="btnFetchData" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">
+                <i class="fa-solid fa-magnifying-glass"></i> खोजें
+            </button>
+        </div>
+        <div id="classCorrectionTable"></div>
+    `;
+
+    document.getElementById('btnFetchData').addEventListener('click', fetchAttendanceData);
+}
+
+// 2. डेटा लोड और टेबल बनाने वाला फंक्शन
 async function fetchAttendanceData() {
     const date = document.getElementById("searchDate").value;
     const cls = document.getElementById("searchClass").value;
@@ -212,7 +232,6 @@ async function fetchAttendanceData() {
             return;
         }
 
-        // टेबल का पूरा HTML कोड
         let html = `
         <div style="overflow-x: auto; margin-top:15px;">
             <table style="width:100%; border-collapse:collapse; background:white; font-size:14px; border:1px solid #ddd;">
@@ -255,7 +274,6 @@ async function fetchAttendanceData() {
         
         container.innerHTML = html + `</tbody></table></div>`;
 
-        // बटन इवेंट लिसनर (जो अपडेट फंक्शन को कॉल करेगा)
         document.querySelectorAll('.update-single-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 updateCorrectionAttendance(this.getAttribute('data-id'), this.getAttribute('data-idx'), this);
