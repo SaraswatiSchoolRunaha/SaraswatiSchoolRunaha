@@ -546,7 +546,7 @@ export function showAddStudentForm() {
     const contentArea = document.getElementById("contentArea");
     contentArea.innerHTML = `
         <div style="max-width: 450px; margin: 30px auto; padding: 25px; background: #ffffff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-family: sans-serif;">
-            <h3 style="margin-top:0; color: #1e3a8a;"><i class="fa-solid fa-user-plus"></i> छात्र सिंक (Sync) करें</h3>
+            <h3 style="margin-top:0; color: #1e3a8a;"><i class="fa-solid fa-user-plus"></i> छात्र जोड़े</h3>
             
             <div style="margin-bottom: 20px;">
                 <input type="text" id="sid" placeholder="Student ID दर्ज करें" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; margin-bottom:10px;">
@@ -585,6 +585,7 @@ window.searchStudent = async () => {
                 <p style="margin:5px 0;"><b>पिता:</b> ${data.father}</p>
                 <p style="margin:5px 0;"><b>माध्यम:</b> ${data.medium}</p>
                 <p style="margin:5px 0;"><b>कक्षा:</b> ${data.class}</p>
+                <p style="margin:5px 0;"><b>मोबाइल:</b> ${data.mobile1}</p>
             `;
             btnSync.style.display = "block";
             status.innerText = "";
@@ -616,7 +617,7 @@ window.confirmSync = async () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
                 action: "saveToStudentData", 
-                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class 
+                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class, mobile1: S.mobile1,
             })
         });
         
