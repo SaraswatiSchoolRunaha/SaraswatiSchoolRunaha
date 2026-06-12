@@ -8,20 +8,15 @@ import { showDashboard } from './dashboard.js';
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
 
-    // 1. डेटा वैलिडेशन
     if (!state.lastData || state.lastData.length === 0) {
         document.getElementById("contentArea").innerHTML = 
             "<p style='color:red; font-weight:bold;'>⚠️ त्रुटि: पहले डैशबोर्ड लोड होने दें!</p>";
         return;
     }
 
-    // 2. सुरक्षित तरीके से डेटा निकालना
-    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()))]
-    .filter(c => c !== "");
-    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()))]
-    .filter(m => m !== "");
+    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()))].filter(c => c !== "").sort();
+    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()))].filter(m => m !== "").sort();
 
-    // 3. UI जनरेट करें
     document.getElementById("contentArea").innerHTML = `
         <div>
             <h2 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी</h2>
@@ -32,14 +27,14 @@ export function showAttendanceForm() {
                 </div>
                 <div style="flex:1; min-width:150px;">
                     <label style="font-weight:bold; display:block; margin-bottom:6px;">कक्षा (Class)</label>
-                    <select id="classFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;">
+                    <select id="classFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;" autocomplete="off">
                         <option value="">-- कक्षा चुनें --</option>
                         ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
                     </select>
                 </div>
                 <div style="flex:1; min-width:150px;">
                     <label style="font-weight:bold; display:block; margin-bottom:6px;">माध्यम (Medium)</label>
-                    <select id="mediumFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;">
+                    <select id="mediumFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;" autocomplete="off">
                         <option value="">-- माध्यम चुनें --</option>
                         ${allMediums.map(med => `<option value="${med}">${med}</option>`).join('')}
                     </select>
@@ -47,6 +42,14 @@ export function showAttendanceForm() {
             </div>
             <div id="attendanceTableContainer"><p style="text-align:center; color:#64748b;">उपस्थिति शीट ग्रिड जनरेट करने हेतु फिल्टर्स का चयन करें...</p></div>
         </div>`;
+
+    // FIX: फॉर्म खुलते ही ड्रॉपडाउन को ज़बरदस्ती खाली करें
+    document.getElementById('classFilter').selectedIndex = 0;
+    document.getElementById('mediumFilter').selectedIndex = 0;
+
+    // FIX: ब्राउज़र की याददाश्त (Autocomplete) बंद करने के लिए
+    document.getElementById('classFilter').setAttribute('autocomplete', 'off');
+    document.getElementById('mediumFilter').setAttribute('autocomplete', 'off');
 
     document.getElementById('attDate').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('classFilter').addEventListener('change', checkLockAndLoadStudents);
