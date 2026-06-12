@@ -188,37 +188,6 @@ function saveAttendanceToSheets() {
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
 // ==========================================
-export async function showCorrectionPortal() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("contentArea").innerHTML = "<p style='text-align:center;'>फिल्टर्स लोड हो रहे हैं...</p>";
-
-    try {
-        const res = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
-        state.lastData = await res.json();
-    } catch (e) {
-        document.getElementById("contentArea").innerHTML = "<p style='color:red;'>त्रुटि: डेटा फेचिंग एरर!</p>";
-        return;
-    }
-
-    let allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()).filter(Boolean))].sort();
-    let allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()).filter(Boolean))].sort();
-
-    document.getElementById("contentArea").innerHTML = `
-    <div>
-        <div style="font-size: 20px; font-weight: bold; color: #1e3a8a; margin-bottom: 15px;"><i class="fa-solid fa-user-pen"></i> उपस्थिति सुधार पोर्टल (Auto Load Mode)</div>
-        <div style="display: flex; gap: 15px; flex-wrap: wrap; background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
-            <div style="flex: 1; min-width:150px;"><label style="font-weight:bold;">📅 दिनांक</label><input type="date" id="searchDate" value="${today}" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc; padding:5px;"></div>
-            <div style="flex: 1; min-width:150px;"><label style="font-weight:bold;">📚 कक्षा</label><select id="searchClass" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;"><option value="">-- चुनें --</option>${allClasses.map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div>
-            <div style="flex: 1; min-width:150px;"><label style="font-weight:bold;">🧾 माध्यम</label><select id="searchMedium" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;"><option value="">-- चुनें --</option>${allMediums.map(m=>`<option value="${m}">${m}</option>`).join('')}</select></div>
-        </div>
-        <div id="classCorrectionTable"></div>
-    </div>`;
-
-    document.getElementById('searchDate').addEventListener('change', loadClassAttendanceForCorrection);
-    document.getElementById('searchClass').addEventListener('change', loadClassAttendanceForCorrection);
-    document.getElementById('searchMedium').addEventListener('change', loadClassAttendanceForCorrection);
-}
-
 async function loadClassAttendanceForCorrection() {
     const date = document.getElementById("searchDate").value;
     const cls = document.getElementById("searchClass").value;
@@ -226,7 +195,7 @@ async function loadClassAttendanceForCorrection() {
     const container = document.getElementById("classCorrectionTable");
 
     if (!date || !cls || !medium) { container.innerHTML = ""; return; }
-    container.innerHTML = `<p style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> बैकएंड से खोज जारी है...</p>`;
+    container.innerHTML = `<p style="text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> डेटा लोड हो रहा है...</p>`;
 
     try {
         const url = `${sheetUrls['Attendance']}?action=getClassAttendance&date=${date}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
@@ -234,37 +203,60 @@ async function loadClassAttendanceForCorrection() {
         const data = await res.json();
 
         if (!data || data.length === 0) {
-            container.innerHTML = `<p style="color:red; text-align:center; font-weight:bold; background:#fee2e2; padding:15px; border-radius:6px;">❌ इस तारीख पर इस कक्षा का कोई रिकॉर्ड नहीं मिला।</p>`;
+            container.innerHTML = `<p style="color:red; text-align:center; font-weight:bold; background:#fee2e2; padding:15px; border-radius:6px;"><i class="fa-solid fa-circle-exclamation"></i> इस तारीख पर कोई रिकॉर्ड नहीं मिला।</p>`;
             return;
         }
 
-        let html = `<table>
-            <tr style="background:#1e3a8a; color:white;">
-                <th>ID</th><th>Name</th><th>Status</th><th>Action</th>
-            </tr>`;
+        let html = `
+        <div style="overflow-x: auto; margin-top:15px;">
+            <table style="width:100%; border-collapse:collapse; background:white; font-size:14px;">
+                <thead>
+                    <tr style="background:#1e3a8a; color:white; text-align:left;">
+                        <th style="padding:12px;"><i class="fa-solid fa-id-badge"></i> ID</th>
+                        <th style="padding:12px;"><i class="fa-solid fa-user"></i> नाम</th>
+                        <th style="padding:12px;"><i class="fa-solid fa-user-tie"></i> पिता का नाम</th>
+                        <th style="padding:12px;"><i class="fa-solid fa-chalkboard-user"></i> कक्षा</th>
+                        <th style="padding:12px;"><i class="fa-solid fa-language"></i> माध्यम</th>
+                        <th style="padding:12px;"><i class="fa-solid fa-clipboard-check"></i> Status</th>
+                        <th style="padding:12px;"><i class="fa-solid fa-gears"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>`;
         
         data.forEach((s, i) => {
             let status = (s.Status || "").toString().trim();
-            html += `<tr>
-                <td><strong>${s["Student ID"]}</strong></td>
-                <td>${s["Student Name"]}</td>
-                <td>
-                    <select id="st_${i}" style="padding:5px; font-weight:bold;">
-                        <option value="P" ${status==="P"?"selected":""}>Present (P)</option>
-                        <option value="A" ${status==="A"?"selected":""}>Absent (A)</option>
-                    </select>
-                </td>
-                <td><button class="update-single-btn" data-id="${s["Student ID"]}" data-idx="${i}" style="background:#1e3a8a; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-floppy-disk"></i> Update</button></td>
-            </tr>`;
+            html += `
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                    <td style="padding:10px;">${s["Student ID"]}</td>
+                    <td style="padding:10px;"><strong>${s["Student Name"]}</strong></td>
+                    <td style="padding:10px;">${s["Father Name"] || '-'}</td>
+                    <td style="padding:10px;">${s["Class"]}</td>
+                    <td style="padding:10px;">${s["Medium"]}</td>
+                    <td style="padding:10px;">
+                        <select id="st_${i}" style="padding:6px; border-radius:4px; font-weight:bold;">
+                            <option value="P" ${status==="P"?"selected":""}>Present</option>
+                            <option value="A" ${status==="A"?"selected":""}>Absent</option>
+                        </select>
+                    </td>
+                    <td style="padding:10px;">
+                        <button class="update-single-btn" data-id="${s["Student ID"]}" data-idx="${i}" 
+                            style="background:#059669; color:white; border:none; padding:7px 12px; border-radius:4px; cursor:pointer;">
+                            <i class="fa-solid fa-floppy-disk"></i> Save
+                        </button>
+                    </td>
+                </tr>`;
         });
-        container.innerHTML = html + `</table>`;
+        
+        container.innerHTML = html + `</tbody></table></div>`;
 
         document.querySelectorAll('.update-single-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 updateCorrectionAttendance(this.getAttribute('data-id'), this.getAttribute('data-idx'), this);
             });
         });
-    } catch (e) { container.innerHTML = "<p style='color:red;'>त्रुटि: लोड करने में विफलता।</p>"; }
+    } catch (e) { 
+        container.innerHTML = "<p style='color:red; text-align:center;'><i class='fa-solid fa-triangle-exclamation'></i> त्रुटि: लोड करने में विफलता।</p>"; 
+    }
 }
 
 async function updateCorrectionAttendance(studentId, i, btn) {
