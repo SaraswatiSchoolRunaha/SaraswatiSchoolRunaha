@@ -14,8 +14,8 @@ export function showAttendanceForm() {
         return;
     }
 
-    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()))].filter(c => c !== "").sort();
-    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()))].filter(m => m !== "").sort();
+    const allClasses = [...new Set(state.lastData.map(s => String(s["Class"] || "").trim()))].filter(c => c !== "").sort();
+    const allMediums = [...new Set(state.lastData.map(s => String(s["Medium"] || "Hindi").trim()))].filter(m => m !== "").sort();
     console.log("Full Data:", state.lastData);
     console.log("First Student:", state.lastData[0]);
     
