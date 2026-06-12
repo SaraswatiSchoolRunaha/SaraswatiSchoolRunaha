@@ -2,21 +2,22 @@ import { sheetUrls, translations, state } from './config.js';
 import { showDashboard } from './dashboard.js';
 
 // ==========================================
-// 1. DAILY ATTENDANCE MANAGEMENT
+// 1. DAILY ATTENDANCE MANAGEMENT (Full Code)
 // ==========================================
+
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
 
-    // 1. डेटा वैलिडेशन: चेक करें कि क्या डेटा मौजूद है
+    // 1. डेटा वैलिडेशन
     if (!state.lastData || state.lastData.length === 0) {
         document.getElementById("contentArea").innerHTML = 
             "<p style='color:red; font-weight:bold;'>⚠️ त्रुटि: पहले डैशबोर्ड लोड होने दें!</p>";
         return;
     }
 
-    // 2. सुरक्षित तरीके से डेटा निकालना (Classes और Mediums)
-    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim()).filter(c => c !== ""))].sort();
-    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim()).filter(m => m !== ""))].sort();
+    // 2. सुरक्षित तरीके से डेटा निकालना
+    const allClasses = [...new Set(state.lastData.map(s => (s.Class || s.class || "").toString().trim())).filter(c => c !== "")].sort();
+    const allMediums = [...new Set(state.lastData.map(s => (s.Medium || s.medium || "").toString().trim())).filter(m => m !== "")].sort();
 
     // 3. UI जनरेट करें
     document.getElementById("contentArea").innerHTML = `
@@ -45,7 +46,6 @@ export function showAttendanceForm() {
             <div id="attendanceTableContainer"><p style="text-align:center; color:#64748b;">उपस्थिति शीट ग्रिड जनरेट करने हेतु फिल्टर्स का चयन करें...</p></div>
         </div>`;
 
-    // 4. इवेंट लिसनर्स अटैच करें
     document.getElementById('attDate').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('classFilter').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('mediumFilter').addEventListener('change', checkLockAndLoadStudents);
@@ -57,44 +57,31 @@ async function checkLockAndLoadStudents() {
     const selectedMedium = document.getElementById('mediumFilter').value;
     const container = document.getElementById('attendanceTableContainer');
 
-    // 1. वैलिडेशन
     if (!selectedClass || !selectedMedium) { 
         container.innerHTML = "<p style='text-align:center; color:#64748b;'>कृपया कक्षा और माध्यम चुनें।</p>"; 
         return; 
     }
     if (!selectedDate) { alert("कृपया तारीख चुनें!"); return; }
 
-    // 2. लोडिंग स्टेटस
     container.innerHTML = `<div style="color:#1e3a8a; font-weight:bold; text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> लॉक स्टेटस जांचा जा रहा है...</div>`;
 
     try {
-        // 3. API कॉल
         const url = `${sheetUrls['Attendance']}?action=checkLock&date=${selectedDate}&class=${encodeURIComponent(selectedClass)}&medium=${encodeURIComponent(selectedMedium)}`;
         const response = await fetch(url);
-        
         if (!response.ok) throw new Error("सर्वर रिस्पॉन्स में समस्या");
-
         const result = await response.json();
 
-        // 4. लॉक स्टेटस चेक
         if (result && result.exists === true) {
-            container.innerHTML = `
-            <div style="background:#fee2e2; border:2px solid #dc2626; color:#991b1b; padding:20px; border-radius:8px; text-align:center; font-weight:bold;">
-                ⚠️ इस कक्षा और माध्यम की अटेंडेंस ${selectedDate} के लिए लॉक की जा चुकी है। संशोधन हेतु 'उपस्थिति सुधार' मेनू का उपयोग करें।
-            </div>`;
+            container.innerHTML = `<div style="background:#fee2e2; border:2px solid #dc2626; color:#991b1b; padding:20px; border-radius:8px; text-align:center; font-weight:bold;">⚠️ इस कक्षा और माध्यम की अटेंडेंस ${selectedDate} के लिए लॉक की जा चुकी है। संशोधन हेतु 'उपस्थिति सुधार' मेनू का उपयोग करें।</div>`;
         } else {
-            // लॉक नहीं है, सुरक्षित रूप से ग्रिड लोड करें
             generateAttendanceGrid(selectedClass, selectedMedium);
         }
     } catch (e) {
         console.error("Lock check error:", e);
-        // एरर आने पर ग्रिड लोड न करें, यूजर को सूचित करें
-        container.innerHTML = `
-        <div style="background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:15px; border-radius:8px; text-align:center;">
-            ⚠️ <b>त्रुटि:</b> लॉक स्टेटस चेक नहीं हो सका। कृपया अपना इंटरनेट कनेक्शन चेक करें या बाद में प्रयास करें।
-        </div>`;
+        container.innerHTML = `<div style="background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:15px; border-radius:8px; text-align:center;">⚠️ <b>त्रुटि:</b> लॉक स्टेटस चेक नहीं हो सका।</div>`;
     }
 }
+
 function generateAttendanceGrid(selectedClass, selectedMedium) {
     let container = document.getElementById('attendanceTableContainer');
     let filteredStudents = state.lastData.filter(s => {
@@ -109,42 +96,40 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
     }
 
     let html = `
-        <table id="attTable">
+        <div style="overflow-x: auto;">
+        <table id="attTable" style="width:100%; border-collapse:collapse; background:white; border:1px solid #e2e8f0;">
             <thead>
-                <tr style="background:#334155; color:white;">
-                    <th>Student ID</th><th>Student Name</th><th>Father Name</th><th>Medium</th><th>Class</th><th>Status (P/A)</th>
+                <tr style="background:#334155; color:white; text-align:left;">
+                    <th style="padding:12px;">ID</th><th style="padding:12px;">नाम</th><th style="padding:12px;">पिता का नाम</th><th style="padding:12px;">माध्यम</th><th style="padding:12px;">कक्षा</th><th style="padding:12px;">Status</th>
                 </tr>
             </thead>
             <tbody>
-                ${filteredStudents.map((s, i) => {
-                    return `
-                    <tr>
-                        <td><strong>${s['Student ID'] || s['ID'] || s['id']}</strong></td>
-                        <td>${s['Student Name'] || s['Name']}</td>
-                        <td>${s['Father Name'] || s['FatherName']}</td>
-                        <td>${s['Medium'] || s['medium']}</td>
-                        <td>${s['Class'] || s['class']}</td>
-                        <td>
-                            <select class="attStatus" id="sel_status_${i}" style="padding:5px; font-weight:bold; border-radius:4px;">
-                                <option value="">-- चुनें --</option>
-                                <option value="P">Present (P)</option>
-                                <option value="A">Absent (A)</option>
-                            </select>
-                        </td>
-                    </tr>`;
-                }).join('')}
+                ${filteredStudents.map((s, i) => `
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                    <td style="padding:10px;"><strong>${s['Student ID'] || s['ID'] || s['id']}</strong></td>
+                    <td style="padding:10px;">${s['Student Name'] || s['Name']}</td>
+                    <td style="padding:10px;">${s['Father Name'] || s['FatherName']}</td>
+                    <td style="padding:10px;">${s['Medium'] || s['medium']}</td>
+                    <td style="padding:10px;">${s['Class'] || s['class']}</td>
+                    <td style="padding:10px;">
+                        <select class="attStatus" id="sel_status_${i}" style="padding:5px; border-radius:4px; width:100%;">
+                            <option value="">--</option><option value="P">Present</option><option value="A">Absent</option>
+                        </select>
+                    </td>
+                </tr>`).join('')}
             </tbody>
         </table>
-        <button id="btnSubmitAttendance" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white; width:100%; padding:12px; border:none; font-size:16px;"><i class="fa-solid fa-cloud-arrow-up"></i> उपस्थिति सुरक्षित करें (Submit & Lock)</button>
+        </div>
+        <button id="btnSubmitAttendance" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white; width:100%; padding:15px; border:none; font-size:16px; border-radius:8px; cursor:pointer;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> उपस्थिति सुरक्षित करें (Submit & Lock)
+        </button>
     `;
     container.innerHTML = html;
 
     filteredStudents.forEach((s, i) => {
         document.getElementById(`sel_status_${i}`).addEventListener('change', function() {
             let row = this.closest('tr');
-            if (this.value === 'P') row.className = 'row-present';
-            else if (this.value === 'A') row.className = 'row-absent';
-            else row.className = '';
+            row.style.backgroundColor = (this.value === 'P') ? '#dcfce7' : (this.value === 'A') ? '#fee2e2' : 'transparent';
         });
     });
 
@@ -194,7 +179,6 @@ function saveAttendanceToSheets() {
         btn.disabled = false; btn.innerText = "उपस्थिति सुरक्षित करें";
     });
 }
-
 
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
