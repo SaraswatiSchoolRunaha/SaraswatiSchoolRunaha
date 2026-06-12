@@ -617,7 +617,7 @@ window.confirmSync = async () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
                 action: "saveToStudentData", 
-                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class, mobile1: S.mobile1,
+                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class, mobile: S.mobile,
             })
         });
         
