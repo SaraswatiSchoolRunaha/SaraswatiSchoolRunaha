@@ -585,7 +585,7 @@ window.searchStudent = async () => {
                 <p style="margin:5px 0;"><b>पिता:</b> ${data.father}</p>
                 <p style="margin:5px 0;"><b>माध्यम:</b> ${data.medium}</p>
                 <p style="margin:5px 0;"><b>कक्षा:</b> ${data.class}</p>
-                <p style="margin:5px 0;"><b>मोबाइल:</b> ${data.mobile1}</p>
+                <p style="margin:5px 0;"><b>मोबाइल:</b> ${data.mobile}</p>
             `;
             btnSync.style.display = "block";
             status.innerText = "";
