@@ -18,11 +18,10 @@ export function showAttendanceForm() {
 
             <div style="display:flex; gap:10px; flex-wrap:wrap; background:#f8fafc; padding:15px; margin-bottom:10px; align-items:flex-end;">
 
-                <div style="flex:1; min-width:120px;">
+               <div style="flex:1; min-width:120px;">
                     <label style="display:block; font-size:12px;">तारीख</label>
-                    <input type="date" id="attDate" value="${today}" readonly style="width:100%; height:40px;">
+                    <input type="date" id="attDate" value="${today}" style="width:100%; height:40px; padding: 5px;">
                 </div>
-
                 <div style="flex:1; min-width:120px;">
                     <label style="display:block; font-size:12px;">कक्षा</label>
                     <select id="classFilter" style="width:100%; height:40px;">
