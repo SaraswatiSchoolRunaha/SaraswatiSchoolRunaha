@@ -260,45 +260,40 @@ export function showCorrectionPortal() {
     const today = new Date().toISOString().split('T')[0];
     
     document.getElementById("contentArea").innerHTML = `
-        <div style="max-width: 1000px; margin: 20px auto; font-family: sans-serif;">
+        <div style="max-width: 1000px; margin: 20px auto; font-family: sans-serif; box-sizing: border-box;">
             <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;">
                 <h2 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-pen-to-square"></i> उपस्थिति सुधार पोर्टल</h2>
-                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items: flex-end;">
-                    <div style="flex:1; min-width:150px;">
-                        <label style="font-size:12px; font-weight:bold; color:#64748b;">तारीख</label>
-                        <input type="date" id="searchDate" value="${today}" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                
+                <div style="display:flex; flex-wrap:wrap; gap:15px; align-items: flex-end;">
+                    
+                    <div style="flex: 1 1 180px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; color:#64748b; margin-bottom:5px;">तारीख</label>
+                        <input type="date" id="searchDate" value="${today}" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
                     </div>
                     
-                    <div style="flex:1; min-width:120px;">
-                        <label style="font-size:12px; font-weight:bold; color:#64748b;">कक्षा</label>
-                        <select id="searchClass" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                    <div style="flex: 1 1 150px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; color:#64748b; margin-bottom:5px;">कक्षा</label>
+                        <select id="searchClass" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
                             <option value="">चुनें...</option>
-                            <option value="KG1">KG1</option>
-                            <option value="KG2">KG2</option>
-                            <option value="1">1st</option>
-                            <option value="2">2nd</option>
-                            <option value="3">3rd</option>
-                            <option value="4">4th</option>
-                            <option value="5">5th</option>
-                            <option value="6">6th</option>
-                            <option value="7">7th</option>
-                            <option value="8">8th</option>
-                            <option value="9">9th</option>
-                            <option value="10">10th</option>
-                            <option value="11">11th</option>
-                            <option value="12">12th</option>
+                            <option value="KG1">KG1</option><option value="KG2">KG2</option>
+                            <option value="1">1st</option><option value="2">2nd</option>
+                            <option value="3">3rd</option><option value="4">4th</option>
+                            <option value="5">5th</option><option value="6">6th</option>
+                            <option value="7">7th</option><option value="8">8th</option>
+                            <option value="9">9th</option><option value="10">10th</option>
+                            <option value="11">11th</option><option value="12">12th</option>
                         </select>
                     </div>
 
-                    <div style="flex:1; min-width:120px;">
-                        <label style="font-size:12px; font-weight:bold; color:#64748b;">माध्यम</label>
-                        <select id="searchMedium" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                    <div style="flex: 1 1 150px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; color:#64748b; margin-bottom:5px;">माध्यम</label>
+                        <select id="searchMedium" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
                             <option value="Hindi">Hindi</option>
                             <option value="English">English</option>
                         </select>
                     </div>
                     
-                    <button id="btnFetchData" style="background:#1e3a8a; color:white; border:none; padding:11px 20px; cursor:pointer; border-radius:6px; font-weight:bold;">
+                    <button id="btnFetchData" style="flex: 0 0 auto; background:#1e3a8a; color:white; border:none; padding:10px 20px; cursor:pointer; border-radius:6px; font-weight:bold; height:42px;">
                         <i class="fa-solid fa-magnifying-glass"></i> खोजें
                     </button>
                 </div>
@@ -308,7 +303,6 @@ export function showCorrectionPortal() {
     `;
     document.getElementById('btnFetchData').addEventListener('click', fetchAttendanceData);
 }
-
 async function fetchAttendanceData() {
     const date = document.getElementById("searchDate").value;
     const cls = document.getElementById("searchClass").value;
