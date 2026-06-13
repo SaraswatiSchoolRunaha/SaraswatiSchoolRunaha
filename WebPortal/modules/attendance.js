@@ -198,7 +198,7 @@ function saveAttendanceToSheets(filteredStudents) {
         studentMap.set(String(id), s);
     });
 
-    selects.forEach((select) => {
+    selects.forEach(select => {
         const studentId = select.getAttribute('data-id');
         const student = studentMap.get(String(studentId));
 
@@ -213,46 +213,40 @@ function saveAttendanceToSheets(filteredStudents) {
 
         attendanceData.push({
             date: date,
-            "Student ID": studentId,
-            "Student Name": student['Student Name'] || student['Name'] || '',
-            "Medium": student['Medium'] || student['medium'] || '',
-            "Class": student['Class'] || student['class'] || '',
-            "Status": select.value
+            studentId: studentId,
+            studentName: student['Student Name'] || student['Name'] || '',
+            fatherName: student['Father Name'] || '',
+            medium: student['Medium'] || '',
+            class: student['Class'] || '',
+            status: select.value
         });
     });
 
     if (validationError) {
-        alert("⚠️ कृपया सभी छात्रों का Status चुनें!");
+        alert("⚠️ सभी छात्रों का Status चुनें!");
         return;
     }
 
     const btn = document.getElementById('btnSubmitAttendance');
     btn.disabled = true;
-    btn.innerText = "⏳ डेटा भेजा जा रहा है...";
+    btn.innerText = "⏳ भेजा जा रहा है...";
 
-    // CORS मोड के साथ fetch कॉल
     fetch(sheetUrls['Attendance'], {
         method: "POST",
-        mode: "cors", // 'no-cors' को हटाकर 'cors' करें
+        mode: "no-cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "text/plain;charset=utf-8"
         },
         body: JSON.stringify({
             action: "saveAttendance",
             data: attendanceData
         })
     })
-    .then(res => res.json()) // अब रिस्पॉन्स पढ़ा जा सकता है
-    .then(data => {
-        console.log("Server Response:", data);
+    .then(() => {
         alert("✔ उपस्थिति सफलतापूर्वक सेव हो गई!");
-        
-        if (typeof showDashboard === 'function') {
-            showDashboard();
-        }
+        if (typeof showDashboard === 'function') showDashboard();
     })
     .catch(err => {
-        console.error("Error:", err);
         alert("नेटवर्क त्रुटि: " + err.message);
         btn.disabled = false;
         btn.innerText = "उपस्थिति सुरक्षित करें";
