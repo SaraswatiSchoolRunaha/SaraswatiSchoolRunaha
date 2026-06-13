@@ -17,50 +17,41 @@ export function showAttendanceForm() {
                 <i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी
             </h2>
 
-            <div style="display:flex; gap:15px; flex-wrap:wrap; background:#f8fafc; padding:15px; margin-bottom:10px;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; background:#f8fafc; padding:15px; margin-bottom:10px; align-items:flex-end;">
 
-                <!-- DATE (AUTO TODAY) -->
-                <div style="flex:1;">
-                    <label>तारीख</label>
-                    <input type="date" id="attDate" value="${today}" readonly
-                        style="width:100%; height:40px;">
+                <div style="flex:1; min-width:120px;">
+                    <label style="display:block; font-size:12px;">तारीख</label>
+                    <input type="date" id="attDate" value="${today}" readonly style="width:100%; height:40px;">
                 </div>
 
-                <!-- CLASS -->
-                <div style="flex:1;">
-                    <label>कक्षा</label>
+                <div style="flex:1; min-width:120px;">
+                    <label style="display:block; font-size:12px;">कक्षा</label>
                     <select id="classFilter" style="width:100%; height:40px;">
-                        <option value="">-- कक्षा चुनें --</option>
+                        <option value="">-- कक्षा --</option>
                         ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
                     </select>
                 </div>
 
-                <!-- MEDIUM -->
-                <div style="flex:1;">
-                    <label>माध्यम</label>
+                <div style="flex:1; min-width:120px;">
+                    <label style="display:block; font-size:12px;">माध्यम</label>
                     <select id="mediumFilter" style="width:100%; height:40px;">
-                        <option value="">-- माध्यम चुनें --</option>
+                        <option value="">-- माध्यम --</option>
                         ${allMediums.map(med => `<option value="${med}">${med}</option>`).join('')}
                     </select>
                 </div>
 
+                <button id="btnSearchAttendance"
+                    style="height:40px; padding:0 20px; background:#1e3a8a; color:white; border:none; border-radius:6px; cursor:pointer;">
+                    🔍 खोजें
+                </button>
             </div>
 
-            <!-- SEARCH BUTTON -->
-            <button id="btnSearchAttendance"
-                style="width:100%; padding:12px; background:#1e3a8a; color:white; border:none; border-radius:6px;">
-                🔍 छात्रों को खोजें
-            </button>
-
             <div id="attendanceTableContainer" style="margin-top:15px;">
-                <p style="text-align:center; color:#64748b;">
-                    कृपया कक्षा और माध्यम चुनें और Search दबाएं
-                </p>
+                <p style="text-align:center; color:#64748b;">कृपया कक्षा और माध्यम चुनें और Search दबाएं</p>
             </div>
         </div>
     `;
 
-    // BUTTON EVENT ONLY (NO AUTO CALL)
     document.getElementById('btnSearchAttendance')
         .addEventListener('click', checkLockAndLoadStudents);
 }
