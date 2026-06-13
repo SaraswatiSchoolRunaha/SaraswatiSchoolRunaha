@@ -84,7 +84,7 @@ async function checkLockAndLoadStudents() {
 function generateAttendanceGrid(selectedClass, selectedMedium) {
     let container = document.getElementById('attendanceTableContainer');
     
-    // फिल्टरिंग
+    // 1. फिल्टरिंग
     let filteredStudents = state.lastData.filter(s => {
         let cls = (s['Class'] || s['class'] || s['CLASS'] || "").toString().trim();
         let med = (s['Medium'] || s['medium'] || s['MED'] || "").toString().trim();
@@ -97,7 +97,7 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
         return;
     }
 
-    // टेबल का HTML (क्लास कॉलम के साथ)
+    // 2. टेबल रेंडरिंग
     let html = `
         <div style="overflow-x: auto;">
         <table id="attTable" style="width:100%; border-collapse:collapse; background:white; border:1px solid #e2e8f0;">
@@ -135,39 +135,22 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
     
     container.innerHTML = html;
     
-    // बटन पर क्लिक इवेंट जोड़ें
+    // 3. इवेंट लिसनर्स (केवल एक बार)
+    
+    // सबमिट बटन पर क्लिक
     document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
         saveAttendanceToSheets(filteredStudents);
     });
 
-    // अटेंडेंस स्टेटस बदलने पर रंग बदलने वाला छोटा सा फीचर (Optional)
+    // अटेंडेंस स्टेटस बदलने पर रंग बदलना
     document.querySelectorAll('.attStatus').forEach(select => {
         select.addEventListener('change', function() {
             let row = this.closest('tr');
             row.style.backgroundColor = (this.value === 'P') ? '#dcfce7' : (this.value === 'A') ? '#fee2e2' : 'transparent';
         });
     });
-    
-    
-    // सबमिट बटन पर क्लिक (filteredStudents पास किया गया है)
-    document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
-        saveAttendanceToSheets(filteredStudents);
-    });
 }
 
-
-    // 4. इवेंट लिसनर (रंग बदलने के लिए)
-    document.querySelectorAll('.attStatus').forEach(select => {
-        select.addEventListener('change', function() {
-            let row = this.closest('tr');
-            row.style.backgroundColor = (this.value === 'P') ? '#dcfce7' : (this.value === 'A') ? '#fee2e2' : 'transparent';
-        });
-    });
-
-    document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
-        saveAttendanceToSheets(filteredStudents);
-    });
-}
 // ध्यान दें: फंक्शन में 'filteredStudents' पैरामीटर पास करना जरूरी है
 function saveAttendanceToSheets(filteredStudents) {
     let date = document.getElementById("attDate").value;
