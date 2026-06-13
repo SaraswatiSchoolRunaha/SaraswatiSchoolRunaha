@@ -256,62 +256,65 @@ function saveAttendanceToSheets(filteredStudents) {
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
 // ==========================================
-// 1. इंटरफेस दिखाने वाला फंक्शन
 export function showCorrectionPortal() {
     const today = new Date().toISOString().split('T')[0];
     
     document.getElementById("contentArea").innerHTML = `
-        <h2 style="color:#1e3a8a;"><i class="fa-solid fa-pen-to-square"></i> उपस्थिति सुधार पोर्टल</h2>
-        <div style="display:flex; gap:10px; margin-bottom:20px; padding:15px; background:#f1f5f9; border-radius:8px; flex-wrap:wrap;">
-            <input type="date" id="searchDate" value="${today}">
-            <input type="text" id="searchClass" placeholder="कक्षा (उदा: 10)">
-            <input type="text" id="searchMedium" placeholder="माध्यम (उदा: Hindi)">
-            <button id="btnFetchData" style="background:#1e3a8a; color:white; border:none; padding:8px 15px; cursor:pointer; border-radius:4px;">
-                <i class="fa-solid fa-magnifying-glass"></i> खोजें
-            </button>
+        <div style="max-width: 1000px; margin: 20px auto; font-family: sans-serif;">
+            <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <h2 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-pen-to-square"></i> उपस्थिति सुधार पोर्टल</h2>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items: flex-end;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-size:12px; font-weight:bold; color:#64748b;">तारीख</label>
+                        <input type="date" id="searchDate" value="${today}" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div style="flex:1; min-width:120px;">
+                        <label style="font-size:12px; font-weight:bold; color:#64748b;">कक्षा</label>
+                        <input type="text" id="searchClass" placeholder="उदा: 10" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div style="flex:1; min-width:120px;">
+                        <label style="font-size:12px; font-weight:bold; color:#64748b;">माध्यम</label>
+                        <input type="text" id="searchMedium" placeholder="उदा: Hindi" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <button id="btnFetchData" style="background:#1e3a8a; color:white; border:none; padding:11px 20px; cursor:pointer; border-radius:6px; font-weight:bold;">
+                        <i class="fa-solid fa-magnifying-glass"></i> खोजें
+                    </button>
+                </div>
+            </div>
+            <div id="classCorrectionTable"></div>
         </div>
-        <div id="classCorrectionTable"></div>
     `;
-
     document.getElementById('btnFetchData').addEventListener('click', fetchAttendanceData);
 }
 
-// 2. डेटा लोड और टेबल बनाने वाला फंक्शन
 async function fetchAttendanceData() {
     const date = document.getElementById("searchDate").value;
     const cls = document.getElementById("searchClass").value;
     const medium = document.getElementById("searchMedium").value;
     const container = document.getElementById("classCorrectionTable");
 
-    if (!date || !cls || !medium) {
-        alert("कृपया तारीख, कक्षा और माध्यम भरें!");
-        return;
-    }
+    if (!date || !cls || !medium) { alert("कृपया सभी जानकारी भरें!"); return; }
 
-    container.innerHTML = `<p style="text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> डेटा लोड हो रहा है...</p>`;
+    container.innerHTML = `<p style="text-align:center; padding:20px;">डेटा लोड हो रहा है...</p>`;
 
     try {
         const url = `${sheetUrls['Attendance']}?action=getClassAttendance&date=${date}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
-        const res = await fetch(url);
+        const res = await fetch(url, { mode: 'cors' });
         const data = await res.json();
 
         if (!data || data.length === 0) {
-            container.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">कोई रिकॉर्ड नहीं मिला।</p>`;
+            container.innerHTML = `<p style="color:red; text-align:center;">कोई रिकॉर्ड नहीं मिला।</p>`;
             return;
         }
 
         let html = `
-        <div style="overflow-x: auto; margin-top:15px;">
-            <table style="width:100%; border-collapse:collapse; background:white; font-size:14px; border:1px solid #ddd;">
-                <thead>
-                    <tr style="background:#1e3a8a; color:white; text-align:left;">
-                        <th style="padding:12px;">ID</th>
-                        <th style="padding:12px;">नाम</th>
-                        <th style="padding:12px;">पिता का नाम</th>
-                        <th style="padding:12px;">कक्षा</th>
-                        <th style="padding:12px;">माध्यम</th>
-                        <th style="padding:12px;">Status</th>
-                        <th style="padding:12px;">Action</th>
+        <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <table style="width:100%; border-collapse:collapse; text-align:left;">
+                <thead style="background:#f8fafc; color:#475569;">
+                    <tr>
+                        <th style="padding:15px;">ID</th><th style="padding:15px;">नाम</th>
+                        <th style="padding:15px;">पिता</th><th style="padding:15px;">कक्षा</th>
+                        <th style="padding:15px;">Status</th><th style="padding:15px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>`;
@@ -319,22 +322,21 @@ async function fetchAttendanceData() {
         data.forEach((s, i) => {
             let status = (s.Status || "").toString().trim();
             html += `
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px;">${s["Student ID"]}</td>
-                    <td style="padding:10px;"><strong>${s["Student Name"]}</strong></td>
-                    <td style="padding:10px;">${s["Father Name"] || '-'}</td>
-                    <td style="padding:10px;">${s["Class"]}</td>
-                    <td style="padding:10px;">${s["Medium"]}</td>
-                    <td style="padding:10px;">
-                        <select id="st_${i}" style="padding:5px; border-radius:4px;">
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:15px;">${s["Student ID"]}</td>
+                    <td style="padding:15px;"><strong>${s["Student Name"]}</strong></td>
+                    <td style="padding:15px;">${s["Father Name"] || '-'}</td>
+                    <td style="padding:15px;">${s["Class"]}</td>
+                    <td style="padding:15px;">
+                        <select id="st_${i}" style="padding:6px; border-radius:4px;">
                             <option value="P" ${status==="P"?"selected":""}>Present</option>
                             <option value="A" ${status==="A"?"selected":""}>Absent</option>
                         </select>
                     </td>
-                    <td style="padding:10px;">
+                    <td style="padding:15px;">
                         <button class="update-single-btn" data-id="${s["Student ID"]}" data-idx="${i}" 
-                            style="background:#059669; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">
-                            <i class="fa-solid fa-floppy-disk"></i> Update
+                            style="background:#059669; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
+                            Update
                         </button>
                     </td>
                 </tr>`;
@@ -356,24 +358,24 @@ async function fetchAttendanceData() {
 async function updateCorrectionAttendance(studentId, i, btn) {
     let select = document.getElementById(`st_${i}`);
     let selectedDate = document.getElementById("searchDate").value; 
-    btn.disabled = true; btn.innerHTML = "⏳...";
+    btn.disabled = true; btn.innerText = "Saving...";
 
     try {
         const res = await fetch(sheetUrls['Attendance'], {
             method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "updateSingleAttendance", studentId: studentId, date: selectedDate, newStatus: select.value })
         });
         const data = await res.json();
         if (data.status === "success") { 
-            alert(`✔ ${selectedDate} की उपस्थिति सफलतापूर्वक सुधारी गई।`); 
+            alert("उपस्थिति सफलतापूर्वक अपडेट की गई!"); 
         } else {
-            alert("सुधार विफल हुआ!");
+            alert("सुधार विफल रहा!");
         }
     } catch (err) { alert("सर्वर त्रुटि: " + err.message); }
-    finally { btn.disabled = false; btn.innerHTML = "<i class='fa-solid fa-floppy-disk'></i> Update"; }
+    finally { btn.disabled = false; btn.innerText = "Update"; }
 }
-
 
 // ==========================================
 // 3. DAILY ABSENT REPORT PRINT LOGIC
