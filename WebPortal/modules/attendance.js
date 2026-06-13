@@ -114,7 +114,7 @@ function generateAttendanceGrid(filteredStudents) {
                 <tr style="background:#1e3a8a; color:white; text-align:left;">
                     <th style="padding:12px;">ID</th>
                     <th style="padding:12px;">नाम</th>
-                    <th style="padding:12px;">माध्यम</th>
+                    <th style="padding:12px;">पिता का नाम</th> <th style="padding:12px;">माध्यम</th>
                     <th style="padding:12px;">कक्षा</th>
                     <th style="padding:12px;">Status</th>
                 </tr>
@@ -128,7 +128,7 @@ function generateAttendanceGrid(filteredStudents) {
             <tr style="border-bottom:1px solid #e2e8f0; transition:0.3s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
                 <td style="padding:12px;">${studentId}</td>
                 <td style="padding:12px; font-weight:600;">${s["Student Name"] || s["Name"]}</td>
-                <td style="padding:12px;">${s["Medium"]}</td>
+                <td style="padding:12px;">${s["Father Name"] || '-'}</td> <td style="padding:12px;">${s["Medium"]}</td>
                 <td style="padding:12px;">${s["Class"]}</td>
                 <td style="padding:12px;">
                     <select class="attStatus" data-id="${studentId}" 
@@ -160,6 +160,7 @@ function generateAttendanceGrid(filteredStudents) {
         saveAttendanceToSheets(filteredStudents);
     });
 }
+
 function saveAttendanceToSheets(filteredStudents) {
 
     const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
