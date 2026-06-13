@@ -93,7 +93,7 @@ async function checkLockAndLoadStudents() {
             return;
         }
 
-        generateAttendanceGrid(students, selectedDate, selectedClass, selectedMedium);
+        generateAttendanceGrid( selectedClass, selectedMedium);
 
     } catch (err) {
         console.error(err);
