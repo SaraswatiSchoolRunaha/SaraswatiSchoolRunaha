@@ -2,27 +2,22 @@ import { sheetUrls, translations, state } from './config.js';
 import { showDashboard } from './dashboard.js';
 
 // ==========================================
-// 1. DAILY ATTENDANCE MANAGEMENT (Full Code)
+// 1. DAILY ATTENDANCE MANAGEMENT
 // ==========================================
 
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
-
-    // कक्षा और माध्यम की लिस्ट (hardcoded या जैसा आप चाहते हैं)
     const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     const allMediums = ["Hindi", "English"];
     
-   
     document.getElementById("contentArea").innerHTML = `
         <div>
             <h2 style="color:#1e3a8a;"><i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी</h2>
             <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px; background:#f8fafc; padding:15px;">
-                
                 <div style="flex:1;">
                     <label>तारीख (Date)</label>
                     <input type="date" id="attDate" value="${today}" style="width:100%; height:40px;">
                 </div>
-
                 <div style="flex:1;">
                     <label>कक्षा (Class)</label>
                     <select id="classFilter" style="width:100%; height:40px;">
@@ -30,7 +25,6 @@ export function showAttendanceForm() {
                         ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
                     </select>
                 </div>
-
                 <div style="flex:1;">
                     <label>माध्यम (Medium)</label>
                     <select id="mediumFilter" style="width:100%; height:40px;">
@@ -41,9 +35,6 @@ export function showAttendanceForm() {
             </div>
             <div id="attendanceTableContainer"><p style="text-align:center; color:#64748b;">उपस्थिति देखने के लिए कक्षा और माध्यम चुनें।</p></div>
         </div>`;
-
-    // यहाँ से वो "Fix" हटा दिया गया है जो ड्रॉपडाउन को जबरदस्ती रिसेट करता था।
-    // अब यूजर खुद जो सिलेक्ट करेगा वही रहेगा।
 
     document.getElementById('attDate').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('classFilter').addEventListener('change', checkLockAndLoadStudents);
@@ -56,10 +47,12 @@ async function checkLockAndLoadStudents() {
     const selectedMedium = document.getElementById('mediumFilter').value;
     const container = document.getElementById('attendanceTableContainer');
 
-    if (!selectedClass || !selectedMedium) { 
+    // सुरक्षा चेक: अगर क्लास या माध्यम खाली है, तो कुछ न करें
+    if (!selectedClass || selectedClass === "" || !selectedMedium || selectedMedium === "") { 
         container.innerHTML = "<p style='text-align:center; color:#64748b;'>कृपया कक्षा और माध्यम चुनें।</p>"; 
         return; 
     }
+    
     if (!selectedDate) { alert("कृपया तारीख चुनें!"); return; }
 
     container.innerHTML = `<div style="color:#1e3a8a; font-weight:bold; text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> लॉक स्टेटस जांचा जा रहा है...</div>`;
@@ -81,14 +74,15 @@ async function checkLockAndLoadStudents() {
     }
 }
 
-
-/**
- * 1. उपस्थिति ग्रिड जेनरेट करने वाला फंक्शन
- */
 function generateAttendanceGrid(selectedClass, selectedMedium) {
     let container = document.getElementById('attendanceTableContainer');
     
-    // फिल्टरिंग
+    // डेटा मौजूद है या नहीं यह चेक करें
+    if (!state.lastData) {
+        container.innerHTML = `<p style='text-align:center; color:red;'>डेटा लोड नहीं हो पाया है, कृपया रिफ्रेश करें।</p>`;
+        return;
+    }
+
     let filteredStudents = state.lastData.filter(s => {
         let cls = (s['Class'] || s['class'] || s['CLASS'] || "").toString().trim();
         let med = (s['Medium'] || s['medium'] || s['MED'] || "").toString().trim();
@@ -101,7 +95,6 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
         return;
     }
 
-    // टेबल HTML निर्माण
     let html = `
         <div style="overflow-x: auto;">
         <table id="attTable" style="width:100%; border-collapse:collapse; background:white; border:1px solid #e2e8f0;">
@@ -139,7 +132,6 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
     
     container.innerHTML = html;
     
-    // इवेंट लिसनर जोड़ना
     document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
         saveAttendanceToSheets(filteredStudents);
     });
@@ -152,22 +144,17 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
     });
 }
 
-/**
- * 2. डेटा को Google Sheets पर भेजने वाला फंक्शन
- */
 function saveAttendanceToSheets(filteredStudents) {
     let date = document.getElementById("attDate") ? document.getElementById("attDate").value : new Date().toLocaleDateString();
     let attendanceData = [];
     let validationError = false;
 
-    // सीधे ड्रॉपडाउन एलिमेंट्स को टारगेट करें (rows को लूप करने से ज्यादा सुरक्षित)
     let selects = document.querySelectorAll(".attStatus");
 
     selects.forEach((select) => {
         let index = select.getAttribute('data-index');
         let student = filteredStudents[index];
 
-        // वैलिडेशन
         if (!select.value) {
             validationError = true;
             select.style.border = "2px solid red";
