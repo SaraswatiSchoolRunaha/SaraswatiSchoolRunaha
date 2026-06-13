@@ -674,28 +674,44 @@ async function executeDeleteRowOperation(studentId, btnElement) {
 export function showAddStudentForm() {
     const contentArea = document.getElementById("contentArea");
     contentArea.innerHTML = `
-        <div style="max-width: 450px; margin: 30px auto; padding: 25px; background: #ffffff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-family: sans-serif;">
-            <h3 style="margin-top:0; color: #1e3a8a;"><i class="fa-solid fa-user-plus"></i> छात्र जोड़े</h3>
+        <div style="max-width: 600px; margin: 30px auto; padding: 25px; background: #ffffff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <h3 style="margin-top:0; color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
+                <i class="fa-solid fa-user-plus"></i> छात्र विवरण खोजें
+            </h3>
             
-            <div style="margin-bottom: 20px;">
-                <input type="text" id="sid" placeholder="Student ID दर्ज करें" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; margin-bottom:10px;">
-                <button id="btnSearch" onclick="window.searchStudent()" style="width:100%; padding:12px; background:#1e3a8a; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">सर्च करें</button>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="sid" placeholder="Student ID दर्ज करें" style="flex: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                <button id="btnSearch" onclick="window.searchStudent()" style="padding: 12px 25px; background:#1e3a8a; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">
+                    सर्च करें
+                </button>
             </div>
 
-            <div id="studentDetails" style="display:none; padding:15px; background:#f8fafc; border-left:5px solid #1e3a8a; border-radius:4px; margin-bottom:15px;"></div>
+            <div id="studentDetails" style="display:none; margin-bottom:20px;">
+                <table style="width:100%; border-collapse: collapse; background: #f8fafc; border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background: #1e3a8a; color: white; text-align: left;">
+                            <th style="padding: 12px;">विवरण</th>
+                            <th style="padding: 12px;">जानकारी</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detailsBody">
+                        </tbody>
+                </table>
+            </div>
             
-            <button id="btnSync" onclick="window.confirmSync()" style="display:none; width:100%; padding:12px; background:#16a34a; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+            <button id="btnSync" onclick="window.confirmSync()" style="display:none; width:100%; padding:14px; background:#16a34a; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
                 <i class="fa-solid fa-check-circle"></i> डेटा सेव (Sync) करें
             </button>
-            <div id="syncStatus" style="margin-top:10px; font-size:14px; text-align:center;"></div>
+            <div id="syncStatus" style="margin-top:15px; font-size:14px; text-align:center; font-weight:bold;"></div>
         </div>
     `;
 }
 
-// 1. सर्च करने का लॉजिक
+// सर्च करने का अपडेटेड लॉजिक
 window.searchStudent = async () => {
     const id = document.getElementById("sid").value.trim();
     const details = document.getElementById("studentDetails");
+    const detailsBody = document.getElementById("detailsBody");
     const btnSync = document.getElementById("btnSync");
     const status = document.getElementById("syncStatus");
 
@@ -709,12 +725,12 @@ window.searchStudent = async () => {
 
         if (data.status === "found") {
             details.style.display = "block";
-            details.innerHTML = `
-                <p style="margin:5px 0;"><b>नाम:</b> ${data.name}</p>
-                <p style="margin:5px 0;"><b>पिता:</b> ${data.father}</p>
-                <p style="margin:5px 0;"><b>माध्यम:</b> ${data.medium}</p>
-                <p style="margin:5px 0;"><b>कक्षा:</b> ${data.class}</p>
-                <p style="margin:5px 0;"><b>मोबाइल:</b> ${data.mobile1}</p>
+            detailsBody.innerHTML = `
+                <tr><td style="padding:10px; border-bottom:1px solid #e2e8f0;"><b>नाम</b></td><td style="padding:10px; border-bottom:1px solid #e2e8f0;">${data.name}</td></tr>
+                <tr><td style="padding:10px; border-bottom:1px solid #e2e8f0;"><b>पिता</b></td><td style="padding:10px; border-bottom:1px solid #e2e8f0;">${data.father}</td></tr>
+                <tr><td style="padding:10px; border-bottom:1px solid #e2e8f0;"><b>माध्यम</b></td><td style="padding:10px; border-bottom:1px solid #e2e8f0;">${data.medium}</td></tr>
+                <tr><td style="padding:10px; border-bottom:1px solid #e2e8f0;"><b>कक्षा</b></td><td style="padding:10px; border-bottom:1px solid #e2e8f0;">${data.class}</td></tr>
+                <tr><td style="padding:10px;"><b>मोबाइल</b></td><td style="padding:10px;">${data.mobile1}</td></tr>
             `;
             btnSync.style.display = "block";
             status.innerText = "";
@@ -725,36 +741,7 @@ window.searchStudent = async () => {
             btnSync.style.display = "none";
         }
     } catch (e) {
-        alert("सर्च करने में त्रुटि आई!");
-    }
-};
-
-// 2. सेव (Sync) करने का लॉजिक
-window.confirmSync = async () => {
-    const btn = document.getElementById("btnSync");
-    const status = document.getElementById("syncStatus");
-    
-    btn.disabled = true;
-    btn.innerText = "सिंक हो रहा है...";
-    
-    const s = window.tempStudentData;
-    
-    try {
-        await fetch(sheetUrls['StudentData'], {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                action: "saveToStudentData", 
-                studentId: s.studentId, name: s.name, father: s.father, medium: s.medium, class: s.class, mobile1: s.mobile1,
-            })
-        });
-        
-        status.innerHTML = `<span style="color:green;">✔ सफलतापूर्वक सिंक हो गया!</span>`;
-        setTimeout(() => showAddStudentForm(), 2000); // 2 सेकंड बाद फॉर्म रीसेट
-    } catch (e) {
-        status.innerHTML = `<span style="color:red;">❌ सिंक करने में विफल!</span>`;
-        btn.disabled = false;
-        btn.innerText = "डेटा सेव करें";
+        alert("सर्वर से कनेक्ट नहीं हो सका!");
+        status.innerText = "";
     }
 };
