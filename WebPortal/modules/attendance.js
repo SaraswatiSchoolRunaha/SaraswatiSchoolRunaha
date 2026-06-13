@@ -9,7 +9,7 @@ export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
 
     // कक्षा और माध्यम की लिस्ट (hardcoded या जैसा आप चाहते हैं)
-    const allClasses = ["KG1", "KG2", "1st", "2", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
+    const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     const allMediums = ["Hindi", "English"];
     
    
