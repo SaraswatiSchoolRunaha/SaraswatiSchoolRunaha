@@ -109,6 +109,75 @@ async function checkLockAndLoadStudents() {
     }
 }
 
+function generateAttendanceGrid(filteredStudents) {
+
+    const container =
+        document.getElementById('attendanceTableContainer');
+
+    if (!filteredStudents || filteredStudents.length === 0) {
+        container.innerHTML =
+            "<p style='color:red;'>कोई छात्र नहीं मिला</p>";
+        return;
+    }
+
+    let html = `
+        <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr style="background:#334155;color:white;">
+                    <th>ID</th>
+                    <th>नाम</th>
+                    <th>माध्यम</th>
+                    <th>कक्षा</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    filteredStudents.forEach(s => {
+
+        const studentId =
+            s["Student ID"] || s["ID"];
+
+        html += `
+            <tr>
+                <td>${studentId}</td>
+                <td>${s["Student Name"] || s["Name"]}</td>
+                <td>${s["Medium"]}</td>
+                <td>${s["Class"]}</td>
+                <td>
+                    <select
+                        class="attStatus"
+                        data-id="${studentId}">
+                        <option value="">--</option>
+                        <option value="P">Present</option>
+                        <option value="A">Absent</option>
+                    </select>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += `
+            </tbody>
+        </table>
+        </div>
+
+        <button id="btnSubmitAttendance">
+            उपस्थिति सुरक्षित करें
+        </button>
+    `;
+
+    container.innerHTML = html;
+
+    document
+        .getElementById('btnSubmitAttendance')
+        .addEventListener('click', () => {
+            saveAttendanceToSheets(filteredStudents);
+        });
+}
+
 function saveAttendanceToSheets(filteredStudents) {
 
     const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
