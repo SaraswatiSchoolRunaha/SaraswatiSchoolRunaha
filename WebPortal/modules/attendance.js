@@ -8,54 +8,46 @@ import { showDashboard } from './dashboard.js';
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
 
-    if (!state.lastData || state.lastData.length === 0) {
-        document.getElementById("contentArea").innerHTML = 
-            "<p style='color:red; font-weight:bold;'>⚠️ त्रुटि: पहले डैशबोर्ड लोड होने दें!</p>";
-        return;
-    }
-
-    const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th" , "12th"];
+    // कक्षा और माध्यम की लिस्ट (hardcoded या जैसा आप चाहते हैं)
+    const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     const allMediums = ["Hindi", "English"];
     
     document.getElementById("contentArea").innerHTML = `
         <div>
-            <h2 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी</h2>
-            <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
-                <div style="flex:1; min-width:150px;">
-                    <label style="font-weight:bold; display:block; margin-bottom:6px;">तारीख (Date)</label>
-                    <input type="date" id="attDate" value="${today}" style="width:100%; height:40px; padding:5px; border-radius:6px; border:1px solid #ccc; box-sizing:border-box;">
+            <h2 style="color:#1e3a8a;"><i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी</h2>
+            <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px; background:#f8fafc; padding:15px;">
+                
+                <div style="flex:1;">
+                    <label>तारीख (Date)</label>
+                    <input type="date" id="attDate" value="${today}" style="width:100%; height:40px;">
                 </div>
-                <div style="flex:1; min-width:150px;">
-                    <label style="font-weight:bold; display:block; margin-bottom:6px;">कक्षा (Class)</label>
-                    <select id="classFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;" autocomplete="off">
+
+                <div style="flex:1;">
+                    <label>कक्षा (Class)</label>
+                    <select id="classFilter" style="width:100%; height:40px;">
                         <option value="">-- कक्षा चुनें --</option>
                         ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
                     </select>
                 </div>
-                <div style="flex:1; min-width:150px;">
-                    <label style="font-weight:bold; display:block; margin-bottom:6px;">माध्यम (Medium)</label>
-                    <select id="mediumFilter" style="width:100%; height:40px; border-radius:6px; border:1px solid #ccc;" autocomplete="off">
+
+                <div style="flex:1;">
+                    <label>माध्यम (Medium)</label>
+                    <select id="mediumFilter" style="width:100%; height:40px;">
                         <option value="">-- माध्यम चुनें --</option>
                         ${allMediums.map(med => `<option value="${med}">${med}</option>`).join('')}
                     </select>
                 </div>
             </div>
-            <div id="attendanceTableContainer"><p style="text-align:center; color:#64748b;">उपस्थिति शीट ग्रिड जनरेट करने हेतु फिल्टर्स का चयन करें...</p></div>
+            <div id="attendanceTableContainer"><p style="text-align:center; color:#64748b;">उपस्थिति देखने के लिए कक्षा और माध्यम चुनें।</p></div>
         </div>`;
 
-    // FIX: फॉर्म खुलते ही ड्रॉपडाउन को ज़बरदस्ती खाली करें
-    document.getElementById('classFilter').selectedIndex = 0;
-    document.getElementById('mediumFilter').selectedIndex = 0;
-
-    // FIX: ब्राउज़र की याददाश्त (Autocomplete) बंद करने के लिए
-    document.getElementById('classFilter').setAttribute('autocomplete', 'off');
-    document.getElementById('mediumFilter').setAttribute('autocomplete', 'off');
+    // यहाँ से वो "Fix" हटा दिया गया है जो ड्रॉपडाउन को जबरदस्ती रिसेट करता था।
+    // अब यूजर खुद जो सिलेक्ट करेगा वही रहेगा।
 
     document.getElementById('attDate').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('classFilter').addEventListener('change', checkLockAndLoadStudents);
     document.getElementById('mediumFilter').addEventListener('change', checkLockAndLoadStudents);
 }
-
 async function checkLockAndLoadStudents() {
     const selectedClass = document.getElementById('classFilter').value;
     const selectedDate = document.getElementById('attDate').value;
