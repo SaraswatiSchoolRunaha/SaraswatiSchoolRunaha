@@ -159,6 +159,24 @@ function generateAttendanceGrid(filteredStudents) {
         saveAttendanceToSheets(filteredStudents);
     });
 }
+// यह फंक्शन आपकी dashboard.js या जहाँ आपने 'generateAttendanceGrid' रखा है, वहां डालें
+function addColorChangingEffect() {
+    document.querySelectorAll('.attStatus').forEach(select => {
+        select.addEventListener('change', function() {
+            // P के लिए हरा, A के लिए हल्का लाल, खाली के लिए सफेद
+            if (this.value === 'P') {
+                this.style.backgroundColor = '#dcfce7'; // हल्का हरा
+                this.style.color = '#166534';
+            } else if (this.value === 'A') {
+                this.style.backgroundColor = '#fee2e2'; // हल्का लाल
+                this.style.color = '#991b1b';
+            } else {
+                this.style.backgroundColor = 'white';
+                this.style.color = 'black';
+            }
+        });
+    });
+}
 
 function saveAttendanceToSheets(filteredStudents) {
 
