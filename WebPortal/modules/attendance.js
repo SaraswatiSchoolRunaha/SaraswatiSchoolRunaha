@@ -81,10 +81,13 @@ async function checkLockAndLoadStudents() {
 }
 
 
+/**
+ * 1. उपस्थिति ग्रिड जेनरेट करने वाला फंक्शन
+ */
 function generateAttendanceGrid(selectedClass, selectedMedium) {
     let container = document.getElementById('attendanceTableContainer');
     
-    // 1. फिल्टरिंग
+    // फिल्टरिंग
     let filteredStudents = state.lastData.filter(s => {
         let cls = (s['Class'] || s['class'] || s['CLASS'] || "").toString().trim();
         let med = (s['Medium'] || s['medium'] || s['MED'] || "").toString().trim();
@@ -97,7 +100,7 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
         return;
     }
 
-    // 2. टेबल रेंडरिंग
+    // टेबल HTML निर्माण
     let html = `
         <div style="overflow-x: auto;">
         <table id="attTable" style="width:100%; border-collapse:collapse; background:white; border:1px solid #e2e8f0;">
@@ -135,14 +138,11 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
     
     container.innerHTML = html;
     
-    // 3. इवेंट लिसनर्स (केवल एक बार)
-    
-    // सबमिट बटन पर क्लिक
+    // इवेंट लिसनर जोड़ना
     document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
         saveAttendanceToSheets(filteredStudents);
     });
 
-    // अटेंडेंस स्टेटस बदलने पर रंग बदलना
     document.querySelectorAll('.attStatus').forEach(select => {
         select.addEventListener('change', function() {
             let row = this.closest('tr');
@@ -151,35 +151,36 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
     });
 }
 
-// ध्यान दें: फंक्शन में 'filteredStudents' पैरामीटर पास करना जरूरी है
+/**
+ * 2. डेटा को Google Sheets पर भेजने वाला फंक्शन
+ */
 function saveAttendanceToSheets(filteredStudents) {
-    let date = document.getElementById("attDate").value;
-    let rows = document.querySelectorAll("#attTable tbody tr");
+    let date = document.getElementById("attDate") ? document.getElementById("attDate").value : new Date().toLocaleDateString();
     let attendanceData = [];
     let validationError = false;
 
-    rows.forEach((row, i) => {
-        let statusSelect = row.querySelector('.attStatus');
-        
+    // सीधे ड्रॉपडाउन एलिमेंट्स को टारगेट करें (rows को लूप करने से ज्यादा सुरक्षित)
+    let selects = document.querySelectorAll(".attStatus");
+
+    selects.forEach((select) => {
+        let index = select.getAttribute('data-index');
+        let student = filteredStudents[index];
+
         // वैलिडेशन
-        if (statusSelect.value === "") {
+        if (!select.value) {
             validationError = true;
-            statusSelect.style.border = "2px solid red";
+            select.style.border = "2px solid red";
         } else {
-            statusSelect.style.border = "1px solid #ccc";
+            select.style.border = "1px solid #ccc";
         }
 
-        // सीधे filteredStudents[i] का उपयोग करें (row.cells की जरूरत नहीं)
-        let student = filteredStudents[i];
-        
         attendanceData.push({
             date: date,
             "Student ID": student['Student ID'] || student['ID'] || '',
             "Student Name": student['Student Name'] || student['Name'] || '',
-            "Father Name": student['Father Name'] || '',
             "Medium": student['Medium'] || student['medium'] || '',
             "Class": student['Class'] || student['class'] || '',
-            "Status": statusSelect.value
+            "Status": select.value
         });
     });
 
@@ -199,13 +200,15 @@ function saveAttendanceToSheets(filteredStudents) {
         body: JSON.stringify(attendanceData)
     }).then(() => {
         alert("✔ उपस्थिति सुरक्षित कर दी गई है!");
-        showDashboard();
+        if (typeof showDashboard === 'function') showDashboard();
     }).catch(err => {
+        console.error(err);
         alert("नेटवर्क त्रुटि: " + err);
         btn.disabled = false; 
         btn.innerText = "उपस्थिति सुरक्षित करें";
     });
 }
+
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
 // ==========================================
