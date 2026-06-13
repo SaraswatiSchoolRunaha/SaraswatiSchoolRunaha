@@ -2,104 +2,144 @@ import { sheetUrls, translations, state } from './config.js';
 import { showDashboard } from './dashboard.js';
 
 // ==========================================
-// 1. DAILY ATTENDANCE MANAGEMENT
+// 1. DAILY ATTENDANCE MANAGEMENT (UPDATED)
 // ==========================================
 
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
+
     const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     const allMediums = ["Hindi", "English"];
-    
+
     document.getElementById("contentArea").innerHTML = `
         <div>
-            <h2 style="color:#1e3a8a;"><i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी</h2>
-            <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px; background:#f8fafc; padding:15px;">
+            <h2 style="color:#1e3a8a;">
+                <i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी
+            </h2>
+
+            <div style="display:flex; gap:15px; flex-wrap:wrap; background:#f8fafc; padding:15px; margin-bottom:10px;">
+
+                <!-- DATE (AUTO TODAY) -->
                 <div style="flex:1;">
-                    <label>तारीख (Date)</label>
-                    <input type="date" id="attDate" value="${today}" style="width:100%; height:40px;">
+                    <label>तारीख</label>
+                    <input type="date" id="attDate" value="${today}" readonly
+                        style="width:100%; height:40px;">
                 </div>
+
+                <!-- CLASS -->
                 <div style="flex:1;">
-                    <label>कक्षा (Class)</label>
+                    <label>कक्षा</label>
                     <select id="classFilter" style="width:100%; height:40px;">
                         <option value="">-- कक्षा चुनें --</option>
                         ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
                     </select>
                 </div>
+
+                <!-- MEDIUM -->
                 <div style="flex:1;">
-                    <label>माध्यम (Medium)</label>
+                    <label>माध्यम</label>
                     <select id="mediumFilter" style="width:100%; height:40px;">
                         <option value="">-- माध्यम चुनें --</option>
                         ${allMediums.map(med => `<option value="${med}">${med}</option>`).join('')}
                     </select>
                 </div>
-            </div>
-            <div id="attendanceTableContainer"><p style="text-align:center; color:#64748b;">उपस्थिति देखने के लिए कक्षा और माध्यम चुनें।</p></div>
-        </div>`;
 
-    document.getElementById('attDate').addEventListener('change', checkLockAndLoadStudents);
-    document.getElementById('classFilter').addEventListener('change', checkLockAndLoadStudents);
-    document.getElementById('mediumFilter').addEventListener('change', checkLockAndLoadStudents);
+            </div>
+
+            <!-- SEARCH BUTTON -->
+            <button id="btnSearchAttendance"
+                style="width:100%; padding:12px; background:#1e3a8a; color:white; border:none; border-radius:6px;">
+                🔍 छात्रों को खोजें
+            </button>
+
+            <div id="attendanceTableContainer" style="margin-top:15px;">
+                <p style="text-align:center; color:#64748b;">
+                    कृपया कक्षा और माध्यम चुनें और Search दबाएं
+                </p>
+            </div>
+        </div>
+    `;
+
+    // BUTTON EVENT ONLY (NO AUTO CALL)
+    document.getElementById('btnSearchAttendance')
+        .addEventListener('click', checkLockAndLoadStudents);
 }
 
 async function checkLockAndLoadStudents() {
     const selectedClass = document.getElementById('classFilter').value;
-    const selectedDate = document.getElementById('attDate').value;
     const selectedMedium = document.getElementById('mediumFilter').value;
+    const selectedDate = document.getElementById('attDate').value;
     const container = document.getElementById('attendanceTableContainer');
 
-    // सुरक्षा चेक: अगर क्लास या माध्यम खाली है, तो कुछ न करें
-    if (!selectedClass || selectedClass === "" || !selectedMedium || selectedMedium === "") { 
-        container.innerHTML = "<p style='text-align:center; color:#64748b;'>कृपया कक्षा और माध्यम चुनें।</p>"; 
-        return; 
+    if (!selectedClass || !selectedMedium) {
+        container.innerHTML = "<p style='color:red;'>कृपया कक्षा और माध्यम चुनें</p>";
+        return;
     }
-    
-    if (!selectedDate) { alert("कृपया तारीख चुनें!"); return; }
 
-    container.innerHTML = `<div style="color:#1e3a8a; font-weight:bold; text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> लॉक स्टेटस जांचा जा रहा है...</div>`;
+    container.innerHTML = `
+        <p style="text-align:center;">
+            <i class="fa-solid fa-spinner fa-spin"></i> डेटा लोड हो रहा है...
+        </p>
+    `;
 
     try {
-        const url = `${sheetUrls['Attendance']}?action=checkLock&date=${selectedDate}&class=${encodeURIComponent(selectedClass)}&medium=${encodeURIComponent(selectedMedium)}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("सर्वर रिस्पॉन्स में समस्या");
-        const result = await response.json();
+        const url = `${sheetUrls['StudentData']}?action=getStudents&class=${encodeURIComponent(selectedClass)}&medium=${encodeURIComponent(selectedMedium)}`;
 
-        if (result && result.exists === true) {
-            container.innerHTML = `<div style="background:#fee2e2; border:2px solid #dc2626; color:#991b1b; padding:20px; border-radius:8px; text-align:center; font-weight:bold;">⚠️ इस कक्षा और माध्यम की अटेंडेंस ${selectedDate} के लिए लॉक की जा चुकी है। संशोधन हेतु 'उपस्थिति सुधार' मेनू का उपयोग करें।</div>`;
-        } else {
-            generateAttendanceGrid(selectedClass, selectedMedium);
+        const response = await fetch(url);
+        const students = await response.json();
+
+        if (!students || students.length === 0) {
+            container.innerHTML = "<p style='color:red;'>कोई छात्र नहीं मिला</p>";
+            return;
         }
-    } catch (e) {
-        console.error("Lock check error:", e);
-        container.innerHTML = `<div style="background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:15px; border-radius:8px; text-align:center;">⚠️ <b>त्रुटि:</b> लॉक स्टेटस चेक नहीं हो सका।</div>`;
+
+        generateAttendanceGrid(students, selectedDate, selectedClass, selectedMedium);
+
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p style='color:red;'>डेटा लोड फेल हुआ</p>";
     }
 }
 
 function generateAttendanceGrid(selectedClass, selectedMedium) {
-    let container = document.getElementById('attendanceTableContainer');
-    
-    // डेटा मौजूद है या नहीं यह चेक करें
-    if (!state.lastData) {
-        container.innerHTML = `<p style='text-align:center; color:red;'>डेटा लोड नहीं हो पाया है, कृपया रिफ्रेश करें।</p>`;
+
+    const container = document.getElementById('attendanceTableContainer');
+
+    // ✅ SAFE CHECK
+    if (!state.lastData || state.lastData.length === 0) {
+        container.innerHTML = `
+            <p style='text-align:center; color:red;'>
+                डेटा लोड नहीं हो पाया है, कृपया रिफ्रेश करें।
+            </p>`;
         return;
     }
 
+    // ✅ CLEAN NORMALIZATION FUNCTION
+    const clean = (v) => (v || "").toString().trim().toLowerCase();
+
     let filteredStudents = state.lastData.filter(s => {
-        let cls = (s['Class'] || s['class'] || s['CLASS'] || "").toString().trim();
-        let med = (s['Medium'] || s['medium'] || s['MED'] || "").toString().trim();
-        return (cls.toLowerCase() === selectedClass.trim().toLowerCase() && 
-                med.toLowerCase() === selectedMedium.trim().toLowerCase());
+        let cls = clean(s['Class'] || s['class'] || s['CLASS']);
+        let med = clean(s['Medium'] || s['medium'] || s['MED']);
+
+        return (
+            cls === clean(selectedClass) &&
+            med === clean(selectedMedium)
+        );
     });
 
-    if(filteredStudents.length === 0) {
-        container.innerHTML = `<div style='color:red; font-weight:bold; text-align:center; padding:20px; border:1px solid red;'>इस कक्षा (${selectedClass}) और माध्यम (${selectedMedium}) में कोई छात्र नहीं मिला।</div>`;
+    if (filteredStudents.length === 0) {
+        container.innerHTML = `
+            <div style='color:red; font-weight:bold; text-align:center; padding:20px; border:1px solid red;'>
+                इस कक्षा (${selectedClass}) और माध्यम (${selectedMedium}) में कोई छात्र नहीं मिला।
+            </div>`;
         return;
     }
 
     let html = `
-        <div style="overflow-x: auto;">
-        <table id="attTable" style="width:100%; border-collapse:collapse; background:white; border:1px solid #e2e8f0;">
+        <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; background:white;">
             <thead>
-                <tr style="background:#334155; color:white; text-align:left;">
+                <tr style="background:#334155; color:white;">
                     <th style="padding:12px;">ID</th>
                     <th style="padding:12px;">नाम</th>
                     <th style="padding:12px;">माध्यम</th>
@@ -108,52 +148,89 @@ function generateAttendanceGrid(selectedClass, selectedMedium) {
                 </tr>
             </thead>
             <tbody>
-                ${filteredStudents.map((s, i) => `
-                <tr style="border-bottom:1px solid #e2e8f0;" id="row_${i}">
-                    <td style="padding:10px;">${s['Student ID'] || s['ID'] || '-'}</td>
-                    <td style="padding:10px;">${s['Student Name'] || s['Name'] || '-'}</td>
-                    <td style="padding:10px;">${s['Medium'] || '-'}</td>
-                    <td style="padding:10px;">${s['Class'] || '-'}</td>
-                    <td style="padding:10px;">
-                        <select class="attStatus" data-index="${i}" style="padding:5px; border-radius:4px; width:100%;">
-                            <option value="">--</option>
-                            <option value="P">Present</option>
-                            <option value="A">Absent</option>
-                        </select>
-                    </td>
-                </tr>`).join('')}
+    `;
+
+    filteredStudents.forEach((s) => {
+
+        const studentId = s['Student ID'] || s['ID'];
+
+        html += `
+            <tr style="border-bottom:1px solid #e2e8f0;" data-id="${studentId}">
+                <td style="padding:10px;">${studentId || '-'}</td>
+                <td style="padding:10px;">${s['Student Name'] || s['Name'] || '-'}</td>
+                <td style="padding:10px;">${s['Medium'] || '-'}</td>
+                <td style="padding:10px;">${s['Class'] || '-'}</td>
+                <td style="padding:10px;">
+                    <select class="attStatus"
+                        data-id="${studentId}"
+                        style="padding:5px; border-radius:4px; width:100%;">
+                        <option value="">--</option>
+                        <option value="P">Present</option>
+                        <option value="A">Absent</option>
+                    </select>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += `
             </tbody>
         </table>
         </div>
-        <button id="btnSubmitAttendance" class="btn-action" style="margin-top:20px; background:#1e3a8a; color:white; width:100%; padding:15px; border:none; border-radius:8px; cursor:pointer;">
+
+        <button id="btnSubmitAttendance"
+            style="margin-top:20px; background:#1e3a8a; color:white; width:100%; padding:15px; border:none; border-radius:8px;">
             उपस्थिति सुरक्षित करें
         </button>
     `;
-    
-    container.innerHTML = html;
-    
-    document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
-        saveAttendanceToSheets(filteredStudents);
-    });
 
+    container.innerHTML = html;
+
+    // ✅ SAVE BUTTON
+    document.getElementById('btnSubmitAttendance')
+        .addEventListener('click', () => {
+            saveAttendanceToSheets(filteredStudents);
+        });
+
+    // ✅ ROW COLOR CHANGE
     document.querySelectorAll('.attStatus').forEach(select => {
-        select.addEventListener('change', function() {
+        select.addEventListener('change', function () {
             let row = this.closest('tr');
-            row.style.backgroundColor = (this.value === 'P') ? '#dcfce7' : (this.value === 'A') ? '#fee2e2' : 'transparent';
+
+            if (this.value === 'P') {
+                row.style.backgroundColor = '#dcfce7';
+            } else if (this.value === 'A') {
+                row.style.backgroundColor = '#fee2e2';
+            } else {
+                row.style.backgroundColor = '';
+            }
         });
     });
 }
 
 function saveAttendanceToSheets(filteredStudents) {
-    let date = document.getElementById("attDate") ? document.getElementById("attDate").value : new Date().toLocaleDateString();
+
+    const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
+
+    const selects = document.querySelectorAll(".attStatus");
+
     let attendanceData = [];
     let validationError = false;
 
-    let selects = document.querySelectorAll(".attStatus");
+    // ✅ FAST LOOKUP MAP (IMPORTANT FIX)
+    const studentMap = new Map();
+    filteredStudents.forEach(s => {
+        const id = s['Student ID'] || s['ID'];
+        studentMap.set(String(id), s);
+    });
 
     selects.forEach((select) => {
-        let index = select.getAttribute('data-index');
-        let student = filteredStudents[index];
+
+        const studentId = select.getAttribute('data-id');
+        const student = studentMap.get(String(studentId));
+
+        // ❌ safety check
+        if (!student) return;
 
         if (!select.value) {
             validationError = true;
@@ -164,7 +241,7 @@ function saveAttendanceToSheets(filteredStudents) {
 
         attendanceData.push({
             date: date,
-            "Student ID": student['Student ID'] || student['ID'] || '',
+            "Student ID": studentId,
             "Student Name": student['Student Name'] || student['Name'] || '',
             "Medium": student['Medium'] || student['medium'] || '',
             "Class": student['Class'] || student['class'] || '',
@@ -172,27 +249,40 @@ function saveAttendanceToSheets(filteredStudents) {
         });
     });
 
-    if (validationError) { 
-        alert("⚠️ कृपया सभी छात्रों का Status चुनें!"); 
-        return; 
+    if (validationError) {
+        alert("⚠️ कृपया सभी छात्रों का Status चुनें!");
+        return;
     }
 
-    let btn = document.getElementById('btnSubmitAttendance');
-    btn.disabled = true; 
-    btn.innerText = "⏳ डेटा सेंड हो रहा है...";
+    const btn = document.getElementById('btnSubmitAttendance');
+    btn.disabled = true;
+    btn.innerText = "⏳ डेटा भेजा जा रहा है...";
 
     fetch(sheetUrls['Attendance'], {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(attendanceData)
-    }).then(() => {
-        alert("✔ उपस्थिति सुरक्षित कर दी गई है!");
-        if (typeof showDashboard === 'function') showDashboard();
-    }).catch(err => {
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            action: "saveAttendance",
+            data: attendanceData
+        })
+    })
+    .then(async (res) => {
+        const text = await res.text();
+        console.log("Server Response:", text);
+
+        alert("✔ उपस्थिति सफलतापूर्वक सेव हो गई!");
+        
+        if (typeof showDashboard === 'function') {
+            showDashboard();
+        }
+    })
+    .catch(err => {
         console.error(err);
-        alert("नेटवर्क त्रुटि: " + err);
-        btn.disabled = false; 
+        alert("नेटवर्क त्रुटि: " + err.message);
+
+        btn.disabled = false;
         btn.innerText = "उपस्थिति सुरक्षित करें";
     });
 }
