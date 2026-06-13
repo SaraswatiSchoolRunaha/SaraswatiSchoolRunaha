@@ -378,25 +378,40 @@ async function fetchAttendanceData() {
 async function updateCorrectionAttendance(studentId, i, btn) {
     let select = document.getElementById(`st_${i}`);
     let selectedDate = document.getElementById("searchDate").value; 
-    btn.disabled = true; btn.innerText = "Saving...";
+
+    btn.disabled = true;
+    btn.innerText = "Saving...";
 
     try {
         const res = await fetch(sheetUrls['Attendance'], {
             method: "POST",
             mode: "cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "updateSingleAttendance", studentId: studentId, date: selectedDate, newStatus: select.value })
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "updateSingleAttendance",
+                studentId: studentId,
+                date: selectedDate,
+                newStatus: select.value
+            })
         });
-        const data = await res.json();
-        if (data.status === "success") { 
-            alert("उपस्थिति सफलतापूर्वक अपडेट की गई!"); 
-        } else {
-            alert("सुधार विफल रहा!");
-        }
-    } catch (err) { alert("सर्वर त्रुटि: " + err.message); }
-    finally { btn.disabled = false; btn.innerText = "Update"; }
-}
 
+        const data = await res.json();
+
+        if (data.status === "success") {
+            alert("✔ उपस्थिति सफलतापूर्वक अपडेट की गई!");
+        } else {
+            alert("❌ अपडेट फेल: " + (data.message || ""));
+        }
+
+    } catch (err) {
+        alert("नेटवर्क / सर्वर त्रुटि: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Update";
+    }
+}
 // ==========================================
 // 3. DAILY ABSENT REPORT PRINT LOGIC
 // ==========================================
