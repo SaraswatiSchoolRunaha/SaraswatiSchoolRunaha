@@ -186,7 +186,6 @@ document.addEventListener('change', function(e) {
 });
 
 function saveAttendanceToSheets(filteredStudents) {
-
     const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
 
     const selects = document.querySelectorAll(".attStatus");
