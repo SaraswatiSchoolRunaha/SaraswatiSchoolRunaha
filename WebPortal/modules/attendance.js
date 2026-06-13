@@ -235,16 +235,18 @@ function saveAttendanceToSheets(filteredStudents) {
     btn.innerText = "⏳ डेटा भेजा जा रहा है...";
 
     fetch(sheetUrls['Attendance'], {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            action: "saveAttendance",
-            data: attendanceData
-        })
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+        action: "saveAttendance",
+        data: attendanceData
     })
-    .then(async (res) => {
+});
+    
+.then(async (res) => {
         const text = await res.text();
         console.log("Server Response:", text);
 
