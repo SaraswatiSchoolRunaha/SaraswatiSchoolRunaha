@@ -6,6 +6,7 @@ import { showDashboard } from './dashboard.js';
 // ==========================================
 
 export function showAttendanceForm() {
+    alert("Attendance Form Open Ho Raha Hai");
     const today = new Date().toISOString().split('T')[0];
 
     // कक्षा और माध्यम की लिस्ट (hardcoded या जैसा आप चाहते हैं)
