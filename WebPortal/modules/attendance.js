@@ -187,13 +187,11 @@ document.addEventListener('change', function(e) {
 
 function saveAttendanceToSheets(filteredStudents) {
     const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
-
     const selects = document.querySelectorAll(".attStatus");
 
     let attendanceData = [];
     let validationError = false;
 
-    // ✅ FAST LOOKUP MAP (IMPORTANT FIX)
     const studentMap = new Map();
     filteredStudents.forEach(s => {
         const id = s['Student ID'] || s['ID'];
@@ -201,11 +199,9 @@ function saveAttendanceToSheets(filteredStudents) {
     });
 
     selects.forEach((select) => {
-
         const studentId = select.getAttribute('data-id');
         const student = studentMap.get(String(studentId));
 
-        // ❌ safety check
         if (!student) return;
 
         if (!select.value) {
@@ -234,22 +230,21 @@ function saveAttendanceToSheets(filteredStudents) {
     btn.disabled = true;
     btn.innerText = "⏳ डेटा भेजा जा रहा है...";
 
+    // CORS मोड के साथ fetch कॉल
     fetch(sheetUrls['Attendance'], {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify({
-        action: "saveAttendance",
-        data: attendanceData
+        method: "POST",
+        mode: "cors", // 'no-cors' को हटाकर 'cors' करें
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            action: "saveAttendance",
+            data: attendanceData
+        })
     })
-});
-    
-.then(async (res) => {
-        const text = await res.text();
-        console.log("Server Response:", text);
-
+    .then(res => res.json()) // अब रिस्पॉन्स पढ़ा जा सकता है
+    .then(data => {
+        console.log("Server Response:", data);
         alert("✔ उपस्थिति सफलतापूर्वक सेव हो गई!");
         
         if (typeof showDashboard === 'function') {
@@ -257,9 +252,8 @@ function saveAttendanceToSheets(filteredStudents) {
         }
     })
     .catch(err => {
-        console.error(err);
+        console.error("Error:", err);
         alert("नेटवर्क त्रुटि: " + err.message);
-
         btn.disabled = false;
         btn.innerText = "उपस्थिति सुरक्षित करें";
     });
