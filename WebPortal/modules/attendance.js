@@ -68,7 +68,6 @@ export function showAttendanceForm() {
 async function checkLockAndLoadStudents() {
     const selectedClass = document.getElementById('classFilter').value;
     const selectedMedium = document.getElementById('mediumFilter').value;
-    const selectedDate = document.getElementById('attDate').value;
     const container = document.getElementById('attendanceTableContainer');
 
     if (!selectedClass || !selectedMedium) {
@@ -83,129 +82,31 @@ async function checkLockAndLoadStudents() {
     `;
 
     try {
-        const url = `${sheetUrls['StudentData']}?action=getStudents&class=${encodeURIComponent(selectedClass)}&medium=${encodeURIComponent(selectedMedium)}`;
+
+        const url =
+            `${sheetUrls['StudentData']}?action=getStudents` +
+            `&class=${encodeURIComponent(selectedClass)}` +
+            `&medium=${encodeURIComponent(selectedMedium)}`;
 
         const response = await fetch(url);
         const students = await response.json();
 
+        console.log("Students From API =", students);
+
         if (!students || students.length === 0) {
-            container.innerHTML = "<p style='color:red;'>कोई छात्र नहीं मिला</p>";
+            container.innerHTML =
+                "<p style='color:red;'>कोई छात्र नहीं मिला</p>";
             return;
         }
 
-        generateAttendanceGrid( selectedClass, selectedMedium);
+        // ✅ यही सबसे बड़ा बदलाव
+        generateAttendanceGrid(students);
 
     } catch (err) {
         console.error(err);
-        container.innerHTML = "<p style='color:red;'>डेटा लोड फेल हुआ</p>";
+        container.innerHTML =
+            "<p style='color:red;'>डेटा लोड फेल हुआ</p>";
     }
-}
-
-function generateAttendanceGrid(selectedClass, selectedMedium) {
-
-    const container = document.getElementById('attendanceTableContainer');
-
-    // ✅ SAFE CHECK
-    if (!state.lastData || state.lastData.length === 0) {
-        container.innerHTML = `
-            <p style='text-align:center; color:red;'>
-                डेटा लोड नहीं हो पाया है, कृपया रिफ्रेश करें।
-            </p>`;
-        return;
-    }
-
-    // ✅ CLEAN NORMALIZATION FUNCTION
-    const clean = (v) => (v || "").toString().trim().toLowerCase();
-
-    let filteredStudents = state.lastData.filter(s => {
-        let cls = clean(s['Class'] || s['class'] || s['CLASS']);
-        let med = clean(s['Medium'] || s['medium'] || s['MED']);
-
-        return (
-            cls === clean(selectedClass) &&
-            med === clean(selectedMedium)
-        );
-    });
-
-    if (filteredStudents.length === 0) {
-        container.innerHTML = `
-            <div style='color:red; font-weight:bold; text-align:center; padding:20px; border:1px solid red;'>
-                इस कक्षा (${selectedClass}) और माध्यम (${selectedMedium}) में कोई छात्र नहीं मिला।
-            </div>`;
-        return;
-    }
-
-    let html = `
-        <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; background:white;">
-            <thead>
-                <tr style="background:#334155; color:white;">
-                    <th style="padding:12px;">ID</th>
-                    <th style="padding:12px;">नाम</th>
-                    <th style="padding:12px;">माध्यम</th>
-                    <th style="padding:12px;">कक्षा</th>
-                    <th style="padding:12px;">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-    filteredStudents.forEach((s) => {
-
-        const studentId = s['Student ID'] || s['ID'];
-
-        html += `
-            <tr style="border-bottom:1px solid #e2e8f0;" data-id="${studentId}">
-                <td style="padding:10px;">${studentId || '-'}</td>
-                <td style="padding:10px;">${s['Student Name'] || s['Name'] || '-'}</td>
-                <td style="padding:10px;">${s['Medium'] || '-'}</td>
-                <td style="padding:10px;">${s['Class'] || '-'}</td>
-                <td style="padding:10px;">
-                    <select class="attStatus"
-                        data-id="${studentId}"
-                        style="padding:5px; border-radius:4px; width:100%;">
-                        <option value="">--</option>
-                        <option value="P">Present</option>
-                        <option value="A">Absent</option>
-                    </select>
-                </td>
-            </tr>
-        `;
-    });
-
-    html += `
-            </tbody>
-        </table>
-        </div>
-
-        <button id="btnSubmitAttendance"
-            style="margin-top:20px; background:#1e3a8a; color:white; width:100%; padding:15px; border:none; border-radius:8px;">
-            उपस्थिति सुरक्षित करें
-        </button>
-    `;
-
-    container.innerHTML = html;
-
-    // ✅ SAVE BUTTON
-    document.getElementById('btnSubmitAttendance')
-        .addEventListener('click', () => {
-            saveAttendanceToSheets(filteredStudents);
-        });
-
-    // ✅ ROW COLOR CHANGE
-    document.querySelectorAll('.attStatus').forEach(select => {
-        select.addEventListener('change', function () {
-            let row = this.closest('tr');
-
-            if (this.value === 'P') {
-                row.style.backgroundColor = '#dcfce7';
-            } else if (this.value === 'A') {
-                row.style.backgroundColor = '#fee2e2';
-            } else {
-                row.style.backgroundColor = '';
-            }
-        });
-    });
 }
 
 function saveAttendanceToSheets(filteredStudents) {
