@@ -268,14 +268,32 @@ export function showCorrectionPortal() {
                         <label style="font-size:12px; font-weight:bold; color:#64748b;">तारीख</label>
                         <input type="date" id="searchDate" value="${today}" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
                     </div>
+                    
                     <div style="flex:1; min-width:120px;">
                         <label style="font-size:12px; font-weight:bold; color:#64748b;">कक्षा</label>
-                        <input type="text" id="searchClass" placeholder="उदा: 10" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                        <select id="searchClass" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                            <option value="">चुनें...</option>
+                            <option value="1">Class 1</option>
+                            <option value="2">Class 2</option>
+                            <option value="3">Class 3</option>
+                            <option value="4">Class 4</option>
+                            <option value="5">Class 5</option>
+                            <option value="6">Class 6</option>
+                            <option value="7">Class 7</option>
+                            <option value="8">Class 8</option>
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                        </select>
                     </div>
+
                     <div style="flex:1; min-width:120px;">
                         <label style="font-size:12px; font-weight:bold; color:#64748b;">माध्यम</label>
-                        <input type="text" id="searchMedium" placeholder="उदा: Hindi" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                        <select id="searchMedium" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                            <option value="Hindi">Hindi</option>
+                            <option value="English">English</option>
+                        </select>
                     </div>
+                    
                     <button id="btnFetchData" style="background:#1e3a8a; color:white; border:none; padding:11px 20px; cursor:pointer; border-radius:6px; font-weight:bold;">
                         <i class="fa-solid fa-magnifying-glass"></i> खोजें
                     </button>
