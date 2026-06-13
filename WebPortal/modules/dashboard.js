@@ -6,6 +6,9 @@ export function showDashboard() {
     
     if (pageTitle) pageTitle.innerText = translations[state.currentLang]['डैशबोर्ड'];
     
+    // अगर contentArea ही नहीं है, तो आगे बढ़ने का कोई मतलब नहीं
+    if (!contentArea) return;
+
     contentArea.innerHTML = `
         <div id="dashboardResults">
             <div style="text-align:center; padding:50px; color:#1e3a8a; font-weight:bold;">
@@ -13,14 +16,19 @@ export function showDashboard() {
             </div>
         </div>`;
 
-    fetch(sheetUrls['Database'] + "?action=getDashboard")
+    // CORS के लिए mode: 'cors' जोड़ा गया है
+    fetch(sheetUrls['Database'] + "?action=getDashboard", { method: "GET", mode: "cors" })
         .then(response => {
             if (!response.ok) throw new Error("डेटाबेस कनेक्शन एरर!");
             return response.json();
         })
         .then(data => {
+            // सुरक्षा: चेक करें कि क्या अब भी dashboardResults मौजूद है
+            const resultsDiv = document.getElementById('dashboardResults');
+            if (!resultsDiv) return;
+
             if (!Array.isArray(data) || data.length === 0) {
-                document.getElementById('dashboardResults').innerHTML = "<div style='padding:20px;color:red;font-weight:bold;'>कोई छात्र रिकॉर्ड नहीं मिल सका।</div>";
+                resultsDiv.innerHTML = "<div style='padding:20px;color:red;font-weight:bold;'>कोई छात्र रिकॉर्ड नहीं मिल सका।</div>";
                 return;
             }
 
@@ -45,7 +53,6 @@ export function showDashboard() {
                         <div style="font-size:36px; font-weight:800; margin-top:5px;">${totalClasses}</div>
                     </div>
                 </div>
-                
                 <h3 style="color:#1e3a8a; margin-bottom:15px; padding-top:10px; border-top:2px dashed #e2e8f0;">📊 कक्षा अनुसार छात्र विवरण</h3>
                 <table style="width:100% !important; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                     <thead>
@@ -74,7 +81,7 @@ export function showDashboard() {
                     </tbody>
                 </table>`;
 
-            document.getElementById('dashboardResults').innerHTML = html;
+            resultsDiv.innerHTML = html;
 
             Object.keys(classCount).forEach(cls => {
                 const safeId = btoa(encodeURIComponent(cls)).replace(/=/g, "");
@@ -85,7 +92,10 @@ export function showDashboard() {
             });
         })
         .catch(error => {
-            document.getElementById('dashboardResults').innerHTML = `<div style="color:red; padding:20px; font-weight:bold;">⚠️ त्रुटि: ${error.message}</div>`;
+            const resultsDiv = document.getElementById('dashboardResults');
+            if (resultsDiv) {
+                resultsDiv.innerHTML = `<div style="color:red; padding:20px; font-weight:bold;">⚠️ त्रुटि: ${error.message}</div>`;
+            }
         });
 }
 
