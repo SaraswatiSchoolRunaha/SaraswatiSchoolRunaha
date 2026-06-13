@@ -18,17 +18,19 @@ export function showAttendanceForm() {
 
             <div style="display:flex; gap:10px; flex-wrap:wrap; background:#f8fafc; padding:15px; margin-bottom:10px; align-items:flex-end;">
 
-               <div style="flex:1; min-width:120px;">
-                    <label style="display:block; font-size:12px;">तारीख</label>
-                    <input type="date" id="attDate" value="${today}" style="width:100%; height:40px; padding: 5px;">
-                </div>
-                <div style="flex:1; min-width:120px;">
-                    <label style="display:block; font-size:12px;">कक्षा</label>
+              <div style="flex: 0 0 140px;"> 
+                <label style="display:block; font-size:12px; margin-bottom:4px;">तारीख</label>
+                <input type="date" id="attDate" value="${today}" 
+                   style="width:100%; height:40px; padding: 5px; box-sizing: border-box;">
+            </div>
+
+                    <div style="flex: 1; min-width: 150px;">
+                    <label style="display:block; font-size:12px; margin-bottom:4px;">कक्षा</label>
                     <select id="classFilter" style="width:100%; height:40px;">
-                        <option value="">-- कक्षा --</option>
-                        ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
-                    </select>
-                </div>
+                    <option value="">-- कक्षा चुनें --</option>
+                    ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
+                </select>
+            </div>
 
                 <div style="flex:1; min-width:120px;">
                     <label style="display:block; font-size:12px;">माध्यम</label>
