@@ -161,20 +161,24 @@ function generateAttendanceGrid(filteredStudents) {
         saveAttendanceToSheets(filteredStudents);
     });
 }
-
-// यह कोड पूरी फाइल में कहीं भी डाल दें, यह अपने आप काम करेगा
+// यह कोड पूरी फाइल में कहीं भी डाल दें
 document.addEventListener('change', function(e) {
-    // अगर बदलने वाला एलिमेंट 'attStatus' है, तो ये चलेगा
+    // अगर बदलने वाला एलिमेंट 'attStatus' क्लास वाला है
     if (e.target && e.target.classList.contains('attStatus')) {
         let select = e.target;
+        // उस पंक्ति (row) को चुनें जिसमें यह ड्रॉपडाउन है
+        let row = select.closest('tr');
         
         if (select.value === 'P') {
-            select.style.backgroundColor = '#dcfce7'; // हल्का हरा
+            row.style.backgroundColor = '#dcfce7'; // पूरी लाइन हल्का हरा
+            select.style.backgroundColor = '#dcfce7';
             select.style.color = '#166534';
         } else if (select.value === 'A') {
-            select.style.backgroundColor = '#fee2e2'; // हल्का लाल
+            row.style.backgroundColor = '#fee2e2'; // पूरी लाइन हल्का लाल
+            select.style.backgroundColor = '#fee2e2';
             select.style.color = '#991b1b';
         } else {
+            row.style.backgroundColor = 'white'; // वापस सफेद
             select.style.backgroundColor = 'white';
             select.style.color = 'black';
         }
