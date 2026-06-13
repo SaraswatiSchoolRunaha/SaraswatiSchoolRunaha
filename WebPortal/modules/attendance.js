@@ -584,67 +584,91 @@ function transferStudentRowSync() {
         btn.disabled = false; btn.innerText = "डेटा StudentData टैब में ट्रांसफर करें";
     });
 }
-
-
 // ==========================================
 // 6. ARCHIVE ROW ERASER (DELETE STUDENT)
 // ==========================================
-export async function showDeleteStudentPortal(){
-    document.getElementById('contentArea').innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> सक्रिय सूची लोड हो रही है...</p>";
+export async function showDeleteStudentPortal() {
+    document.getElementById('contentArea').innerHTML = "<p style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> डेटा लोड हो रहा है...</p>";
+    
     try {
         const response = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
         state.studentDataList = await response.json();
-        let classes = [...new Set(state.studentDataList.map(s => s.Class || s.class))].filter(Boolean).sort();
+        
+        // कक्षा और माध्यम की लिस्ट
+        const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
+        const allMediums = ["Hindi", "English"];
         
         document.getElementById('contentArea').innerHTML = `
             <div>
-                <h3 style="color:#b91c1c; margin-top:0;"><i class="fa-solid fa-user-minus"></i> StudentData शीट से छात्र हटाएं (Row Delete)</h3>
-                <label style="font-weight:bold; margin-right:10px;">कक्षा चुनें:</label>
-                <select id="deleteClassFilter" style="padding:8px; border-radius:4px; border:1px solid #ccc; width:200px;"><option value="">-- कक्षा चुनें --</option>${classes.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
-                <div id="deleteStudentContainer" style="margin-top:20px;"></div>
+                <h3 style="color:#b91c1c; margin-top:0;"><i class="fa-solid fa-user-minus"></i> छात्र डिलीट करें</h3>
+                
+                <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; background:#f8fafc; padding:15px; border-radius:8px;">
+                    <select id="delClass" style="padding:8px; border-radius:4px; border:1px solid #ccc;">
+                        <option value="">-- कक्षा चुनें --</option>
+                        ${allClasses.map(c => `<option value="${c}">${c}</option>`).join('')}
+                    </select>
+
+                    <select id="delMedium" style="padding:8px; border-radius:4px; border:1px solid #ccc;">
+                        <option value="">-- माध्यम चुनें --</option>
+                        ${allMediums.map(m => `<option value="${m}">${m}</option>`).join('')}
+                    </select>
+
+                    <button id="btnSearchDel" style="padding:8px 15px; background:#1e3a8a; color:white; border:none; border-radius:4px; cursor:pointer;">
+                        <i class="fa-solid fa-magnifying-glass"></i> खोजें
+                    </button>
+                </div>
+                
+                <div id="deleteStudentContainer"></div>
             </div>`;
         
-        document.getElementById('deleteClassFilter').addEventListener('change', renderDeleteGridList);
-    } catch(err) { document.getElementById('contentArea').innerHTML = "सक्रिय सूची प्राप्त करने में त्रुटि।"; }
+        document.getElementById('btnSearchDel').addEventListener('click', renderDeleteGridList);
+    } catch(err) { 
+        document.getElementById('contentArea').innerHTML = "सक्रिय सूची प्राप्त करने में त्रुटि।"; 
+    }
 }
 
 function renderDeleteGridList() {
-    let cls = document.getElementById("deleteClassFilter").value;
-    let container = document.getElementById("deleteStudentContainer");
-    if(!cls) { container.innerHTML = ""; return; }
-    
-    let students = state.studentDataList.filter(s => (s.Class || s.class) == cls);
+    const cls = document.getElementById("delClass").value;
+    const med = document.getElementById("delMedium").value;
+    const container = document.getElementById("deleteStudentContainer");
+
+    if(!cls || !med) { 
+        alert("कृपया कक्षा और माध्यम दोनों चुनें!"); 
+        return; 
+    }
+    // फ़िल्टर लॉजिक (Normalization के साथ)
+    const clean = (v) => (v || "").toString().trim().toLowerCase();
+    let students = state.studentDataList.filter(s => 
+        clean(s.Class || s.class) === clean(cls) && 
+        clean(s.Medium || s.medium) === clean(med)
+    );
+
     if(students.length === 0){ 
-        container.innerHTML = "<p style='color:orange; text-align:center;'>इस कक्षा में कोई छात्र नहीं मिला।</p>"; 
+        container.innerHTML = "<p style='color:orange; text-align:center; padding:20px;'>इस कक्षा और माध्यम में कोई छात्र नहीं मिला।</p>"; 
         return; 
     }
 
-    // टेबल का लेआउट (CSS के साथ ताकि यह प्रोफेशनल दिखे)
     let html = `
-    <table style="width:100%; border-collapse:collapse; margin-top:15px; font-size:14px;">
+    <table style="width:100%; border-collapse:collapse; margin-top:15px; font-size:14px; background:white;">
         <thead>
             <tr style="background:#334155; color:white; text-align:left;">
                 <th style="padding:10px;">ID</th>
                 <th style="padding:10px;">नाम</th>
                 <th style="padding:10px;">पिता का नाम</th>
-                <th style="padding:10px;">माध्यम</th>
-                <th style="padding:10px;">कक्षा</th>
                 <th style="padding:10px;">एक्शन</th>
             </tr>
         </thead>
-        <tbody>
-    `;
+        <tbody>`;
 
     students.forEach((stu) => {
+        const sid = stu["Student ID"] || stu["id"];
         html += `
             <tr style="border-bottom:1px solid #e2e8f0;">
-                <td style="padding:10px;"><strong>${stu["Student ID"] || stu["id"]}</strong></td>
+                <td style="padding:10px;"><strong>${sid}</strong></td>
                 <td style="padding:10px;">${stu["Student Name"] || stu["name"]}</td>
                 <td style="padding:10px;">${stu["Father Name"] || stu["father"]}</td>
-                <td style="padding:10px;">${stu["Medium"] || stu["medium"]}</td>
-                <td style="padding:10px;">${stu["Class"] || stu["class"]}</td>
                 <td style="padding:10px;">
-                    <button class="del-action-btn" data-id="${stu["Student ID"] || stu["id"]}" 
+                    <button class="del-action-btn" data-id="${sid}" 
                         style="background:#dc2626; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">
                         <i class="fa-solid fa-trash-can"></i> डिलीट
                     </button>
@@ -654,14 +678,12 @@ function renderDeleteGridList() {
 
     container.innerHTML = html + "</tbody></table>";
 
-    // बटन क्लिक इवेंट
     document.querySelectorAll('.del-action-btn').forEach(btn => {
         btn.addEventListener('click', function() { 
             executeDeleteRowOperation(this.getAttribute('data-id'), this); 
         });
     });
 }
-
 async function executeDeleteRowOperation(studentId, btnElement) {
     if (!confirm(`क्या आप वाकई Student ID: ${studentId} को StudentData शीट से हटाना चाहते हैं?`)) return;
     btnElement.disabled = true; btnElement.innerHTML = "⏳...";
@@ -680,8 +702,9 @@ async function executeDeleteRowOperation(studentId, btnElement) {
     }
 }
 
-
-// छात्र जोड़ने (Sync) के लिए UI और लॉजिक
+// ==========================================
+// 7. छात्र जोड़ने (Sync) के लिए UI और लॉजिक
+// ==========================================
 export function showAddStudentForm() {
     const contentArea = document.getElementById("contentArea");
     contentArea.innerHTML = `
