@@ -4,7 +4,6 @@ import { showDashboard } from './dashboard.js';
 // ==========================================
 // 1. DAILY ATTENDANCE MANAGEMENT (UPDATED)
 // ==========================================
-
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
 
@@ -101,46 +100,39 @@ async function checkLockAndLoadStudents() {
 }
 
 function generateAttendanceGrid(filteredStudents) {
-
-    const container =
-        document.getElementById('attendanceTableContainer');
+    const container = document.getElementById('attendanceTableContainer');
 
     if (!filteredStudents || filteredStudents.length === 0) {
-        container.innerHTML =
-            "<p style='color:red;'>कोई छात्र नहीं मिला</p>";
+        container.innerHTML = "<p style='text-align:center; padding:20px; color:#ef4444; font-weight:bold;'>कोई छात्र नहीं मिला</p>";
         return;
     }
 
     let html = `
-        <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse;">
+        <div style="overflow-x:auto; border-radius:8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+        <table style="width:100%; border-collapse:collapse; background:white; font-family:sans-serif;">
             <thead>
-                <tr style="background:#334155;color:white;">
-                    <th>ID</th>
-                    <th>नाम</th>
-                    <th>माध्यम</th>
-                    <th>कक्षा</th>
-                    <th>Status</th>
+                <tr style="background:#1e3a8a; color:white; text-align:left;">
+                    <th style="padding:12px;">ID</th>
+                    <th style="padding:12px;">नाम</th>
+                    <th style="padding:12px;">माध्यम</th>
+                    <th style="padding:12px;">कक्षा</th>
+                    <th style="padding:12px;">Status</th>
                 </tr>
             </thead>
             <tbody>
     `;
 
     filteredStudents.forEach(s => {
-
-        const studentId =
-            s["Student ID"] || s["ID"];
-
+        const studentId = s["Student ID"] || s["ID"];
         html += `
-            <tr>
-                <td>${studentId}</td>
-                <td>${s["Student Name"] || s["Name"]}</td>
-                <td>${s["Medium"]}</td>
-                <td>${s["Class"]}</td>
-                <td>
-                    <select
-                        class="attStatus"
-                        data-id="${studentId}">
+            <tr style="border-bottom:1px solid #e2e8f0; transition:0.3s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+                <td style="padding:12px;">${studentId}</td>
+                <td style="padding:12px; font-weight:600;">${s["Student Name"] || s["Name"]}</td>
+                <td style="padding:12px;">${s["Medium"]}</td>
+                <td style="padding:12px;">${s["Class"]}</td>
+                <td style="padding:12px;">
+                    <select class="attStatus" data-id="${studentId}" 
+                        style="padding:5px 10px; border-radius:4px; border:1px solid #cbd5e1; outline:none; cursor:pointer;">
                         <option value="">--</option>
                         <option value="P">Present</option>
                         <option value="A">Absent</option>
@@ -155,20 +147,19 @@ function generateAttendanceGrid(filteredStudents) {
         </table>
         </div>
 
-        <button id="btnSubmitAttendance">
-            उपस्थिति सुरक्षित करें
-        </button>
+        <div style="margin-top:20px; text-align:center;">
+            <button id="btnSubmitAttendance" style="padding:12px 30px; background:#10b981; color:white; border:none; border-radius:6px; font-size:16px; cursor:pointer; font-weight:bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <i class="fa-solid fa-save"></i> उपस्थिति सुरक्षित करें
+            </button>
+        </div>
     `;
 
     container.innerHTML = html;
 
-    document
-        .getElementById('btnSubmitAttendance')
-        .addEventListener('click', () => {
-            saveAttendanceToSheets(filteredStudents);
-        });
+    document.getElementById('btnSubmitAttendance').addEventListener('click', () => {
+        saveAttendanceToSheets(filteredStudents);
+    });
 }
-
 function saveAttendanceToSheets(filteredStudents) {
 
     const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
