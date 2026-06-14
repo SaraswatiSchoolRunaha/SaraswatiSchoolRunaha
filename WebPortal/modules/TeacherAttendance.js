@@ -1,5 +1,4 @@
 import { sheetUrls, translations } from './config.js'; // कॉन्फ़िगरेशन इंपोर्ट किया
-import { loadTeacherAttendance } from './teacherAttendance.js';
 
 export function loadTeacherAttendance() {
     const contentArea = document.getElementById("contentArea");
@@ -7,7 +6,7 @@ export function loadTeacherAttendance() {
     // UI रेंडर करें
     contentArea.innerHTML = `
         <div class="module-card">
-            <h2>${translations['शिक्षक उपस्थिति मॉड्यूल']}</h2>
+            <h2>${translations['शिक्षक उपस्थिति मॉड्यूल'] || 'शिक्षक उपस्थिति'}</h2>
             <div class="form-group">
                 <input type="text" id="teacherId" placeholder="Teacher ID" class="form-control">
                 <input type="password" id="pin" placeholder="4-Digit PIN" class="form-control">
@@ -36,6 +35,6 @@ export function loadTeacherAttendance() {
             .withSuccessHandler(res => {
                 document.getElementById('statusMsg').innerText = res;
             })
-            .processAttendance(data); // यह फंक्शन आपके Code.gs में होना चाहिए
+            .processAttendance(data); 
     };
 }
