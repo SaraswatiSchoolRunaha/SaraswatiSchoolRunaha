@@ -40,7 +40,7 @@ export const translations = {
 
 export const icons = {
     'डैशबोर्ड': 'fa-house', 'छात्र मॉड्यूल': 'fa-user-graduate', 'उपस्थिति मॉड्यूल': 'fa-calendar-check',
-    'फीस मॉड्यूल': 'fa-money-bill-wave', 'TC मॉड्यूल': 'fa-file-signature', 'Exam मॉड्यूल': 'fa-file-lines', 'Admit Card मॉड्यूल': 'fa-id-card', 'शिक्षक उपस्थिति मॉड्यूल': 'Teacher Attendance',
+    'फीस मॉड्यूल': 'fa-money-bill-wave', 'TC मॉड्यूल': 'fa-file-signature', 'Exam मॉड्यूल': 'fa-file-lines', 'Admit Card मॉड्यूल': 'fa-id-card', 'शिक्षक उपस्थिति मॉड्यूल': 'fa-chalkboard-user',
 };
 
 // Permission Mapping Framework
