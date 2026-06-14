@@ -86,6 +86,9 @@ function executeModuleRouting(title) {
         case 'उपस्थित छात्रों की सूची':
             showPresentReport();
             break;
+            case 'शिक्षक उपस्थिति': 
+            loadTeacherAttendance();
+            break;
         default:
             fetchSheetData(title);
             break;
