@@ -554,23 +554,24 @@ async function loadAbsentStudentsList() {
             return;
         }
 
-        container.innerHTML = `
-            <table id="printAbsentTarget">
-                <tr style="background:#fee2e2;color:#991b1b;">
-                    <th>Student ID</th>
-                    <th>छात्र का नाम</th>
-                    <th>पिता का नाम</th>
+       container.innerHTML = `
+            <div style="width:100%; overflow-x:auto;">
+            <table id="printAbsentTarget" style="width:100%; border-collapse:collapse;">
+            <tr style="background:#fee2e2; color:#991b1b;">
+                <th>Student ID</th>
+                <th>छात्र का नाम</th>
+                <th>पिता का नाम</th>
+            </tr>
+            ${data.map(s => `
+                <tr>
+                <td>${s["Student ID"]}</td>
+                <td>${s["Student Name"]}</td>
+                <td>${s["Father Name"]}</td>
                 </tr>
-                ${data.map(s => `
-                    <tr>
-                        <td><strong>${s["Student ID"] || ""}</strong></td>
-                        <td>${s["Student Name"] || ""}</td>
-                        <td>${s["Father Name"] || ""}</td>
-                    </tr>
-                `).join('')}
-            </table>
-        `;
-
+         `).join('')}
+        </table>
+        </div>
+    `;
     } catch (err) {
         container.innerHTML = "त्रुटि: " + err.message;
     }
