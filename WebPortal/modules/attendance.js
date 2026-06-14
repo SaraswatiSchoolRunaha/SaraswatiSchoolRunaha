@@ -561,12 +561,16 @@ async function loadAbsentStudentsList() {
                 <th>Student ID</th>
                 <th>छात्र का नाम</th>
                 <th>पिता का नाम</th>
+                <th>माध्यम</th> 
+                 <th>कक्षा</th>
             </tr>
             ${data.map(s => `
                 <tr>
                 <td>${s["Student ID"]}</td>
                 <td>${s["Student Name"]}</td>
                 <td>${s["Father Name"]}</td>
+                <td>${s["Medium"]}</td>
+                <td>${s["Class"]}</td>
                 </tr>
          `).join('')}
         </table>
