@@ -440,7 +440,12 @@ export async function showAbsentReport() {
     const fallbackMediums = ["Hindi", "English"];
 
     try {
-        await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
+        // ✅ SAFE FETCH (no crash if response not array)
+        const response = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
+        let data = await response.json();
+
+        // 🔥 FIX: ensure array
+        if (!Array.isArray(data)) data = [];
 
         document.getElementById('contentArea').innerHTML = `
             <div>
@@ -448,7 +453,6 @@ export async function showAbsentReport() {
                     <i class="fa-solid fa-user-clock"></i> अनुपस्थित छात्रों की रिपोर्ट
                 </h3>
 
-                <!-- 🔥 ONE LINE CLEAN FILTER BAR -->
                 <div style="
                     display:flex;
                     flex-wrap:wrap;
@@ -464,29 +468,16 @@ export async function showAbsentReport() {
                         <label style="font-size:12px;">तारीख</label>
                         <input type="date" id="absDate"
                             value="${today}"
-                            style="
-                                height:38px;
-                                width:140px;
-                                border:1px solid #ccc;
-                                border-radius:6px;
-                                padding:5px;
-                            ">
+                            style="height:38px;width:140px;border:1px solid #ccc;border-radius:6px;padding:5px;">
                     </div>
 
                     <!-- CLASS -->
                     <div style="display:flex; flex-direction:column;">
                         <label style="font-size:12px;">कक्षा</label>
                         <select id="absClass"
-                            style="
-                                height:38px;
-                                width:160px;
-                                border:1px solid #ccc;
-                                border-radius:6px;
-                            ">
+                            style="height:38px;width:160px;border:1px solid #ccc;border-radius:6px;">
                             <option value="">-- कक्षा चुनें --</option>
-                            ${fallbackClasses.map(c => `
-                                <option value="${c}">${c}</option>
-                            `).join('')}
+                            ${(fallbackClasses || []).map(c => `<option value="${c}">${c}</option>`).join('')}
                         </select>
                     </div>
 
@@ -494,47 +485,22 @@ export async function showAbsentReport() {
                     <div style="display:flex; flex-direction:column;">
                         <label style="font-size:12px;">माध्यम</label>
                         <select id="absMedium"
-                            style="
-                                height:38px;
-                                width:160px;
-                                border:1px solid #ccc;
-                                border-radius:6px;
-                            ">
+                            style="height:38px;width:160px;border:1px solid #ccc;border-radius:6px;">
                             <option value="">-- माध्यम चुनें --</option>
-                            ${fallbackMediums.map(m => `
-                                <option value="${m}">${m}</option>
-                            `).join('')}
+                            ${(fallbackMediums || []).map(m => `<option value="${m}">${m}</option>`).join('')}
                         </select>
                     </div>
 
-                    <!-- SEARCH BUTTON -->
                     <div>
                         <button id="btnSearchAbsent"
-                            style="
-                                height:38px;
-                                padding:0 18px;
-                                background:#1e3a8a;
-                                color:white;
-                                border:none;
-                                border-radius:6px;
-                                cursor:pointer;
-                            ">
+                            style="height:38px;padding:0 18px;background:#1e3a8a;color:white;border:none;border-radius:6px;">
                             🔍 खोजें
                         </button>
                     </div>
 
-                    <!-- PRINT BUTTON -->
                     <div>
                         <button id="btnPrintAbsent"
-                            style="
-                                height:38px;
-                                padding:0 18px;
-                                background:#16a34a;
-                                color:white;
-                                border:none;
-                                border-radius:6px;
-                                cursor:pointer;
-                            ">
+                            style="height:38px;padding:0 18px;background:#16a34a;color:white;border:none;border-radius:6px;">
                             🖨 प्रिंट
                         </button>
                     </div>
@@ -556,45 +522,87 @@ export async function showAbsentReport() {
             "<p style='color:red;'>डेटा लोड एरर!</p>";
     }
 }
+
+
+// ===============================
+// ABSENT LIST LOADER (FIXED)
+// ===============================
 async function loadAbsentStudentsList() {
     const date = document.getElementById("absDate").value;
     const className = document.getElementById("absClass").value;
     const medium = document.getElementById("absMedium").value;
     const container = document.getElementById("absentListContainer");
 
-    if (!date || !className || !medium) { alert("सभी फ़िल्टर चुनें!"); return; }
-    container.innerHTML = "<p style='font-weight:bold; color:#1e3a8a;'><i class='fa-solid fa-spinner fa-spin'></i> खोज जारी है...</p>";
+    if (!date || !className || !medium) {
+        alert("सभी फ़िल्टर चुनें!");
+        return;
+    }
+
+    container.innerHTML = "<p style='font-weight:bold;color:#1e3a8a;'>⏳ खोज जारी है...</p>";
 
     try {
         const url = `${sheetUrls['Attendance']}?action=getAbsentStudents&date=${date}&class=${encodeURIComponent(className)}&medium=${encodeURIComponent(medium)}`;
+
         const response = await fetch(url);
-        const data = await response.json();
+        let data = await response.json();
+
+        // 🔥 FIX: ensure array (THIS FIXES your error)
+        if (!Array.isArray(data)) data = [];
 
         if (data.length === 0) {
-            container.innerHTML = "<p style='color:#16a34a; font-weight:bold; background:#d1fae5; padding:15px; border-radius:6px; text-align:center;'>🎉 सभी छात्र उपस्थित थे।</p>";
+            container.innerHTML = "<p style='color:#16a34a;font-weight:bold;background:#d1fae5;padding:15px;border-radius:6px;text-align:center;'>🎉 सभी छात्र उपस्थित थे।</p>";
             return;
         }
 
         container.innerHTML = `
             <table id="printAbsentTarget">
-                <tr style="background:#fee2e2; color:#991b1b;"><th>Student ID</th><th>छात्र का नाम</th><th>पिता का नाम</th></tr>
-                ${data.map(s => `<tr><td><strong>${s["Student ID"]}</strong></td><td>${s["Student Name"]}</td><td>${s["Father Name"]}</td></tr>`).join('')}
-            </table>`;
-    } catch (err) { container.innerHTML = "त्रुटि: " + err.message; }
+                <tr style="background:#fee2e2;color:#991b1b;">
+                    <th>Student ID</th>
+                    <th>छात्र का नाम</th>
+                    <th>पिता का नाम</th>
+                </tr>
+                ${data.map(s => `
+                    <tr>
+                        <td><strong>${s["Student ID"] || ""}</strong></td>
+                        <td>${s["Student Name"] || ""}</td>
+                        <td>${s["Father Name"] || ""}</td>
+                    </tr>
+                `).join('')}
+            </table>
+        `;
+
+    } catch (err) {
+        container.innerHTML = "त्रुटि: " + err.message;
+    }
 }
 
+
+// ===============================
+// PRINT FUNCTION
+// ===============================
 function printAbsentListWindow() {
     const content = document.getElementById("absentListContainer").innerHTML;
-    if(!content || content.includes("जारी है") || content.includes("सभी छात्र उपस्थित थे")) { alert("पहले खोजें बटन दबाएं!"); return; }
+
+    if (!content || content.includes("लोड") || content.includes("सभी छात्र उपस्थित थे")) {
+        alert("पहले खोजें बटन दबाएं!");
+        return;
+    }
+
     const dateVal = document.getElementById("absDate").value;
     const classVal = document.getElementById("absClass").value;
-    
+
     const printWindow = window.open('', '_blank');
+
     printWindow.document.write(`
         <html>
         <head>
             <title>Absent Report</title>
-            <style>body { font-family:sans-serif; padding:20px; } table { width:100%; border-collapse:collapse; margin-top:20px; } th,td { border:1px solid #000; padding:10px; } th { background:#f2f2f2; }</style>
+            <style>
+                body { font-family:sans-serif; padding:20px; }
+                table { width:100%; border-collapse:collapse; margin-top:20px; }
+                th,td { border:1px solid #000; padding:10px; }
+                th { background:#f2f2f2; }
+            </style>
         </head>
         <body>
             <h2>सरस्वती बाल विद्या मंदिर हाई स्कूल, रुनाहा</h2>
@@ -602,11 +610,12 @@ function printAbsentListWindow() {
             <p><strong>दिनांक:</strong> ${dateVal} | <strong>कक्षा:</strong> ${classVal}</p>
             ${content}
         </body>
-        </html>`);
+        </html>
+    `);
+
     printWindow.document.close();
     printWindow.print();
 }
-
 
 // ==========================================
 // 4. ATTENDANCE ANALYTICS DASHBOARD
