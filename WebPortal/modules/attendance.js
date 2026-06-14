@@ -332,7 +332,8 @@ async function fetchAttendanceData() {
                                 <th style="padding:15px;">ID</th>
                                 <th style="padding:15px;">नाम</th>
                                  <th style="padding:15px;">पिता</th>
-                                <th style="padding:15px;">माध्यम</th> <th style="padding:15px;">कक्षा</th>
+                                <th style="padding:15px;">कक्षा</th>
+                                <th style="padding:15px;">माध्यम</th> 
                                 <th style="padding:15px;">Status</th>
                                 <th style="padding:15px;">Action</th>
                         </tr>
