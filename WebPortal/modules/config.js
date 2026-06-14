@@ -65,16 +65,21 @@ export const permissions = {
 
 // Under Development Modules Fallback screen renderer
 export async function fetchSheetData(title) {
-    const url = sheetUrls[title];
+    // 1. अगर URL मौजूद है तो उसे फेच करें, नहीं तो Fallback दिखाएं
+    const url = sheetUrls[title]; 
+    
     if (!url) {
         document.getElementById('contentArea').innerHTML = `
             <div style="padding:20px; border-left: 5px solid #1e3a8a; background:#f8fafc;">
                 <h3 style="color:#1e3a8a; margin-top:0;"><i class="fa-solid fa-screwdriver-wrench"></i> ${title}</h3>
                 <p style="color:#64748b; font-size:15px; line-height:1.6;">
-                    यह मॉड्यूल वर्तमान में निर्माणाधीन (Under Development) है। <br>
-                    इसके बैकएंड डेटा सोर्स और ऐप्स स्क्रिप्ट इंटीग्रेशन पर अभी काम चल रहा है।
+                    यह मॉड्यूल अभी सेटअप किया जा रहा है। <br> 
+                    (Module: <b>${title}</b> का डेटा लिंक कॉन्फ़िगर नहीं है।)
                 </p>
             </div>`;
         return;
     }
+
+    // यहाँ आप अपना API कॉल का लॉजिक लिख सकते हैं
+    console.log("Fetching data for:", title, "from:", url);
 }
