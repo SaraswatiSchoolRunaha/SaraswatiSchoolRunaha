@@ -431,18 +431,17 @@ async function updateCorrectionAttendance(studentId, i, btn) {
 export async function showAbsentReport() {
     const today = new Date().toISOString().split('T')[0];
 
+    // ✅ FIXED fallback (attendance form style)
+    const fallbackClasses = [
+        "KG1","KG2","1st","2nd","3rd","4th","5th",
+        "6th","7th","8th","9th","10th","11th","12th"
+    ];
+
+    const fallbackMediums = ["Hindi", "English"];
+
     try {
-        const response = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
-        const data = await response.json() || [];
-
-        // ✅ सभी class और medium निकालो (safe way)
-        const classes = [...new Set(
-            data.map(s => (s.Class || s.class || "").trim()).filter(Boolean)
-        )].sort();
-
-        const mediums = [...new Set(
-            data.map(s => (s.Medium || s.medium || "").trim()).filter(Boolean)
-        )].sort();
+        // API call सिर्फ data refresh के लिए (dropdown के लिए नहीं)
+        await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
 
         document.getElementById('contentArea').innerHTML = `
             <div>
@@ -450,39 +449,62 @@ export async function showAbsentReport() {
                     <i class="fa-solid fa-user-clock"></i> अनुपस्थित छात्रों की रिपोर्ट
                 </h3>
 
-                <!-- 🔥 FILTER BAR -->
-                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-                    background:#f8fafc; padding:12px; border-radius:8px;">
+                <!-- FILTER BAR -->
+                <div style="
+                    display:flex;
+                    flex-wrap:wrap;
+                    gap:10px;
+                    align-items:flex-end;
+                    background:#f8fafc;
+                    padding:12px;
+                    border-radius:8px;
+                ">
 
                     <!-- DATE -->
-                    <input type="date" id="absDate" value="${today}"
-                        style="height:38px; padding:5px; border:1px solid #ccc; border-radius:6px;">
+                    <div>
+                        <label style="font-size:12px;">तारीख</label><br>
+                        <input type="date" id="absDate"
+                            value="${today}"
+                            style="height:38px; padding:5px;">
+                    </div>
 
-                    <!-- CLASS DROPDOWN -->
-                    <select id="absClass"
-                        style="height:38px; padding:5px; border:1px solid #ccc; border-radius:6px;">
-                        <option value="">-- कक्षा चुनें --</option>
-                        ${classes.map(c => `<option value="${c}">${c}</option>`).join('')}
-                    </select>
+                    <!-- CLASS -->
+                    <div>
+                        <label style="font-size:12px;">कक्षा</label><br>
+                        <select id="absClass" style="height:38px; width:160px;">
+                            <option value="">-- कक्षा चुनें --</option>
+                            ${fallbackClasses.map(c => `
+                                <option value="${c}">${c}</option>
+                            `).join('')}
+                        </select>
+                    </div>
 
-                    <!-- MEDIUM DROPDOWN -->
-                    <select id="absMedium"
-                        style="height:38px; padding:5px; border:1px solid #ccc; border-radius:6px;">
-                        <option value="">-- माध्यम चुनें --</option>
-                        ${mediums.map(m => `<option value="${m}">${m}</option>`).join('')}
-                    </select>
+                    <!-- MEDIUM -->
+                    <div>
+                        <label style="font-size:12px;">माध्यम</label><br>
+                        <select id="absMedium" style="height:38px; width:160px;">
+                            <option value="">-- माध्यम चुनें --</option>
+                            ${fallbackMediums.map(m => `
+                                <option value="${m}">${m}</option>
+                            `).join('')}
+                        </select>
+                    </div>
 
                     <!-- SEARCH -->
-                    <button id="btnSearchAbsent"
-                        style="height:38px; padding:0 15px; background:#1e3a8a; color:white; border:none; border-radius:6px;">
-                        🔍 खोजें
-                    </button>
+                    <div>
+                        <button id="btnSearchAbsent"
+                            style="height:38px; padding:0 15px; background:#1e3a8a; color:white; border:none; border-radius:6px;">
+                            🔍 खोजें
+                        </button>
+                    </div>
 
                     <!-- PRINT -->
-                    <button id="btnPrintAbsent"
-                        style="height:38px; padding:0 15px; background:#16a34a; color:white; border:none; border-radius:6px;">
-                        🖨 प्रिंट
-                    </button>
+                    <div>
+                        <button id="btnPrintAbsent"
+                            style="height:38px; padding:0 15px; background:#16a34a; color:white; border:none; border-radius:6px;">
+                            🖨 प्रिंट
+                        </button>
+                    </div>
 
                 </div>
 
