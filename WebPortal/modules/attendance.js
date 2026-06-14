@@ -554,28 +554,33 @@ async function loadAbsentStudentsList() {
             return;
         }
 
-       container.innerHTML = `
-            <div style="width:100%; overflow-x:auto;">
-            <table id="printAbsentTarget" style="width:100%; border-collapse:collapse;">
-            <tr style="background:#fee2e2; color:#991b1b;">
-                <th>Student ID</th>
-                <th>छात्र का नाम</th>
-                <th>पिता का नाम</th>
-                <th>माध्यम</th> 
-                 <th>कक्षा</th>
-            </tr>
-            ${data.map(s => `
-                <tr>
-                <td>${s["Student ID"]}</td>
-                <td>${s["Student Name"]}</td>
-                <td>${s["Father Name"]}</td>
-                <td>${s["Medium"]}</td>
-                <td>${s["Class"]}</td>
+      container.innerHTML = `
+    <div style="width:100%; overflow-x:auto; margin-top:20px;">
+        <table id="printAbsentTarget" style="width:100%; border-collapse:collapse; background:white;">
+            <thead>
+                <tr style="background:#fee2e2; color:#991b1b; text-align:left;">
+                    <th style="padding:12px; border:1px solid #ddd; width:15%;">Student ID</th>
+                    <th style="padding:12px; border:1px solid #ddd; width:35%;">छात्र का नाम</th>
+                    <th style="padding:12px; border:1px solid #ddd; width:30%;">पिता का नाम</th>
+                    <th style="padding:12px; border:1px solid #ddd; width:10%;">माध्यम</th> 
+                    <th style="padding:12px; border:1px solid #ddd; width:10%;">कक्षा</th>
                 </tr>
-         `).join('')}
+            </thead>
+            <tbody>
+            ${data.map(s => `
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px; border:1px solid #ddd;">${s["Student ID"]}</td>
+                    <td style="padding:10px; border:1px solid #ddd;">${s["Student Name"]}</td>
+                    <td style="padding:10px; border:1px solid #ddd;">${s["Father Name"]}</td>
+                    <td style="padding:10px; border:1px solid #ddd;">${s["Medium"]}</td>
+                    <td style="padding:10px; border:1px solid #ddd;">${s["Class"]}</td>
+                </tr>
+            `).join('')}
+            </tbody>
         </table>
-        </div>
-    `;
+    </div>
+`;
+    
     } catch (err) {
         container.innerHTML = "त्रुटि: " + err.message;
     }
