@@ -60,6 +60,9 @@ async function checkLockAndLoadStudents() {
     const selectedClass = document.getElementById('classFilter').value;
     const selectedMedium = document.getElementById('mediumFilter').value;
     const container = document.getElementById('attendanceTableContainer');
+    
+    // यह लाइन जरूरी है ताकि date वेरिएबल काम करे
+    const date = new Date().toISOString().split('T')[0];
 
     if (!selectedClass || !selectedMedium) {
         container.innerHTML = "<p style='color:red;'>कृपया कक्षा और माध्यम चुनें</p>";
@@ -73,6 +76,15 @@ async function checkLockAndLoadStudents() {
     `;
 
     try {
+        // --- बदलाव यहाँ से शुरू है ---
+        const lockUrl = `${sheetUrls['Attendance']}?action=checkLock&class=${encodeURIComponent(selectedClass)}&medium=${encodeURIComponent(selectedMedium)}&date=${date}`;
+        const lockRes = await fetch(lockUrl);
+        const lockData = await lockRes.json();
+
+        if (lockData.isLocked) {
+            container.innerHTML = "<p style='color:red; text-align:center; font-weight:bold;'>⚠️ आज की उपस्थिति पहले ही लग चुकी है। कृपया एडमिन से संपर्क करें।</p>";
+            return;
+        }
 
         const url =
             `${sheetUrls['StudentData']}?action=getStudents` +
@@ -99,7 +111,6 @@ async function checkLockAndLoadStudents() {
             "<p style='color:red;'>डेटा लोड फेल हुआ</p>";
     }
 }
-
 function generateAttendanceGrid(filteredStudents) {
     const container = document.getElementById('attendanceTableContainer');
 
@@ -161,6 +172,7 @@ function generateAttendanceGrid(filteredStudents) {
         saveAttendanceToSheets(filteredStudents);
     });
 }
+
 // यह कोड पूरी फाइल में कहीं भी डाल दें
 document.addEventListener('change', function(e) {
     // अगर बदलने वाला एलिमेंट 'attStatus' क्लास वाला है
