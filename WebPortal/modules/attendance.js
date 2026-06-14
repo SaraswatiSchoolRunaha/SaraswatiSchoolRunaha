@@ -431,7 +431,7 @@ async function updateCorrectionAttendance(studentId, i, btn) {
 export async function showAbsentReport() {
     const today = new Date().toISOString().split('T')[0];
 
-    // ✅ FIXED fallback (attendance form style)
+    // ✅ FIXED fallback lists
     const fallbackClasses = [
         "KG1","KG2","1st","2nd","3rd","4th","5th",
         "6th","7th","8th","9th","10th","11th","12th"
@@ -440,7 +440,6 @@ export async function showAbsentReport() {
     const fallbackMediums = ["Hindi", "English"];
 
     try {
-        // API call सिर्फ data refresh के लिए (dropdown के लिए नहीं)
         await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
 
         document.getElementById('contentArea').innerHTML = `
@@ -449,7 +448,7 @@ export async function showAbsentReport() {
                     <i class="fa-solid fa-user-clock"></i> अनुपस्थित छात्रों की रिपोर्ट
                 </h3>
 
-                <!-- FILTER BAR -->
+                <!-- 🔥 ONE LINE CLEAN FILTER BAR -->
                 <div style="
                     display:flex;
                     flex-wrap:wrap;
@@ -461,17 +460,29 @@ export async function showAbsentReport() {
                 ">
 
                     <!-- DATE -->
-                    <div>
-                        <label style="font-size:12px;">तारीख</label><br>
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:12px;">तारीख</label>
                         <input type="date" id="absDate"
                             value="${today}"
-                            style="height:38px; padding:5px;">
+                            style="
+                                height:38px;
+                                width:140px;
+                                border:1px solid #ccc;
+                                border-radius:6px;
+                                padding:5px;
+                            ">
                     </div>
 
                     <!-- CLASS -->
-                    <div>
-                        <label style="font-size:12px;">कक्षा</label><br>
-                        <select id="absClass" style="height:38px; width:160px;">
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:12px;">कक्षा</label>
+                        <select id="absClass"
+                            style="
+                                height:38px;
+                                width:160px;
+                                border:1px solid #ccc;
+                                border-radius:6px;
+                            ">
                             <option value="">-- कक्षा चुनें --</option>
                             ${fallbackClasses.map(c => `
                                 <option value="${c}">${c}</option>
@@ -480,9 +491,15 @@ export async function showAbsentReport() {
                     </div>
 
                     <!-- MEDIUM -->
-                    <div>
-                        <label style="font-size:12px;">माध्यम</label><br>
-                        <select id="absMedium" style="height:38px; width:160px;">
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:12px;">माध्यम</label>
+                        <select id="absMedium"
+                            style="
+                                height:38px;
+                                width:160px;
+                                border:1px solid #ccc;
+                                border-radius:6px;
+                            ">
                             <option value="">-- माध्यम चुनें --</option>
                             ${fallbackMediums.map(m => `
                                 <option value="${m}">${m}</option>
@@ -490,18 +507,34 @@ export async function showAbsentReport() {
                         </select>
                     </div>
 
-                    <!-- SEARCH -->
+                    <!-- SEARCH BUTTON -->
                     <div>
                         <button id="btnSearchAbsent"
-                            style="height:38px; padding:0 15px; background:#1e3a8a; color:white; border:none; border-radius:6px;">
+                            style="
+                                height:38px;
+                                padding:0 18px;
+                                background:#1e3a8a;
+                                color:white;
+                                border:none;
+                                border-radius:6px;
+                                cursor:pointer;
+                            ">
                             🔍 खोजें
                         </button>
                     </div>
 
-                    <!-- PRINT -->
+                    <!-- PRINT BUTTON -->
                     <div>
                         <button id="btnPrintAbsent"
-                            style="height:38px; padding:0 15px; background:#16a34a; color:white; border:none; border-radius:6px;">
+                            style="
+                                height:38px;
+                                padding:0 18px;
+                                background:#16a34a;
+                                color:white;
+                                border:none;
+                                border-radius:6px;
+                                cursor:pointer;
+                            ">
                             🖨 प्रिंट
                         </button>
                     </div>
