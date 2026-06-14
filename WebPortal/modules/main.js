@@ -82,7 +82,7 @@ function executeModuleRouting(title) {
             showDeleteStudentPortal();
             break;
         case 'उपस्थित छात्रों की सूची':
-            showDeleteStudentPortal();
+            showPresentReport();
             break;
         default:
             fetchSheetData(title);
