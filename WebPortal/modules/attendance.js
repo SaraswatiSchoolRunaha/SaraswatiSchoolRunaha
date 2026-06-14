@@ -431,28 +431,75 @@ async function updateCorrectionAttendance(studentId, i, btn) {
 // ==========================================
 export async function showAbsentReport() {
     const today = new Date().toISOString().split('T')[0];
+
     try {
         const response = await fetch(sheetUrls['StudentData'] + "?action=getStudents&class=All");
         const data = await response.json();
-        const classes = [...new Set(data.map(s => s.Class || s.class).filter(Boolean))].sort();
-        const mediums = [...new Set(data.map(s => s.Medium || s.medium).filter(Boolean))].sort();
+
+        const classes = [...new Set((data || []).map(s => s.Class || s.class).filter(Boolean))].sort();
+        const mediums = [...new Set((data || []).map(s => s.Medium || s.medium).filter(Boolean))].sort();
 
         document.getElementById('contentArea').innerHTML = `
             <div>
-                <h3 style="color:#dc2626; margin-top:0;"><i class="fa-solid fa-user-clock"></i> अनुपस्थित छात्रों की दैनिक रिपोर्ट सूची</h3>
-                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:6px; border:1px solid #e2e8f0;">
-                    <input type="date" id="absDate" value="${today}" style="padding:8px; border-radius:4px; border:1px solid #ccc;">
-                    <select id="absClass" style="padding:8px; border-radius:4px; border:1px solid #ccc;"><option value="">-- कक्षा चुनें --</option>${classes.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
-                    <select id="absMedium" style="padding:8px; border-radius:4px; border:1px solid #ccc;"><option value="">-- माध्यम चुनें --</option>${mediums.map(m=>`<option value="${m}">${m}</option>`).join('')}</select>
-                    <button id="btnSearchAbsent" style="background:#1e3a8a; color:white; padding:8px 15px; border:none; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-magnifying-glass"></i> खोजें</button>
-                    <button id="btnPrintAbsent" style="background:#16a34a; color:white; padding:8px 15px; border:none; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-print"></i> रिपोर्ट प्रिंट करें</button>
-                </div>
-                <div id="absentListContainer"></div>
-            </div>`;
+                <h3 style="color:#dc2626; margin-top:0;">
+                    <i class="fa-solid fa-user-clock"></i> अनुपस्थित छात्रों की रिपोर्ट
+                </h3>
 
-        document.getElementById('btnSearchAbsent').addEventListener('click', loadAbsentStudentsList);
-        document.getElementById('btnPrintAbsent').addEventListener('click', printAbsentListWindow);
-    } catch (err) { document.getElementById('contentArea').innerHTML = "डेटा लोड एरर!"; }
+                <!-- 🔥 ONE LINE FILTER BAR -->
+                <div style="
+                    display:flex;
+                    flex-wrap:wrap;
+                    gap:10px;
+                    align-items:center;
+                    background:#f8fafc;
+                    padding:12px;
+                    border-radius:8px;
+                    border:1px solid #e2e8f0;
+                    margin-bottom:15px;
+                ">
+
+                    <input type="date" id="absDate"
+                        value="${today}"
+                        style="padding:8px; border:1px solid #ccc; border-radius:6px;">
+
+                    <select id="absClass"
+                        style="padding:8px; border:1px solid #ccc; border-radius:6px;">
+                        <option value="">कक्षा चुनें</option>
+                        ${classes.map(c => `<option value="${c}">${c}</option>`).join('')}
+                    </select>
+
+                    <select id="absMedium"
+                        style="padding:8px; border:1px solid #ccc; border-radius:6px;">
+                        <option value="">माध्यम चुनें</option>
+                        ${mediums.map(m => `<option value="${m}">${m}</option>`).join('')}
+                    </select>
+
+                    <button id="btnSearchAbsent"
+                        style="padding:8px 15px; background:#1e3a8a; color:white; border:none; border-radius:6px; cursor:pointer;">
+                        🔍 खोजें
+                    </button>
+
+                    <button id="btnPrintAbsent"
+                        style="padding:8px 15px; background:#16a34a; color:white; border:none; border-radius:6px; cursor:pointer;">
+                        🖨 प्रिंट
+                    </button>
+
+                </div>
+
+                <div id="absentListContainer"></div>
+            </div>
+        `;
+
+        document.getElementById('btnSearchAbsent')
+            .addEventListener('click', loadAbsentStudentsList);
+
+        document.getElementById('btnPrintAbsent')
+            .addEventListener('click', printAbsentListWindow);
+
+    } catch (err) {
+        document.getElementById('contentArea').innerHTML =
+            "<p style='color:red;'>डेटा लोड एरर!</p>";
+    }
 }
 
 async function loadAbsentStudentsList() {
