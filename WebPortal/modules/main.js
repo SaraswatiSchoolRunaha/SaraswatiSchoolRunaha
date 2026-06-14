@@ -5,6 +5,8 @@ import {
     showAbsentReport, showAddStudentForm, showDeleteStudentPortal, showPresentReport
 } from './attendance.js';
 
+import { loadTeacherAttendance } from './teacherAttendance.js';
+
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
     container.innerHTML = "";
