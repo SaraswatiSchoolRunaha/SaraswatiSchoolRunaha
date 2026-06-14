@@ -81,7 +81,7 @@ function executeModuleRouting(title) {
         case 'छात्र को हटाएँ':
             showDeleteStudentPortal();
             break;
-            case 'छात्र को हटाएँ':
+        case 'उपस्थित छात्रों की सूची':
             showDeleteStudentPortal();
             break;
         default:
