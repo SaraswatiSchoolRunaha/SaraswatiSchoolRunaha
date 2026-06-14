@@ -25,14 +25,14 @@ export const translations = {
         'फीस भुगतान': 'फीस भुगतान', 'बकाया लिस्ट': 'बकाया लिस्ट', 'रसीद हिस्ट्री': 'रसीद हिस्ट्री', 'फीस स्ट्रक्चर': 'फीस स्ट्रक्चर', 'कुल आय रिपोर्ट': 'कुल आय रिपोर्ट',
         'सत्यापन': 'सत्यापन', 'विवरण चेक करें': 'विवरण चेक करें', 'TC जनरेट करना': 'TC जनरेट करना', 'जारी करना': 'जारी करना',
         'परीक्षा सूची': 'परीक्षा सूची', 'अंक प्रविष्टि': 'अंक प्रविष्टि', 'परीक्षा रिपोर्ट': 'परीक्षा रिपोर्ट',
-        'एडमिट कार्ड जारी करें': 'एडमिट कार्ड जारी करें', 'प्रिंट एडमिट कार्ड': 'प्रिंट एडमिट कार्ड', 'शिक्षक उपस्थिति Dashboard': 'शिक्षक उपस्थिति Dashboard', 'दैनिक उपस्थिति पंजी': 'दैनिक उपस्थिति पंजी', 'नया शिक्षक जोड़ें': 'नया शिक्षक जोड़ें', 'अपडेट/डिलीट': 'अपडेट/डिलीट', 'वेतन Salary': 'वेतन Salary', 'उपस्थिति रिपोर्ट': 'उपस्थिति रिपोर्ट',
+        'एडमिट कार्ड जारी करें': 'एडमिट कार्ड जारी करें', 'प्रिंट एडमिट कार्ड': 'प्रिंट एडमिट कार्ड', 'शिक्षक उपस्थिति मॉड्यूल': 'शिक्षक उपस्थिति मॉड्यूल', 'शिक्षक उपस्थिति Dashboard': 'शिक्षक उपस्थिति Dashboard', 'दैनिक उपस्थिति पंजी': 'दैनिक उपस्थिति पंजी', 'नया शिक्षक जोड़ें': 'नया शिक्षक जोड़ें', 'अपडेट/डिलीट': 'अपडेट/डिलीट', 'वेतन Salary': 'वेतन Salary', 'उपस्थिति रिपोर्ट': 'उपस्थिति रिपोर्ट',
     },
     'EN': {
         'डैशबोर्ड': 'Dashboard', 'छात्र मॉड्यूल': 'Student Module', 'उपस्थिति मॉड्यूल': 'Attendance Module', 'फीस मॉड्यूल': 'Fee Module', 'TC मॉड्यूल': 'TC Module', 'Exam मॉड्यूल': 'Exam Module', 'Admit Card मॉड्यूल': 'Admit Card Module',
         'छात्र प्रमोट': 'Student Promote', 'छात्र प्रोफ़ाइल': 'Student Profile', 'छात्र फोटो अपडेट': 'Photo Update', 'छात्र समग्र अपडेट': 'Samagra Update', 'छात्र आधार अपडेट': 'Aadhaar Update', 'छात्र बैंक खाता': 'Bank Account',
         'दैनिक उपस्थिति': 'Daily Attendance', 'अवकाश प्रबंधन': 'Leave Management', 'उपस्थिति डैशबोर्ड': 'Attendance Dashboard', 'उपस्थिति रिपोर्ट': 'Attendance Report', 'उपस्थिति सुधार': 'Attendance Update', 'छात्र को जोड़ें': 'Add Students (Sync)', 'छात्र को हटाएँ': 'Delete Student', 'अनुपस्थित छात्रों की सूची':'Absent Student List', 'उपस्थित छात्रों की सूची': 'List of Present Students', 
         'फीस भुगतान': 'Fee Payment', 'बकाया लिस्ट': 'Pending List', 'रसीद हिस्ट्री': 'Receipt History', 'फीस स्ट्रक्चर': 'Fee Structure', 'कुल आय रिपोर्ट': 'Income Report',
-        'सत्यापन': 'Verification', 'विवरण चेक करें': 'Check Details', 'TC जनरेट करना': 'Generate TC', 'जारी करना': 'Issue TC', 'शिक्षक उपस्थिति मॉड्यूल': 'शिक्षक उपस्थिति मॉड्यूल', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'दैनिक उपस्थिति पंजी': 'Daily Attendance Entry', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'वेतन Salary': 'Salary', 'उपस्थिति रिपोर्ट': 'Attendance Report',
+        'सत्यापन': 'Verification', 'विवरण चेक करें': 'Check Details', 'TC जनरेट करना': 'Generate TC', 'जारी करना': 'Issue TC', 'शिक्षक उपस्थिति मॉड्यूल': 'Teacher Attendance Moudle ', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'दैनिक उपस्थिति पंजी': 'Daily Attendance Entry', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'वेतन Salary': 'Salary', 'उपस्थिति रिपोर्ट': 'Attendance Report',
         'परीक्षा सूची': 'Exam List', 'अंक प्रविष्टि': 'Marks Entry', 'परीक्षा रिपोर्ट': 'Exam Report', 
         'एडमिट कार्ड जारी करें': 'Issue Admit Card', 'प्रिंट एडमिट कार्ड': 'Print Admit Card',
     }
