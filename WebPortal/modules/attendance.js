@@ -377,7 +377,7 @@ async function fetchAttendanceData() {
 
 async function updateCorrectionAttendance(studentId, i, btn) {
     let select = document.getElementById(`st_${i}`);
-    let selectedDate = document.getElementById("searchDate").value; 
+    let selectedDate = document.getElementById("searchDate").value; // yyyy-mm-dd
 
     btn.disabled = true;
     btn.innerText = "Saving...";
@@ -402,7 +402,7 @@ async function updateCorrectionAttendance(studentId, i, btn) {
         if (data.status === "success") {
             alert("✔ उपस्थिति सफलतापूर्वक अपडेट की गई!");
         } else {
-            alert("❌ अपडेट फेल: " + (data.message || ""));
+            alert("❌ अपडेट फेल: " + data.message);
         }
 
     } catch (err) {
