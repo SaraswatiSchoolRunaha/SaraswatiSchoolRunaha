@@ -76,9 +76,12 @@ function executeModuleRouting(title) {
             showAbsentReport();
             break;
         case 'छात्र को जोड़ें':
-            showAddStudentForm();
+            showAddStudentForm(); 
             break;
         case 'छात्र को हटाएँ':
+            showDeleteStudentPortal();
+            break;
+            case 'छात्र को हटाएँ':
             showDeleteStudentPortal();
             break;
         default:
