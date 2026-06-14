@@ -185,7 +185,7 @@ document.addEventListener('change', function(e) {
     }
 });
 
-function saveAttendanceToSheets(filteredStudents) {
+async function saveAttendanceToSheets(filteredStudents) {
     const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
     const selects = document.querySelectorAll(".attStatus");
 
@@ -231,28 +231,37 @@ function saveAttendanceToSheets(filteredStudents) {
     btn.disabled = true;
     btn.innerText = "⏳ भेजा जा रहा है...";
 
-    fetch(sheetUrls['Attendance'], {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify({
-            action: "saveAttendance",
-            data: attendanceData
-        })
-    })
-    .then(() => {
-        alert("✔ उपस्थिति सफलतापूर्वक सेव हो गई!");
-        if (typeof showDashboard === 'function') showDashboard();
-    })
-    .catch(err => {
+    try {
+        const response = await fetch(sheetUrls['Attendance'], {
+            method: "POST",
+            mode: "cor", // 'no-cors' को 'cors' में बदल दिया ताकि रिस्पॉन्स पढ़ सकें
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                action: "saveAttendance",
+                data: attendanceData
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.status === "error") {
+            // सर्वर से एरर मिलने पर (जैसे: क्लास लॉक होना)
+            alert("❌ " + result.message);
+            btn.disabled = false;
+            btn.innerText = "उपस्थिति सुरक्षित करें";
+        } else {
+            // सफलता पर
+            alert("✔ उपस्थिति सफलतापूर्वक सेव हो गई!");
+            if (typeof showDashboard === 'function') showDashboard();
+        }
+    } catch (err) {
         alert("नेटवर्क त्रुटि: " + err.message);
         btn.disabled = false;
         btn.innerText = "उपस्थिति सुरक्षित करें";
-    });
+    }
 }
-
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
 // ==========================================
