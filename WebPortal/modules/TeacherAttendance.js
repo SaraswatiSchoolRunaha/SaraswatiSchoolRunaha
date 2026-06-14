@@ -1,4 +1,5 @@
 import { sheetUrls, translations } from './config.js'; // कॉन्फ़िगरेशन इंपोर्ट किया
+import { loadTeacherAttendance } from './teacherAttendance.js';
 
 export function loadTeacherAttendance() {
     const contentArea = document.getElementById("contentArea");
