@@ -2,7 +2,7 @@ import { state, currentUserRole, permissions, translations, icons, fetchSheetDat
 import { showDashboard } from './dashboard.js';
 import { 
     showAttendanceForm, showAttendanceDashboard, showCorrectionPortal, 
-    showAbsentReport, showAddStudentForm, showDeleteStudentPortal 
+    showAbsentReport, showAddStudentForm, showDeleteStudentPortal, showPresentReport
 } from './attendance.js';
 
 function buildPortalMenu() {
