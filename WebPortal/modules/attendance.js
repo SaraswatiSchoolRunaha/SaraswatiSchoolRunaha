@@ -231,37 +231,30 @@ async function saveAttendanceToSheets(filteredStudents) {
     btn.disabled = true;
     btn.innerText = "⏳ भेजा जा रहा है...";
 
-    try {
-        const response = await fetch(sheetUrls['Attendance'], {
-            method: "POST",
-            mode: "no-cors", // 'no-cors' को 'cors' में बदल दिया ताकि रिस्पॉन्स पढ़ सकें
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                action: "saveAttendance",
-                data: attendanceData
-            })
-        });
-
-        const result = await response.json();
-
-        if (result.status === "error") {
-            // सर्वर से एरर मिलने पर (जैसे: क्लास लॉक होना)
-            alert("❌ " + result.message);
-            btn.disabled = false;
-            btn.innerText = "उपस्थिति सुरक्षित करें";
-        } else {
-            // सफलता पर
-            alert("✔ उपस्थिति सफलतापूर्वक सेव हो गई!");
-            if (typeof showDashboard === 'function') showDashboard();
-        }
-    } catch (err) {
+    fetch(sheetUrls['Attendance'], {
+        method: "POST",
+        mode: "no-cors", // वापस no-cors कर दिया
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({
+            action: "saveAttendance",
+            data: attendanceData
+        })
+    })
+    .then(() => {
+        alert("✔ उपस्थिति सफलतापूर्वक सेव हो गई!");
+        btn.disabled = false;
+        btn.innerText = "उपस्थिति सुरक्षित करें";
+        if (typeof showDashboard === 'function') showDashboard();
+    })
+    .catch(err => {
         alert("नेटवर्क त्रुटि: " + err.message);
         btn.disabled = false;
         btn.innerText = "उपस्थिति सुरक्षित करें";
-    }
+    });
 }
+
 // ==========================================
 // 2. ATTENDANCE CORRECTION INTERFACE
 // ==========================================
