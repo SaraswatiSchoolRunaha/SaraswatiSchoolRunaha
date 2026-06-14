@@ -12,70 +12,42 @@ export function showAttendanceForm() {
 
     document.getElementById("contentArea").innerHTML = `
         <div>
-            <h2 style="color:#1e3a8a; margin-bottom:15px;">
+            <h2 style="color:#1e3a8a;">
                 <i class="fa-solid fa-calendar-day"></i> दैनिक उपस्थिति पंजी
             </h2>
 
-            <!-- 🔥 FILTER BAR (ONE LINE CLEAN UI) -->
-            <div style="
-                display:flex;
-                flex-wrap:wrap;
-                gap:10px;
-                align-items:center;
-                background:#f8fafc;
-                padding:12px;
-                border-radius:8px;
-                border:1px solid #e2e8f0;
-                margin-bottom:10px;
-            ">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; background:#f8fafc; padding:15px; margin-bottom:10px; align-items:flex-end;">
 
-                <!-- DATE -->
-                <div>
-                    <input type="date" id="attDate"
-                        value="${today}"
-                        style="height:40px; padding:6px; border:1px solid #ccc; border-radius:6px;">
-                </div>
+              <div style="flex: 0 0 140px;"> 
+                <label style="display:block; font-size:12px; margin-bottom:4px;">तारीख</label>
+                <input type="date" id="attDate" value="${today}" 
+                   style="width:100%; height:40px; padding: 5px; box-sizing: border-box;">
+            </div>
 
-                <!-- CLASS DROPDOWN -->
-                <div>
-                    <select id="classFilter"
-                        style="height:40px; min-width:150px; padding:6px; border:1px solid #ccc; border-radius:6px;">
-                        <option value="">-- कक्षा चुनें --</option>
-                        ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
-                    </select>
-                </div>
+                    <div style="flex: 1; min-width: 150px;">
+                    <label style="display:block; font-size:12px; margin-bottom:4px;">कक्षा</label>
+                    <select id="classFilter" style="width:100%; height:40px;">
+                    <option value="">-- कक्षा चुनें --</option>
+                    ${allClasses.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
+                </select>
+            </div>
 
-                <!-- MEDIUM DROPDOWN -->
-                <div>
-                    <select id="mediumFilter"
-                        style="height:40px; min-width:150px; padding:6px; border:1px solid #ccc; border-radius:6px;">
-                        <option value="">-- माध्यम चुनें --</option>
+                <div style="flex:1; min-width:120px;">
+                    <label style="display:block; font-size:12px;">माध्यम</label>
+                    <select id="mediumFilter" style="width:100%; height:40px;">
+                        <option value="">-- माध्यम --</option>
                         ${allMediums.map(med => `<option value="${med}">${med}</option>`).join('')}
                     </select>
                 </div>
 
-                <!-- SEARCH BUTTON -->
                 <button id="btnSearchAttendance"
-                    style="
-                        height:40px;
-                        padding:0 20px;
-                        background:#1e3a8a;
-                        color:white;
-                        border:none;
-                        border-radius:6px;
-                        cursor:pointer;
-                        font-weight:bold;
-                    ">
+                    style="height:40px; padding:0 20px; background:#1e3a8a; color:white; border:none; border-radius:6px; cursor:pointer;">
                     🔍 खोजें
                 </button>
-
             </div>
 
-            <!-- TABLE AREA -->
             <div id="attendanceTableContainer" style="margin-top:15px;">
-                <p style="text-align:center; color:#64748b;">
-                    कृपया कक्षा और माध्यम चुनें और खोजें दबाएं
-                </p>
+                <p style="text-align:center; color:#64748b;">कृपया कक्षा और माध्यम चुनें और Search दबाएं</p>
             </div>
         </div>
     `;
@@ -83,7 +55,7 @@ export function showAttendanceForm() {
     document.getElementById('btnSearchAttendance')
         .addEventListener('click', checkLockAndLoadStudents);
 }
-async function checkLockAndLoadStudents() {
+    async function checkLockAndLoadStudents() {
     const selectedClass = document.getElementById('classFilter').value;
     const selectedMedium = document.getElementById('mediumFilter').value;
     const container = document.getElementById('attendanceTableContainer');
