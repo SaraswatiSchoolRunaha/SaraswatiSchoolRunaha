@@ -341,28 +341,27 @@ async function fetchAttendanceData() {
                 <tbody>`;
         
         data.forEach((s, i) => {
-            let status = (s.Status || "").toString().trim();
-            html += `
-                <tr style="border-bottom:1px solid #f1f5f9;">
-                    <td style="padding:15px;">${s["Student ID"]}</td>
-                    <td style="padding:15px;"><strong>${s["Student Name"]}</strong></td>
-                    <td style="padding:15px;">${s["Father Name"] || '-'}</td>
-                    <td style="padding:15px;">${s["Class"]}</td>
-                    <td style="padding:15px;">
-                        <select id="st_${i}" style="padding:6px; border-radius:4px;">
-                            <option value="P" ${status==="P"?"selected":""}>Present</option>
-                            <option value="A" ${status==="A"?"selected":""}>Absent</option>
-                        </select>
-                    </td>
-                    <td style="padding:15px;">
-                        <button class="update-single-btn" data-id="${s["Student ID"]}" data-idx="${i}" 
-                            style="background:#059669; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
-                            Update
-                        </button>
-                    </td>
-                </tr>`;
-        });
-        
+    let status = (s.Status || "").toString().trim();
+    html += `
+        <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:15px;">${s["Student ID"]}</td>
+            <td style="padding:15px;"><strong>${s["Student Name"]}</strong></td>
+            <td style="padding:15px;">${s["Father Name"] || '-'}</td>
+            <td style="padding:15px;">${s["Class"]}</td>
+            <td style="padding:15px;">${s["Medium"] || '-'}</td> <td style="padding:15px;">
+                <select id="st_${i}" style="padding:6px; border-radius:4px;">
+                    <option value="P" ${status==="P"?"selected":""}>Present</option>
+                    <option value="A" ${status==="A"?"selected":""}>Absent</option>
+                </select>
+            </td>
+            <td style="padding:15px;">
+                <button class="update-single-btn" data-id="${s["Student ID"]}" data-idx="${i}" 
+                    style="background:#059669; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
+                    Update
+                </button>
+            </td>
+        </tr>`;
+});        
         container.innerHTML = html + `</tbody></table></div>`;
 
         document.querySelectorAll('.update-single-btn').forEach(btn => {
