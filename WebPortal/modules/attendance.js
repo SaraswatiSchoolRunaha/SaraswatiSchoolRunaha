@@ -628,39 +628,141 @@ function printAbsentListWindow() {
 }
 
 
+// ==========================================
+// 4. DAILY PRESENT REPORT PRINT LOGIC
+// ==========================================
+export async function showPresentReport() {
+    const today = new Date().toISOString().split('T')[0];
 
+    const fallbackClasses = ["KG1","KG2","1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th"];
+    const fallbackMediums = ["Hindi", "English"];
 
+    try {
+        document.getElementById('contentArea').innerHTML = `
+            <div>
+                <h3 style="color:#16a34a;">
+                    <i class="fa-solid fa-user-check"></i> उपस्थित छात्रों की रिपोर्ट
+                </h3>
 
+                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; background:#f0fdf4; padding:12px; border-radius:8px;">
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:12px;">तारीख</label>
+                        <input type="date" id="presDate" value="${today}" style="height:38px;width:140px;border:1px solid #ccc;border-radius:6px;padding:5px;">
+                    </div>
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:12px;">कक्षा</label>
+                        <select id="presClass" style="height:38px;width:160px;border:1px solid #ccc;border-radius:6px;">
+                            <option value="">-- कक्षा चुनें --</option>
+                            ${fallbackClasses.map(c => `<option value="${c}">${c}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:12px;">माध्यम</label>
+                        <select id="presMedium" style="height:38px;width:160px;border:1px solid #ccc;border-radius:6px;">
+                            <option value="">-- माध्यम चुनें --</option>
+                            ${fallbackMediums.map(m => `<option value="${m}">${m}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <button id="btnSearchPresent" style="height:38px;padding:0 18px;background:#16a34a;color:white;border:none;border-radius:6px;">🔍 खोजें</button>
+                    </div>
+                    <div>
+                        <button id="btnPrintPresent" style="height:38px;padding:0 18px;background:#1e3a8a;color:white;border:none;border-radius:6px;">🖨 प्रिंट</button>
+                    </div>
+                </div>
+                <div id="presentListContainer" style="margin-top:15px;"></div>
+            </div>`;
 
+        document.getElementById('btnSearchPresent').addEventListener('click', loadPresentStudentsList);
+        document.getElementById('btnPrintPresent').addEventListener('click', printPresentListWindow);
+    } catch (err) {
+        document.getElementById('contentArea').innerHTML = "<p style='color:red;'>डेटा लोड एरर!</p>";
+    }
+}
 
+// ===============================
+// PRESENT LIST LOADER
+// ===============================
+async function loadPresentStudentsList() {
+    const date = document.getElementById("presDate").value;
+    const className = document.getElementById("presClass").value;
+    const medium = document.getElementById("presMedium").value;
+    const container = document.getElementById("presentListContainer");
 
+    if (!date || !className || !medium) {
+        alert("सभी फ़िल्टर चुनें!");
+        return;
+    }
 
+    container.innerHTML = "<p style='font-weight:bold;color:#16a34a;'>⏳ खोज जारी है...</p>";
 
+    try {
+        // यहाँ एक्शन 'getPresentStudents' बदलें
+        const url = `${sheetUrls['Attendance']}?action=getPresentStudents&date=${date}&class=${encodeURIComponent(className)}&medium=${encodeURIComponent(medium)}`;
 
+        const response = await fetch(url);
+        let data = await response.json();
 
+        if (!Array.isArray(data)) data = [];
 
+        if (data.length === 0) {
+            container.innerHTML = "<p style='color:#dc2626;font-weight:bold;background:#fee2e2;padding:15px;border-radius:6px;text-align:center;'>❌ इस दिन कोई छात्र उपस्थित नहीं है।</p>";
+            return;
+        }
 
+        container.innerHTML = `
+            <div style="width:100%; overflow-x:auto; margin-top:20px;">
+                <table style="width:100%; border-collapse:collapse; background:white;">
+                    <thead>
+                        <tr style="background:#dcfce7; color:#166534; text-align:left;">
+                            <th style="padding:12px; border:1px solid #ddd;">Student ID</th>
+                            <th style="padding:12px; border:1px solid #ddd;">छात्र का नाम</th>
+                            <th style="padding:12px; border:1px solid #ddd;">पिता का नाम</th>
+                            <th style="padding:12px; border:1px solid #ddd;">माध्यम</th> 
+                            <th style="padding:12px; border:1px solid #ddd;">कक्षा</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${data.map(s => `
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:10px; border:1px solid #ddd;">${s["Student ID"]}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${s["Student Name"]}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${s["Father Name"]}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${s["Medium"]}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${s["Class"]}</td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                </table>
+            </div>`;
+    } catch (err) {
+        container.innerHTML = "त्रुटि: " + err.message;
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ===============================
+// PRINT FUNCTION
+// ===============================
+function printPresentListWindow() {
+    const content = document.getElementById("presentListContainer").innerHTML;
+    if (!content || content.includes("लोड") || content.includes("कोई छात्र उपस्थित नहीं")) {
+        alert("पहले खोजें बटन दबाएं!");
+        return;
+    }
+    const dateVal = document.getElementById("presDate").value;
+    const classVal = document.getElementById("presClass").value;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head><title>Present Report</title><style>body{font-family:sans-serif;padding:20px;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #000;padding:10px;}th{background:#f2f2f2;}</style></head>
+        <body><h2>सरस्वती बाल विद्या मंदिर हाई स्कूल, रुनाहा</h2><h4>उपस्थित छात्र दैनिक रिपोर्ट सूची</h4><p><strong>दिनांक:</strong> ${dateVal} | <strong>कक्षा:</strong> ${classVal}</p>${content}</body>
+        </html>`);
+    printWindow.document.close();
+    printWindow.print();
+}
 
 // ==========================================
-// 4. ATTENDANCE ANALYTICS DASHBOARD
+// 5. ATTENDANCE ANALYTICS DASHBOARD
 // ==========================================
 export async function showAttendanceDashboard() {
     const contentArea = document.getElementById('contentArea');
