@@ -234,7 +234,7 @@ async function saveAttendanceToSheets(filteredStudents) {
     try {
         const response = await fetch(sheetUrls['Attendance'], {
             method: "POST",
-            mode: "cor", // 'no-cors' को 'cors' में बदल दिया ताकि रिस्पॉन्स पढ़ सकें
+            mode: "no-cors", // 'no-cors' को 'cors' में बदल दिया ताकि रिस्पॉन्स पढ़ सकें
             headers: {
                 "Content-Type": "application/json"
             },
