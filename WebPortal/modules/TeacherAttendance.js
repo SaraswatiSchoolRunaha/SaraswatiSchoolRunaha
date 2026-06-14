@@ -1,41 +1,26 @@
-
-
-
-
-
-
-
-/** * TeacherAttendance.js - शिक्षक उपस्थिति मॉड्यूल
- */
+import { sheetUrls, translations } from './config.js'; // कॉन्फ़िगरेशन इंपोर्ट किया
 
 export function loadTeacherAttendance() {
     const contentArea = document.getElementById("contentArea");
 
+    // UI रेंडर करें
     contentArea.innerHTML = `
-        <div class="attendance-module">
-            <h2>शिक्षक उपस्थिति पोर्टल</h2>
-            <p>अपना QR कोड स्कैन करें या नीचे विवरण भरें:</p>
-            
-            <div class="form-container" style="max-width: 400px; margin: auto;">
+        <div class="module-card">
+            <h2>${translations['शिक्षक उपस्थिति मॉड्यूल']}</h2>
+            <div class="form-group">
                 <input type="text" id="teacherId" placeholder="Teacher ID" class="form-control">
                 <input type="password" id="pin" placeholder="4-Digit PIN" class="form-control">
-                
                 <select id="type" class="form-control">
                     <option value="IN">Check-In (आना)</option>
                     <option value="OUT">Check-Out (जाना)</option>
                 </select>
-                
-                <button onclick="submitAttendance()" class="btn-primary">उपस्थिति सबमिट करें</button>
-                <div id="statusMsg" style="margin-top: 15px; font-weight: bold;"></div>
+                <button onclick="submitAttendance()" class="btn-submit">सबमिट करें</button>
             </div>
-            
-            <div id="qrCodeArea" style="margin-top: 30px;">
-                <h3>शिक्षक QR स्कैन करें</h3>
-                <div id="qrCodeDisplay"></div> </div>
+            <div id="statusMsg"></div>
         </div>
     `;
 
-    // सबमिट फंक्शन को ग्लोबली एक्सेस करने के लिए window पर सेट करें
+    // सबमिट फंक्शन
     window.submitAttendance = function() {
         const data = {
             id: document.getElementById('teacherId').value,
@@ -45,14 +30,11 @@ export function loadTeacherAttendance() {
         
         document.getElementById('statusMsg').innerText = "Processing...";
         
-        // Google Apps Script के 'processAttendance' फंक्शन को कॉल करें
-        google.script.run.withSuccessHandler(function(response) {
-            document.getElementById('statusMsg').innerText = response;
-        }).processAttendance(data);
+        // सर्वर कॉल
+        google.script.run
+            .withSuccessHandler(res => {
+                document.getElementById('statusMsg').innerText = res;
+            })
+            .processAttendance(data); // यह फंक्शन आपके Code.gs में होना चाहिए
     };
 }
-
-
-
-
-
