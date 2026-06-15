@@ -9,7 +9,10 @@ export function loadTeacherAttendance() {
 
     contentArea.innerHTML = `
         <div class="module-card">
-            <h2>${translations['शिक्षक उपस्थिति'] || 'शिक्षक उपस्थिति'}</h2>
+
+            <h2>
+                ${translations['शिक्षक उपस्थिति'] || 'शिक्षक उपस्थिति'}
+            </h2>
 
             <div class="form-group">
 
@@ -28,9 +31,17 @@ export function loadTeacherAttendance() {
                     class="form-control"
                 >
 
-                <select id="type" class="form-control">
-                    <option value="IN">Check-In (आना)</option>
-                    <option value="OUT">Check-Out (जाना)</option>
+                <select
+                    id="type"
+                    class="form-control"
+                >
+                    <option value="IN">
+                        Check-In (आना)
+                    </option>
+
+                    <option value="OUT">
+                        Check-Out (जाना)
+                    </option>
                 </select>
 
                 <button
@@ -42,10 +53,18 @@ export function loadTeacherAttendance() {
 
             </div>
 
-            <div id="statusMsg"></div>
+            <div
+                id="statusMsg"
+                style="margin-top:15px;font-weight:bold;"
+            ></div>
 
-            <div id="qrSection" style="margin-top:20px;">
-                <p>अपना QR कोड स्कैन करें या ID भरें</p>
+            <div
+                id="qrSection"
+                style="margin-top:20px;"
+            >
+                <p>
+                    अपना QR कोड स्कैन करें या ID भरें
+                </p>
             </div>
 
         </div>
@@ -54,17 +73,23 @@ export function loadTeacherAttendance() {
     window.submitAttendance = async function () {
 
         const teacherId =
-            document.getElementById('teacherId').value.trim();
+            document.getElementById('teacherId')
+            .value
+            .trim();
 
         const pin =
-            document.getElementById('pin').value.trim();
+            document.getElementById('pin')
+            .value
+            .trim();
 
         const type =
-            document.getElementById('type').value;
+            document.getElementById('type')
+            .value;
 
         if (!teacherId) {
 
-            document.getElementById('statusMsg').innerText =
+            document.getElementById('statusMsg')
+                .innerText =
                 "Teacher ID भरें";
 
             return;
@@ -72,44 +97,38 @@ export function loadTeacherAttendance() {
 
         if (!pin) {
 
-            document.getElementById('statusMsg').innerText =
+            document.getElementById('statusMsg')
+                .innerText =
                 "PIN भरें";
 
             return;
         }
 
-        const data = {
-            id: teacherId,
-            pin: pin,
-            type: type
-        };
-
-        document.getElementById('statusMsg').innerText =
+        document.getElementById('statusMsg')
+            .innerText =
             "Processing...";
 
         try {
 
-            const response = await fetch(
-                sheetUrls.TeacherAttendance,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                }
-            );
+            const apiUrl =
+                `${sheetUrls.TeacherAttendance}?id=${encodeURIComponent(teacherId)}&pin=${encodeURIComponent(pin)}&type=${encodeURIComponent(type)}`;
 
-            const result = await response.json();
+            const response =
+                await fetch(apiUrl);
 
-            document.getElementById('statusMsg').innerText =
+            const result =
+                await response.json();
+
+            document.getElementById('statusMsg')
+                .innerText =
                 result.message;
 
         } catch (error) {
 
             console.error(error);
 
-            document.getElementById('statusMsg').innerText =
+            document.getElementById('statusMsg')
+                .innerText =
                 "Network Error : " + error.message;
         }
     };
