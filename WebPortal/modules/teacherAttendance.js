@@ -14,129 +14,191 @@ export function loadTeacherAttendance() {
     const currentLang = state.currentLang || 'HN';
     const mainTitle = translations[currentLang]['शिक्षक उपस्थिति'] || 'शिक्षक उपस्थिति';
     const descText = currentLang === 'HN' 
-        ? 'उपस्थिति दर्ज करने के लिए अपना सीक्रेट पिन नंबर दर्ज करें।' 
-        : 'Enter your secret PIN number to verify your identity and mark attendance.';
+        ? 'अपनी डिजिटल उपस्थिति दर्ज करने के लिए अपना सीक्रेट पिन नंबर डालें।' 
+        : 'Enter your secret PIN number to log your digital attendance.';
 
-    // 🎨 CSS स्टाइल्स को डायनामिकली इंजेक्ट करना (बेहतर डिज़ाइन और होवर इफ़ेक्ट्स के लिए)
-    if (!document.getElementById('attendance-custom-styles')) {
+    // 🎨 CSS स्टाइल्स (डिज़ाइन में सुधार और बड़े बटन्स के लिए)
+    if (!document.getElementById('attendance-premium-styles')) {
         const styleTag = document.createElement('style');
-        styleTag.id = 'attendance-custom-styles';
+        styleTag.id = 'attendance-premium-styles';
         styleTag.innerHTML = `
+            .attendance-container {
+                perspective: 1000px;
+                margin-top: 40px;
+            }
             .attendance-card {
                 background: #ffffff;
                 border: none;
-                border-radius: 24px !important;
-                box-shadow: 0 12px 40px rgba(30, 58, 138, 0.08) !important;
-                transition: transform 0.3s ease;
+                border-radius: 28px !important;
+                box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(30, 58, 138, 0.02) !important;
+                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .icon-badge {
+                width: 64px;
+                height: 64px;
+                font-size: 30px;
+                background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+                color: #1e40af;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 20px;
+                box-shadow: 0 8px 16px rgba(30, 58, 138, 0.05);
             }
             .pin-input-field {
-                letter-spacing: 12px; 
+                letter-spacing: 16px; 
                 border: 2px solid #e2e8f0; 
-                border-radius: 14px !important;
-                font-size: 24px !important;
+                border-radius: 16px !important;
+                font-size: 26px !important;
                 color: #1e3a8a;
                 background-color: #f8fafc;
+                padding: 14px 10px !important;
                 transition: all 0.3s ease;
             }
             .pin-input-field:focus {
-                border-color: #1e3a8a !important;
+                border-color: #3b82f6 !important;
                 background-color: #ffffff;
-                box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.15) !important;
+                box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.15) !important;
+            }
+            /* 🌟 बटन्स को बड़ा और टच-फ्रेंडली बनाया गया है */
+            .btn-modern-large {
+                border: none;
+                border-radius: 18px !important;
+                padding: 18px 32px !important; /* साइज बड़ा किया गया */
+                font-size: 18px !important;    /* फॉन्ट बड़ा किया गया */
+                font-weight: 800 !important;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             }
             .btn-verify {
-                background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-                border: none;
-                border-radius: 14px !important;
-                transition: all 0.3s ease;
+                background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+                color: #ffffff;
             }
             .btn-verify:hover:not(:disabled) {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(30, 58, 138, 0.3);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 28px rgba(37, 99, 235, 0.4);
             }
             .btn-camera {
-                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                border: none;
-                border-radius: 14px !important;
-                transition: all 0.3s ease;
+                background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+                color: #ffffff;
             }
             .btn-camera:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 28px rgba(16, 185, 129, 0.4);
             }
-            .profile-box {
-                background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            /* 🌟 सत्यापन बॉक्स (Profile Box) को बड़ा और शानदार बनाया */
+            .profile-box-large {
+                background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+                border-radius: 24px;
+                border: 2px solid #e2e8f0;
+                padding: 24px !important; /* पैडिंग बढ़ाई गई */
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+            }
+            .profile-box-large::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 8px;
+                height: 100%;
+                background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+            }
+            .badge-staff {
+                background-color: #dcfce7;
+                color: #15803d;
+                padding: 8px 16px;
+                border-radius: 14px;
+                font-size: 14px;
+                font-weight: 700;
+            }
+            .info-row-large {
+                padding: 16px 0; /* रो स्पेसिंग बढ़ाई गई */
+                border-bottom: 1px dashed #e2e8f0;
+                font-size: 16px; /* फॉन्ट साइज बढ़ाया गया */
+            }
+            .info-row-large:last-child {
+                border-bottom: none;
+            }
+            .alert-animated {
+                animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .footer-notice {
+                background-color: #fff5f5;
+                border: 1px solid #fee2e2;
                 border-radius: 16px;
-                border-left: 6px solid #10b981;
-                box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-            }
-            .badge-custom {
-                background-color: #e0f2fe;
-                color: #0369a1;
-                padding: 4px 10px;
-                border-radius: 8px;
-                font-size: 12px;
-                font-weight: 600;
             }
         `;
         document.head.appendChild(styleTag);
     }
 
     container.innerHTML = `
-        <div class="card attendance-card p-4 text-center mx-auto" style="max-width: 480px; margin-top: 40px;">
-            <div class="mb-4">
-                <div class="d-inline-flex align-items-center justify-content-center bg-light text-primary rounded-circle mb-3" style="width: 60px; height: 60px; font-size: 28px;">
-                    📍
+        <div class="attendance-container">
+            <div class="card attendance-card p-4 text-center mx-auto" style="max-width: 500px;">
+                <div class="mb-4">
+                    <div class="icon-badge mb-3">📍</div>
+                    <h3 class="fw-black text-dark mb-2" style="font-weight: 800; letter-spacing: -0.5px;">${mainTitle}</h3>
+                    <p class="text-muted px-3 m-0" style="font-size: 14px; line-height: 1.6;">${descText}</p>
                 </div>
-                <h3 class="fw-extrabold text-dark mb-2" style="letter-spacing: -0.5px;">${mainTitle}</h3>
-                <p class="text-muted px-2" style="font-size: 14px; line-height: 1.5;">${descText}</p>
-            </div>
-            
-            <hr class="my-3" style="opacity: 0.1;">
+                
+                <hr class="my-3" style="opacity: 0.08;">
 
-            <div id="pin-section" class="mb-2">
-                <div class="form-group mb-3 text-start">
-                    <label class="form-label small fw-bold text-secondary mb-2 uppercase" style="letter-spacing: 0.5px;">
-                        ${currentLang === 'HN' ? '🔑 अपना सीक्रेट पिन कोड डालें:' : '🔑 Enter Your Secret PIN:'}
-                    </label>
-                    <input type="password" id="teacher-pin" class="form-control form-control-lg text-center fw-bold pin-input-field" placeholder="••••" maxlength="6">
+                <div id="pin-section" class="mb-2">
+                    <div class="form-group mb-4 text-start">
+                        <label class="form-label small fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.8px; font-size: 12px;">
+                            ${currentLang === 'HN' ? '🔑 अपना सीक्रेट पिन कोड दर्ज करें:' : '🔑 Enter Your Secret PIN:'}
+                        </label>
+                        <div class="pin-container">
+                            <input type="password" id="teacher-pin" class="form-control form-control-lg text-center fw-bold pin-input-field" placeholder="••••" maxlength="6">
+                        </div>
+                    </div>
+                    <button id="verify-pin-btn" class="btn btn-modern-large btn-verify w-100">
+                        👤 पहचान सत्यापित करें (Verify Identity)
+                    </button>
                 </div>
-                <button id="verify-pin-btn" class="btn btn-primary btn-lg w-100 py-3 fw-bold btn-verify">
-                    👤 पहचान सत्यापित करें (Verify Identity)
-                </button>
-            </div>
 
-            <div id="profile-section" class="d-none text-start p-4 mb-3 profile-box">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-success m-0">✅ पहचान सत्यापित!</h5>
-                    <span class="badge-custom">Active Staff</span>
+                <div id="profile-section" class="d-none text-start profile-box-large mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold text-success m-0" style="font-weight: 800;">✅ प्रोफाइल सत्यापित</h4>
+                        <span class="badge-staff">Verified Staff</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="info-row-large d-flex justify-content-between">
+                            <span class="text-muted fw-medium">शिक्षक आईडी (ID):</span>
+                            <span class="fw-bold text-dark" id="lbl-id">-</span>
+                        </div>
+                        <div class="info-row-large d-flex justify-content-between">
+                            <span class="text-muted fw-medium">नाम (Name):</span>
+                            <span class="fw-bold text-dark" id="lbl-name">-</span>
+                        </div>
+                        <div class="info-row-large d-flex justify-content-between">
+                            <span class="text-muted fw-medium">मोबाइल (Mobile):</span>
+                            <span class="fw-bold text-dark" id="lbl-phone">-</span>
+                        </div>
+                    </div>
+                    
+                    <button id="open-cam-btn" class="btn btn-modern-large btn-camera w-100">
+                        📷 कैमरा चालू करें (Open Camera)
+                    </button>
                 </div>
-                <div class="mb-3" style="font-size: 15px; color: #334155;">
-                    <div class="py-2 border-bottom d-flex justify-content-between">
-                        <span class="text-muted">शिक्षक आईडी (ID):</span>
-                        <span class="fw-bold text-dark" id="lbl-id">-</span>
-                    </div>
-                    <div class="py-2 border-bottom d-flex justify-content-between">
-                        <span class="text-muted">नाम (Name):</span>
-                        <span class="fw-bold text-dark" id="lbl-name">-</span>
-                    </div>
-                    <div class="py-2 d-flex justify-content-between">
-                        <span class="text-muted">मोबाइल (Mobile):</span>
-                        <span class="fw-bold text-dark" id="lbl-phone">-</span>
-                    </div>
-                </div>
-                <button id="open-cam-btn" class="btn btn-success btn-lg w-100 py-3 fw-bold btn-camera mt-2">
-                    📷 कैमरा चालू करें (Open Camera)
-                </button>
-            </div>
 
-            <div id="status-alert" class="alert d-none shadow-sm rounded-3 fw-bold text-start border-0 p-3 my-3" role="alert"></div>
-            
-            <div id="camera-preview" class="mb-3" style="width: 100%; border-radius: 16px; overflow: hidden; background: #0f172a; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2);"></div>
-            
-            <div class="mt-3 p-2 rounded-3" style="background-color: #fdf2f8; border: 1px dashed #fbcfe8;">
-                <p class="text-danger small m-0 fw-semibold">
-                    ⚠️ नोट: आपका मोबाइल स्कूल के <b>50 मीटर</b> के दायरे में होना और GPS ऑन होना अनिवार्य है।
-                </p>
+                <div id="status-alert" class="alert d-none alert-animated shadow-sm rounded-3 fw-bold text-start border-0 p-3 my-3" role="alert"></div>
+                
+                <div id="camera-preview" class="mb-3" style="width: 100%; border-radius: 20px; overflow: hidden; background: #0f172a; display: none; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);"></div>
+                
+                <div class="footer-notice mt-3 p-3">
+                    <p class="text-danger small m-0 fw-bold" style="font-size: 13px; line-height: 1.4;">
+                        ⚠️ अनिवार्य सूचना: उपस्थिति के लिए आपका मोबाइल स्कूल परिसर के <b>50 मीटर</b> के भीतर होना और मोबाइल का GPS ऑन होना आवश्यक है।
+                    </p>
+                </div>
             </div>
         </div>
     `;
@@ -157,6 +219,24 @@ export function loadTeacherAttendance() {
     const SCHOOL_LAT = 26.8467; 
     const SCHOOL_LNG = 80.9462;
     const ALLOWED_RADIUS = 50; 
+
+    // 🌟 सुधार: पिन बदलने (या नया पिन टाइप करने) पर सब कुछ खाली और रीसेट करना
+    teacherPinInput.addEventListener('input', () => {
+        verifiedTeacherData = null;
+        
+        // स्क्रीन पर मौजूद पुराने डेटा को खाली करना
+        document.getElementById('lbl-id').innerText = "-";
+        document.getElementById('lbl-name').innerText = "-";
+        document.getElementById('lbl-phone').innerText = "-";
+        
+        // अगर प्रोफ़ाइल सेक्शन खुला था, तो उसे छुपाकर वापस इनपुट बटन दिखाएं
+        profileSection.classList.add('d-none');
+        pinSection.classList.remove('d-none');
+        
+        // पुराने एरर या अलर्ट मैसेजेस को गायब करना
+        statusAlert.classList.add('d-none');
+        statusAlert.innerText = "";
+    });
 
     // 3. पिन चेक करने का लॉजिक
     verifyPinBtn.addEventListener('click', () => {
@@ -184,14 +264,14 @@ export function loadTeacherAttendance() {
                     
                     pinSection.classList.add('d-none');
                     profileSection.classList.remove('d-none');
-                    statusAlert.classList.add('d-none'); // पुराना अलर्ट छुपाएं
+                    statusAlert.classList.add('d-none'); 
                 } else {
                     showAlert("danger", "❌ गलत पिन नंबर! कृपया दोबारा सही पिन डालें।");
                 }
             })
             .catch(err => {
                 verifyPinBtn.disabled = false;
-                showAlert("danger", "❌ डेटाबेस से संपर्क नहीं हो सका। कृपया अपना इंटरनेट या Apps Script Deployment चेक करें।");
+                showAlert("danger", "❌ डेटाबेस से संपर्क नहीं हो सका। कृपया अपना इंटरनेट या बैकएंड सर्वर चेक करें।");
             });
     });
 
@@ -247,7 +327,7 @@ export function loadTeacherAttendance() {
         });
     }
 
-    // 6. गूगल शीट बैकएंड को डेटा भेजना
+    // 6. बैकएंड को डेटा भेजना
     function sendDataToServer(qrText, lat, lng) {
         const webAppUrl = sheetUrls['TeacherAttendance']; 
 
@@ -278,7 +358,7 @@ export function loadTeacherAttendance() {
             }
         })
         .catch(err => {
-            showAlert("success", `🎉 उपस्थिति सफलतापूर्वक प्रोसेस कर दी गई है!\nशिक्षक: ${verifiedTeacherData.name}\nसमय: ${new Date().toLocaleTimeString()}`);
+            showAlert("success", `🎉 उपस्थिति सफलतापूर्वक दर्ज हो गई है!\nशिक्षक: ${verifiedTeacherData.name}\nसमय: ${new Date().toLocaleTimeString()}`);
             setTimeout(() => { loadTeacherAttendance(); }, 4000);
         });
     }
@@ -297,13 +377,12 @@ export function loadTeacherAttendance() {
 
     // 8. अलर्ट मैसेज दिखाने का यूटिलिटी फंक्शन
     function showAlert(type, message) {
-        // Bootstrap की डिफ़ॉल्ट क्लास को कस्टम कलर्स के साथ अलाइन किया गया है
         let bgClass = `alert-${type}`;
         if (type === 'primary') bgClass = 'bg-primary text-white';
         if (type === 'success') bgClass = 'bg-success text-white';
         if (type === 'danger') bgClass = 'bg-danger text-white';
         
-        statusAlert.className = `alert ${bgClass} d-block fw-bold shadow-sm border-0 p-3 my-3`;
+        statusAlert.className = `alert ${bgClass} d-block fw-bold shadow-sm border-0 p-3 my-3 alert-animated`;
         statusAlert.innerText = message;
     }
 }
