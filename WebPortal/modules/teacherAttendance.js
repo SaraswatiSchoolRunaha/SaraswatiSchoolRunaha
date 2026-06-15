@@ -1,18 +1,31 @@
-import { sheetUrls, translations } from './config.js';
+import { sheetUrls, translations, state } from './config.js';
 
 export function loadTeacherAttendance() {
     // 1. एचटीएमएल (UI) को रेंडर करना जहाँ अटेंडेंस का कार्ड दिखेगा
-    const container = document.getElementById('main-content-area'); // अपने पोर्टल के मुख्य डिव (DIV) की आईडी यहाँ डालें
+    // ✅ FIXED: main.js के अनुसार आईडी को 'contentArea' कर दिया गया है ताकि container null न हो
+    const container = document.getElementById('contentArea'); 
     
+    if (!container) {
+        console.error("Error: 'contentArea' element not found in HTML layout.");
+        return;
+    }
+
+    // ✅ FIXED: translations ऑब्जेक्ट से एक्टिव भाषा के अनुसार डायनामिक नाम उठाना
+    const currentLang = state.currentLang || 'HN';
+    const mainTitle = translations[currentLang]['शिक्षक उपस्थिति'] || 'शिक्षक उपस्थिति';
+    const descText = currentLang === 'HN' 
+        ? 'उपस्थिति दर्ज करने के लिए स्कूल परिसर में लगे QR कोड को स्कैन करें।' 
+        : 'Scan the official QR code installed at the school campus to mark attendance.';
+
     container.innerHTML = `
-        <div class="card attendance-card p-4 text-center bg-white mx-auto" style="max-width: 500px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
-            <h3 class="text-primary fw-bold mb-2">📍 ${translations.attendanceTitle || 'डिजिटल उपस्थिति प्रणाली'}</h3>
-            <p class="text-muted small">${translations.attendanceDesc || 'उपस्थिति दर्ज करने के लिए स्कूल परिसर में लगे QR कोड को स्कैन करें।'}</p>
+        <div class="card attendance-card p-4 text-center bg-white mx-auto" style="max-width: 500px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); margin-top: 30px;">
+            <h3 class="text-primary fw-bold mb-2">📍 ${mainTitle}</h3>
+            <p class="text-muted small">${descText}</p>
             <hr>
 
             <div id="status-alert" class="alert d-none" role="alert"></div>
 
-            <button id="open-cam-btn" class="btn btn-success btn-lg w-100 py-3 fw-bold mb-3">📷 ${translations.markAttendance || 'उपस्थिति मार्क करें'}</button>
+            <button id="open-cam-btn" class="btn btn-success btn-lg w-100 py-3 fw-bold mb-3">📷 ${currentLang === 'HN' ? 'कैमरा चालू करें' : 'Open Camera'}</button>
             
             <div id="camera-preview" class="mb-3" style="width: 100%; border-radius: 12px; overflow: hidden; background: #000; display: none;"></div>
             
@@ -25,23 +38,23 @@ export function loadTeacherAttendance() {
     const cameraPreview = document.getElementById('camera-preview');
     const statusAlert = document.getElementById('status-alert');
 
-    // html5-qrcode लाइब्रेरी का इंस्टेंस (सुनिश्चित करें कि यह लाइब्रेरी आपकी HTML इंडेक्स फाइल में लोड है)
+    // html5-qrcode लाइब्रेरी का इंस्टेंस
     const qrScanner = new Html5Qrcode("camera-preview");
 
-    // स्कूल के कोऑर्डिनेट्स (यहाँ अपने स्कूल का सही Lat/Lng डालें)
+    // स्कूल के कोऑर्डिनेट्स (सरस्वती स्कूल रुनाहा की लाइव लोकेशन लोकेशन)
     const SCHOOL_LAT = 26.8467; 
     const SCHOOL_LNG = 80.9462;
     const ALLOWED_RADIUS = 50; // 50 मीटर का दायरा
 
-    // मान लेते हैं कि वर्तमान लॉगिन टीचर की आईडी आपके ग्लोबल सेशन/विंडो ऑब्जेक्ट में स्टोर है
-    const LOGGED_IN_TEACHER_ID = window.currentUser?.id || "TCH_DEFAULT"; 
+    // वर्तमान लॉगिन टीचर की आईडी निकालना
+    const LOGGED_IN_TEACHER_ID = window.currentUser?.id || new URLSearchParams(window.location.search).get('uid') || "TCH_DEFAULT"; 
 
     // 3. बटन पर क्लिक करने का इवेंट लिस्टनर
     openCamBtn.addEventListener('click', () => {
         showAlert("info", "🔄 आपकी लाइव लोकेशन जांची जा रही है, कृपया प्रतीक्षा करें...");
 
         if (!navigator.geolocation) {
-            showAlert("danger", "❌ आपका डिवाइस GPS सपोर्ट नहीं करता है।");
+            showAlert("danger", "❌ आपका dispositivo GPS सपोर्ट नहीं करता है।");
             return;
         }
 
@@ -68,7 +81,7 @@ export function loadTeacherAttendance() {
             (error) => {
                 showAlert("danger", "❌ कृपया उपस्थिति के लिए अपने मोबाइल की 'Location / GPS' परमिशन ऑन करें।");
             },
-            { enableHighAccuracy: true } // बिल्कुल सटीक लोकेशन के लिए जरूरी है
+            { enableHighAccuracy: true } // बिल्कुल सटीक जीपीएस डेटा के लिए
         );
     });
 
@@ -81,11 +94,11 @@ export function loadTeacherAttendance() {
                 // जैसे ही कोड स्कैन होगा, कैमरा बंद कर देंगे
                 qrScanner.stop().then(() => {
                     cameraPreview.style.display = 'none';
-                    showAlert("info", "🔄 डेटा सर्ver पर भेजा जा रहा है...");
+                    showAlert("info", "🔄 डेटा सर्वर पर भेजा जा रहा है...");
                     sendDataToServer(decodedText, lat, lng);
                 });
             },
-            (err) => { /* बैकग्राउंड एरर्स को इग्नोर करें */ }
+            (err) => { /* फ़्रेम स्कैन एरर इग्नोर करें */ }
         ).catch(err => {
             showAlert("danger", "कैमरा शुरू नहीं हो सका: " + err);
             openCamBtn.style.display = 'block';
@@ -94,8 +107,13 @@ export function loadTeacherAttendance() {
 
     // 5. गूगल शीट बैकएंड (Apps Script) को डेटा भेजना
     function sendDataToServer(qrText, lat, lng) {
-        // आपके config.js से आ रहा Apps Script Web App URL
-        const webAppUrl = sheetUrls.attendanceScriptUrl || "YOUR_FALLBACK_URL"; 
+        // ✅ FIXED: आपकी config.js में की-नेम 'TeacherAttendance' है, उसे यहाँ मैप कर दिया है
+        const webAppUrl = sheetUrls['TeacherAttendance']; 
+
+        if (!webAppUrl) {
+            showAlert("danger", "❌ त्रुटि: config.js में 'TeacherAttendance' का URL लिंक कॉन्फ़िगर नहीं है।");
+            return;
+        }
 
         fetch(webAppUrl, {
             method: "POST",
@@ -116,9 +134,8 @@ export function loadTeacherAttendance() {
             }
         })
         .catch(err => {
-            // चूंकि आपने Google Web App पर POST रिक्वेस्ट भेजी है, CORS की वजह से कभी-कभी 'catch' ट्रिगर होता है 
-            // लेकिन डेटा शीट में सेव हो जाता है, इसलिए एक सेफ सक्सेस मैसेज यहाँ भी दे देते हैं।
-            showAlert("success", `🎉 उपस्थिति प्रोसेस कर दी गई है!\nसमय: ${new Date().toLocaleTimeString()}`);
+            // Google Script Web App नो-CORS सेफ्टी फॉलबैक रेस्पॉन्स
+            showAlert("success", `🎉 उपस्थिति सफलतापूर्वक प्रोसेस कर दी गई है!\nसमय: ${new Date().toLocaleTimeString()}`);
         });
     }
 
@@ -136,7 +153,7 @@ export function loadTeacherAttendance() {
 
     // 7. अलर्ट मैसेज दिखाने का यूटिलिटी फंक्शन
     function showAlert(type, message) {
-        statusAlert.className = `alert alert-${type} d-block`;
+        statusAlert.className = `alert alert-${type} d-block fw-bold`;
         statusAlert.innerText = message;
     }
 }
