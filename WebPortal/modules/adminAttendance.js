@@ -72,7 +72,7 @@ export function loadAdminAttendancePanel() {
     // 1. ऑटोमैटिक HD QR कोड जनरेट करना (Google QR API से)
     const qrContainer = document.getElementById('qrcode-admin-view');
     if (qrContainer) {
-        qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=MY_SCHOOL_FIXED_QR_2026" alt="School QR" class="img-fluid" style="border: 2px solid #000; padding: 5px; background: #fff;" />`;
+        qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=SBVM_RUNAHA_ATTENDANCE_2026" alt="School QR" class="img-fluid" style="border: 2px solid #000; padding: 5px; background: #fff;" />`;
     }
 
     // 2. प्रिंट बटन का लॉजिक (यह सिर्फ QR कोड वाले डिब्बे को प्रिंट करेगा)
