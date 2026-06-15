@@ -1,4 +1,5 @@
 import { sheetUrls, translations, state } from './config.js';
+import { loadTeacherAttendance } from './teacherAttendance.js';
 
 export function loadTeacherAttendance() {
     // 1. एचटीएमएल (UI) को रेंडर करना जहाँ अटेंडेंस का कार्ड दिखेगा
