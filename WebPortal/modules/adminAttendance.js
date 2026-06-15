@@ -3,7 +3,7 @@ import { sheetUrls, translations, state } from './config.js';
 export function loadAdminAttendancePanel() {
     const container = document.getElementById('contentArea');
     if (!container) return;
-
+    
     const currentLang = state.currentLang || 'HN';
 
     // एडमिन पैनल का सुंदर लेआउट (HTML)
