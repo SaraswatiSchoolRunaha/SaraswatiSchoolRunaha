@@ -30,17 +30,18 @@ export const translations = {
         'परीक्षा सूची': 'परीक्षा सूची', 'अंक प्रविष्टि': 'अंक प्रविष्टि', 'परीक्षा रिपोर्ट': 'परीक्षा रिपोर्ट',
         'एडमिट कार्ड जारी करें': 'एडमिट कार्ड जारी करें', 'प्रिंट एडमिट कार्ड': 'प्रिंट एडमिट कार्ड', 
         'शिक्षक प्रबंधन मॉड्यूल': 'शिक्षक प्रबंधन मॉड्यूल', 'शिक्षक उपस्थिति Dashboard': 'शिक्षक उपस्थिति Dashboard', 'शिक्षक उपस्थिति': 'शिक्षक उपस्थिति', 'नया शिक्षक जोड़ें': 'नया शिक्षक जोड़ें', 'अपडेट/डिलीट': 'अपडेट/डिलीट', 'वेतन Salary': 'वेतन Salary', 'शिक्षक उपस्थिति रिपोर्ट': 'शिक्षक उपस्थिति रिपोर्ट',
-        'प्रबंधन पोर्टल': 'प्रबंधन पोर्टल', 'QR कोड प्रबंधन' : 'QR कोड प्रबंधन' ,'मैन्युअल उपस्थिति' : 'मैन्युअल उपस्थिति'
+        'प्रबंधन पोर्टल': 'प्रबंधन पोर्टल', 'QR कोड प्रबंधन': 'QR कोड प्रबंधन' ,'मैन्युअल उपस्थिति': 'मैन्युअल उपस्थिति'
     },
     'EN': {
         'डैशबोर्ड': 'Dashboard', 'छात्र मॉड्यूल': 'Student Module', 'उपस्थिति मॉड्यूल': 'Attendance Module', 'फीस मॉड्यूल': 'Fee Module', 'TC मॉड्यूल': 'TC Module', 'Exam मॉड्यूल': 'Exam Module', 'Admit Card मॉड्यूल': 'Admit Card Module',
         'छात्र प्रमोट': 'Student Promote', 'छात्र प्रोफ़ाइल': 'Student Profile', 'छात्र फोटो अपडेट': 'Photo Update', 'छात्र समग्र अपडेट': 'Samagra Update', 'छात्र आधार अपडेट': 'Aadhaar Update', 'छात्र बैंक खाता': 'Bank Account',
         'दैनिक उपस्थिति': 'Daily Attendance', 'अवकाश प्रबंधन': 'Leave Management', 'उपस्थिति डैशबोर्ड': 'Attendance Dashboard', 'छात्र उपस्थिति रिपोर्ट': 'Students Attendance Report', 'उपस्थिति सुधार': 'Attendance Update', 'छात्र को जोड़ें': 'Add Students (Sync)', 'छात्र को हटाएँ': 'Delete Student', 'अनुपस्थित छात्रों की सूची':'Absent Student List', 'उपस्थित छात्रों की सूची': 'List of Present Students', 
         'फीस भुगतान': 'Fee Payment', 'बकाया लिस्ट': 'Pending List', 'रसीद हिस्ट्री': 'Receipt History', 'फीस स्ट्रक्चर': 'Fee Structure', 'कुल आय रिपोर्ट': 'Income Report',
-        'सत्यापन': 'Verification', 'विवरण चेक करें': 'Check Details', 'TC जनरेट करना': 'Generate TC', 'जारी करना': 'Issue TC', 'शिक्षक प्रबंधन मॉड्यूल': 'Teacher Attendance Moudle', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'शिक्षक उपस्थिति': 'Teacher Attendance', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'वेतन Salary': 'Salary', 'शिक्षक उपस्थिति रिपोर्ट': 'Teacher Attendance Report',
+        'सत्यापन': 'Verification', 'विवरण चेक करें': 'Check Details', 'TC जनरेट करना': 'Generate TC', 'जारी करना': 'Issue TC', 
+        'शिक्षक प्रबंधन मॉड्यूल': 'Teacher Attendance Moudle', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'शिक्षक उपस्थिति': 'Teacher Attendance', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'वेतन Salary': 'Salary', 'शिक्षक उपस्थिति रिपोर्ट': 'Teacher Attendance Report',
         'परीक्षा सूची': 'Exam List', 'अंक प्रविष्टि': 'Marks Entry', 'परीक्षा रिपोर्ट': 'Exam Report', 
         'एडमिट कार्ड जारी करें': 'Issue Admit Card', 'प्रिंट एडमिट कार्ड': 'Print Admit Card',
-        'प्रबंधन पोर्टल' : 'QR कोड प्रबंधन' : 'QR Code Management' : 'मैन्युअल उपस्थिति' : 'Manual Entry'
+        'प्रबंधन पोर्टल': 'QR कोड प्रबंधन': 'QR Code Management': 'मैन्युअल उपस्थिति': 'Manual Entry'
     }
 };
 
