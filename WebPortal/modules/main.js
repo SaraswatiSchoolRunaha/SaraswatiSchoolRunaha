@@ -6,7 +6,7 @@ import {
 } from './attendance.js';
 
 import { loadTeacherAttendance } from './teacherAttendance.js';
-import { loadTeacherAttendance } from './adminAttendance.js';
+import { loadAdminAttendancePanel } from './adminAttendance.js';
 
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
