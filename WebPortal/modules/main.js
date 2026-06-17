@@ -90,7 +90,7 @@ function executeModuleRouting(title) {
             loadTeacherAttendance();
             break;
         case 'QR कोड प्रबंधन': 
-            loadTeacherAttendance();
+            loadAdminAttendancePanel();
             break;
 
         default:
