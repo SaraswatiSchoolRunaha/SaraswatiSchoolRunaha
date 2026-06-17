@@ -89,6 +89,10 @@ function executeModuleRouting(title) {
         case 'शिक्षक उपस्थिति': 
             loadTeacherAttendance();
             break;
+        case 'QR कोड प्रबंधन': 
+            loadTeacherAttendance();
+            break;
+
         default:
             fetchSheetData(title);
             break;
