@@ -7,6 +7,7 @@ import {
 
 import { loadTeacherAttendance } from './teacherAttendance.js';
 
+
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
     container.innerHTML = "";
