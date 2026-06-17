@@ -5,6 +5,7 @@ export let state = {
     studentDataList: null
 };
 
+
 // URL parameters mapping logic for User Permissions
 export const urlParams = new URLSearchParams(window.location.search);
 export const currentUserRole = urlParams.get('role') || 'admin';
