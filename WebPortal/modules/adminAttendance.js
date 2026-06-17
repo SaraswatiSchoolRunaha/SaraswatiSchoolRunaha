@@ -1,86 +1,74 @@
-import { sheetUrls, translations, state } from './config.js';
+import { sheetUrls } from './config.js';
 
-export function loadAdminAttendancePanel() {
+export function loadAdminAttendancePanel(mode) {
     const container = document.getElementById('contentArea');
     if (!container) return;
 
-    container.innerHTML = `
-        <div class="container mt-4" style="font-family: 'Poppins', sans-serif;">
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card p-4 text-center bg-white h-100" style="border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-                        <h4 class="text-primary fw-bold mb-3">🖨️ उपस्थिति QR कोड प्रिंट करें</h4>
-                        <div id="admin-qr-print-zone" class="p-4 bg-white d-inline-block mx-auto border" style="border-radius: 10px; min-width: 260px;">
-                            <h5 class="fw-bold mb-1 text-dark">सरस्वती स्कूल रुनाहा</h5>
-                            <p class="text-muted small mb-3">DIGITAL ATTENDANCE SYSTEM</p>
-                            <div id="qrcode-admin-view" class="my-3 d-flex justify-content-center"></div>
-                            <span class="badge bg-dark px-3 py-2">STAFF ATTENDANCE GATEWAY</span>
-                        </div>
-                        <button id="btn-print-qr" class="btn btn-primary btn-lg w-100 mt-4 fw-bold" style="border-radius: 10px; background: #1e3a8a;">🖨️ प्रिंटआउट निकालें</button>
+    // 1. सिर्फ QR कोड के लिए इंटरफेस
+    if (mode === 'qr') {
+        container.innerHTML = `
+            <div class="container mt-4">
+                <div class="card p-5 text-center shadow-sm" style="border-radius: 15px; border: 1px solid #e2e8f0; max-width: 500px; margin: auto;">
+                    <h3 class="text-primary fw-bold mb-4">🖨️ उपस्थिति QR कोड प्रिंट करें</h3>
+                    <div id="admin-qr-print-zone" class="p-4 bg-white d-inline-block mx-auto border" style="border-radius: 10px;">
+                        <h5 class="fw-bold text-dark">सरस्वती स्कूल रुनाहा</h5>
+                        <p class="text-muted small">DIGITAL ATTENDANCE SYSTEM</p>
+                        <div id="qrcode-admin-view" class="my-3"></div>
+                        <span class="badge bg-dark px-3 py-2">STAFF ATTENDANCE GATEWAY</span>
                     </div>
+                    <button id="btn-print-qr" class="btn btn-primary btn-lg w-100 mt-4 fw-bold">🖨️ प्रिंटआउट निकालें</button>
                 </div>
-
-                <div class="col-md-6 mb-4">
-                    <div class="card p-4 bg-white h-100" style="border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-                        <h4 class="text-success fw-bold mb-3">📝 सीधे उपस्थिति दर्ज करें</h4>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-secondary">शिक्षक का नाम चुनें:</label>
-                            <select id="admin-teacher-select" class="form-select form-select-lg" style="border-radius: 10px; border: 2px solid #cbd5e1;">
-                                <option value="">--- डेटा लोड हो रहा है... ---</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <div class="d-flex gap-3">
-                                <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold py-3">🌅 Check-In</button>
-                                <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold py-3">🌇 Check-Out</button>
-                            </div>
-                        </div>
-                        <div id="admin-alert" class="alert d-none mt-3"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // QR रेंडर
-    document.getElementById('qrcode-admin-view').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" />`;
-
-    // 1. Google Sheet से टीचर्स लोड करें
-    async function loadTeachers() {
-        const select = document.getElementById('admin-teacher-select');
-        const webAppUrl = sheetUrls['TeacherAttendance'];
-        try {
-            const res = await fetch(`${webAppUrl}?action=getTeachersList`);
-            const data = await res.json();
-            if (data.status === "success") {
-                select.innerHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
-                data.teachers.forEach(t => {
-                    select.innerHTML += `<option value="${t.id}">${t.name}</option>`;
-                });
-            }
-        } catch (e) {
-            select.innerHTML = '<option value="">❌ नाम लोड करने में त्रुटि!</option>';
-        }
-    }
-    loadTeachers();
-
-    // 2. प्रिंट लॉजिक
-    document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
-
-    // 3. मैन्युअल अटेंडेंस लॉजिक
-    function markManualAttendance(type) {
-        const teacher = document.getElementById('admin-teacher-select').value;
-        if (!teacher) { alert("⚠️ कृपया शिक्षक चुनें!"); return; }
+            </div>`;
         
-        fetch(sheetUrls['TeacherAttendance'], {
-            method: "POST",
-            body: JSON.stringify({ action: "adminManualMark", teacher_id: teacher, attendance_type: type })
-        })
-        .then(res => res.json())
-        .then(res => alert(res.message))
-        .catch(() => alert("✅ हाजिरी दर्ज कर दी गई!"));
-    }
+        document.getElementById('qrcode-admin-view').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" />`;
+        document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
 
-    document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
-    document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+    } 
+    // 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
+    else if (mode === 'manual') {
+        container.innerHTML = `
+            <div class="container mt-4">
+                <div class="card p-4 shadow-sm" style="border-radius: 15px; border: 1px solid #e2e8f0; max-width: 600px; margin: auto;">
+                    <h3 class="text-success fw-bold mb-4">📝 सीधे उपस्थिति दर्ज करें</h3>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">शिक्षक का नाम चुनें:</label>
+                        <select id="admin-teacher-select" class="form-select form-select-lg"></select>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill">🌅 Check-In</button>
+                        <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill">🌇 Check-Out</button>
+                    </div>
+                </div>
+            </div>`;
+
+        // टीचर्स लोड करने का फंक्शन
+        async function loadTeachers() {
+            const select = document.getElementById('admin-teacher-select');
+            try {
+                const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
+                const data = await res.json();
+                select.innerHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
+                data.teachers.forEach(t => select.innerHTML += `<option value="${t.id}">${t.name}</option>`);
+            } catch (e) { select.innerHTML = '<option value="">❌ एरर!</option>'; }
+        }
+        loadTeachers();
+
+        // इवेंट लिसनर्स
+        document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
+        document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+    }
+}
+
+// मैन्युअल अटेंडेंस का लॉजिक (बाकी कोड के लिए)
+function markManualAttendance(type) {
+    const teacher = document.getElementById('admin-teacher-select').value;
+    if (!teacher) { alert("⚠️ कृपया शिक्षक चुनें!"); return; }
+    
+    fetch(sheetUrls['TeacherAttendance'], {
+        method: "POST",
+        body: JSON.stringify({ action: "adminManualMark", teacher_id: teacher, attendance_type: type })
+    })
+    .then(res => res.json())
+    .then(res => alert(res.message))
+    .catch(() => alert("✅ हाजिरी दर्ज कर दी गई!"));
 }
