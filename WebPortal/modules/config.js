@@ -41,7 +41,7 @@ export const translations = {
         'शिक्षक प्रबंधन मॉड्यूल': 'Teacher Attendance Moudle', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'शिक्षक उपस्थिति': 'Teacher Attendance', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'वेतन Salary': 'Salary', 'शिक्षक उपस्थिति रिपोर्ट': 'Teacher Attendance Report',
         'परीक्षा सूची': 'Exam List', 'अंक प्रविष्टि': 'Marks Entry', 'परीक्षा रिपोर्ट': 'Exam Report', 
         'एडमिट कार्ड जारी करें': 'Issue Admit Card', 'प्रिंट एडमिट कार्ड': 'Print Admit Card',
-        'प्रबंधन पोर्टल': 'QR कोड प्रबंधन': 'QR Code Management', 'मैन्युअल उपस्थिति': 'Manual Entry',
+        'प्रबंधन पोर्टल': 'Management Portal', 'QR कोड प्रबंधन': 'QR Code Management', 'मैन्युअल उपस्थिति': 'Manual Entry',
     }
 };
 
