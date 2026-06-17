@@ -11,6 +11,7 @@ import { loadAdminAttendancePanel } from './adminAttendance.js';
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
     container.innerHTML = "";
+
     
     const roleData = permissions[currentUserRole];
     document.getElementById('userRoleBadge').innerText = currentUserRole.toUpperCase();
