@@ -93,6 +93,9 @@ function executeModuleRouting(title) {
         case 'QR कोड प्रबंधन': 
             loadAdminAttendancePanel();
             break;
+        case 'मैन्युअल उपस्थिति': 
+            loadAdminAttendancePanel();
+            break;
         default:
             fetchSheetData(title);
             break;
