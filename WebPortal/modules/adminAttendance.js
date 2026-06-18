@@ -4,28 +4,49 @@ export function loadAdminAttendancePanel(mode) {
     const container = document.getElementById('contentArea');
     if (!container) return;
 
-    // 1. सिर्फ QR कोड के लिए इंटरफेस
     if (mode === 'qr') {
+        // Style ko dynamic inject karna
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @media print {
+                body * { visibility: hidden; }
+                #admin-qr-print-zone, #admin-qr-print-zone * { visibility: visible; }
+                #admin-qr-print-zone { 
+                    position: absolute; left: 50%; top: 50%; 
+                    transform: translate(-50%, -50%); 
+                    width: 100%; border: none !important;
+                }
+            }
+            .qr-card { max-width: 450px; margin: 2rem auto; border-radius: 20px; border: 1px solid #dee2e6; }
+        `;
+        document.head.appendChild(style);
+
         container.innerHTML = `
             <div class="container mt-4">
-                <div class="card p-5 text-center shadow-sm" style="border-radius: 15px; border: 1px solid #e2e8f0; max-width: 500px; margin: auto;">
-                    <h3 class="text-primary fw-bold mb-4">🖨️ उपस्थिति QR कोड प्रिंट करें</h3>
-                    <div id="admin-qr-print-zone" class="p-4 bg-white d-inline-block mx-auto border" style="border-radius: 10px;">
-                        <h5 class="fw-bold text-dark">सरस्वती बाल विद्या मंदिर स्कूल </h5>
-                        <p class="text-muted small">रुनाहा, बैरसिया, भोपाल (मध्य प्रदेश) </p>
-                        <p class="text-muted small">DIGITAL ATTENDANCE SYSTEM</p>
+                <div class="card p-5 text-center shadow-sm qr-card">
+                    <h3 class="text-primary fw-bold mb-4">🖨️ उपस्थिति QR कोड</h3>
+                    
+                    <div id="admin-qr-print-zone" class="p-4 bg-light border border-secondary shadow-sm" style="border-radius: 15px;">
+                        <h4 class="fw-bold text-dark mb-1">सरस्वती बाल विद्या मंदिर स्कूल</h4>
+                        <p class="text-muted mb-3">रुनाहा, बैरसिया, भोपाल (म.प्र.)</p>
                         <div id="qrcode-admin-view" class="my-3"></div>
-                        <span class="badge bg-dark px-3 py-2">STAFF ATTENDANCE GATEWAY</span>
+                        <div class="bg-dark text-white d-inline-block px-4 py-2 mt-2" style="border-radius: 5px;">
+                            STAFF ATTENDANCE GATEWAY
+                        </div>
                     </div>
-                    <button id="btn-print-qr" class="btn btn-primary btn-lg w-100 mt-4 fw-bold">🖨️ प्रिंटआउट निकालें</button>
+
+                    <button id="btn-print-qr" class="btn btn-primary btn-lg w-100 mt-4 fw-bold">
+                        🖨️ प्रिंटआउट निकालें
+                    </button>
                 </div>
             </div>`;
         
-        document.getElementById('qrcode-admin-view').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" />`;
+        document.getElementById('qrcode-admin-view').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" style="max-width: 250px;" />`;
         document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
+    }
+}
 
-    } 
-    // 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
+// 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
     else if (mode === 'manual') {
         container.innerHTML = `
             <div class="container mt-4">
