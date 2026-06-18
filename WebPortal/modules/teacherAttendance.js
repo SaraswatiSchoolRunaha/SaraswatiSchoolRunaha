@@ -280,12 +280,13 @@ export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
-    // CSS को सीधे यहाँ जोड़ दिया है
+    // यहाँ हमने .table-container को एक min-height दी है ताकि टेबल लोड होने पर लेआउट न हिले
     const style = `
         <style>
             .table-fixed { table-layout: fixed; width: 100%; }
             .col-name { width: 50%; }
             .col-time { width: 25%; }
+            .table-min-height { min-height: 300px; }
         </style>
     `;
 
@@ -311,7 +312,7 @@ export function loadTeacherAttendanceDashboard() {
             </div>
 
             <div class="card shadow-sm border-0 rounded-3">
-                <div class="table-responsive">
+                <div class="table-responsive table-min-height">
                     <table class="table table-hover align-middle mb-0 table-fixed">
                         <thead class="table-light">
                             <tr>
@@ -353,7 +354,6 @@ async function fetchAttendanceData() {
             totalCountEl.innerText = data.list.length;
             lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
             
-            // यहाँ क्लासेस (col-name, col-time) का सही उपयोग किया है
             tbody.innerHTML = data.list.map(t => {
                 const checkIn = (t.checkIn && t.checkIn !== "--") ? t.checkIn : "--:--";
                 const checkOut = (t.checkOut && t.checkOut !== "--") ? t.checkOut : "--:--";
