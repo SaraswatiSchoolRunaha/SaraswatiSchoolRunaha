@@ -196,7 +196,7 @@ export function loadTeacherAttendance() {
                 
                 <div class="footer-notice mt-3 p-3">
                     <p class="text-danger small m-0 fw-bold" style="font-size: 13px; line-height: 1.4;">
-                        ⚠️ अनिवार्य सूचना: उपस्थिति के लिए आपका मोबाइल स्कूल परिसर के <b>50 मीटर</b> के भीतर होना और मोबाइल का GPS ऑन होना आवश्यक है।
+                        ⚠️ अनिवार्य सूचना: उपस्थिति के लिए आपका मोबाइल स्कूल परिसर के <b>30 मीटर</b> के भीतर होना और मोबाइल का GPS ऑन होना आवश्यक है।
                     </p>
                 </div>
             </div>
