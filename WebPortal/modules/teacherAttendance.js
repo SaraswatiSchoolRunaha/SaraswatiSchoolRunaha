@@ -43,7 +43,7 @@ export function loadTeacherAttendance() {
                 </div>
                 
                 <div id="pin-section">
-                    <input type="password" id="teacher-pin" class="form-control pin-input-field mb-3" placeholder="••••••" maxlength="6" inputmode="numeric">
+                    <input type="password" id="teacher-pin" class="form-control pin-input-field mb-3" placeholder="****" maxlength="4" inputmode="numeric">
                     <button id="verify-pin-btn" class="btn btn-modern btn-verify w-100">👤 पहचान सत्यापित करें</button>
                 </div>
 
