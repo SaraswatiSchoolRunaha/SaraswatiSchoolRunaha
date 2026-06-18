@@ -338,6 +338,8 @@ export function loadTeacherAttendanceDashboard() {
     fetchAttendanceData();
 }
 
+
+
 async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
     const totalCountEl = document.getElementById('total-present-count');
