@@ -276,14 +276,16 @@ export function loadTeacherAttendance() {
 
 // --- डैशबोर्ड सेक्शन ---
 
-// 1. डैशबोर्ड लोड करने का फंक्शन
 export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
     container.innerHTML = `
         <div class="container-fluid py-4">
-            <h3 class="fw-bold mb-4 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
+                <small class="text-muted" id="last-updated"></small>
+            </div>
             
             <div class="row mb-4">
                 <div class="col-md-4">
@@ -300,26 +302,24 @@ export function loadTeacherAttendanceDashboard() {
             </div>
 
             <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-4">शिक्षक का नाम</th>
-                                    <th>Check-In</th>
-                                    <th>Check-Out</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dashboard-table-body">
-                                <tr>
-                                    <td colspan="3" class="text-center py-4">
-                                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                                        <span class="ms-2">डेटा लोड हो रहा है...</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">शिक्षक का नाम</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-table-body">
+                            <tr>
+                                <td colspan="3" class="text-center py-4">
+                                    <div class="spinner-border spinner-border-sm text-primary"></div>
+                                    <span class="ms-2">डेटा लोड हो रहा है...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -328,27 +328,25 @@ export function loadTeacherAttendanceDashboard() {
     fetchAttendanceData();
 }
 
-// 2. डेटा फेच करने और टेबल में दिखाने का फंक्शन
 async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
     const totalCountEl = document.getElementById('total-present-count');
+    const lastUpdatedEl = document.getElementById('last-updated');
     
     if (!tbody || !totalCountEl) return;
 
     try {
         const webAppUrl = sheetUrls['TeacherAttendance'];
-        if (!webAppUrl) {
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ त्रुटि: लिंक गायब है।</td></tr>';
-            return;
-        }
-
         const res = await fetch(`${webAppUrl}?action=getTodayAttendance`);
         const data = await res.json();
         
         if (data.status === "success" && data.list && data.list.length > 0) {
             totalCountEl.innerText = data.list.length;
+            lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
             
             tbody.innerHTML = data.list.map(t => {
+                // यहाँ हमने सीधे डेटा को HTML में डाला है। 
+                // अगर आपका Apps Script सही समय भेज रहा है, तो यहाँ 't.checkIn' सही दिखेगा।
                 const checkIn = (t.checkIn && t.checkIn !== "--") ? t.checkIn : "--:--";
                 const checkOut = (t.checkOut && t.checkOut !== "--") ? t.checkOut : "--:--";
 
@@ -360,13 +358,11 @@ async function fetchAttendanceData() {
                     </tr>
                 `;
             }).join('');
-            
         } else {
             totalCountEl.innerText = "0";
             tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
         }
     } catch (e) {
-        console.error("Dashboard Fetch Error: ", e);
         tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-danger">❌ डेटा लोड करने में विफल।</td></tr>';
     }
 }
