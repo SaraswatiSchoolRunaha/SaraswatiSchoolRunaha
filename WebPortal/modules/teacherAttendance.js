@@ -218,7 +218,7 @@ export function loadTeacherAttendance() {
    // 🏫 स्कूल के कोऑर्डिनेट्स: सरस्वती बाल विद्या मंदिर, रुनहा
     const SCHOOL_LAT = 23.712872; 
     const SCHOOL_LNG = 77.248579;
-    const ALLOWED_RADIUS = 30; 
+    const ALLOWED_RADIUS = 50; 
 
     // 🌟 सुधार: पिन बदलने (या नया पिन टाइप करने) पर सब कुछ खाली और रीसेट करना
     teacherPinInput.addEventListener('input', () => {
