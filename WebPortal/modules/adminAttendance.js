@@ -2,8 +2,9 @@ import { sheetUrls } from './config.js';
 
 // अब यह फंक्शन बाहर है और इसे sheetUrls का एक्सेस है
 export async function markManualAttendance(type) {
-    const teacherId = document.getElementById('admin-teacher-select').value;
-    const teacherName = document.getElementById('admin-teacher-select').options[document.getElementById('admin-teacher-select').selectedIndex].text;
+    const selectElement = document.getElementById('admin-teacher-select');
+    const teacherId = selectElement.value;
+    const teacherName = selectElement.options[selectElement.selectedIndex]?.text;
 
     if (!teacherId) {
         alert("⚠️ कृपया पहले शिक्षक का नाम चुनें!");
@@ -20,12 +21,14 @@ export async function markManualAttendance(type) {
         const response = await fetch(sheetUrls['TeacherAttendance'], {
             method: "POST",
             mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "text/plain;charset=utf-8" 
+            },
             body: JSON.stringify(payload)
         });
         alert("✅ " + type + " प्रक्रिया पूरी हुई। कृपया शीट चेक करें।");
     } catch (e) {
-        console.error(e);
+        console.error("Attendance post error: ", e);
         alert("❌ एरर: उपस्थिति दर्ज नहीं हो पाई!");
     }
 }
@@ -75,86 +78,90 @@ export function loadAdminAttendancePanel(mode) {
         document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
     }
 
-
-// 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
+    // 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
     else if (mode === 'manual') {
-    container.innerHTML = `
-        <div class="container mt-4">
-            <div class="card p-4 shadow-lg border-0" style="border-radius: 25px; max-width: 500px; margin: auto; background: #ffffff;">
-                <div class="text-center mb-4">
-                    <div class="mb-3" style="font-size: 2rem;">📝</div>
-                    <h3 class="fw-bold text-dark">मैनुअल उपस्थिति</h3>
-                    <p class="text-muted small">शिक्षक का विवरण चुनें और हाजिरी दर्ज करें</p>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="form-label fw-bold text-secondary ps-1">शिक्षक का नाम:</label>
-                    <select id="admin-teacher-select" class="form-select form-select-lg border-2" style="border-radius: 15px; background-color: #f8f9fa;">
-                        <option value="">लोड हो रहा है...</option>
-                    </select>
+        container.innerHTML = `
+            <div class="container mt-4">
+                <div class="card p-4 shadow-lg border-0" style="border-radius: 25px; max-width: 500px; margin: auto; background: #ffffff;">
+                    <div class="text-center mb-4">
+                        <div class="mb-3" style="font-size: 2rem;">📝</div>
+                        <h3 class="fw-bold text-dark">मैनुअल उपस्थिति</h3>
+                        <p class="text-muted small">शिक्षक का विवरण चुनें और हाजिरी दर्ज करें</p>
+                    </div>
                     
-                    <div id="teacher-details-card" class="mt-4 p-3 d-none" style="border-radius: 15px; background: #f0fdf4; border-left: 5px solid #198754;">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-secondary small">ID:</span> <b id="disp-id">-</b>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-secondary small">Mobile:</span> <b id="disp-mob">-</b>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-secondary small">PIN:</span> <b class="text-success" id="disp-pin">-</b>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary ps-1">शिक्षक का नाम:</label>
+                        <select id="admin-teacher-select" class="form-select form-select-lg border-2" style="border-radius: 15px; background-color: #f8f9fa;">
+                            <option value="">लोड हो रहा है...</option>
+                        </select>
+                        
+                        <div id="teacher-details-card" class="mt-4 p-3 d-none" style="border-radius: 15px; background: #f0fdf4; border-left: 5px solid #198754;">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-secondary small">ID:</span> <b id="disp-id">-</b>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-secondary small">Mobile:</span> <b id="disp-mob">-</b>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-secondary small">PIN:</span> <b class="text-success" id="disp-pin">-</b>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="d-flex gap-3">
+                        <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
+                            🌅 Check-In
+                        </button>
+                        <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
+                            🌇 Check-Out
+                        </button>
+                    </div>
                 </div>
+            </div>`;
 
-                <div class="d-flex gap-3">
-                    <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
-                        🌅 Check-In
-                    </button>
-                    <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
-                        🌇 Check-Out
-                    </button>
-                </div>
-            </div>
-        </div>`;
+        // Modern Hover effects inject karna
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+            .form-select:focus { border-color: #198754 !important; box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15); }
+        `;
+        document.head.appendChild(style);
 
-    // Modern Hover effects inject karna
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .form-select:focus { border-color: #198754 !important; box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15); }
-    `;
-    document.head.appendChild(style);
-
-    // [Baaki Logic]
-    async function loadTeachers() {
-        const select = document.getElementById('admin-teacher-select');
-        try {
-            const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
-            const data = await res.json();
-            select.innerHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
-            data.teachers.forEach(t => {
-                select.innerHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
-            });
-        } catch (e) { select.innerHTML = '<option value="">❌ एरर!</option>'; }
-    }
-    loadTeachers();
-
-    document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
-        const select = e.target;
-        const detailsCard = document.getElementById('teacher-details-card');
-        const option = select.options[select.selectedIndex];
-        
-        if (select.value) {
-            document.getElementById('disp-id').innerText = option.dataset.id;
-            document.getElementById('disp-mob').innerText = option.dataset.mob;
-            document.getElementById('disp-pin').innerText = option.dataset.pin;
-            detailsCard.classList.remove('d-none');
-        } else {
-            detailsCard.classList.add('d-none');
+        // [Baaki Logic]
+        async function loadTeachers() {
+            const select = document.getElementById('admin-teacher-select');
+            try {
+                const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
+                const data = await res.json();
+                
+                let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
+                data.teachers.forEach(t => {
+                    optionsHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
+                });
+                select.innerHTML = optionsHTML;
+            } catch (e) { 
+                console.error("Error loading teachers list: ", e);
+                select.innerHTML = '<option value="">❌ एरर!</option>'; 
+            }
         }
-    });
+        loadTeachers();
 
-    document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
-    document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
-}
+        document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
+            const select = e.target;
+            const detailsCard = document.getElementById('teacher-details-card');
+            const option = select.options[select.selectedIndex];
+            
+            if (select.value) {
+                document.getElementById('disp-id').innerText = option.dataset.id || '-';
+                document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
+                document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
+                detailsCard.classList.remove('d-none');
+            } else {
+                detailsCard.classList.add('d-none');
+            }
+        });
+
+        document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
+        document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+    }
 }
