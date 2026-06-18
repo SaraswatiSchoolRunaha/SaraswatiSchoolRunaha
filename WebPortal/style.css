@@ -144,8 +144,7 @@ td {
 
 
 table { 
-    width: 100% !important; 
-    table-layout: fixed !important; /* यह लाइन टेबल को फैलने से रोकेगी */
+    width: 100%; 
     border-collapse: collapse; 
     margin-top: 15px; 
     background: #fff; 
