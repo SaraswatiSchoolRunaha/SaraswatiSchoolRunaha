@@ -387,9 +387,9 @@ export function loadTeacherAttendance() {
     }
 }
 
-'=================================================================
-    ' Teacher Sttendance Dashnoard 
-'=================================================================
+
+
+
 export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     
