@@ -276,44 +276,37 @@ export function loadTeacherAttendance() {
 
 // --- डैशबोर्ड सेक्शन ---
 
-export function loadTeacherAttendanceDashboard() {
-    const container = document.getElementById('contentArea');
-    if (!container) return;
+async function fetchAttendanceData() {
+    const tbody = document.getElementById('dashboard-table-body');
+    const totalCountEl = document.getElementById('total-present-count');
     
-    container.innerHTML = `
-        <div class="container mt-4">
-            <h2 class="fw-bold mb-4">📊 शिक्षक उपस्थिति डैशबोर्ड</h2>
-            
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="card p-3 shadow-sm border-0 bg-primary text-white">
-                        <h5>कुल उपस्थित (आज)</h5>
-                        <h2 id="total-present-count">0</h2>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card p-4 shadow-sm border-0">
-                <h5 class="fw-bold mb-3">आज की उपस्थिति विवरण</h5>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>नाम</th>
-                                <th>Check-In</th>
-                                <th>Check-Out</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dashboard-table-body">
-                            <tr><td colspan="3" class="text-center">🔄 डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    `;
-
-    fetchAttendanceData();
+    try {
+        const webAppUrl = sheetUrls['TeacherAttendance'];
+        const res = await fetch(`${webAppUrl}?action=getTodayAttendance`);
+        const data = await res.json();
+        
+        if (data.status === "success" && data.list && data.list.length > 0) {
+            totalCountEl.innerText = data.list.length;
+            tbody.innerHTML = data.list.map(t => {
+                // समय को सही फॉर्मेट में दिखाने के लिए
+                const checkIn = t.checkIn && t.checkIn !== "--" ? t.checkIn : "--:--";
+                const checkOut = t.checkOut && t.checkOut !== "--" ? t.checkOut : "--:--";
+                
+                return `
+                    <tr>
+                        <td class="fw-bold text-secondary">${t.name}</td>
+                        <td class="text-success fw-bold">${checkIn}</td>
+                        <td class="text-danger fw-bold">${checkOut}</td>
+                    </tr>
+                `;
+            }).join('');
+        } else {
+            totalCountEl.innerText = "0";
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">📅 कोई उपस्थिति नहीं।</td></tr>';
+        }
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ एरर!</td></tr>';
+    }
 }
 
 async function fetchAttendanceData() {
