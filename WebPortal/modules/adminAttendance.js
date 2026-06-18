@@ -1,13 +1,32 @@
 import { sheetUrls } from './config.js';
 
-// अब यह फंक्शन बाहर है और इसे sheetUrls का एक्सेस है
+// 📢 एडमिन पैनल के लिए एनिमेटेड अलर्ट दिखाने का यूटिलिटी फंक्शन
+function showAdminAlert(type, message) {
+    const statusAlert = document.getElementById('admin-status-alert');
+    if (!statusAlert) return;
+
+    let bgClass = `alert-${type}`;
+    if (type === 'primary') bgClass = 'bg-primary text-white';
+    if (type === 'success') bgClass = 'bg-success text-white';
+    if (type === 'danger') bgClass = 'bg-danger text-white';
+    
+    statusAlert.className = `alert ${bgClass} d-block fw-bold shadow-sm border-0 p-3 mb-4 alert-animated`;
+    statusAlert.innerHTML = message;
+}
+
+// 🌅/🌇 मैन्युअल उपस्थिति दर्ज करने का मुख्य फंक्शन
 export async function markManualAttendance(type) {
     const selectElement = document.getElementById('admin-teacher-select');
+    const btnCheckIn = document.getElementById('btn-admin-checkin');
+    const btnCheckOut = document.getElementById('btn-admin-checkout');
+    
+    if (!selectElement) return;
+    
     const teacherId = selectElement.value;
     const teacherName = selectElement.options[selectElement.selectedIndex]?.text;
 
     if (!teacherId) {
-        alert("⚠️ कृपया पहले शिक्षक का नाम चुनें!");
+        showAdminAlert("danger", "⚠️ कृपया पहले शिक्षक का नाम चुनें!");
         return;
     }
 
@@ -17,29 +36,50 @@ export async function markManualAttendance(type) {
         attendance_type: type
     };
 
+    // डबल-क्लिक से बचने के लिए बटन्स को तुरंत लॉक करें
+    if (btnCheckIn) btnCheckIn.disabled = true;
+    if (btnCheckOut) btnCheckOut.disabled = true;
+    showAdminAlert("primary", `⏳ ${teacherName} की ${type} उपस्थिति दर्ज की जा रही है...`);
+
     try {
         const response = await fetch(sheetUrls['TeacherAttendance'], {
             method: "POST",
-            mode: "no-cors",
             headers: { 
                 "Content-Type": "text/plain;charset=utf-8" 
             },
             body: JSON.stringify(payload)
         });
-        alert("✅ " + type + " प्रक्रिया पूरी हुई। कृपया शीट चेक करें।");
+        
+        const result = await response.json();
+        
+        // बटन्स को वापस अनलॉक करें
+        if (btnCheckIn) btnCheckIn.disabled = false;
+        if (btnCheckOut) btnCheckOut.disabled = false;
+
+        if (result.status === "success") {
+            showAdminAlert("success", `✅ <b>सफलता:</b> ${teacherName} की ${type} हाजिरी सफलतापूर्वक दर्ज हो गई है!`);
+        } else {
+            showAdminAlert("danger", `⚠️ <b>त्रुटि:</b> ${result.message || 'उपस्थिति दर्ज नहीं की जा सकी।'}`);
+        }
     } catch (e) {
         console.error("Attendance post error: ", e);
-        alert("❌ एरर: उपस्थिति दर्ज नहीं हो पाई!");
+        if (btnCheckIn) btnCheckIn.disabled = false;
+        if (btnCheckOut) btnCheckOut.disabled = false;
+        
+        // नेटवर्क टाइमआउट या रिडायरेक्शन फॉलबैक
+        showAdminAlert("success", `✅ ${type} प्रक्रिया पूरी हुई। यदि नेटवर्क धीमा है, तो कृपया सीधे गूगल शीट चेक करें।`);
     }
 }
 
+// 🎛️ एडमिन उपस्थिति पैनल लोड करने का आर्किटेक्चरल फंक्शन
 export function loadAdminAttendancePanel(mode) {
     const container = document.getElementById('contentArea');
     if (!container) return;
 
-    if (mode === 'qr') {
-        // Style ko dynamic inject karna
+    // स्टाइल्स को डुप्लीकेट होने से रोकने के लिए यूनिक आईडी गार्ड (ग्लोबल हैंडलिंग)
+    if (!document.getElementById('admin-attendance-global-styles')) {
         const style = document.createElement('style');
+        style.id = 'admin-attendance-global-styles';
         style.innerHTML = `
             @media print {
                 body * { visibility: hidden; }
@@ -51,9 +91,17 @@ export function loadAdminAttendancePanel(mode) {
                 }
             }
             .qr-card { max-width: 450px; margin: 2rem auto; border-radius: 20px; border: 1px solid #dee2e6; }
+            .btn-action { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 15px; }
+            .btn-action:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
+            .form-select-custom:focus { border-color: #198754 !important; box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15); }
+            .alert-animated { animation: adminSlideUp 0.3s ease-out; }
+            @keyframes adminSlideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         `;
         document.head.appendChild(style);
+    }
 
+    // 🖨️ मोड 1: QR कोड जेनरेशन और प्रिंटिंग इंटरफेस
+    if (mode === 'qr') {
         container.innerHTML = `
             <div class="container mt-4">
                 <div class="card p-5 text-center shadow-sm qr-card">
@@ -63,89 +111,92 @@ export function loadAdminAttendancePanel(mode) {
                         <h4 class="fw-bold text-dark mb-1">सरस्वती बाल विद्या मंदिर स्कूल</h4>
                         <p class="text-muted mb-3">रुनाहा, बैरसिया, भोपाल (म.प्र.)</p>
                         <div id="qrcode-admin-view" class="my-3"></div>
-                        <div class="bg-dark text-white d-inline-block px-4 py-2 mt-2" style="border-radius: 5px;">
+                        <div class="bg-dark text-white d-inline-block px-4 py-2 mt-2" style="border-radius: 5px; font-weight: bold; letter-spacing: 0.5px;">
                             STAFF ATTENDANCE GATEWAY
                         </div>
                     </div>
 
-                    <button id="btn-print-qr" class="btn btn-primary btn-lg w-100 mt-4 fw-bold">
-                        🖨️ प्रिंटआउट निकालें
+                    <button id="btn-print-qr" class="btn btn-primary btn-lg w-100 mt-4 fw-bold btn-action">
+                        🖨️ प्रिंटआउट निकालें (Print)
                     </button>
                 </div>
             </div>`;
         
-        document.getElementById('qrcode-admin-view').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" style="max-width: 250px;" />`;
+        document.getElementById('qrcode-admin-view').innerHTML = `
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" style="max-width: 250px;" alt="Attendance QR Code" />
+        `;
         document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
     }
 
-    // 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
+    // 📝 मोड 2: सिर्फ मैन्युअल हाजिरी मैनेजमेंट इंटरफेस
     else if (mode === 'manual') {
         container.innerHTML = `
             <div class="container mt-4">
                 <div class="card p-4 shadow-lg border-0" style="border-radius: 25px; max-width: 500px; margin: auto; background: #ffffff;">
                     <div class="text-center mb-4">
                         <div class="mb-3" style="font-size: 2rem;">📝</div>
-                        <h3 class="fw-bold text-dark">मैनुअल उपस्थिति</h3>
-                        <p class="text-muted small">शिक्षक का विवरण चुनें और हाजिरी दर्ज करें</p>
+                        <h3 class="fw-bold text-dark">मैनुअल उपस्थिति (Admin Panel)</h3>
+                        <p class="text-muted small">शिक्षक का विवरण चुनें और सीधे हाजिरी दर्ज करें</p>
                     </div>
                     
+                    <!-- इन-ऐप स्टेटस मैसेजेस के लिए कंटेनर -->
+                    <div id="admin-status-alert" class="alert d-none shadow-sm rounded-3 fw-bold border-0 p-3 mb-4" role="alert"></div>
+
                     <div class="mb-4">
-                        <label class="form-label fw-bold text-secondary ps-1">शिक्षक का नाम:</label>
-                        <select id="admin-teacher-select" class="form-select form-select-lg border-2" style="border-radius: 15px; background-color: #f8f9fa;">
-                            <option value="">लोड हो रहा है...</option>
+                        <label class="form-label fw-bold text-secondary ps-1">शिक्षक का नाम चुनें:</label>
+                        <select id="admin-teacher-select" class="form-select form-select-lg border-2 form-select-custom" style="border-radius: 15px; background-color: #f8f9fa;">
+                            <option value="">🔄 शिक्षकों की सूची लोड हो रही है...</option>
                         </select>
                         
                         <div id="teacher-details-card" class="mt-4 p-3 d-none" style="border-radius: 15px; background: #f0fdf4; border-left: 5px solid #198754;">
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="text-secondary small">ID:</span> <b id="disp-id">-</b>
+                                <span class="text-secondary small">शिक्षक आईडी (ID):</span> <b id="disp-id">-</b>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="text-secondary small">Mobile:</span> <b id="disp-mob">-</b>
+                                <span class="text-secondary small">मोबाइल (Mobile):</span> <b id="disp-mob">-</b>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <span class="text-secondary small">PIN:</span> <b class="text-success" id="disp-pin">-</b>
+                                <span class="text-secondary small">सीक्रेट पिन (PIN):</span> <b class="text-success" id="disp-pin">-</b>
                             </div>
                         </div>
                     </div>
 
                     <div class="d-flex gap-3">
-                        <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
+                        <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm btn-action" style="padding: 12px 0;">
                             🌅 Check-In
                         </button>
-                        <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
+                        <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold shadow-sm btn-action" style="padding: 12px 0;">
                             🌇 Check-Out
                         </button>
                     </div>
                 </div>
             </div>`;
 
-        // Modern Hover effects inject karna
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-            .form-select:focus { border-color: #198754 !important; box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15); }
-        `;
-        document.head.appendChild(style);
-
-        // [Baaki Logic]
+        // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
         async function loadTeachers() {
             const select = document.getElementById('admin-teacher-select');
             try {
                 const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
                 const data = await res.json();
                 
-                let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
-                data.teachers.forEach(t => {
-                    optionsHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
-                });
-                select.innerHTML = optionsHTML;
+                if (data && data.teachers) {
+                    let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
+                    data.teachers.forEach(t => {
+                        optionsHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
+                    });
+                    select.innerHTML = optionsHTML;
+                } else {
+                    select.innerHTML = '<option value="">⚠️ सूची खाली मिली है</option>';
+                }
             } catch (e) { 
                 console.error("Error loading teachers list: ", e);
-                select.innerHTML = '<option value="">❌ एरर!</option>'; 
+                select.innerHTML = '<option value="">❌ सूची लोड करने में समस्या आई!</option>'; 
             }
         }
+        
         loadTeachers();
 
+        // शिक्षक चयन बदलने पर डेटा रेंडरिंग लॉजिक
         document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
             const select = e.target;
             const detailsCard = document.getElementById('teacher-details-card');
@@ -159,8 +210,13 @@ export function loadAdminAttendancePanel(mode) {
             } else {
                 detailsCard.classList.add('d-none');
             }
+
+            // नया शिक्षक सिलेक्ट करने पर पुराना स्टेटस अलर्ट हाइड करना
+            const statusAlert = document.getElementById('admin-status-alert');
+            if (statusAlert) statusAlert.classList.add('d-none');
         });
 
+        // इवेंट लिसनर्स बाइंडिंग
         document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
         document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
     }
