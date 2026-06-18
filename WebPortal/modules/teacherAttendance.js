@@ -280,18 +280,28 @@ async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
     const totalCountEl = document.getElementById('total-present-count');
     
+    // अगर टेबल या काउंट एलिमेंट मौजूद नहीं हैं, तो आगे न बढ़ें
+    if (!tbody || !totalCountEl) return;
+
     try {
         const webAppUrl = sheetUrls['TeacherAttendance'];
+        if (!webAppUrl) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ त्रुटि: लिंक गायब है।</td></tr>';
+            return;
+        }
+
         const res = await fetch(`${webAppUrl}?action=getTodayAttendance`);
         const data = await res.json();
         
         if (data.status === "success" && data.list && data.list.length > 0) {
             totalCountEl.innerText = data.list.length;
+            
+            // डेटा को मैप करके टेबल में डालना
             tbody.innerHTML = data.list.map(t => {
-                // समय को सही फॉर्मेट में दिखाने के लिए
-                const checkIn = t.checkIn && t.checkIn !== "--" ? t.checkIn : "--:--";
-                const checkOut = t.checkOut && t.checkOut !== "--" ? t.checkOut : "--:--";
-                
+                // समय के लिए सुरक्षा चेक: अगर समय मौजूद है तो दिखाएं, वरना --:--
+                const checkIn = (t.checkIn && t.checkIn !== "--") ? t.checkIn : "--:--";
+                const checkOut = (t.checkOut && t.checkOut !== "--") ? t.checkOut : "--:--";
+
                 return `
                     <tr>
                         <td class="fw-bold text-secondary">${t.name}</td>
@@ -300,46 +310,13 @@ async function fetchAttendanceData() {
                     </tr>
                 `;
             }).join('');
+            
         } else {
             totalCountEl.innerText = "0";
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">📅 कोई उपस्थिति नहीं।</td></tr>';
-        }
-    } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ एरर!</td></tr>';
-    }
-}
-
-async function fetchAttendanceData() {
-    const tbody = document.getElementById('dashboard-table-body');
-    const totalCountEl = document.getElementById('total-present-count');
-    
-    try {
-        const webAppUrl = sheetUrls['TeacherAttendance'];
-        if (!webAppUrl) {
-            if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ त्रुटि: कॉन्फ़िगरेशन लिंक गायब है।</td></tr>';
-            return;
-        }
-
-        const res = await fetch(`${webAppUrl}?action=getTodayAttendance`);
-        const data = await res.json();
-        
-        if (data.status === "success" && data.list && data.list.length > 0) {
-            if (totalCountEl) totalCountEl.innerText = data.list.length;
-            if (tbody) {
-                tbody.innerHTML = data.list.map(t => `
-                    <tr>
-                        <td class="fw-bold text-secondary">${t.name}</td>
-                        <td class="text-success fw-bold">${t.checkIn || '--:--'}</td>
-                        <td class="text-danger fw-bold">${t.checkOut || '--:--'}</td>
-                    </tr>
-                `).join('');
-            }
-        } else {
-            if (totalCountEl) totalCountEl.innerText = "0";
-            if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
         }
     } catch (e) {
         console.error("Dashboard Fetch Error: ", e);
-        if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ डेटा लोड करने में विफल। कृपया नेटवर्क या सर्वर स्क्रिप्ट जांचें।</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ डेटा लोड करने में विफल।</td></tr>';
     }
 }
