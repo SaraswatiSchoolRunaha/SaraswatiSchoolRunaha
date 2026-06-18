@@ -143,9 +143,9 @@ td {
 .row-absent { background-color: #fee2e2 !important; }
 
 
-/* Table Layout */
 table { 
-    width: 100%; 
+    width: 100% !important; 
+    table-layout: fixed !important; /* यह लाइन टेबल को फैलने से रोकेगी */
     border-collapse: collapse; 
     margin-top: 15px; 
     background: #fff; 
