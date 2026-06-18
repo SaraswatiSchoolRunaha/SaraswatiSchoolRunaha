@@ -44,7 +44,7 @@ export function loadAdminAttendancePanel(mode) {
         document.getElementById('qrcode-admin-view').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" style="max-width: 250px;" />`;
         document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
     }
- }
+
 
 // 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
     else if (mode === 'manual') {
@@ -112,4 +112,5 @@ export function loadAdminAttendancePanel(mode) {
     // Buttons logic
     document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
     document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+}
 }
