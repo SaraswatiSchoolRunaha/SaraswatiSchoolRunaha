@@ -38,7 +38,7 @@ export const translations = {
         'दैनिक उपस्थिति': 'Daily Attendance', 'अवकाश प्रबंधन': 'Leave Management', 'उपस्थिति डैशबोर्ड': 'Attendance Dashboard', 'छात्र उपस्थिति रिपोर्ट': 'Students Attendance Report', 'उपस्थिति सुधार': 'Attendance Update', 'छात्र को जोड़ें': 'Add Students (Sync)', 'छात्र को हटाएँ': 'Delete Student', 'अनुपस्थित छात्रों की सूची':'Absent Student List', 'उपस्थित छात्रों की सूची': 'List of Present Students', 
         'फीस भुगतान': 'Fee Payment', 'बकाया लिस्ट': 'Pending List', 'रसीद हिस्ट्री': 'Receipt History', 'फीस स्ट्रक्चर': 'Fee Structure', 'कुल आय रिपोर्ट': 'Income Report',
         'सत्यापन': 'Verification', 'विवरण चेक करें': 'Check Details', 'TC जनरेट करना': 'Generate TC', 'जारी करना': 'Issue TC', 
-        'शिक्षक मॉड्यूल': 'Teacher Moudle', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'शिक्षक उपस्थिति': 'Teacher Attendance', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'वेतन Salary': 'Salary', 'शिक्षक उपस्थिति रिपोर्ट': 'Teacher Attendance Report',
+        'शिक्षक मॉड्यूल': 'Teacher Module', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'शिक्षक उपस्थिति': 'Teacher Attendance', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'वेतन Salary': 'Salary', 'शिक्षक उपस्थिति रिपोर्ट': 'Teacher Attendance Report',
         'परीक्षा सूची': 'Exam List', 'अंक प्रविष्टि': 'Marks Entry', 'परीक्षा रिपोर्ट': 'Exam Report', 
         'एडमिट कार्ड जारी करें': 'Issue Admit Card', 'प्रिंट एडमिट कार्ड': 'Print Admit Card',
         'प्रबंधन पोर्टल': 'Management Portal', 'QR कोड प्रबंधन': 'QR Code Management', 'मैन्युअल उपस्थिति': 'Manual Entry',
