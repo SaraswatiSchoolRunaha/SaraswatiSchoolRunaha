@@ -54,6 +54,8 @@ export function loadAdminAttendancePanel(mode) {
                     <h3 class="text-success fw-bold mb-4">📝 सीधे उपस्थिति दर्ज करें</h3>
                     <div class="mb-4">
                         <label class="form-label fw-bold">शिक्षक का नाम चुनें:</label>
+                        <label class="form-label fw-bold">Teacher ID:</label>
+                        <label class="form-label fw-bold"> Mobile NUmber:</label>
                         <select id="admin-teacher-select" class="form-select form-select-lg"></select>
                     </div>
                     <div class="d-flex gap-3">
