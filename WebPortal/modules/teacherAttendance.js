@@ -276,11 +276,63 @@ export function loadTeacherAttendance() {
 
 // --- डैशबोर्ड सेक्शन ---
 
+// 1. डैशबोर्ड लोड करने का फंक्शन
+export function loadTeacherAttendanceDashboard() {
+    const container = document.getElementById('contentArea');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="container-fluid py-4">
+            <h3 class="fw-bold mb-4 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
+            
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card p-3 shadow-sm border-0 bg-primary text-white rounded-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3"><i class="bi bi-people-fill fs-2"></i></div>
+                            <div>
+                                <h6 class="mb-0 text-white-50">कुल उपस्थित (आज)</h6>
+                                <h2 id="total-present-count" class="fw-bold mb-0">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">शिक्षक का नाम</th>
+                                    <th>Check-In</th>
+                                    <th>Check-Out</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-table-body">
+                                <tr>
+                                    <td colspan="3" class="text-center py-4">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                        <span class="ms-2">डेटा लोड हो रहा है...</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    fetchAttendanceData();
+}
+
+// 2. डेटा फेच करने और टेबल में दिखाने का फंक्शन
 async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
     const totalCountEl = document.getElementById('total-present-count');
     
-    // अगर टेबल या काउंट एलिमेंट मौजूद नहीं हैं, तो आगे न बढ़ें
     if (!tbody || !totalCountEl) return;
 
     try {
@@ -296,15 +348,13 @@ async function fetchAttendanceData() {
         if (data.status === "success" && data.list && data.list.length > 0) {
             totalCountEl.innerText = data.list.length;
             
-            // डेटा को मैप करके टेबल में डालना
             tbody.innerHTML = data.list.map(t => {
-                // समय के लिए सुरक्षा चेक: अगर समय मौजूद है तो दिखाएं, वरना --:--
                 const checkIn = (t.checkIn && t.checkIn !== "--") ? t.checkIn : "--:--";
                 const checkOut = (t.checkOut && t.checkOut !== "--") ? t.checkOut : "--:--";
 
                 return `
                     <tr>
-                        <td class="fw-bold text-secondary">${t.name}</td>
+                        <td class="ps-4 fw-bold text-secondary">${t.name}</td>
                         <td class="text-success fw-bold">${checkIn}</td>
                         <td class="text-danger fw-bold">${checkOut}</td>
                     </tr>
@@ -313,10 +363,10 @@ async function fetchAttendanceData() {
             
         } else {
             totalCountEl.innerText = "0";
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
         }
     } catch (e) {
         console.error("Dashboard Fetch Error: ", e);
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ डेटा लोड करने में विफल।</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-danger">❌ डेटा लोड करने में विफल।</td></tr>';
     }
 }
