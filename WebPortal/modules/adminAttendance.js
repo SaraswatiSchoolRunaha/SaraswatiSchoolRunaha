@@ -1,5 +1,12 @@
 import { sheetUrls } from './config.js';
 
+// 1. फंक्शन को यहाँ बाहर रखें (Global Scope)
+export async function markManualAttendance(type) {
+    const teacherId = document.getElementById('admin-teacher-select').value;
+    // ... बाकी का सारा लॉजिक यहाँ डालें ...
+    console.log("Attendance marked for:", type);
+}
+
 export function loadAdminAttendancePanel(mode) {
     const container = document.getElementById('contentArea');
     if (!container) return;
