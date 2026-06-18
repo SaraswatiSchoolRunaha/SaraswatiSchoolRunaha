@@ -44,55 +44,72 @@ export function loadAdminAttendancePanel(mode) {
         document.getElementById('qrcode-admin-view').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SBVM_RUNAHA_ATTENDANCE_2026" class="img-fluid" style="max-width: 250px;" />`;
         document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
     }
-}
+ }
 
 // 2. सिर्फ मैन्युअल उपस्थिति के लिए इंटरफेस
     else if (mode === 'manual') {
-        container.innerHTML = `
-            <div class="container mt-4">
-                <div class="card p-4 shadow-sm" style="border-radius: 15px; border: 1px solid #e2e8f0; max-width: 600px; margin: auto;">
-                    <h3 class="text-success fw-bold mb-4">📝 सीधे उपस्थिति दर्ज करें</h3>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">शिक्षक का नाम चुनें:</label>
-                        <label class="form-label fw-bold">Teacher ID:</label>
-                        <label class="form-label fw-bold"> Mobile NUmber:</label>
-                        <select id="admin-teacher-select" class="form-select form-select-lg"></select>
-                    </div>
-                    <div class="d-flex gap-3">
-                        <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill">🌅 Check-In</button>
-                        <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill">🌇 Check-Out</button>
+    container.innerHTML = `
+        <div class="container mt-4">
+            <div class="card p-4 shadow-sm" style="border-radius: 20px; border: 1px solid #e2e8f0; max-width: 500px; margin: auto;">
+                <div class="text-center mb-4">
+                    <h3 class="text-success fw-bold">📝 मैनुअल उपस्थिति</h3>
+                    <p class="text-muted small">शिक्षक का विवरण चुनें और हाजिरी दर्ज करें</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-secondary">शिक्षक का नाम चुनें:</label>
+                    <select id="admin-teacher-select" class="form-select form-select-lg" style="border-radius: 12px;">
+                        <option value="">लोड हो रहा है...</option>
+                    </select>
+                    
+                    <div id="teacher-details-card" class="mt-3 p-3 bg-light d-none" style="border-radius: 12px; border-left: 5px solid #198754;">
+                        <div class="small">ID: <b id="disp-id">-</b></div>
+                        <div class="small">Mobile: <b id="disp-mob">-</b></div>
+                        <div class="small text-primary">PIN: <b id="disp-pin">-</b></div>
                     </div>
                 </div>
-            </div>`;
 
-        // टीचर्स लोड करने का फंक्शन
-        async function loadTeachers() {
-            const select = document.getElementById('admin-teacher-select');
-            try {
-                const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
-                const data = await res.json();
-                select.innerHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
-                data.teachers.forEach(t => select.innerHTML += `<option value="${t.id}">${t.name}</option>`);
-            } catch (e) { select.innerHTML = '<option value="">❌ एरर!</option>'; }
-        }
-        loadTeachers();
+                <div class="d-flex gap-2">
+                    <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold" style="border-radius: 12px;">🌅 Check-In</button>
+                    <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold" style="border-radius: 12px;">🌇 Check-Out</button>
+                </div>
+            </div>
+        </div>`;
 
-        // इवेंट लिसनर्स
-        document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
-        document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+    async function loadTeachers() {
+        const select = document.getElementById('admin-teacher-select');
+        try {
+            const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
+            const data = await res.json();
+            select.innerHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
+            data.teachers.forEach(t => {
+                // Option mein hum details store kar rahe hain
+                select.innerHTML += `<option value="${t.id}" 
+                    data-id="${t.id}" 
+                    data-mob="${t.mobile}" 
+                    data-pin="${t.pin}">${t.name}</option>`;
+            });
+        } catch (e) { select.innerHTML = '<option value="">❌ एरर!</option>'; }
     }
-}
+    loadTeachers();
 
-// मैन्युअल अटेंडेंस का लॉजिक (बाकी कोड के लिए)
-function markManualAttendance(type) {
-    const teacher = document.getElementById('admin-teacher-select').value;
-    if (!teacher) { alert("⚠️ कृपया शिक्षक चुनें!"); return; }
-    
-    fetch(sheetUrls['TeacherAttendance'], {
-        method: "POST",
-        body: JSON.stringify({ action: "adminManualMark", teacher_id: teacher, attendance_type: type })
-    })
-    .then(res => res.json())
-    .then(res => alert(res.message))
-    .catch(() => alert("✅ हाजिरी दर्ज कर दी गई!"));
+    // Selection par details dikhane ka logic
+    document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
+        const select = e.target;
+        const detailsCard = document.getElementById('teacher-details-card');
+        const option = select.options[select.selectedIndex];
+        
+        if (select.value) {
+            document.getElementById('disp-id').innerText = option.dataset.id;
+            document.getElementById('disp-mob').innerText = option.dataset.mob;
+            document.getElementById('disp-pin').innerText = option.dataset.pin;
+            detailsCard.classList.remove('d-none');
+        } else {
+            detailsCard.classList.add('d-none');
+        }
+    });
+
+    // Buttons logic
+    document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
+    document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
 }
