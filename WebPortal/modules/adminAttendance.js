@@ -1,10 +1,33 @@
 import { sheetUrls } from './config.js';
 
-// 1. फंक्शन को यहाँ बाहर रखें (Global Scope)
+// अब यह फंक्शन बाहर है और इसे sheetUrls का एक्सेस है
 export async function markManualAttendance(type) {
     const teacherId = document.getElementById('admin-teacher-select').value;
-    // ... बाकी का सारा लॉजिक यहाँ डालें ...
-    console.log("Attendance marked for:", type);
+    const teacherName = document.getElementById('admin-teacher-select').options[document.getElementById('admin-teacher-select').selectedIndex].text;
+
+    if (!teacherId) {
+        alert("⚠️ कृपया पहले शिक्षक का नाम चुनें!");
+        return;
+    }
+
+    const payload = {
+        action: "adminManualMark",
+        teacher_id: teacherId,
+        attendance_type: type
+    };
+
+    try {
+        const response = await fetch(sheetUrls['TeacherAttendance'], {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        alert("✅ " + type + " प्रक्रिया पूरी हुई। कृपया शीट चेक करें।");
+    } catch (e) {
+        console.error(e);
+        alert("❌ एरर: उपस्थिति दर्ज नहीं हो पाई!");
+    }
 }
 
 export function loadAdminAttendancePanel(mode) {
