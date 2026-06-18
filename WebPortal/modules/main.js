@@ -88,7 +88,7 @@ function executeModuleRouting(title) {
         case 'उपस्थित छात्रों की सूची':
             showPresentReport();
             break;
-        case 'शिक्षक उपस्थिति': 
+        case 'शिक्षक उपस्थिति Dashboard': 
             loadTeacherAttendanceDashboard();
             break;
         case 'शिक्षक उपस्थिति': 
