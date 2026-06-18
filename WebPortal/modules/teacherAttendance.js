@@ -386,3 +386,70 @@ export function loadTeacherAttendance() {
         statusAlert.innerText = message;
     }
 }
+
+'=================================================================
+    ' Teacher Sttendance Dashnoard 
+'=================================================================
+export function loadTeacherAttendanceDashboard() {
+    const container = document.getElementById('contentArea');
+    
+    container.innerHTML = `
+        <div class="container mt-4">
+            <h2 class="fw-bold mb-4">📊 शिक्षक उपस्थिति डैशबोर्ड</h2>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-0 bg-primary text-white">
+                        <h5>कुल उपस्थित (आज)</h5>
+                        <h2 id="total-present-count">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-4 shadow-sm border-0">
+                <h5 class="fw-bold mb-3">आज की उपस्थिति विवरण</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>नाम</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-table-body">
+                            <tr><td colspan="3" class="text-center">डेटा लोड हो रहा है...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // डेटा लोड करें
+    fetchAttendanceData();
+}
+
+async function fetchAttendanceData() {
+    try {
+        // यहाँ आप वही 'getTodayAttendance' वाला एक्शन कॉल करेंगे
+        const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTodayAttendance`);
+        const data = await res.json();
+        
+        const tbody = document.getElementById('dashboard-table-body');
+        if (data.status === "success" && data.list.length > 0) {
+            document.getElementById('total-present-count').innerText = data.list.length;
+            tbody.innerHTML = data.list.map(t => `
+                <tr>
+                    <td>${t.name}</td>
+                    <td>${t.checkIn || '--'}</td>
+                    <td>${t.checkOut || '--'}</td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center">कोई डेटा नहीं मिला।</td></tr>';
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
