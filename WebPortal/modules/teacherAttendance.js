@@ -1,5 +1,5 @@
 import { sheetUrls, translations, state } from './config.js';
-// 🌟 'Html5Qrcode is not defined' एरर को रोकने के लिए लाइब्रेरी को सीधे यहाँ इम्पोर्ट किया गया है
+// 🌟 Html5Qrcode लाइब्रेरी को इम्पोर्ट किया गया है
 import { Html5Qrcode } from "https://esm.sh/html5-qrcode";
 
 export function loadTeacherAttendance() {
@@ -17,124 +17,57 @@ export function loadTeacherAttendance() {
         ? 'अपनी डिजिटल उपस्थिति दर्ज करने के लिए अपना सीक्रेट पिन नंबर डालें।' 
         : 'Enter your secret PIN number to log your digital attendance.';
 
-    // 🎨 CSS स्टाइल्स (डिज़ाइन में सुधार और बड़े बटन्स के लिए)
+    // 🎨 CSS स्टाइल्स
     if (!document.getElementById('attendance-premium-styles')) {
         const styleTag = document.createElement('style');
         styleTag.id = 'attendance-premium-styles';
         styleTag.innerHTML = `
-            .attendance-container {
-                perspective: 1000px;
-                margin-top: 40px;
-            }
+            .attendance-container { perspective: 1000px; margin-top: 40px; }
             .attendance-card {
-                background: #ffffff;
-                border: none;
-                border-radius: 28px !important;
+                background: #ffffff; border: none; border-radius: 28px !important;
                 box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(30, 58, 138, 0.02) !important;
                 transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .icon-badge {
-                width: 64px;
-                height: 64px;
-                font-size: 30px;
+                width: 64px; height: 64px; font-size: 30px;
                 background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-                color: #1e40af;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 20px;
-                box-shadow: 0 8px 16px rgba(30, 58, 138, 0.05);
+                color: #1e40af; display: inline-flex; align-items: center;
+                justify-content: center; border-radius: 20px; box-shadow: 0 8px 16px rgba(30, 58, 138, 0.05);
             }
             .pin-input-field {
-                letter-spacing: 16px; 
-                border: 2px solid #e2e8f0; 
-                border-radius: 16px !important;
-                font-size: 26px !important;
-                color: #1e3a8a;
-                background-color: #f8fafc;
-                padding: 14px 10px !important;
-                transition: all 0.3s ease;
+                letter-spacing: 16px; border: 2px solid #e2e8f0; border-radius: 16px !important;
+                font-size: 26px !important; color: #1e3a8a; background-color: #f8fafc;
+                padding: 14px 10px !important; transition: all 0.3s ease;
             }
             .pin-input-field:focus {
-                border-color: #3b82f6 !important;
-                background-color: #ffffff;
+                border-color: #3b82f6 !important; background-color: #ffffff;
                 box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.15) !important;
             }
-            /* 🌟 बटन्स को बड़ा और टच-फ्रेंडली बनाया गया है */
             .btn-modern-large {
-                border: none;
-                border-radius: 18px !important;
-                padding: 18px 32px !important; /* साइज बड़ा किया गया */
-                font-size: 18px !important;    /* फॉन्ट बड़ा किया गया */
-                font-weight: 800 !important;
-                letter-spacing: 0.5px;
-                text-transform: uppercase;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                border: none; border-radius: 18px !important; padding: 18px 32px !important;
+                font-size: 18px !important; font-weight: 800 !important; letter-spacing: 0.5px;
+                text-transform: uppercase; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             }
-            .btn-verify {
-                background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-                color: #ffffff;
-            }
-            .btn-verify:hover:not(:disabled) {
-                transform: translateY(-3px);
-                box-shadow: 0 10px 28px rgba(37, 99, 235, 0.4);
-            }
-            .btn-camera {
-                background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-                color: #ffffff;
-            }
-            .btn-camera:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 10px 28px rgba(16, 185, 129, 0.4);
-            }
-            /* 🌟 सत्यापन बॉक्स (Profile Box) को बड़ा और शानदार बनाया */
+            .btn-verify { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff; }
+            .btn-verify:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(37, 99, 235, 0.4); }
+            .btn-camera { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; }
+            .btn-camera:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(16, 185, 129, 0.4); }
             .profile-box-large {
                 background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-                border-radius: 24px;
-                border: 2px solid #e2e8f0;
-                padding: 24px !important; /* पैडिंग बढ़ाई गई */
-                position: relative;
-                overflow: hidden;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+                border-radius: 24px; border: 2px solid #e2e8f0; padding: 24px !important;
+                position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.02);
             }
             .profile-box-large::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 8px;
-                height: 100%;
+                content: ''; position: absolute; top: 0; left: 0; width: 8px; height: 100%;
                 background: linear-gradient(180deg, #10b981 0%, #059669 100%);
             }
-            .badge-staff {
-                background-color: #dcfce7;
-                color: #15803d;
-                padding: 8px 16px;
-                border-radius: 14px;
-                font-size: 14px;
-                font-weight: 700;
-            }
-            .info-row-large {
-                padding: 16px 0; /* रो स्पेसिंग बढ़ाई गई */
-                border-bottom: 1px dashed #e2e8f0;
-                font-size: 16px; /* फॉन्ट साइज बढ़ाया गया */
-            }
-            .info-row-large:last-child {
-                border-bottom: none;
-            }
-            .alert-animated {
-                animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            @keyframes slideUp {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .footer-notice {
-                background-color: #fff5f5;
-                border: 1px solid #fee2e2;
-                border-radius: 16px;
-            }
+            .badge-staff { background-color: #dcfce7; color: #15803d; padding: 8px 16px; border-radius: 14px; font-size: 14px; font-weight: 700; }
+            .info-row-large { padding: 16px 0; border-bottom: 1px dashed #e2e8f0; font-size: 16px; }
+            .info-row-large:last-child { border-bottom: none; }
+            .alert-animated { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+            @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            .footer-notice { background-color: #fff5f5; border: 1px solid #fee2e2; border-radius: 16px; }
         `;
         document.head.appendChild(styleTag);
     }
@@ -196,14 +129,14 @@ export function loadTeacherAttendance() {
                 
                 <div class="footer-notice mt-3 p-3">
                     <p class="text-danger small m-0 fw-bold" style="font-size: 13px; line-height: 1.4;">
-                        ⚠️ अनिवार्य सूचना: उपस्थिति के लिए आपका मोबाइल स्कूल परिसर के <b>30 मीटर</b> के भीतर होना और मोबाइल का GPS ऑन होना आवश्यक है।
+                        ⚠️ अनिवार्य सूचना: उपस्थिति के लिए आपका मोबाइल स्कूल परिसर के <b>50 मीटर</b> के भीतर होना और मोबाइल का GPS ऑन होना आवश्यक है।
                     </p>
                 </div>
             </div>
         </div>
     `;
 
-    // 2. आवश्यक वेरिएबल्स और एलिमेंट्स
+    // आवश्यक वेरिएबल्स और एलिमेंट्स
     const pinSection = document.getElementById('pin-section');
     const profileSection = document.getElementById('profile-section');
     const teacherPinInput = document.getElementById('teacher-pin');
@@ -215,25 +148,21 @@ export function loadTeacherAttendance() {
     let verifiedTeacherData = null;
     const qrScanner = new Html5Qrcode("camera-preview");
 
-   // 🏫 स्कूल के कोऑर्डिनेट्स: सरस्वती बाल विद्या मंदिर, रुनहा
+    // स्कूल के कोऑर्डिनेट्स और रेंज सेटिंग्स
     const SCHOOL_LAT = 23.712872; 
     const SCHOOL_LNG = 77.248579;
     const ALLOWED_RADIUS = 50; 
 
-    // 🌟 सुधार: पिन बदलने (या नया पिन टाइप करने) पर सब कुछ खाली और रीसेट करना
+    // इनपुट फील्ड रीसेट लॉजिक
     teacherPinInput.addEventListener('input', () => {
         verifiedTeacherData = null;
-        
-        // स्क्रीन पर मौजूद पुराने डेटा को खाली करना
         document.getElementById('lbl-id').innerText = "-";
         document.getElementById('lbl-name').innerText = "-";
         document.getElementById('lbl-phone').innerText = "-";
         
-        // अगर प्रोफ़ाइल सेक्शन खुला था, तो उसे छुपाकर वापस इनपुट बटन दिखाएं
         profileSection.classList.add('d-none');
         pinSection.classList.remove('d-none');
         
-        // पुराने एरर या अलर्ट मैसेजेस को गायब करना
         statusAlert.classList.add('d-none');
         statusAlert.innerText = "";
     });
@@ -248,6 +177,8 @@ export function loadTeacherAttendance() {
 
         showAlert("primary", "🔄 डेटाबेस से आपका पिन मिलाया जा रहा है...");
         verifyPinBtn.disabled = true;
+        const originalBtnText = verifyPinBtn.innerHTML;
+        verifyPinBtn.innerHTML = `⏳ सत्यापित किया जा रहा है...`;
 
         const webAppUrl = sheetUrls['TeacherAttendance']; 
         
@@ -255,6 +186,8 @@ export function loadTeacherAttendance() {
             .then(res => res.json())
             .then(data => {
                 verifyPinBtn.disabled = false;
+                verifyPinBtn.innerHTML = originalBtnText;
+
                 if (data.status === "success") {
                     verifiedTeacherData = data.teacher;
                     
@@ -271,16 +204,22 @@ export function loadTeacherAttendance() {
             })
             .catch(err => {
                 verifyPinBtn.disabled = false;
-                showAlert("danger", "❌ डेटाबेस से संपर्क नहीं हो सका। कृपया अपना इंटरनेट या बैकएंड सर्वर चेक करें।");
+                verifyPinBtn.innerHTML = originalBtnText;
+                showAlert("danger", "❌ डेटाबेस से संपर्क नहीं हो सका। कृपया अपना इंटरनेट कनेक्शन जांचें।");
             });
     });
 
-    // 4. कैमरा बटन पर क्लिक करने का इवेंट
+    // 4. कैमरा बटन क्लिक इवेंट (लोकेशन चेकिंग के साथ)
     openCamBtn.addEventListener('click', () => {
         showAlert("primary", "🔄 आपकी लाइव लोकेशन जांची जा रही है, कृपया प्रतीक्षा करें...");
+        openCamBtn.disabled = true;
+        const originalCamText = openCamBtn.innerHTML;
+        openCamBtn.innerHTML = `⏳ लोकेशन जांची जा रही है...`;
 
         if (!navigator.geolocation) {
             showAlert("danger", "❌ आपका डिवाइस GPS सपोर्ट नहीं करता है।");
+            openCamBtn.disabled = false;
+            openCamBtn.innerHTML = originalCamText;
             return;
         }
 
@@ -288,8 +227,10 @@ export function loadTeacherAttendance() {
             (position) => {
                 const uLat = position.coords.latitude;
                 const uLng = position.coords.longitude;
-
                 const distance = calculateDistance(uLat, uLng, SCHOOL_LAT, SCHOOL_LNG);
+
+                openCamBtn.disabled = false;
+                openCamBtn.innerHTML = originalCamText;
 
                 if (distance <= ALLOWED_RADIUS) {
                     showAlert("success", "✅ लोकेशन सही है! कैमरा खुल रहा है, स्कूल का QR कोड स्कैन करें...");
@@ -298,13 +239,15 @@ export function loadTeacherAttendance() {
                     
                     startScanning(uLat, uLng);
                 } else {
-                    showAlert("danger", `❌ उपस्थिति अस्वीकृत! आप स्कूल से ${Math.round(distance)} मीटर दूर हैं। कृपया परिसर के अंदर आएं।`);
+                    showAlert("danger", `❌ उपस्थिति अस्वीकृत! आप स्कूल परिसर से ${Math.round(distance)} मीटर दूर हैं। कृपया परिसर के अंदर आएं।`);
                 }
             },
             (error) => {
+                openCamBtn.disabled = false;
+                openCamBtn.innerHTML = originalCamText;
                 showAlert("danger", "❌ कृपया उपस्थिति के लिए अपने मोबाइल की 'Location / GPS' परमिशन ऑन करें।");
             },
-            { enableHighAccuracy: true }
+            { enableHighAccuracy: true, timeout: 10000 }
         );
     });
 
@@ -320,19 +263,21 @@ export function loadTeacherAttendance() {
                     sendDataToServer(decodedText, lat, lng);
                 });
             },
-            (err) => { /* फ्रेम एरर को इग्नोर करें */ }
+            (err) => { /* फ्रेम एरर इग्नोर करें */ }
         ).catch(err => {
             showAlert("danger", "कैमरा शुरू नहीं हो सका: " + err);
+            cameraPreview.style.display = 'none';
             profileSection.classList.remove('d-none');
         });
     }
 
-    // 6. बैकएंड को डेटा भेजना
+    // 6. बैकएंड को अटेंडेंस डेटा पोस्ट करना
     function sendDataToServer(qrText, lat, lng) {
         const webAppUrl = sheetUrls['TeacherAttendance']; 
 
         if (!webAppUrl) {
             showAlert("danger", "❌ त्रुटि: config.js में 'TeacherAttendance' का लिंक कॉन्फ़िगर नहीं है।");
+            profileSection.classList.remove('d-none');
             return;
         }
 
@@ -358,12 +303,13 @@ export function loadTeacherAttendance() {
             }
         })
         .catch(err => {
+            // फॉलबैक सक्सेस मैसेज (यदि सर्वर पर रिस्पांस CORS/Network के कारण कैच में जाए पर एंट्री हो चुकी हो)
             showAlert("success", `🎉 उपस्थिति सफलतापूर्वक दर्ज हो गई है!\nशिक्षक: ${verifiedTeacherData.name}\nसमय: ${new Date().toLocaleTimeString()}`);
             setTimeout(() => { loadTeacherAttendance(); }, 4000);
         });
     }
 
-    // 7. दूरी मापने का फॉर्मूला (Haversine Formula)
+    // 7. Haversine Formula (दूरी मापने के लिए)
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371000; 
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -375,7 +321,7 @@ export function loadTeacherAttendance() {
         return R * c;
     }
 
-    // 8. अलर्ट मैसेज दिखाने का यूटिलिटी फंक्शन
+    // 8. यूटिलिटी अलर्ट फंक्शन
     function showAlert(type, message) {
         let bgClass = `alert-${type}`;
         if (type === 'primary') bgClass = 'bg-primary text-white';
@@ -387,11 +333,11 @@ export function loadTeacherAttendance() {
     }
 }
 
-
-
+// --- डैशबोर्ड सेक्शन ---
 
 export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
+    if (!container) return;
     
     container.innerHTML = `
         <div class="container mt-4">
@@ -418,7 +364,7 @@ export function loadTeacherAttendanceDashboard() {
                             </tr>
                         </thead>
                         <tbody id="dashboard-table-body">
-                            <tr><td colspan="3" class="text-center">डेटा लोड हो रहा है...</td></tr>
+                            <tr><td colspan="3" class="text-center">🔄 डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -426,30 +372,40 @@ export function loadTeacherAttendanceDashboard() {
         </div>
     `;
 
-    // डेटा लोड करें
     fetchAttendanceData();
 }
 
 async function fetchAttendanceData() {
+    const tbody = document.getElementById('dashboard-table-body');
+    const totalCountEl = document.getElementById('total-present-count');
+    
     try {
-        // यहाँ आप वही 'getTodayAttendance' वाला एक्शन कॉल करेंगे
-        const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTodayAttendance`);
+        const webAppUrl = sheetUrls['TeacherAttendance'];
+        if (!webAppUrl) {
+            if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ त्रुटि: कॉन्फ़िगरेशन लिंक गायब है।</td></tr>';
+            return;
+        }
+
+        const res = await fetch(`${webAppUrl}?action=getTodayAttendance`);
         const data = await res.json();
         
-        const tbody = document.getElementById('dashboard-table-body');
-        if (data.status === "success" && data.list.length > 0) {
-            document.getElementById('total-present-count').innerText = data.list.length;
-            tbody.innerHTML = data.list.map(t => `
-                <tr>
-                    <td>${t.name}</td>
-                    <td>${t.checkIn || '--'}</td>
-                    <td>${t.checkOut || '--'}</td>
-                </tr>
-            `).join('');
+        if (data.status === "success" && data.list && data.list.length > 0) {
+            if (totalCountEl) totalCountEl.innerText = data.list.length;
+            if (tbody) {
+                tbody.innerHTML = data.list.map(t => `
+                    <tr>
+                        <td class="fw-bold text-secondary">${t.name}</td>
+                        <td class="text-success fw-bold">${t.checkIn || '--:--'}</td>
+                        <td class="text-danger fw-bold">${t.checkOut || '--:--'}</td>
+                    </tr>
+                `).join('');
+            }
         } else {
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center">कोई डेटा नहीं मिला।</td></tr>';
+            if (totalCountEl) totalCountEl.innerText = "0";
+            if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
         }
     } catch (e) {
-        console.error(e);
+        console.error("Dashboard Fetch Error: ", e);
+        if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">❌ डेटा लोड करने में विफल। कृपया नेटवर्क या सर्वर स्क्रिप्ट जांचें।</td></tr>';
     }
 }
