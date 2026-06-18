@@ -286,7 +286,7 @@ export function loadTeacherAttendanceDashboard() {
             .table-fixed { table-layout: fixed; width: 100%; }
             .col-name { width: 50%; }
             .col-time { width: 25%; }
-            .table-min-height { min-height: 300px; }
+            .table-min-height { min-height: 100px; }
         </style>
     `;
 
