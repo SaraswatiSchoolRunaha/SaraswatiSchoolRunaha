@@ -3,7 +3,6 @@ import { sheetUrls, translations, state } from './config.js';
 import { Html5Qrcode } from "https://esm.sh/html5-qrcode";
 
 export function loadTeacherAttendance() {
-    // 1. एचटीएमएल (UI) को रेंडर करना जहाँ अटेंडेंस का कार्ड दिखेगा
     const container = document.getElementById('contentArea'); 
     
     if (!container) {
@@ -17,125 +16,63 @@ export function loadTeacherAttendance() {
         ? 'अपनी डिजिटल उपस्थिति दर्ज करने के लिए अपना सीक्रेट पिन नंबर डालें।' 
         : 'Enter your secret PIN number to log your digital attendance.';
 
-    // 🎨 CSS स्टाइल्स
+    // 🎨 प्रीमियम और मॉडर्न CSS (UI Enhancement)
     if (!document.getElementById('attendance-premium-styles')) {
         const styleTag = document.createElement('style');
         styleTag.id = 'attendance-premium-styles';
         styleTag.innerHTML = `
-            .attendance-container { perspective: 1000px; margin-top: 40px; }
-            .attendance-card {
-                background: #ffffff; border: none; border-radius: 28px !important;
-                box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(30, 58, 138, 0.02) !important;
-                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .icon-badge {
-                width: 64px; height: 64px; font-size: 30px;
-                background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-                color: #1e40af; display: inline-flex; align-items: center;
-                justify-content: center; border-radius: 20px; box-shadow: 0 8px 16px rgba(30, 58, 138, 0.05);
-            }
-            .pin-input-field {
-                letter-spacing: 16px; border: 2px solid #e2e8f0; border-radius: 16px !important;
-                font-size: 26px !important; color: #1e3a8a; background-color: #f8fafc;
-                padding: 14px 10px !important; transition: all 0.3s ease;
-            }
-            .pin-input-field:focus {
-                border-color: #3b82f6 !important; background-color: #ffffff;
-                box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.15) !important;
-            }
-            .btn-modern-large {
-                border: none; border-radius: 18px !important; padding: 18px 32px !important;
-                font-size: 18px !important; font-weight: 800 !important; letter-spacing: 0.5px;
-                text-transform: uppercase; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            }
-            .btn-verify { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff; }
-            .btn-verify:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(37, 99, 235, 0.4); }
-            .btn-camera { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; }
-            .btn-camera:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(16, 185, 129, 0.4); }
-            .profile-box-large {
-                background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-                border-radius: 24px; border: 2px solid #e2e8f0; padding: 24px !important;
-                position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.02);
-            }
-            .profile-box-large::before {
-                content: ''; position: absolute; top: 0; left: 0; width: 8px; height: 100%;
-                background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-            }
-            .badge-staff { background-color: #dcfce7; color: #15803d; padding: 8px 16px; border-radius: 14px; font-size: 14px; font-weight: 700; }
-            .info-row-large { padding: 16px 0; border-bottom: 1px dashed #e2e8f0; font-size: 16px; }
-            .info-row-large:last-child { border-bottom: none; }
-            .alert-animated { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-            @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-            .footer-notice { background-color: #fff5f5; border: 1px solid #fee2e2; border-radius: 16px; }
+            .attendance-container { margin-top: 30px; padding: 10px; }
+            .attendance-card { background: #ffffff; border: none; border-radius: 24px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important; overflow: hidden; }
+            .pin-input-field { letter-spacing: 12px; text-align: center; font-size: 24px !important; border-radius: 16px !important; padding: 15px !important; background: #f8fafc; border: 2px solid #e2e8f0; }
+            .profile-box { background: #f8fafc; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; }
+            .info-label { color: #64748b; font-size: 14px; }
+            .info-value { color: #1e293b; font-weight: 700; font-size: 15px; }
+            .btn-modern { border-radius: 16px !important; padding: 14px !important; font-weight: 700 !important; transition: 0.3s; }
+            .btn-verify { background: #2563eb; color: #fff; }
+            .btn-camera { background: #059669; color: #fff; }
         `;
         document.head.appendChild(styleTag);
     }
 
     container.innerHTML = `
         <div class="attendance-container">
-            <div class="card attendance-card p-4 text-center mx-auto" style="max-width: 500px;">
-                <div class="mb-4">
-                    <div class="icon-badge mb-3">📍</div>
-                    <h3 class="fw-black text-dark mb-2" style="font-weight: 800; letter-spacing: -0.5px;">${mainTitle}</h3>
-                    <p class="text-muted px-3 m-0" style="font-size: 14px; line-height: 1.6;">${descText}</p>
+            <div class="card attendance-card p-4 mx-auto" style="max-width: 450px;">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold text-dark">${mainTitle}</h4>
+                    <p class="text-muted small">${descText}</p>
                 </div>
                 
-                <hr class="my-3" style="opacity: 0.08;">
-
-                <div id="pin-section" class="mb-2">
-                    <div class="form-group mb-4 text-start">
-                        <label class="form-label small fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.8px; font-size: 12px;">
-                            ${currentLang === 'HN' ? '🔑 अपना सीक्रेट पिन कोड दर्ज करें:' : '🔑 Enter Your Secret PIN:'}
-                        </label>
-                        <div class="pin-container">
-                            <input type="password" id="teacher-pin" class="form-control form-control-lg text-center fw-bold pin-input-field" placeholder="••••" maxlength="6">
-                        </div>
-                    </div>
-                    <button id="verify-pin-btn" class="btn btn-modern-large btn-verify w-100">
-                        👤 पहचान सत्यापित करें (Verify Identity)
-                    </button>
+                <div id="pin-section">
+                    <input type="password" id="teacher-pin" class="form-control pin-input-field mb-3" placeholder="••••••" maxlength="6" inputmode="numeric">
+                    <button id="verify-pin-btn" class="btn btn-modern btn-verify w-100">👤 पहचान सत्यापित करें</button>
                 </div>
 
-                <div id="profile-section" class="d-none text-start profile-box-large mb-3">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold text-success m-0" style="font-weight: 800;">✅ प्रोफाइल सत्यापित</h4>
-                        <span class="badge-staff">Verified Staff</span>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <div class="info-row-large d-flex justify-content-between">
-                            <span class="text-muted fw-medium">शिक्षक आईडी (ID):</span>
-                            <span class="fw-bold text-dark" id="lbl-id">-</span>
+                <div id="profile-section" class="d-none">
+                    <div class="profile-box mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="info-label">नाम:</span>
+                            <span id="lbl-name" class="info-value">-</span>
                         </div>
-                        <div class="info-row-large d-flex justify-content-between">
-                            <span class="text-muted fw-medium">नाम (Name):</span>
-                            <span class="fw-bold text-dark" id="lbl-name">-</span>
-                        </div>
-                        <div class="info-row-large d-flex justify-content-between">
-                            <span class="text-muted fw-medium">मोबाइल (Mobile):</span>
-                            <span class="fw-bold text-dark" id="lbl-phone">-</span>
+                        <div class="d-flex justify-content-between">
+                            <span class="info-label">ID:</span>
+                            <span id="lbl-id" class="info-value">-</span>
                         </div>
                     </div>
-                    
-                    <button id="open-cam-btn" class="btn btn-modern-large btn-camera w-100">
-                        📷 कैमरा चालू करें (Open Camera)
-                    </button>
+                    <button id="open-cam-btn" class="btn btn-modern btn-camera w-100">📷 कैमरा चालू करें</button>
                 </div>
 
-                <div id="status-alert" class="alert d-none alert-animated shadow-sm rounded-3 fw-bold text-start border-0 p-3 my-3" role="alert"></div>
-                
-                <div id="camera-preview" class="mb-3" style="width: 100%; border-radius: 20px; overflow: hidden; background: #0f172a; display: none; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);"></div>
-                
-                <div class="footer-notice mt-3 p-3">
-                    <p class="text-danger small m-0 fw-bold" style="font-size: 13px; line-height: 1.4;">
-                        ⚠️ अनिवार्य सूचना: उपस्थिति के लिए आपका मोबाइल स्कूल परिसर के <b>50 मीटर</b> के भीतर होना और मोबाइल का GPS ऑन होना आवश्यक है।
+                <div id="status-alert" class="alert mt-3 d-none text-center rounded-3"></div>
+                <div id="camera-preview" class="mt-3 rounded-4" style="display:none; height:250px; overflow:hidden; background:#000;"></div>
+
+                <div class="mt-3 p-3 bg-light rounded-3">
+                    <p class="text-danger small m-0 fw-bold" style="font-size: 12px;">
+                        ⚠️ सूचना: उपस्थिति के लिए GPS ऑन रखें और 50 मीटर के दायरे में रहें।
                     </p>
                 </div>
             </div>
         </div>
     `;
-
+}
     // आवश्यक वेरिएबल्स और एलिमेंट्स
     const pinSection = document.getElementById('pin-section');
     const profileSection = document.getElementById('profile-section');
