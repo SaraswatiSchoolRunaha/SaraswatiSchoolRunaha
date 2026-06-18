@@ -47,18 +47,22 @@ export function loadTeacherAttendance() {
                     <button id="verify-pin-btn" class="btn btn-modern btn-verify w-100">👤 पहचान सत्यापित करें</button>
                 </div>
 
-                <div id="profile-section" class="d-none">
-                    <div class="profile-box mb-3">
+               <div id="profile-section" class="d-none">
+                        <div class="profile-box mb-3">
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="info-label">नाम:</span>
-                            <span id="lbl-name" class="info-value">-</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="info-label">ID:</span>
-                            <span id="lbl-id" class="info-value">-</span>
-                        </div>
+                        <span class="info-label">नाम:</span>
+                        <span id="lbl-name" class="info-value">-</span>
                     </div>
-                    <button id="open-cam-btn" class="btn btn-modern btn-camera w-100">📷 कैमरा चालू करें</button>
+                        <div class="d-flex justify-content-between mb-2">
+                        <span class="info-label">ID:</span>
+                        <span id="lbl-id" class="info-value">-</span>
+                    </div>
+                        <div class="d-flex justify-content-between">
+                        <span class="info-label">मोबाइल:</span>
+                        <span id="lbl-phone" class="info-value">-</span>
+                </div>
+                </div>
+                        <button id="open-cam-btn" class="btn btn-modern btn-camera w-100">📷 कैमरा चालू करें</button>
                 </div>
 
                 <div id="status-alert" class="alert mt-3 d-none text-center rounded-3"></div>
