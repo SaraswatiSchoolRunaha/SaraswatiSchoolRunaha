@@ -24,7 +24,7 @@ export function loadAdminAttendancePanel(mode) {
         container.innerHTML = `
             <div class="container mt-4">
                 <div class="card p-5 text-center shadow-sm qr-card">
-                    <h3 class="text-primary fw-bold mb-4">🖨️ उपस्थिति QR कोड</h3>
+                    <h3 class="text-primary fw-bold mb-4">🖨️ शिक्षक उपस्थिति QR कोड</h3>
                     
                     <div id="admin-qr-print-zone" class="p-4 bg-light border border-secondary shadow-sm" style="border-radius: 15px;">
                         <h4 class="fw-bold text-dark mb-1">सरस्वती बाल विद्या मंदिर स्कूल</h4>
@@ -50,32 +50,52 @@ export function loadAdminAttendancePanel(mode) {
     else if (mode === 'manual') {
     container.innerHTML = `
         <div class="container mt-4">
-            <div class="card p-4 shadow-sm" style="border-radius: 20px; border: 1px solid #e2e8f0; max-width: 500px; margin: auto;">
+            <div class="card p-4 shadow-lg border-0" style="border-radius: 25px; max-width: 500px; margin: auto; background: #ffffff;">
                 <div class="text-center mb-4">
-                    <h3 class="text-success fw-bold">📝 मैनुअल उपस्थिति</h3>
+                    <div class="mb-3" style="font-size: 2rem;">📝</div>
+                    <h3 class="fw-bold text-dark">मैनुअल उपस्थिति</h3>
                     <p class="text-muted small">शिक्षक का विवरण चुनें और हाजिरी दर्ज करें</p>
                 </div>
                 
                 <div class="mb-4">
-                    <label class="form-label fw-bold text-secondary">शिक्षक का नाम चुनें:</label>
-                    <select id="admin-teacher-select" class="form-select form-select-lg" style="border-radius: 12px;">
+                    <label class="form-label fw-bold text-secondary ps-1">शिक्षक का नाम:</label>
+                    <select id="admin-teacher-select" class="form-select form-select-lg border-2" style="border-radius: 15px; background-color: #f8f9fa;">
                         <option value="">लोड हो रहा है...</option>
                     </select>
                     
-                    <div id="teacher-details-card" class="mt-3 p-3 bg-light d-none" style="border-radius: 12px; border-left: 5px solid #198754;">
-                        <div class="small">ID: <b id="disp-id">-</b></div>
-                        <div class="small">Mobile: <b id="disp-mob">-</b></div>
-                        <div class="small text-primary">PIN: <b id="disp-pin">-</b></div>
+                    <div id="teacher-details-card" class="mt-4 p-3 d-none" style="border-radius: 15px; background: #f0fdf4; border-left: 5px solid #198754;">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary small">ID:</span> <b id="disp-id">-</b>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary small">Mobile:</span> <b id="disp-mob">-</b>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-secondary small">PIN:</span> <b class="text-success" id="disp-pin">-</b>
+                        </div>
                     </div>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold" style="border-radius: 12px;">🌅 Check-In</button>
-                    <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold" style="border-radius: 12px;">🌇 Check-Out</button>
+                <div class="d-flex gap-3">
+                    <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
+                        🌅 Check-In
+                    </button>
+                    <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
+                        🌇 Check-Out
+                    </button>
                 </div>
             </div>
         </div>`;
 
+    // Modern Hover effects inject karna
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .form-select:focus { border-color: #198754 !important; box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15); }
+    `;
+    document.head.appendChild(style);
+
+    // [Baaki Logic]
     async function loadTeachers() {
         const select = document.getElementById('admin-teacher-select');
         try {
@@ -83,17 +103,12 @@ export function loadAdminAttendancePanel(mode) {
             const data = await res.json();
             select.innerHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
             data.teachers.forEach(t => {
-                // Option mein hum details store kar rahe hain
-                select.innerHTML += `<option value="${t.id}" 
-                    data-id="${t.id}" 
-                    data-mob="${t.mobile}" 
-                    data-pin="${t.pin}">${t.name}</option>`;
+                select.innerHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
             });
         } catch (e) { select.innerHTML = '<option value="">❌ एरर!</option>'; }
     }
     loadTeachers();
 
-    // Selection par details dikhane ka logic
     document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
         const select = e.target;
         const detailsCard = document.getElementById('teacher-details-card');
@@ -109,7 +124,6 @@ export function loadAdminAttendancePanel(mode) {
         }
     });
 
-    // Buttons logic
     document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
     document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
 }
