@@ -72,7 +72,7 @@ export function loadTeacherAttendance() {
             </div>
         </div>
     `;
-}
+
     // आवश्यक वेरिएबल्स और एलिमेंट्स
     const pinSection = document.getElementById('pin-section');
     const profileSection = document.getElementById('profile-section');
