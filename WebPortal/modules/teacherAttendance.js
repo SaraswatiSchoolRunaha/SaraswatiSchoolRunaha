@@ -280,7 +280,16 @@ export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
-    container.innerHTML = `
+    // स्टाइलिंग जो कॉलम की चौड़ाई को फिक्स रखेगी
+    const style = `
+        <style>
+            .fixed-table { table-layout: fixed; width: 100%; }
+            .col-name { width: 50%; }
+            .col-time { width: 25%; }
+        </style>
+    `;
+
+    container.innerHTML = style + `
         <div class="container-fluid py-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
@@ -303,12 +312,12 @@ export function loadTeacherAttendanceDashboard() {
 
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0 fixed-table">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4">शिक्षक का नाम</th>
-                                <th>Check-In</th>
-                                <th>Check-Out</th>
+                                <th class="ps-4 col-name">शिक्षक का नाम</th>
+                                <th class="col-time">Check-In</th>
+                                <th class="col-time">Check-Out</th>
                             </tr>
                         </thead>
                         <tbody id="dashboard-table-body">
@@ -345,14 +354,12 @@ async function fetchAttendanceData() {
             lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
             
             tbody.innerHTML = data.list.map(t => {
-                // यहाँ हमने सीधे डेटा को HTML में डाला है। 
-                // अगर आपका Apps Script सही समय भेज रहा है, तो यहाँ 't.checkIn' सही दिखेगा।
                 const checkIn = (t.checkIn && t.checkIn !== "--") ? t.checkIn : "--:--";
                 const checkOut = (t.checkOut && t.checkOut !== "--") ? t.checkOut : "--:--";
 
                 return `
                     <tr>
-                        <td class="ps-4 fw-bold text-secondary">${t.name}</td>
+                        <td class="ps-4 fw-bold text-secondary text-truncate">${t.name}</td>
                         <td class="text-success fw-bold">${checkIn}</td>
                         <td class="text-danger fw-bold">${checkOut}</td>
                     </tr>
