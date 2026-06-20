@@ -41,9 +41,12 @@ export async function markManualAttendance(type) {
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
     try {
-        // 1. टाइमआउट कंट्रोलर जोड़ें (अगर रिस्पॉन्स 10 सेकंड में न आए)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+        // 🔍 Debug
+        console.log("TeacherAttendance URL:", sheetUrls['TeacherAttendance']);
+        console.log("Payload:", payload);
 
         const response = await fetch(sheetUrls['TeacherAttendance'], {
             method: "POST",
@@ -51,8 +54,36 @@ export async function markManualAttendance(type) {
             body: JSON.stringify(payload),
             signal: controller.signal
         });
-        
+
         clearTimeout(timeoutId);
+
+        // 🔍 Debug
+        console.log("Response Status:", response.status);
+
+        const responseText = await response.text();
+        console.log("Response Text:", responseText);
+
+        const result = JSON.parse(responseText);
+
+        if (result.status === "success") {
+            showAdminAlert("success", result.message);
+        } else {
+            showAdminAlert("danger", result.message);
+        }
+
+    } catch (e) {
+        console.error("FULL ERROR:", e);
+
+        let msg = "❌ सर्वर से जुड़ने में समस्या आई।";
+        if (e.name === 'AbortError') msg = "⏳ सर्वर का रिस्पॉन्स बहुत धीमा है।";
+        else if (e instanceof TypeError) msg = "🌐 नेटवर्क समस्या या CORS एरर।";
+
+        showAdminAlert("danger", `${msg} (${e.message})`);
+    } finally {
+        if (btnCheckIn) btnCheckIn.disabled = false;
+        if (btnCheckOut) btnCheckOut.disabled = false;
+    }
+}
 
         // 2. HTTP रिस्पॉन्स की जाँच करें
         if (!response.ok) {
