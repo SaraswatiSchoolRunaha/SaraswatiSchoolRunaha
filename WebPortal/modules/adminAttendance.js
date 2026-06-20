@@ -168,13 +168,14 @@ export function loadAdminAttendancePanel(mode) {
                 </div>
             </div>`;
 
-        // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
-      async function loadTeachers() {
+      // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
+async function loadTeachers() {
     const select = document.getElementById('admin-teacher-select');
+    if (!select) return; // सुरक्षा जांच
+    
     select.innerHTML = '<option value="">🔄 शिक्षकों की सूची लोड हो रही है...</option>';
 
     try {
-        // mode: 'cors' और cache: 'no-cache' का उपयोग ब्राउज़र को सही अनुमति देने के लिए किया गया है
         const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`, {
             method: 'GET',
             mode: 'cors',
@@ -183,7 +184,6 @@ export function loadAdminAttendancePanel(mode) {
 
         const data = await res.json();
         
-        // डेटा चेक करें
         if (data && data.teachers) {
             let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
             data.teachers.forEach(t => {
@@ -195,35 +195,32 @@ export function loadAdminAttendancePanel(mode) {
         }
     } catch (e) { 
         console.error("Error loading teachers list: ", e);
-        select.innerHTML = '<option value="">❌ सूची लोड करने में समस्या आई! (कंसोल देखें)</option>'; 
+        select.innerHTML = '<option value="">❌ सूची लोड करने में समस्या आई!</option>'; 
     }
 }
 
-// पेज लोड होते ही कॉल करें
-document.addEventListener('DOMContentLoaded', () => {
-    loadTeachers();
+// यहाँ DOMContentLoaded की जरूरत नहीं है, सीधे फंक्शन कॉल करें
+loadTeachers();
 
-    // शिक्षक चयन बदलने पर डेटा रेंडरिंग
-    document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
-        const select = e.target;
-        const detailsCard = document.getElementById('teacher-details-card');
-        const option = select.options[select.selectedIndex];
-        
-        if (select.value) {
-            document.getElementById('disp-id').innerText = option.dataset.id || '-';
-            document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
-            document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
-            detailsCard.classList.remove('d-none');
-        } else {
-            detailsCard.classList.add('d-none');
-        }
+// शिक्षक चयन बदलने पर डेटा रेंडरिंग (सीधे बाइंडिंग)
+document.getElementById('admin-teacher-select').onchange = (e) => {
+    const select = e.target;
+    const detailsCard = document.getElementById('teacher-details-card');
+    const option = select.options[select.selectedIndex];
+    
+    if (select.value) {
+        document.getElementById('disp-id').innerText = option.dataset.id || '-';
+        document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
+        document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
+        detailsCard.classList.remove('d-none');
+    } else {
+        detailsCard.classList.add('d-none');
+    }
 
-        const statusAlert = document.getElementById('admin-status-alert');
-        if (statusAlert) statusAlert.classList.add('d-none');
-    });
+    const statusAlert = document.getElementById('admin-status-alert');
+    if (statusAlert) statusAlert.classList.add('d-none');
+};
 
-    // इवेंट लिसनर्स बाइंडिंग
-    document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
-    document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
-});
-
+// इवेंट लिसनर्स बाइंडिंग (सीधे बाइंडिंग)
+document.getElementById('btn-admin-checkin').onclick = () => markManualAttendance('Check-In');
+document.getElementById('btn-admin-checkout').onclick = () => markManualAttendance('Check-Out');
