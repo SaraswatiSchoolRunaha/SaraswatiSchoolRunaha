@@ -35,12 +35,12 @@ export async function markManualAttendance(type) {
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
   const formData = new URLSearchParams();
-formData.append("action", "adminManualMark");
-formData.append("teacher_id", teacherId);
-formData.append("teacher_name", teacherName);
-formData.append("attendance_type", type);
+    formData.append("action", "adminManualMark");
+    formData.append("teacher_id", teacherId);
+    formData.append("teacher_name", teacherName);
+    formData.append("attendance_type", type);
 
-const response = await fetch(sheetUrls['TeacherAttendance'], {
+    const response = await fetch(sheetUrls['TeacherAttendance'], {
     method: "POST",
     body: formData
 });
