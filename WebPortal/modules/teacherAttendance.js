@@ -280,13 +280,12 @@ export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
-    // यहाँ हमने .table-container को एक min-height दी है ताकि टेबल लोड होने पर लेआउट न हिले
+    // स्टाइल को अपडेट किया: table-fixed हटाया और टेबल को फ्लेक्सिबल बनाया
     const style = `
         <style>
-            .table-fixed { table-layout: fixed; width: 100%; }
-            .col-name { width: 50%; }
-            .col-time { width: 25%; }
             .table-min-height { min-height: 100px; }
+            /* टेबल को रिस्पॉन्सिव रखने के लिए */
+            .table-responsive { overflow-x: auto; width: 100%; }
         </style>
     `;
 
@@ -313,12 +312,12 @@ export function loadTeacherAttendanceDashboard() {
 
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="table-responsive table-min-height">
-                    <table class="table table-hover align-middle mb-0 table-fixed">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4 col-name">शिक्षक का नाम</th>
-                                <th class="col-time">Check-In</th>
-                                <th class="col-time">Check-Out</th>
+                                <th class="ps-4" style="width: 50%;">शिक्षक का नाम</th>
+                                <th style="width: 25%;">Check-In</th>
+                                <th style="width: 25%;">Check-Out</th>
                             </tr>
                         </thead>
                         <tbody id="dashboard-table-body">
@@ -337,8 +336,6 @@ export function loadTeacherAttendanceDashboard() {
 
     fetchAttendanceData();
 }
-
-
 
 async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
@@ -362,9 +359,9 @@ async function fetchAttendanceData() {
 
                 return `
                     <tr>
-                        <td class="ps-4 fw-bold text-secondary text-truncate col-name">${t.name}</td>
-                        <td class="text-success fw-bold col-time">${checkIn}</td>
-                        <td class="text-danger fw-bold col-time">${checkOut}</td>
+                        <td class="ps-4 fw-bold text-secondary text-truncate">${t.name}</td>
+                        <td class="text-success fw-bold">${checkIn}</td>
+                        <td class="text-danger fw-bold">${checkOut}</td>
                     </tr>
                 `;
             }).join('');
