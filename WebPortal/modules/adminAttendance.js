@@ -226,4 +226,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
     document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
 });
-}
+
