@@ -36,38 +36,49 @@ export async function markManualAttendance(type) {
         attendance_type: type
     };
 
-    // बटन्स लॉक करें
     if (btnCheckIn) btnCheckIn.disabled = true;
     if (btnCheckOut) btnCheckOut.disabled = true;
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
     try {
+        // 1. टाइमआउट कंट्रोलर जोड़ें (अगर रिस्पॉन्स 10 सेकंड में न आए)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+
         const response = await fetch(sheetUrls['TeacherAttendance'], {
             method: "POST",
-            // Google Apps Script के लिए application/json सबसे सही है
-            headers: { 
-                "Content-Type": "application/json" 
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
-            cache: 'no-store' // नया डेटा रिक्वेस्ट करने के लिए
+            signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
+
+        // 2. HTTP रिस्पॉन्स की जाँच करें
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
         
         const result = await response.json();
         
         if (result.status === "success") {
-            showAdminAlert("success", `✅ <b>सफलता:</b> ${teacherName} की ${type} हाजिरी सफलतापूर्वक दर्ज हो गई है!`);
-            // यदि आप चाहें कि हाजिरी के बाद टेबल तुरंत अपडेट हो जाए:
+            showAdminAlert("success", `✅ <b>सफलता:</b> ${teacherName} की ${type} हाजिरी दर्ज हो गई है!`);
             if (typeof loadTeacherAttendanceDashboard === 'function') {
                 loadTeacherAttendanceDashboard();
             }
         } else {
-            showAdminAlert("danger", `⚠️ <b>त्रुटि:</b> ${result.message || 'उपस्थिति दर्ज नहीं की जा सकी।'}`);
+            showAdminAlert("danger", `⚠️ <b>सर्वर एरर:</b> ${result.message || 'उपस्थिति दर्ज नहीं हुई।'}`);
         }
     } catch (e) {
-        console.error("Attendance post error: ", e);
-        showAdminAlert("danger", `❌ सर्वर से जुड़ने में समस्या आई। कृपया इंटरनेट चेक करें।`);
+        console.error("Attendance Error:", e);
+        
+        // 3. स्पष्ट एरर मैसेज दिखाएं
+        let msg = "❌ सर्वर से जुड़ने में समस्या आई।";
+        if (e.name === 'AbortError') msg = "⏳ सर्वर का रिस्पॉन्स बहुत धीमा है। फिर से कोशिश करें।";
+        else if (e instanceof TypeError) msg = "🌐 नेटवर्क समस्या या CORS एरर।";
+        
+        showAdminAlert("danger", `${msg} (Error: ${e.message})`);
     } finally {
-        // बटन्स को हर हाल में अनलॉक करें
         if (btnCheckIn) btnCheckIn.disabled = false;
         if (btnCheckOut) btnCheckOut.disabled = false;
     }
