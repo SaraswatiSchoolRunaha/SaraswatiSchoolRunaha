@@ -34,17 +34,16 @@ export async function markManualAttendance(type) {
 
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
-    try {
-    const formData = new URLSearchParams();
-    formData.append("action", "adminManualMark");
-    formData.append("teacher_id", teacherId);
-    formData.append("teacher_name", teacherName);
-    formData.append("attendance_type", type);
+  const formData = new URLSearchParams();
+formData.append("action", "adminManualMark");
+formData.append("teacher_id", teacherId);
+formData.append("teacher_name", teacherName);
+formData.append("attendance_type", type);
 
-    const response = await fetch(sheetUrls['TeacherAttendance'], {
-        method: "POST",
-        body: formData
-    });
+const response = await fetch(sheetUrls['TeacherAttendance'], {
+    method: "POST",
+    body: formData
+});
         
         // रिस्पॉन्स की जाँच करें कि क्या वह सही (OK) है
         if (!response.ok) throw new Error("सर्वर से कोई प्रतिक्रिया नहीं मिली।");
