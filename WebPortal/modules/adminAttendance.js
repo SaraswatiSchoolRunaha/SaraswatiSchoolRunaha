@@ -35,17 +35,20 @@ export async function markManualAttendance(type) {
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
     try {
-        // यहाँ से JSON डेटा भेजें
         const response = await fetch(sheetUrls['TeacherAttendance'], {
             method: "POST",
+            mode: 'cors', // CORS सपोर्ट के लिए अनिवार्य
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 action: "adminManualMark",
                 teacher_id: teacherId,
                 teacher_name: teacherName,
-                attendance_type: type // 'Check-In' या 'Check-Out'
+                attendance_type: type 
             })
         });
+
+        // रिस्पॉन्स की जाँच करें कि क्या वह सही (OK) है
+        if (!response.ok) throw new Error("सर्वर से कोई प्रतिक्रिया नहीं मिली।");
 
         const result = await response.json();
 
@@ -56,12 +59,14 @@ export async function markManualAttendance(type) {
             showAdminAlert("danger", `⚠️ ${result.message}`);
         }
     } catch (e) {
+        console.error("Manual Attendance Error:", e); // कंसोल में असल एरर देखने के लिए
         showAdminAlert("danger", "❌ सर्वर से जुड़ने में समस्या आई।");
     } finally {
         if (btnCheckIn) btnCheckIn.disabled = false;
         if (btnCheckOut) btnCheckOut.disabled = false;
     }
 }
+
 // 🎛️ एडमिन उपस्थिति पैनल लोड करने का आर्किटेक्चरल फंक्शन
 export function loadAdminAttendancePanel(mode) {
     const container = document.getElementById('contentArea');
