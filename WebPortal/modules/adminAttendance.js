@@ -256,3 +256,4 @@ if (checkInBtn) {
 if (checkOutBtn) {
     checkOutBtn.addEventListener('click', () => markManualAttendance('Check-Out'));
 }
+}
