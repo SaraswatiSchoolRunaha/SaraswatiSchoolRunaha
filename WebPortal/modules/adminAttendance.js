@@ -21,7 +21,6 @@ export async function markManualAttendance(type) {
     const btnCheckOut = document.getElementById('btn-admin-checkout');
     
     if (!selectElement) return;
-    
     const teacherId = selectElement.value;
     const teacherName = selectElement.options[selectElement.selectedIndex]?.text;
 
@@ -30,84 +29,39 @@ export async function markManualAttendance(type) {
         return;
     }
 
-    const payload = {
-        action: "adminManualMark",
-        teacher_id: teacherId,
-        attendance_type: type
-    };
-
     if (btnCheckIn) btnCheckIn.disabled = true;
     if (btnCheckOut) btnCheckOut.disabled = true;
 
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
     try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        // यहाँ से JSON डेटा भेजें
+        const response = await fetch(sheetUrls['TeacherAttendance'], {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                action: "adminManualMark",
+                teacher_id: teacherId,
+                teacher_name: teacherName,
+                attendance_type: type // 'Check-In' या 'Check-Out'
+            })
+        });
 
-        console.log("TeacherAttendance URL:", sheetUrls['TeacherAttendance']);
-        console.log("Payload:", payload);
-
-      const formData = new URLSearchParams();
-formData.append("action", "adminManualMark");
-formData.append("teacher_id", teacherId);
-formData.append("attendance_type", type);
-
-const response = await fetch(sheetUrls['TeacherAttendance'], {
-    method: "POST",
-    body: formData,
-    signal: controller.signal
-});
-
-        clearTimeout(timeoutId);
-
-        console.log("Response Status:", response.status);
-
-        const responseText = await response.text();
-        console.log("Response Text:", responseText);
-
-        if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        const result = JSON.parse(responseText);
+        const result = await response.json();
 
         if (result.status === "success") {
-            showAdminAlert(
-                "success",
-                `✅ <b>सफलता:</b> ${teacherName} की ${type} हाजिरी दर्ज हो गई है!`
-            );
-
-            if (typeof loadTeacherAttendanceDashboard === 'function') {
-                loadTeacherAttendanceDashboard();
-            }
-
+            showAdminAlert("success", `✅ ${result.message}`);
+            if (typeof loadTeacherAttendanceDashboard === 'function') loadTeacherAttendanceDashboard();
         } else {
-            showAdminAlert(
-                "danger",
-                `⚠️ <b>सर्वर एरर:</b> ${result.message || 'उपस्थिति दर्ज नहीं हुई।'}`
-            );
+            showAdminAlert("danger", `⚠️ ${result.message}`);
         }
-
     } catch (e) {
-        console.error("Attendance Error:", e);
-
-        let msg = "❌ सर्वर से जुड़ने में समस्या आई।";
-
-        if (e.name === "AbortError") {
-            msg = "⏳ सर्वर का रिस्पॉन्स बहुत धीमा है।";
-        } else if (e instanceof TypeError) {
-            msg = "🌐 नेटवर्क समस्या या CORS एरर।";
-        }
-
-        showAdminAlert("danger", `${msg} (Error: ${e.message})`);
-
+        showAdminAlert("danger", "❌ सर्वर से जुड़ने में समस्या आई।");
     } finally {
         if (btnCheckIn) btnCheckIn.disabled = false;
         if (btnCheckOut) btnCheckOut.disabled = false;
     }
 }
-
 // 🎛️ एडमिन उपस्थिति पैनल लोड करने का आर्किटेक्चरल फंक्शन
 export function loadAdminAttendancePanel(mode) {
     const container = document.getElementById('contentArea');
