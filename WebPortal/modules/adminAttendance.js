@@ -138,32 +138,48 @@ export function loadAdminAttendancePanel(mode) {
 else if (mode === 'manual') {
     container.innerHTML = `
     <style>
-        .manual-card { border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: none; }
-        .data-pill { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 10px; flex: 1; text-align: center; }
-        .label-text { font-size: 0.7rem; color: #6c757d; display: block; text-transform: uppercase; }
-        .val-text { font-size: 0.9rem; font-weight: bold; color: #212529; }
+        .manual-card { border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: none; }
+        /* चार कॉलम को एक लाइन में रखने के लिए */
+        .one-line-details { 
+            display: flex; 
+            flex-direction: row; 
+            gap: 5px; 
+            margin-bottom: 15px; 
+            width: 100%;
+        }
+        .data-pill { 
+            background: #f8f9fa; 
+            border: 1px solid #e9ecef; 
+            border-radius: 8px; 
+            padding: 8px 2px; 
+            flex: 1; 
+            text-align: center;
+            min-width: 0; /* बहुत जरूरी है एक लाइन के लिए */
+        }
+        .label-text { font-size: 0.6rem; color: #888; display: block; font-weight: 700; text-transform: uppercase; }
+        .val-text { font-size: 0.75rem; font-weight: bold; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
     </style>
 
-    <div class="container mt-3" style="max-width: 550px;">
-        <div class="card p-4 manual-card">
+    <div class="container mt-3" style="max-width: 600px;">
+        <div class="card p-3 manual-card">
             <div class="text-center mb-3">
-                <h5 class="fw-bold m-0"><i class="bi bi-clipboard-check text-success"></i> मैनुअल उपस्थिति</h5>
-                <small class="text-secondary">Admin Attendance Panel</small>
+                <h5 class="fw-bold m-0"><i class="bi bi-clipboard-check"></i> मैनुअल उपस्थिति</h5>
             </div>
 
-            <select id="admin-teacher-select" class="form-select border-2 mb-3" style="border-radius: 12px;">
+            <select id="admin-teacher-select" class="form-select border-2 mb-3" style="border-radius: 10px;">
                 <option value="">👤 शिक्षक का नाम चुनें...</option>
             </select>
 
-            <div class="d-flex gap-2 mb-3">
+            <div class="one-line-details">
+                <div class="data-pill"><span class="label-text">Name</span><b id="disp-name" class="val-text">-</b></div>
                 <div class="data-pill"><span class="label-text">ID</span><b id="disp-id" class="val-text">-</b></div>
-                <div class="data-pill"><span class="label-text">मोबाइल</span><b id="disp-mob" class="val-text">-</b></div>
-                <div class="data-pill"><span class="label-text">पिन</span><b id="disp-pin" class="val-text text-success">-</b></div>
+                <div class="data-pill"><span class="label-text">Mob</span><b id="disp-mob" class="val-text">-</b></div>
+                <div class="data-pill"><span class="label-text">PIN</span><b id="disp-pin" class="val-text text-success">-</b></div>
             </div>
 
             <div class="d-flex gap-2">
-                <button id="btn-admin-checkin" class="btn btn-success flex-fill fw-bold" style="border-radius: 10px;">🌅 Check-In</button>
-                <button id="btn-admin-checkout" class="btn btn-danger flex-fill fw-bold" style="border-radius: 10px;">🌇 Check-Out</button>
+                <button id="btn-admin-checkin" class="btn btn-success flex-fill fw-bold" style="border-radius: 8px;">🌅 Check-In</button>
+                <button id="btn-admin-checkout" class="btn btn-danger flex-fill fw-bold" style="border-radius: 8px;">🌇 Check-Out</button>
             </div>
         </div>
     </div>`;
