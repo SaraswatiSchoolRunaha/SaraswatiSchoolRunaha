@@ -124,104 +124,63 @@ export function loadAdminAttendancePanel(mode) {
         document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
     }
 
-    // 📝 मोड 2: सिर्फ मैन्युअल हाजिरी मैनेजमेंट इंटरफेस
-    else if (mode === 'manual') {
-        container.innerHTML = `
-            <div class="container mt-4">
-                <div class="card p-4 shadow-lg border-0" style="border-radius: 25px; max-width: 500px; margin: auto; background: #ffffff;">
-                    <div class="text-center mb-4">
-                        <div class="mb-3" style="font-size: 2rem;">📝</div>
-                        <h3 class="fw-bold text-dark">मैनुअल उपस्थिति (Admin Panel)</h3>
-                        <p class="text-muted small">शिक्षक का विवरण चुनें और सीधे हाजिरी दर्ज करें</p>
-                    </div>
-                    
-                    <!-- इन-ऐप स्टेटस मैसेजेस के लिए कंटेनर -->
-                    <div id="admin-status-alert" class="alert d-none shadow-sm rounded-3 fw-bold border-0 p-3 mb-4" role="alert"></div>
+  // 🎛️ एडमिन उपस्थिति पैनल लोड करने का सही तरीका
+export function loadAdminAttendancePanel(mode) {
+    const container = document.getElementById('contentArea');
+    if (!container) return;
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-secondary ps-1">शिक्षक का नाम चुनें:</label>
-                        <select id="admin-teacher-select" class="form-select form-select-lg border-2 form-select-custom" style="border-radius: 15px; background-color: #f8f9fa;">
-                            <option value="">🔄 शिक्षकों की सूची लोड हो रही है...</option>
-                        </select>
-                        
-                        <div id="teacher-details-card" class="mt-4 p-3 d-none" style="border-radius: 15px; background: #f0fdf4; border-left: 5px solid #198754;">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-secondary small">शिक्षक आईडी (ID):</span> <b id="disp-id">-</b>
-                            </div>
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-secondary small">मोबाइल (Mobile):</span> <b id="disp-mob">-</b>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span class="text-secondary small">सीक्रेट पिन (PIN):</span> <b class="text-success" id="disp-pin">-</b>
-                            </div>
-                        </div>
-                    </div>
+    // अगर आप चाहते हैं कि सिर्फ एडमिन वाला हिस्सा बदले, मेनू बार नहीं, तो यहाँ contentArea के अंदर 
+    // एक खास ID वाला div बनाएं या उसे पहले खाली न करें।
+    // अगर आपका मेनू बार इसी container के अंदर है, तो आपको अपनी HTML संरचना बदलनी होगी।
+    
+    // मैन्युअल पैनल का HTML
+    const manualHTML = `
+        <div id="manual-admin-wrapper" class="container mt-4">
+            <div class="card p-4 shadow-lg border-0" style="border-radius: 25px; max-width: 500px; margin: auto; background: #ffffff;">
+                <h3 class="fw-bold text-center mb-4">📝 मैनुअल उपस्थिति</h3>
+                <div id="admin-status-alert" class="alert d-none shadow-sm rounded-3 fw-bold border-0 p-3 mb-4" role="alert"></div>
+                
+                <select id="admin-teacher-select" class="form-select form-select-lg mb-4">
+                    <option value="">🔄 सूची लोड हो रही है...</option>
+                </select>
 
-                    <div class="d-flex gap-3">
-                        <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm btn-action" style="padding: 12px 0;">
-                            🌅 Check-In
-                        </button>
-                        <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold shadow-sm btn-action" style="padding: 12px 0;">
-                            🌇 Check-Out
-                        </button>
-                    </div>
+                <div id="teacher-details-card" class="mt-4 p-3 d-none bg-light border-left">
+                    <p>ID: <b id="disp-id">-</b> | Mob: <b id="disp-mob">-</b></p>
                 </div>
-            </div>`;
-        }
 
-      // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
-async function loadTeachers() {
-    const select = document.getElementById('admin-teacher-select');
-    if (!select) return; // सुरक्षा जांच
-    
-    select.innerHTML = '<option value="">🔄 शिक्षकों की सूची लोड हो रही है...</option>';
+                <div class="d-flex gap-3">
+                    <button id="btn-admin-checkin" class="btn btn-success flex-fill">🌅 Check-In</button>
+                    <button id="btn-admin-checkout" class="btn btn-danger flex-fill">🌇 Check-Out</button>
+                </div>
+            </div>
+        </div>`;
 
-    try {
-        const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache'
-        });
+    // सिर्फ पैनल लोड करें (पूरा कंटेनर न मिटाएं अगर मेनू बार भी वहीं है)
+    container.innerHTML = manualHTML;
 
-        const data = await res.json();
-        
-        if (data && data.teachers) {
-            let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
-            data.teachers.forEach(t => {
-                optionsHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
-            });
-            select.innerHTML = optionsHTML;
-        } else {
-            select.innerHTML = '<option value="">⚠️ सूची खाली मिली है</option>';
-        }
-    } catch (e) { 
-        console.error("Error loading teachers list: ", e);
-        select.innerHTML = '<option value="">❌ सूची लोड करने में समस्या आई!</option>'; 
+    // --- अंदर ही लोड करें (ताकि यह HTML रेंडर होने के बाद ही चले) ---
+    async function loadTeachers() {
+        const select = document.getElementById('admin-teacher-select');
+        try {
+            const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`, { mode: 'cors' });
+            const data = await res.json();
+            if (data?.teachers) {
+                let opts = '<option value="">--- शिक्षक चुनें ---</option>';
+                data.teachers.forEach(t => opts += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile}">${t.name}</option>`);
+                select.innerHTML = opts;
+            }
+        } catch (e) { select.innerHTML = '<option value="">❌ Error</option>'; }
     }
+
+    loadTeachers();
+
+    // इवेंट लिसनर्स (HTML लोड होने के तुरंत बाद बाइंड करें)
+    document.getElementById('admin-teacher-select').onchange = (e) => {
+        const opt = e.target.options[e.target.selectedIndex];
+        document.getElementById('disp-id').innerText = opt.dataset.id || '-';
+        document.getElementById('teacher-details-card').classList.toggle('d-none', !e.target.value);
+    };
+
+    document.getElementById('btn-admin-checkin').onclick = () => markManualAttendance('Check-In');
+    document.getElementById('btn-admin-checkout').onclick = () => markManualAttendance('Check-Out');
 }
-
-// यहाँ DOMContentLoaded की जरूरत नहीं है, सीधे फंक्शन कॉल करें
-loadTeachers();
-
-// शिक्षक चयन बदलने पर डेटा रेंडरिंग (सीधे बाइंडिंग)
-document.getElementById('admin-teacher-select').onchange = (e) => {
-    const select = e.target;
-    const detailsCard = document.getElementById('teacher-details-card');
-    const option = select.options[select.selectedIndex];
-    
-    if (select.value) {
-        document.getElementById('disp-id').innerText = option.dataset.id || '-';
-        document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
-        document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
-        detailsCard.classList.remove('d-none');
-    } else {
-        detailsCard.classList.add('d-none');
-    }
-
-    const statusAlert = document.getElementById('admin-status-alert');
-    if (statusAlert) statusAlert.classList.add('d-none');
-};
-
-// इवेंट लिसनर्स बाइंडिंग (सीधे बाइंडिंग)
-document.getElementById('btn-admin-checkin').onclick = () => markManualAttendance('Check-In');
-document.getElementById('btn-admin-checkout').onclick = () => markManualAttendance('Check-Out');
