@@ -38,77 +38,68 @@ export async function markManualAttendance(type) {
 
     if (btnCheckIn) btnCheckIn.disabled = true;
     if (btnCheckOut) btnCheckOut.disabled = true;
+
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-        // 🔍 Debug
         console.log("TeacherAttendance URL:", sheetUrls['TeacherAttendance']);
         console.log("Payload:", payload);
 
         const response = await fetch(sheetUrls['TeacherAttendance'], {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(payload),
             signal: controller.signal
         });
 
         clearTimeout(timeoutId);
 
-        // 🔍 Debug
         console.log("Response Status:", response.status);
 
         const responseText = await response.text();
         console.log("Response Text:", responseText);
 
-        const result = JSON.parse(responseText);
-
-        if (result.status === "success") {
-            showAdminAlert("success", result.message);
-        } else {
-            showAdminAlert("danger", result.message);
-        }
-
-    } catch (e) {
-        console.error("FULL ERROR:", e);
-
-        let msg = "❌ सर्वर से जुड़ने में समस्या आई।";
-        if (e.name === 'AbortError') msg = "⏳ सर्वर का रिस्पॉन्स बहुत धीमा है।";
-        else if (e instanceof TypeError) msg = "🌐 नेटवर्क समस्या या CORS एरर।";
-
-        showAdminAlert("danger", `${msg} (${e.message})`);
-    } finally {
-        if (btnCheckIn) btnCheckIn.disabled = false;
-        if (btnCheckOut) btnCheckOut.disabled = false;
-    }
-}
-
-        // 2. HTTP रिस्पॉन्स की जाँच करें
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
         }
-        
-        const result = await response.json();
-        
+
+        const result = JSON.parse(responseText);
+
         if (result.status === "success") {
-            showAdminAlert("success", `✅ <b>सफलता:</b> ${teacherName} की ${type} हाजिरी दर्ज हो गई है!`);
+            showAdminAlert(
+                "success",
+                `✅ <b>सफलता:</b> ${teacherName} की ${type} हाजिरी दर्ज हो गई है!`
+            );
+
             if (typeof loadTeacherAttendanceDashboard === 'function') {
                 loadTeacherAttendanceDashboard();
             }
+
         } else {
-            showAdminAlert("danger", `⚠️ <b>सर्वर एरर:</b> ${result.message || 'उपस्थिति दर्ज नहीं हुई।'}`);
+            showAdminAlert(
+                "danger",
+                `⚠️ <b>सर्वर एरर:</b> ${result.message || 'उपस्थिति दर्ज नहीं हुई।'}`
+            );
         }
+
     } catch (e) {
         console.error("Attendance Error:", e);
-        
-        // 3. स्पष्ट एरर मैसेज दिखाएं
+
         let msg = "❌ सर्वर से जुड़ने में समस्या आई।";
-        if (e.name === 'AbortError') msg = "⏳ सर्वर का रिस्पॉन्स बहुत धीमा है। फिर से कोशिश करें।";
-        else if (e instanceof TypeError) msg = "🌐 नेटवर्क समस्या या CORS एरर।";
-        
+
+        if (e.name === "AbortError") {
+            msg = "⏳ सर्वर का रिस्पॉन्स बहुत धीमा है।";
+        } else if (e instanceof TypeError) {
+            msg = "🌐 नेटवर्क समस्या या CORS एरर।";
+        }
+
         showAdminAlert("danger", `${msg} (Error: ${e.message})`);
+
     } finally {
         if (btnCheckIn) btnCheckIn.disabled = false;
         if (btnCheckOut) btnCheckOut.disabled = false;
