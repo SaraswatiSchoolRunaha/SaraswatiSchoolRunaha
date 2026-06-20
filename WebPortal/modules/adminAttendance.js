@@ -174,51 +174,85 @@ export function loadAdminAttendancePanel(mode) {
             </div>`;
 
         // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
-        async function loadTeachers() {
-            const select = document.getElementById('admin-teacher-select');
-            try {
-                const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
-                const data = await res.json();
-                
-                if (data && data.teachers) {
-                    let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
-                    data.teachers.forEach(t => {
-                        optionsHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
-                    });
-                    select.innerHTML = optionsHTML;
-                } else {
-                    select.innerHTML = '<option value="">⚠️ सूची खाली मिली है</option>';
-                }
-            } catch (e) { 
-                console.error("Error loading teachers list: ", e);
-                select.innerHTML = '<option value="">❌ सूची लोड करने में समस्या आई!</option>'; 
-            }
+      async function loadTeachers() {
+    const select = document.getElementById('admin-teacher-select');
+
+    if (!select) return;
+
+    try {
+        const res = await fetch(`${sheetUrls['TeacherAttendance']}?action=getTeachersList`);
+        const data = await res.json();
+
+        if (data && data.teachers) {
+
+            let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
+
+            data.teachers.forEach(t => {
+                optionsHTML += `
+                    <option 
+                        value="${t.id}" 
+                        data-id="${t.id}" 
+                        data-mob="${t.mobile || 'N/A'}" 
+                        data-pin="${t.pin || 'XXXX'}"
+                    >
+                        ${t.name}
+                    </option>
+                `;
+            });
+
+            select.innerHTML = optionsHTML;
+
+        } else {
+            select.innerHTML = '<option value="">⚠️ सूची खाली मिली है</option>';
         }
-        
-        loadTeachers();
 
-        // शिक्षक चयन बदलने पर डेटा रेंडरिंग लॉजिक
-        document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
-            const select = e.target;
-            const detailsCard = document.getElementById('teacher-details-card');
-            const option = select.options[select.selectedIndex];
-            
-            if (select.value) {
-                document.getElementById('disp-id').innerText = option.dataset.id || '-';
-                document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
-                document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
-                detailsCard.classList.remove('d-none');
-            } else {
-                detailsCard.classList.add('d-none');
-            }
-
-            // नया शिक्षक सिलेक्ट करने पर पुराना स्टेटस अलर्ट हाइड करना
-            const statusAlert = document.getElementById('admin-status-alert');
-            if (statusAlert) statusAlert.classList.add('d-none');
-        });
-
-        // इवेंट लिसनर्स बाइंडिंग
-        document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
-        document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+    } catch (e) {
+        console.error("Error loading teachers list:", e);
+        select.innerHTML = '<option value="">❌ सूची लोड करने में समस्या आई!</option>';
     }
+}
+
+// कॉल function
+loadTeachers();
+
+
+// ===============================
+// EVENT LISTENERS (SAFE VERSION)
+// ===============================
+const selectEl = document.getElementById('admin-teacher-select');
+const checkInBtn = document.getElementById('btn-admin-checkin');
+const checkOutBtn = document.getElementById('btn-admin-checkout');
+
+if (selectEl) {
+
+    selectEl.addEventListener('change', (e) => {
+        const select = e.target;
+        const detailsCard = document.getElementById('teacher-details-card');
+
+        if (!detailsCard) return;
+
+        const option = select.options[select.selectedIndex];
+
+        if (select.value) {
+            document.getElementById('disp-id').innerText = option.dataset.id || '-';
+            document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
+            document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
+            detailsCard.classList.remove('d-none');
+        } else {
+            detailsCard.classList.add('d-none');
+        }
+
+        // alert hide on change
+        const statusAlert = document.getElementById('admin-status-alert');
+        if (statusAlert) statusAlert.classList.add('d-none');
+    });
+}
+
+// buttons safe bind
+if (checkInBtn) {
+    checkInBtn.addEventListener('click', () => markManualAttendance('Check-In'));
+}
+
+if (checkOutBtn) {
+    checkOutBtn.addEventListener('click', () => markManualAttendance('Check-Out'));
 }
