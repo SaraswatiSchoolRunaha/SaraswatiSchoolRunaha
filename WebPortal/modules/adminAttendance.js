@@ -135,67 +135,67 @@ export function loadAdminAttendancePanel(mode) {
     }
 
  // 📝 मोड 2: सिर्फ मैन्युअल हाजिरी मैनेजमेंट इंटरफेस
-    else if (mode === 'manual') {
+   else if (mode === 'manual') {
     container.innerHTML = `
         <div class="container mt-4">
-            <div class="card p-4 shadow-sm border-0" style="border-radius: 20px; max-width: 500px; margin: auto; background: #ffffff; border: 1px solid #e0e0e0;">
+            <div class="card p-4 shadow-sm border-0" style="border-radius: 20px; max-width: 600px; margin: auto; background: #ffffff;">
                 
                 <div class="text-center mb-4">
-                    <div class="d-inline-flex align-items-center justify-content-center mb-2" style="width: 70px; height: 70px; background: #e8f5e9; border-radius: 50%;">
-                        <i class="bi bi-clipboard-check" style="font-size: 2rem; color: #2e7d32;"></i>
+                    <div class="d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2097/2097276.png" style="width: 40px; height: 40px;">
                     </div>
-                    <h3 class="fw-bold text-dark">मैनुअल उपस्थिति</h3>
-                    <h5 class="text-secondary">Admin Attendance Panel</h5>
-                    <p class="text-muted small">शिक्षक का विवरण चुनें और सीधे हाजिरी दर्ज करें</p>
+                    <h2 class="fw-bold text-dark">मैनुअल उपस्थिति</h2>
+                    <h5 class="text-dark">Admin Attendance Panel</h5>
+                    <p class="text-muted">शिक्षक का विवरण चुनें और सीधे हाजिरी दर्ज करें</p>
                 </div>
-                
+
                 <div class="mb-4">
-                    <label class="form-label fw-bold text-dark ps-1">शिक्षक का नाम चुनें:</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-person-fill"></i></span>
-                        <select id="admin-teacher-select" class="form-select form-select-lg border-start-0" style="border-radius: 0 10px 10px 0;">
+                    <label class="fw-bold mb-2">शिक्षक का नाम चुनें:</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white"><i class="bi bi-person-fill"></i></span>
+                        <select id="admin-teacher-select" class="form-select border-2" style="border-radius: 10px;">
                             <option value="">--- शिक्षक का नाम चुनें ---</option>
                         </select>
                     </div>
                 </div>
 
-                <div id="teacher-details-card" class="mb-4 p-3 border" style="border-radius: 15px; background: #f9f9f9; border-color: #e0e0e0 !important;">
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="bi bi-person-badge text-success me-2"></i>
-                        <span class="fw-bold text-dark">चयनित शिक्षक का विवरण</span>
+                <div class="card p-3 mb-4" style="background: #f8fcf9; border: 1px solid #d4edda; border-radius: 15px;">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-card-checklist me-2"></i>
+                        <span class="fw-bold">चयनित शिक्षक का विवरण</span>
                     </div>
-                    <hr class="my-2">
-                    <div class="row text-center mt-3">
-                        <div class="col-4 border-end">
-                            <div class="small text-secondary">शिक्षक आईडी (ID)</div>
-                            <div class="fw-bold" id="disp-id">-</div>
+                    <div class="d-flex justify-content-between text-center">
+                        <div class="px-2">
+                            <div class="d-flex align-items-center mb-1"><i class="bi bi-shield-lock-fill text-success me-1"></i> <small>शिक्षक आईडी (ID)</small></div>
+                            <b id="disp-id">-</b>
                         </div>
-                        <div class="col-4 border-end">
-                            <div class="small text-secondary">मोबाइल (Mobile)</div>
-                            <div class="fw-bold" id="disp-mob">-</div>
+                        <div class="px-2">
+                            <div class="d-flex align-items-center mb-1"><i class="bi bi-telephone-fill text-success me-1"></i> <small>मोबाइल (Mobile)</small></div>
+                            <b id="disp-mob">-</b>
                         </div>
-                        <div class="col-4">
-                            <div class="small text-secondary">सीक्रेट पिन (PIN)</div>
-                            <div class="fw-bold text-success" id="disp-pin">-</div>
+                        <div class="px-2">
+                            <div class="d-flex align-items-center mb-1"><i class="bi bi-lock-fill text-success me-1"></i> <small>सीक्रेट पिन (PIN)</small></div>
+                            <b id="disp-pin">-</b>
                         </div>
                     </div>
                 </div>
 
-                <div class="alert alert-info border-0 mb-4" style="background: #e3f2fd; color: #0277bd; font-size: 0.9rem;">
+                <div class="alert alert-primary mb-4" style="background: #e7f3ff; border: none; color: #084298; border-radius: 10px;">
                     <i class="bi bi-info-circle-fill me-2"></i> ध्यान दें: सही शिक्षक चुनें और उसके बाद Check-In / Check-Out करें।
                 </div>
 
                 <div class="d-flex gap-3">
-                    <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 10px;">
+                    <button id="btn-admin-checkin" class="btn btn-success btn-lg flex-fill fw-bold" style="padding: 15px; border-radius: 12px;">
                         🌅 Check-In
                     </button>
-                    <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold shadow-sm" style="border-radius: 10px;">
+                    <button id="btn-admin-checkout" class="btn btn-danger btn-lg flex-fill fw-bold" style="padding: 15px; border-radius: 12px;">
                         🌇 Check-Out
                     </button>
                 </div>
             </div>
         </div>`;
 }
+    
     // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
         async function loadTeachers() {
             const select = document.getElementById('admin-teacher-select');
