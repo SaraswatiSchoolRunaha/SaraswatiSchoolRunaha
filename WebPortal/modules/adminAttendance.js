@@ -36,38 +36,40 @@ export async function markManualAttendance(type) {
         attendance_type: type
     };
 
-    // डबल-क्लिक से बचने के लिए बटन्स को तुरंत लॉक करें
+    // बटन्स लॉक करें
     if (btnCheckIn) btnCheckIn.disabled = true;
     if (btnCheckOut) btnCheckOut.disabled = true;
-    showAdminAlert("primary", `⏳ ${teacherName} की ${type} उपस्थिति दर्ज की जा रही है...`);
+    showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
     try {
         const response = await fetch(sheetUrls['TeacherAttendance'], {
             method: "POST",
+            // Google Apps Script के लिए application/json सबसे सही है
             headers: { 
-                "Content-Type": "text/plain;charset=utf-8" 
+                "Content-Type": "application/json" 
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            cache: 'no-store' // नया डेटा रिक्वेस्ट करने के लिए
         });
         
         const result = await response.json();
         
-        // बटन्स को वापस अनलॉक करें
-        if (btnCheckIn) btnCheckIn.disabled = false;
-        if (btnCheckOut) btnCheckOut.disabled = false;
-
         if (result.status === "success") {
             showAdminAlert("success", `✅ <b>सफलता:</b> ${teacherName} की ${type} हाजिरी सफलतापूर्वक दर्ज हो गई है!`);
+            // यदि आप चाहें कि हाजिरी के बाद टेबल तुरंत अपडेट हो जाए:
+            if (typeof loadTeacherAttendanceDashboard === 'function') {
+                loadTeacherAttendanceDashboard();
+            }
         } else {
             showAdminAlert("danger", `⚠️ <b>त्रुटि:</b> ${result.message || 'उपस्थिति दर्ज नहीं की जा सकी।'}`);
         }
     } catch (e) {
         console.error("Attendance post error: ", e);
+        showAdminAlert("danger", `❌ सर्वर से जुड़ने में समस्या आई। कृपया इंटरनेट चेक करें।`);
+    } finally {
+        // बटन्स को हर हाल में अनलॉक करें
         if (btnCheckIn) btnCheckIn.disabled = false;
         if (btnCheckOut) btnCheckOut.disabled = false;
-        
-        // नेटवर्क टाइमआउट या रिडायरेक्शन फॉलबैक
-        showAdminAlert("success", `✅ ${type} प्रक्रिया पूरी हुई। यदि नेटवर्क धीमा है, तो कृपया सीधे गूगल शीट चेक करें।`);
     }
 }
 
