@@ -167,6 +167,7 @@ export function loadAdminAttendancePanel(mode) {
                     </div>
                 </div>
             </div>`;
+        }
 
       // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
 async function loadTeachers() {
