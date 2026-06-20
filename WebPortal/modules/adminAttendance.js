@@ -215,8 +215,6 @@ container.innerHTML = ` <div class="container mt-4"> <div class="card border-0 s
 </div>`;
 
 }
-
-
         // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
         async function loadTeachers() {
             const select = document.getElementById('admin-teacher-select');
@@ -265,4 +263,4 @@ container.innerHTML = ` <div class="container mt-4"> <div class="card border-0 s
         document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
         document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
     }
-} 
+
