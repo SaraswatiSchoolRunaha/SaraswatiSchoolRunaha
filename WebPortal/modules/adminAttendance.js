@@ -19,8 +19,9 @@ export async function markManualAttendance(type) {
     const selectElement = document.getElementById('admin-teacher-select');
     const btnCheckIn = document.getElementById('btn-admin-checkin');
     const btnCheckOut = document.getElementById('btn-admin-checkout');
-    
+
     if (!selectElement) return;
+
     const teacherId = selectElement.value;
     const teacherName = selectElement.options[selectElement.selectedIndex]?.text;
 
@@ -34,31 +35,36 @@ export async function markManualAttendance(type) {
 
     showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
 
-      const formData = new FormData();
+    try {
+        // ✅ FIX: JSON → FormData (CORS issue solve)
+        const formData = new FormData();
+        formData.append("action", "adminManualMark");
+        formData.append("teacher_id", teacherId);
+        formData.append("teacher_name", teacherName);
+        formData.append("attendance_type", type);
 
-    formData.append("action", "adminManualMark");
-    formData.append("teacher_id", teacherId);
-    formData.append("teacher_name", teacherName);
-    formData.append("attendance_type", type);
+        const response = await fetch(sheetUrls['TeacherAttendance'], {
+            method: "POST",
+            body: formData
+        });
 
-    const response = await fetch(sheetUrls['TeacherAttendance'], {
-        method: "POST",
-        body: formData
-});
-
-        // रिस्पॉन्स की जाँच करें कि क्या वह सही (OK) है
-        if (!response.ok) throw new Error("सर्वर से कोई प्रतिक्रिया नहीं मिली।");
+        if (!response.ok) {
+            throw new Error("Server response failed");
+        }
 
         const result = await response.json();
 
         if (result.status === "success") {
             showAdminAlert("success", `✅ ${result.message}`);
-            if (typeof loadTeacherAttendanceDashboard === 'function') loadTeacherAttendanceDashboard();
+            if (typeof loadTeacherAttendanceDashboard === 'function') {
+                loadTeacherAttendanceDashboard();
+            }
         } else {
             showAdminAlert("danger", `⚠️ ${result.message}`);
         }
+
     } catch (e) {
-        console.error("Manual Attendance Error:", e); // कंसोल में असल एरर देखने के लिए
+        console.error("Manual Attendance Error:", e);
         showAdminAlert("danger", "❌ सर्वर से जुड़ने में समस्या आई।");
     } finally {
         if (btnCheckIn) btnCheckIn.disabled = false;
