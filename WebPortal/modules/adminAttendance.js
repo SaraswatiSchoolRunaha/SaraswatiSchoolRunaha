@@ -136,178 +136,39 @@ export function loadAdminAttendancePanel(mode) {
 
  // 📝 मोड 2: सिर्फ मैन्युअल हाजिरी मैनेजमेंट इंटरफेस
 else if (mode === 'manual') {
-container.innerHTML = `
-<style>
-.manual-card{
-    background:#fff;
-    border-radius:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    overflow:hidden;
+    container.innerHTML = `
+    <style>
+        .manual-card { border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .info-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 10px; text-align: center; }
+        .icon-box { font-size: 1.2rem; margin-bottom: 5px; }
+        .compact-btn { padding: 10px; font-weight: bold; border-radius: 10px; }
+    </style>
+
+    <div class="container mt-3" style="max-width: 500px;">
+        <div class="card p-3 manual-card border-0">
+            <div class="text-center mb-3">
+                <h5 class="fw-bold m-0">📋 मैनुअल उपस्थिति</h5>
+                <small class="text-secondary">Admin Panel</small>
+            </div>
+
+            <select id="admin-teacher-select" class="form-select form-select-sm mb-3">
+                <option value="">👤 शिक्षक चुनें...</option>
+            </select>
+
+            <div class="row g-2 mb-3">
+                <div class="col-4"><div class="info-box"><div class="icon-box">🆔</div><b id="disp-id">-</b></div></div>
+                <div class="col-4"><div class="info-box"><div class="icon-box">📱</div><b id="disp-mob" style="font-size:0.8rem">-</b></div></div>
+                <div class="col-4"><div class="info-box"><div class="icon-box">🔐</div><b id="disp-pin">-</b></div></div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button id="btn-admin-checkin" class="btn btn-success btn-sm w-100 compact-btn">🌅 Check-In</button>
+                <button id="btn-admin-checkout" class="btn btn-danger btn-sm w-100 compact-btn">🌇 Check-Out</button>
+            </div>
+        </div>
+    </div>`;
 }
-
-.manual-header{
-    background:linear-gradient(135deg,#198754,#20c997);
-    color:white;
-    padding:25px;
-    text-align:center;
-}
-
-.teacher-select{
-    border:2px solid #198754;
-    border-radius:15px;
-    padding:12px;
-}
-
-.info-card{
-    background:#f8f9fa;
-    border-radius:15px;
-    padding:15px;
-    text-align:center;
-    transition:.3s;
-    border:1px solid #e9ecef;
-}
-
-.info-card:hover{
-    transform:translateY(-3px);
-}
-
-.icon-box{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    background:#198754;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:auto auto 10px;
-    font-size:20px;
-}
-
-.btn-checkin{
-    background:#198754;
-    color:#fff;
-    border:none;
-    border-radius:15px;
-    padding:14px;
-    font-weight:bold;
-}
-
-.btn-checkin:hover{
-    background:#157347;
-}
-
-.btn-checkout{
-    background:#dc3545;
-    color:#fff;
-    border:none;
-    border-radius:15px;
-    padding:14px;
-    font-weight:bold;
-}
-
-.btn-checkout:hover{
-    background:#bb2d3b;
-}
-</style>
-
-<div class="container mt-4">
-
-<div class="card manual-card border-0 mx-auto" style="max-width:850px;">
-
-<div class="manual-header">
-    <div style="font-size:50px;">📋</div>
-    <h3 class="fw-bold mb-1">मैनुअल उपस्थिति</h3>
-    <small>Admin Attendance Management Panel</small>
-</div>
-
-<div class="p-4">
-
-<div id="admin-status-alert"
-class="alert d-none mb-4">
-</div>
-
-<label class="fw-bold mb-2">
-👨‍🏫 शिक्षक का नाम चुनें
-</label>
-
-<select id="admin-teacher-select"
-class="form-select teacher-select mb-4">
-    <option value="">
-        🔄 शिक्षकों की सूची लोड हो रही है...
-    </option>
-</select>
-
-<div id="teacher-details-card">
-
-<h5 class="mb-3 text-success fw-bold">
-📌 शिक्षक की जानकारी
-</h5>
-
-<div class="row g-3">
-
-<div class="col-md-3 col-6">
-<div class="info-card">
-<div class="icon-box">🆔</div>
-<small>ID</small><br>
-<b id="disp-id">-</b>
-</div>
-</div>
-
-<div class="col-md-3 col-6">
-<div class="info-card">
-<div class="icon-box">📱</div>
-<small>मोबाइल</small><br>
-<b id="disp-mob">-</b>
-</div>
-</div>
-
-<div class="col-md-3 col-6">
-<div class="info-card">
-<div class="icon-box">🔐</div>
-<small>PIN</small><br>
-<b id="disp-pin">-</b>
-</div>
-</div>
-
-<div class="col-md-3 col-6">
-<div class="info-card">
-<div class="icon-box">👨‍🏫</div>
-<small>स्थिति</small><br>
-<b class="text-success">Active</b>
-</div>
-</div>
-
-</div>
-</div>
-
-<div class="alert alert-info mt-4">
-ℹ️ सही शिक्षक चुनें और उसके बाद Check-In या Check-Out करें।
-</div>
-
-<div class="row g-3 mt-1">
-
-<div class="col-md-6">
-<button id="btn-admin-checkin"
-class="btn btn-checkin w-100">
-🌅 Check-In
-</button>
-</div>
-
-<div class="col-md-6">
-<button id="btn-admin-checkout"
-class="btn btn-checkout w-100">
-🌇 Check-Out
-</button>
-</div>
-
-</div>
-
-</div>
-</div>
-</div>
-`;
-}    
+    
     // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
         async function loadTeachers() {
             const select = document.getElementById('admin-teacher-select');
