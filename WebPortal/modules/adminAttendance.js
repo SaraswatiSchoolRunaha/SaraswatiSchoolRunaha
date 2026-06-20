@@ -195,7 +195,7 @@ else if (mode === 'manual') {
                 if (data && data.teachers) {
                     let optionsHTML = '<option value="">--- शिक्षक का नाम चुनें ---</option>';
                     data.teachers.forEach(t => {
-                        optionsHTML += `<option value="${t.id}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
+                    optionsHTML += `<option value="${t.id}" data-name="${t.name}" data-id="${t.id}" data-mob="${t.mobile || 'N/A'}" data-pin="${t.pin || 'XXXX'}">${t.name}</option>`;
                     });
                     select.innerHTML = optionsHTML;
                 } else {
@@ -216,6 +216,7 @@ else if (mode === 'manual') {
             const option = select.options[select.selectedIndex];
             
             if (select.value) {
+                document.getElementById('disp-name').innerText = option.dataset.name || '-';
                 document.getElementById('disp-id').innerText = option.dataset.id || '-';
                 document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
                 document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
