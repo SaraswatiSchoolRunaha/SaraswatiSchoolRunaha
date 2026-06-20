@@ -174,7 +174,7 @@ export function loadAdminAttendancePanel(mode) {
             </div>`;
 
         // बैकएंड से शिक्षकों की सूची डायनामिकली फ़ेच करना
-      async function loadTeachers() {
+     async function loadTeachers() {
     const select = document.getElementById('admin-teacher-select');
 
     if (!select) return;
@@ -255,5 +255,4 @@ if (checkInBtn) {
 
 if (checkOutBtn) {
     checkOutBtn.addEventListener('click', () => markManualAttendance('Check-Out'));
-}
 }
