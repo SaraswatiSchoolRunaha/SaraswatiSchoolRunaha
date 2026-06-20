@@ -138,32 +138,32 @@ export function loadAdminAttendancePanel(mode) {
 else if (mode === 'manual') {
     container.innerHTML = `
     <style>
-        .manual-card { border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .info-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 10px; text-align: center; }
-        .icon-box { font-size: 1.2rem; margin-bottom: 5px; }
-        .compact-btn { padding: 10px; font-weight: bold; border-radius: 10px; }
+        .manual-card { border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: none; }
+        .data-pill { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 10px; flex: 1; text-align: center; }
+        .label-text { font-size: 0.7rem; color: #6c757d; display: block; text-transform: uppercase; }
+        .val-text { font-size: 0.9rem; font-weight: bold; color: #212529; }
     </style>
 
-    <div class="container mt-3" style="max-width: 500px;">
-        <div class="card p-3 manual-card border-0">
+    <div class="container mt-3" style="max-width: 550px;">
+        <div class="card p-4 manual-card">
             <div class="text-center mb-3">
-                <h5 class="fw-bold m-0">📋 मैनुअल उपस्थिति</h5>
-                <small class="text-secondary">Admin Panel</small>
+                <h5 class="fw-bold m-0"><i class="bi bi-clipboard-check text-success"></i> मैनुअल उपस्थिति</h5>
+                <small class="text-secondary">Admin Attendance Panel</small>
             </div>
 
-            <select id="admin-teacher-select" class="form-select form-select-sm mb-3">
-                <option value="">👤 शिक्षक चुनें...</option>
+            <select id="admin-teacher-select" class="form-select border-2 mb-3" style="border-radius: 12px;">
+                <option value="">👤 शिक्षक का नाम चुनें...</option>
             </select>
 
-            <div class="row g-2 mb-3">
-                <div class="col-4"><div class="info-box"><div class="icon-box">🆔</div><b id="disp-id">-</b></div></div>
-                <div class="col-4"><div class="info-box"><div class="icon-box">📱</div><b id="disp-mob" style="font-size:0.8rem">-</b></div></div>
-                <div class="col-4"><div class="info-box"><div class="icon-box">🔐</div><b id="disp-pin">-</b></div></div>
+            <div class="d-flex gap-2 mb-3">
+                <div class="data-pill"><span class="label-text">ID</span><b id="disp-id" class="val-text">-</b></div>
+                <div class="data-pill"><span class="label-text">मोबाइल</span><b id="disp-mob" class="val-text">-</b></div>
+                <div class="data-pill"><span class="label-text">पिन</span><b id="disp-pin" class="val-text text-success">-</b></div>
             </div>
 
             <div class="d-flex gap-2">
-                <button id="btn-admin-checkin" class="btn btn-success btn-sm w-100 compact-btn">🌅 Check-In</button>
-                <button id="btn-admin-checkout" class="btn btn-danger btn-sm w-100 compact-btn">🌇 Check-Out</button>
+                <button id="btn-admin-checkin" class="btn btn-success flex-fill fw-bold" style="border-radius: 10px;">🌅 Check-In</button>
+                <button id="btn-admin-checkout" class="btn btn-danger flex-fill fw-bold" style="border-radius: 10px;">🌇 Check-Out</button>
             </div>
         </div>
     </div>`;
