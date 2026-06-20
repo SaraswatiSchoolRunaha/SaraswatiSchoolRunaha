@@ -53,14 +53,11 @@ export async function markManualAttendance(type) {
         formData.append("teacher_id", teacherId);
         formData.append("attendance_type", type);
 
-     const response = await fetch(sheetUrls['TeacherAttendance'], {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload),
-    signal: controller.signal
-});
+        const response = await fetch(sheetUrls['TeacherAttendance'], {
+        method: "POST",
+        body: formData,
+        signal: controller.signal
+    });
 
         clearTimeout(timeoutId);
 
