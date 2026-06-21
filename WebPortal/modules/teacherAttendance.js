@@ -302,7 +302,7 @@ export function loadTeacherAttendanceDashboard() {
                         <div class="d-flex align-items-center">
                             <div class="me-3"><i class="bi bi-people-fill fs-2"></i></div>
                             <div>
-                                <h6 class="mb-0 text-white-50">कुल उपस्थित (आज)</h6>
+                                <h6 class="mb-0 text-white-30">कुल उपस्थित (आज)</h6>
                                 <h2 id="total-present-count" class="fw-bold mb-0">0</h2>
                             </div>
                         </div>
@@ -316,8 +316,8 @@ export function loadTeacherAttendanceDashboard() {
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-4" style="width: 10%;">शिक्षक का नाम</th>
-                                <th style="width: 45%;">Check-In</th>
-                                <th style="width: 45%;">Check-Out</th>
+                                <th style="width: 35%;">Check-In</th>
+                                <th style="width: 35%;">Check-Out</th>
                             </tr>
                         </thead>
                         <tbody id="dashboard-table-body">
@@ -379,11 +379,11 @@ async function fetchAttendanceData() {
 
                 return `
                     <tr>
-                        <td class="ps-4 fw-bold text-secondary text-truncate" style="width: 10%; max-width: 0;" title="${t.name}">
+                        <td class="ps-4 fw-bold text-secondary text-truncate" style="width: 30%; max-width: 0;" title="${t.name}">
                             ${t.name}
                         </td>
-                        <td class="text-success fw-bold" style="width: 45%;">${checkIn}</td>
-                        <td class="text-danger fw-bold" style="width: 45%;">${checkOut}</td>
+                        <td class="text-success fw-bold" style="width: 35%;">${checkIn}</td>
+                        <td class="text-danger fw-bold" style="width: 35%;">${checkOut}</td>
                     </tr>
                 `;
             }).join('');
