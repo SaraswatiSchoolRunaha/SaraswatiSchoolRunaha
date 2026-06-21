@@ -279,35 +279,30 @@ export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
-    // पैरेंट कंटेनर (#contentArea) को जबरदस्ती अपनी सीमा में रखने के लिए डायरेक्ट स्टाइलिंग
-    container.style.setProperty('flex', '1 1 0%', 'important');
-    container.style.setProperty('min-width', '0px', 'important');
+    // 1. सबसे पहले पैरेंट कंटेनर को पूरी तरह रीसेट करें ताकि पुराना कचरा साफ हो सके
+    container.innerHTML = ""; 
+    container.removeAttribute('style'); 
+    
+    // 2. इस डैशबोर्ड के लिए पैरेंट का लेआउट फिक्स करें
+    container.style.setProperty('display', 'block', 'important');
+    container.style.setProperty('width', '100%', 'important');
     container.style.setProperty('max-width', '100%', 'important');
     container.style.setProperty('overflow-x', 'hidden', 'important');
     
-    // यदि इसके ऊपर कोई row/flex पैरेंट है तो उसे भी नियंत्रित करने के लिए ग्लोबल CSS
+    // 3. केवल इसी डैशबोर्ड के अंदर काम करने वाला CSS (यूनिक क्लास .attendance-dashboard-wrapper के साथ)
     const style = `
         <style>
-            /* पैरेंट और ग्रैंडपैरेंट एलिमेंट्स को फिक्स करने के लिए */
-            #contentArea, 
-            #contentArea > div {
-                min-width: 0 !important;
-                max-width: 100% !important;
-            }
-
-            .table-min-height { min-height: 100px; }
-            
-            /* मुख्य कंटेनर जो बची हुई खाली जगह में ही सिमटेगा */
-            .dashboard-main-container {
-                display: block !important;
+            .attendance-dashboard-wrapper {
                 width: 100% !important;
                 max-width: 100% !important;
-                min-width: 0 !important;
+                display: block !important;
                 box-sizing: border-box !important;
-                overflow-x: hidden !important;
+                padding: 20px !important;
             }
             
-            /* टेबल को केवल अपने बॉक्स के अंदर स्क्रॉल कराने के लिए सबसे महत्वपूर्ण ब्लॉक */
+            .table-min-height { min-height: 100px; }
+            
+            /* टेबल को केवल अपने डिब्बे के अंदर स्क्रॉल कराने के लिए */
             .table-responsive-wrapper { 
                 overflow-x: auto !important; 
                 width: 100% !important; 
@@ -319,36 +314,30 @@ export function loadTeacherAttendanceDashboard() {
                 border-radius: 8px;
             }
             
-            /* एक्सेल ग्रिड टेबल डिजाइन */
             .excel-grid-table { 
                 table-layout: fixed !important; 
                 width: 100% !important; 
-                min-width: 600px; /* मोबाइल पर स्क्रॉल बार लाने के लिए जरूरी */
+                min-width: 600px; 
                 border-collapse: collapse !important;
                 margin-bottom: 0 !important;
             }
             
-            /* हर सेल के चारों तरफ एक्सेल जैसी ग्रिड बॉर्डर लाइन्स */
             .excel-grid-table th, .excel-grid-table td {
                 border: 1px solid #c0c0c0 !important; 
                 padding: 12px 15px !important;
                 vertical-align: middle !important;
-                text-align: left !important;
             }
             
-            /* कॉलम चौड़ाई फिक्स रखना */
-            .excel-grid-table th:nth-child(1), .excel-grid-table td:nth-child(1) { width: 40% !important; max-width: 0 !important; }
-            .excel-grid-table th:nth-child(2), .excel-grid-table td:nth-child(2) { width: 30% !important; max-width: 0 !important; }
-            .excel-grid-table th:nth-child(3), .excel-grid-table td:nth-child(3) { width: 30% !important; max-width: 0 !important; }
+            .excel-grid-table th:nth-child(1), .excel-grid-table td:nth-child(1) { width: 40% !important; }
+            .excel-grid-table th:nth-child(2), .excel-grid-table td:nth-child(2) { width: 30% !important; }
+            .excel-grid-table th:nth-child(3), .excel-grid-table td:nth-child(3) { width: 30% !important; }
             
-            /* हेडर बैकग्राउंड कलर */
             .excel-grid-table thead th {
                 background-color: #f2f2f2 !important;
                 color: #212529 !important;
                 font-weight: bold !important;
             }
             
-            /* काउंट बॉक्स का सुधरा हुआ डिज़ाइन */
             .attendance-card {
                 background-color: #0d6efd !important;
                 color: #ffffff !important;
@@ -362,15 +351,15 @@ export function loadTeacherAttendanceDashboard() {
     `;
 
     container.innerHTML = style + `
-        <div class="p-3 dashboard-main-container">
-            <div class="row mx-0 mb-4 w-100" style="min-width: 0;">
+        <div class="attendance-dashboard-wrapper">
+            <div class="row mx-0 mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center px-0 flex-wrap gap-2">
                     <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
                     <small class="text-muted" id="last-updated"></small>
                 </div>
             </div>
             
-            <div class="row mx-0 mb-4 w-100" style="min-width: 0;">
+            <div class="row mx-0 mb-4">
                 <div class="col-12 px-0">
                     <div class="attendance-card">
                         <div class="text-white-50 small text-uppercase fw-bold mb-1">कुल उपस्थित (आज)</div>
@@ -379,7 +368,7 @@ export function loadTeacherAttendanceDashboard() {
                 </div>
             </div>
 
-            <div class="row mx-0 w-100" style="min-width: 0;">
+            <div class="row mx-0">
                 <div class="col-12 px-0">
                     <div class="table-responsive-wrapper table-min-height">
                         <table class="table mb-0 excel-grid-table">
@@ -407,6 +396,8 @@ export function loadTeacherAttendanceDashboard() {
 
     fetchAttendanceData();
 }
+
+// fetchAttendanceData function को बिना किसी बदलाव के वैसा ही रहने दें...
 async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
     const totalCountEl = document.getElementById('total-present-count');
