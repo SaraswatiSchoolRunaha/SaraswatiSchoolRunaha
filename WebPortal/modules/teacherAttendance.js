@@ -279,17 +279,10 @@ export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
-    // 1. सबसे पहले पैरेंट कंटेनर को पूरी तरह रीसेट करें ताकि पुराना कचरा साफ हो सके
+    // पुराना कचरा और स्टाइल्स साफ करें
     container.innerHTML = ""; 
     container.removeAttribute('style'); 
     
-    // 2. इस डैशबोर्ड के लिए पैरेंट का लेआउट फिक्स करें
-    container.style.setProperty('display', 'block', 'important');
-    container.style.setProperty('width', '100%', 'important');
-    container.style.setProperty('max-width', '100%', 'important');
-    container.style.setProperty('overflow-x', 'hidden', 'important');
-    
-    // 3. केवल इसी डैशबोर्ड के अंदर काम करने वाला CSS (यूनिक क्लास .attendance-dashboard-wrapper के साथ)
     const style = `
         <style>
             .attendance-dashboard-wrapper {
@@ -300,44 +293,7 @@ export function loadTeacherAttendanceDashboard() {
                 padding: 20px !important;
             }
             
-            .table-min-height { min-height: 100px; }
-            
-            /* टेबल को केवल अपने डिब्बे के अंदर स्क्रॉल कराने के लिए */
-            .table-responsive-wrapper { 
-                overflow-x: auto !important; 
-                width: 100% !important; 
-                max-width: 100% !important;
-                display: block !important;
-                box-sizing: border-box !important;
-                -webkit-overflow-scrolling: touch;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-            }
-            
-            .excel-grid-table { 
-                table-layout: fixed !important; 
-                width: 100% !important; 
-                min-width: 600px; 
-                border-collapse: collapse !important;
-                margin-bottom: 0 !important;
-            }
-            
-            .excel-grid-table th, .excel-grid-table td {
-                border: 1px solid #c0c0c0 !important; 
-                padding: 12px 15px !important;
-                vertical-align: middle !important;
-            }
-            
-            .excel-grid-table th:nth-child(1), .excel-grid-table td:nth-child(1) { width: 40% !important; }
-            .excel-grid-table th:nth-child(2), .excel-grid-table td:nth-child(2) { width: 30% !important; }
-            .excel-grid-table th:nth-child(3), .excel-grid-table td:nth-child(3) { width: 30% !important; }
-            
-            .excel-grid-table thead th {
-                background-color: #f2f2f2 !important;
-                color: #212529 !important;
-                font-weight: bold !important;
-            }
-            
+            /* काउंट बॉक्स का डिज़ाइन */
             .attendance-card {
                 background-color: #0d6efd !important;
                 color: #ffffff !important;
@@ -347,6 +303,49 @@ export function loadTeacherAttendanceDashboard() {
                 display: inline-block !important;
                 min-width: 250px !important;
             }
+
+            /* लिस्ट का कंटेनर */
+            .attendance-list-container {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+
+            /* लिस्ट का हर एक सिंगल आइटम (Card Row) */
+            .attendance-list-item {
+                background: #ffffff;
+                border-left: 5px solid #198754; /* उपस्थित दर्शाने के लिए हरी पट्टी */
+                padding: 15px;
+                border-radius: 6px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .teacher-name {
+                font-weight: 700;
+                color: #212529;
+                font-size: 1.05rem;
+            }
+
+            .time-badge-container {
+                display: flex;
+                gap: 15px;
+            }
+
+            .time-badge {
+                padding: 4px 10px;
+                border-radius: 4px;
+                font-size: 0.85rem;
+                font-weight: bold;
+            }
+
+            .badge-in { background-color: #d1e7dd; color: #0f5132; }
+            .badge-out { background-color: #f8d7da; color: #842029; }
         </style>
     `;
 
@@ -370,24 +369,12 @@ export function loadTeacherAttendanceDashboard() {
 
             <div class="row mx-0">
                 <div class="col-12 px-0">
-                    <div class="table-responsive-wrapper table-min-height">
-                        <table class="table mb-0 excel-grid-table">
-                            <thead>
-                                <tr>
-                                    <th>शिक्षक का नाम</th>
-                                    <th>Check-In</th>
-                                    <th>Check-Out</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dashboard-table-body">
-                                <tr>
-                                    <td colspan="3" class="text-center py-4">
-                                        <div class="spinner-border spinner-border-sm text-primary"></div>
-                                        <span class="ms-2">डेटा लोड हो रहा है...</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <h5 class="fw-bold text-secondary mb-3">📋 आज की उपस्थिति सूची</h5>
+                    <div id="dashboard-list-body" class="attendance-list-container">
+                        <div class="text-center py-4 text-muted">
+                            <div class="spinner-border spinner-border-sm text-primary"></div>
+                            <span class="ms-2">डेटा लोड हो रहा है...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -397,37 +384,28 @@ export function loadTeacherAttendanceDashboard() {
     fetchAttendanceData();
 }
 
-// fetchAttendanceData function को बिना किसी बदलाव के वैसा ही रहने दें...
 async function fetchAttendanceData() {
-    const tbody = document.getElementById('dashboard-table-body');
+    const listBody = document.getElementById('dashboard-list-body');
     const totalCountEl = document.getElementById('total-present-count');
     const lastUpdatedEl = document.getElementById('last-updated');
     
-    if (!tbody || !totalCountEl) return;
+    if (!listBody || !totalCountEl) return;
 
-    // टाइम फॉर्मेट करने का एडवांस्ड हेल्पर फंक्शन (ISO और 1899 डेट बग फिक्स)
     const formatTime = (timeStr) => {
         if (!timeStr || timeStr === "--" || timeStr === "") return "--:--";
-        
-        // अगर पहले से सही फॉर्मेट में है (जैसे 07:44 AM)
-        if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) {
-            return timeStr;
-        }
+        if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) return timeStr;
 
         try {
             let dateObj;
             if (typeof timeStr === 'string' && timeStr.includes('T')) {
-                // ISO फॉर्मेट (e.g., 1899-12-30T02:23:00.000Z) को हैंडल करने के लिए
                 dateObj = new Date(timeStr);
-                
-                // अगर टाइमजोन की वजह से इनवैलिड या अजीब डेट आ रही है, तो केवल टाइम का हिस्सा निकालें
                 if (isNaN(dateObj.getTime()) || timeStr.startsWith('1899')) {
-                    const timeParts = timeStr.split('T')[1].split('.')[0]; // "02:23:00"
+                    const timeParts = timeStr.split('T')[1].split('.')[0];
                     const [hrs, mins] = timeParts.split(':');
                     let hour = parseInt(hrs, 10);
                     const ampm = hour >= 12 ? 'PM' : 'AM';
                     hour = hour % 12;
-                    hour = hour ? hour : 12; // 0 को 12 बनाएं
+                    hour = hour ? hour : 12;
                     return `${String(hour).padStart(2, '0')}:${mins} ${ampm}`;
                 }
             } else {
@@ -440,7 +418,6 @@ async function fetchAttendanceData() {
         } catch (e) {
             console.error("Time format error:", e);
         }
-        
         return timeStr; 
     };
 
@@ -455,26 +432,27 @@ async function fetchAttendanceData() {
                 lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
             }
             
-            tbody.innerHTML = data.list.map(t => {
+            // लिस्ट रेंडर करने का नया तरीका
+            listBody.innerHTML = data.list.map(t => {
                 const checkIn = formatTime(t.checkIn);
                 const checkOut = formatTime(t.checkOut);
 
                 return `
-                    <tr>
-                        <td class="fw-bold text-secondary text-truncate" style="width: 40%; max-width: 0;" title="${t.name}">
-                            ${t.name}
-                        </td>
-                        <td class="text-success fw-bold text-truncate" style="width: 30%; max-width: 0;" title="${checkIn}">${checkIn}</td>
-                        <td class="text-danger fw-bold text-truncate" style="width: 30%; max-width: 0;" title="${checkOut}">${checkOut}</td>
-                    </tr>
+                    <div class="attendance-list-item">
+                        <div class="teacher-name">👤 ${t.name}</div>
+                        <div class="time-badge-container">
+                            <span class="time-badge badge-in">🟢 In: ${checkIn}</span>
+                            <span class="time-badge badge-out">🔴 Out: ${checkOut}</span>
+                        </div>
+                    </div>
                 `;
             }).join('');
         } else {
             totalCountEl.innerText = "0";
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
+            listBody.innerHTML = '<div class="text-center py-4 text-muted bg-white rounded shadow-sm">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</div>';
         }
     } catch (e) {
         console.error("Fetch Error:", e);
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-danger">❌ डेटा लोड करने में विफल।</td></tr>';
+        listBody.innerHTML = '<div class="text-center py-4 text-danger bg-white rounded shadow-sm">❌ डेटा लोड करने में विफल।</div>';
     }
 }
