@@ -97,6 +97,9 @@ function executeModuleRouting(title) {
         case 'नया शिक्षक जोड़ें': 
            loadAddNewTeacherForm()
             break;
+        case 'अपडेट/डिलीट': 
+           loadTeacherListWithActions()
+            break;
         case 'QR कोड प्रबंधन': 
           loadAdminAttendancePanel('qr');
             break;
