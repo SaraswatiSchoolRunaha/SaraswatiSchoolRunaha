@@ -199,29 +199,31 @@ else if (mode === 'manual') {
         
         loadTeachers();
 
-        // शिक्षक चयन बदलने पर डेटा रेंडरिंग लॉजिक
-        document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
-            const select = e.target;
-            const detailsCard = document.getElementById('teacher-details-card');
-            const option = select.options[select.selectedIndex];
-            
-            if (select.value) {
-                document.getElementById('disp-name').innerText = option.dataset.name || '-';
-                document.getElementById('disp-id').innerText = option.dataset.id || '-';
-                document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
-                document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
-                detailsCard.classList.remove('d-none');
-            } else {
-                detailsCard.classList.add('d-none');
-            }
-
-            // नया शिक्षक सिलेक्ट करने पर पुराना स्टेटस अलर्ट हाइड करना
-            const statusAlert = document.getElementById('admin-status-alert');
-            if (statusAlert) statusAlert.classList.add('d-none');
-        });
-
-        // इवेंट लिसनर्स बाइंडिंग
-        document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
-        document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+       // शिक्षक चयन बदलने पर डेटा रेंडरिंग और अलर्ट रीसेट करने का लॉजिक
+document.getElementById('admin-teacher-select').addEventListener('change', (e) => {
+    const select = e.target;
+    const detailsCard = document.getElementById('teacher-details-card');
+    const option = select.options[select.selectedIndex];
+    
+    // ✅ अलर्ट को रीसेट और हाइड करने वाला हिस्सा
+    const statusAlert = document.getElementById('admin-status-alert');
+    if (statusAlert) {
+        statusAlert.classList.add('d-none'); // अलर्ट छिपाएं
+        statusAlert.className = "alert d-none mb-3"; // क्लास रीसेट करें (पुराना रंग हटाएँ)
+        statusAlert.innerHTML = ""; // पुराना मैसेज खाली करें
     }
+            
+    if (select.value) {
+        document.getElementById('disp-name').innerText = option.dataset.name || '-';
+        document.getElementById('disp-id').innerText = option.dataset.id || '-';
+        document.getElementById('disp-mob').innerText = option.dataset.mob || '-';
+        document.getElementById('disp-pin').innerText = option.dataset.pin || '-';
+        detailsCard.classList.remove('d-none');
+    } else {
+        detailsCard.classList.add('d-none');
+    }
+});
 
+// इवेंट लिसनर्स बाइंडिंग
+document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
+document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
