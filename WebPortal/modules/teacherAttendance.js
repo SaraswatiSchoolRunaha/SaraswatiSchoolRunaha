@@ -411,11 +411,11 @@ async function fetchAttendanceData() {
     
     if (!listBody || !totalCountEl) return;
 
-    // 🛠️ सबसे अचूक और सीधा टाइम कनवर्टर (बिना किसी Date/Timezone झंझट के)
+    // 🛠️ शीट का हूबहू टाइम दिखाने वाला फंक्शन (No Javascript Timezone interference)
     const formatTime = (timeStr) => {
         if (!timeStr || timeStr === "--" || timeStr === "") return "--:--";
         
-        // अगर पहले से AM/PM लिखा हुआ आ रहा है
+        // अगर शीट से पहले से ही AM/PM लिखा हुआ आ रहा है (जैसे: "07:44 AM")
         if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) {
             return timeStr;
         }
@@ -423,39 +423,35 @@ async function fetchAttendanceData() {
         try {
             let cleanTime = "";
 
-            // 1. अगर ISO फ़ॉर्मेट है (जैसे: "1899-12-30T07:44:10.000Z")
+            // 1. अगर ISO फ़ॉर्मेट है (जैसे: "1899-12-30T07:44:10.000Z") तो सिर्फ टाइम का हिस्सा "07:44:10" अलग करें
             if (typeof timeStr === 'string' && timeStr.includes('T')) {
-                cleanTime = timeStr.split('T')[1].split('.')[0]; // "07:44:10" मिलेगा
+                cleanTime = timeStr.split('T')[1].split('.')[0]; 
             } 
-            // 2. अगर शीट से सीधा "07:44:10" आ रहा है
+            // 2. अगर सीधा "07:44:10" आ रहा है
             else if (typeof timeStr === 'string') {
                 cleanTime = timeStr.trim();
             }
 
+            // अब इसमें से घंटा (Hour) और मिनट (Minute) निकालकर AM/PM सेट करें
             if (cleanTime && cleanTime.includes(':')) {
                 const parts = cleanTime.split(':');
                 let hours = parseInt(parts[0], 10);
-                let minutes = parseInt(parts[1], 10); // मिनट को नंबर में बदलें ताकि कोई छेड़छाड़ न हो
+                let minutes = parts[1]; // मिनट जैसा है वैसा ही रहेगा (e.g., "44")
 
-                if (!isNaN(hours) && !isNaN(minutes)) {
-                    // AM या PM तय करें
+                if (!isNaN(hours) && minutes) {
                     const ampm = hours >= 12 ? 'PM' : 'AM';
-                    
-                    // 12 घंटे वाले फ़ॉर्मेट में बदलें
                     hours = hours % 12;
-                    hours = hours ? hours : 12; // अगर 00 या 12 है तो 12 रखें
+                    hours = hours ? hours : 12; // 0 को 12 बनाएं
 
-                    const finalHours = String(hours).padStart(2, '0');
-                    const finalMinutes = String(minutes).padStart(2, '0');
-
-                    return `${finalHours}:${finalMinutes} ${ampm}`;
+                    return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
                 }
             }
         } catch (e) {
-            console.error("Time format conversion failed:", e);
+            console.error("Time show error:", e);
         }
         
-        return timeStr; // अगर कुछ समझ न आए तो जैसा है वैसा ही दिखा दें
+        // अगर ऊपर कुछ भी मैच न हो, तो जो शीट से आया है वही सीधे दिखा दो (ताकि गलत न हो)
+        return timeStr; 
     };
 
     try {
@@ -470,6 +466,7 @@ async function fetchAttendanceData() {
             }
             
             listBody.innerHTML = data.list.map(t => {
+                // यहाँ सीधे शीट का टाइम पास होगा
                 const checkIn = formatTime(t.checkIn);
                 const checkOut = formatTime(t.checkOut);
 
