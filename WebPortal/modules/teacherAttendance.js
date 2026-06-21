@@ -706,36 +706,35 @@ export function loadAddNewTeacherForm() {
         const webAppUrl = sheetUrls['TeacherAttendance'];
 
         // Google Sheet Apps Script पर डेटा भेजना
-        fetch(webAppUrl, {
-            method: "POST",
-            body: JSON.stringify({
-                action: "addNewTeacher",
-                teacher_id: tId,
-                teacher_name: tName,
-                phone: tPhone,
-                pin: tPin
-            })
-        })
-        .then(res => res.json())
-        .then(response => {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = originalBtnText;
+fetch(webAppUrl, {
+    method: "POST",
+    body: JSON.stringify({
+        action: "addNewTeacher",
+        teacher_id: tId,
+        teacher_name: tName,
+        phone: tPhone,
+        pin: tPin
+    })
+})
+.then(res => res.json())
+.then(response => {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = originalBtnText;
 
-            if (response.status === "success") {
-                showFormAlert("success", "🎉 " + response.message);
-                form.reset(); // फॉर्म क्लियर करें
-            } else {
-                showFormAlert("danger", "⚠️ " + response.message);
-            }
-        })
-        .catch(err => {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = originalBtnText;
-            showFormAlert("danger", "❌ नेटवर्क त्रुटि! रिकॉर्ड सेव नहीं हो सका।");
-            console.error(err);
-        });
-    });
-
+    if (response.status === "success") {
+        showFormAlert("success", "🎉 " + response.message);
+        form.reset(); // फॉर्म क्लियर करें
+    } else {
+        showFormAlert("danger", "⚠️ " + response.message);
+    }
+})
+.catch(err => {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = originalBtnText;
+    showFormAlert("danger", "❌ नेटवर्क त्रुटि! रिकॉर्ड सेव नहीं हो सका।");
+    console.error(err);
+});
+        
     // अलर्ट दिखाने का लोकल फंक्शन
     function showFormAlert(type, message) {
         let bgClass = `alert-${type}`;
