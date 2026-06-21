@@ -279,22 +279,35 @@ export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
+    // पैरेंट कंटेनर (#contentArea) को जबरदस्ती अपनी सीमा में रखने के लिए डायरेक्ट स्टाइलिंग
+    container.style.setProperty('flex', '1 1 0%', 'important');
+    container.style.setProperty('min-width', '0px', 'important');
+    container.style.setProperty('max-width', '100%', 'important');
+    container.style.setProperty('overflow-x', 'hidden', 'important');
+    
+    // यदि इसके ऊपर कोई row/flex पैरेंट है तो उसे भी नियंत्रित करने के लिए ग्लोबल CSS
     const style = `
         <style>
+            /* पैरेंट और ग्रैंडपैरेंट एलिमेंट्स को फिक्स करने के लिए */
+            #contentArea, 
+            #contentArea > div {
+                min-width: 0 !important;
+                max-width: 100% !important;
+            }
+
             .table-min-height { min-height: 100px; }
             
-            /* मुख्य कंटेनर जो साइड मेनू को दबाएगा नहीं */
+            /* मुख्य कंटेनर जो बची हुई खाली जगह में ही सिमटेगा */
             .dashboard-main-container {
-                display: flex !important;
-                flex-direction: column !important;
+                display: block !important;
                 width: 100% !important;
-                /* flex-grow सुनिश्चित करता है कि यह बची हुई जगह ही ले */
-                flex: 1 1 0% !important; 
+                max-width: 100% !important;
                 min-width: 0 !important;
                 box-sizing: border-box !important;
+                overflow-x: hidden !important;
             }
             
-            /* टेबल को केवल अपने बॉक्स के अंदर स्क्रॉल कराने के लिए */
+            /* टेबल को केवल अपने बॉक्स के अंदर स्क्रॉल कराने के लिए सबसे महत्वपूर्ण ब्लॉक */
             .table-responsive-wrapper { 
                 overflow-x: auto !important; 
                 width: 100% !important; 
@@ -302,13 +315,15 @@ export function loadTeacherAttendanceDashboard() {
                 display: block !important;
                 box-sizing: border-box !important;
                 -webkit-overflow-scrolling: touch;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
             }
             
             /* एक्सेल ग्रिड टेबल डिजाइन */
             .excel-grid-table { 
                 table-layout: fixed !important; 
                 width: 100% !important; 
-                min-width: 600px;
+                min-width: 600px; /* मोबाइल पर स्क्रॉल बार लाने के लिए जरूरी */
                 border-collapse: collapse !important;
                 margin-bottom: 0 !important;
             }
@@ -321,10 +336,10 @@ export function loadTeacherAttendanceDashboard() {
                 text-align: left !important;
             }
             
-            /* कॉलम चौड़ाई को क्लासेस के जरिए फिक्स करना */
-            .excel-grid-table th:nth-child(1), .excel-grid-table td:nth-child(1) { width: 40%; max-width: 0; }
-            .excel-grid-table th:nth-child(2), .excel-grid-table td:nth-child(2) { width: 30%; max-width: 0; }
-            .excel-grid-table th:nth-child(3), .excel-grid-table td:nth-child(3) { width: 30%; max-width: 0; }
+            /* कॉलम चौड़ाई फिक्स रखना */
+            .excel-grid-table th:nth-child(1), .excel-grid-table td:nth-child(1) { width: 40% !important; max-width: 0 !important; }
+            .excel-grid-table th:nth-child(2), .excel-grid-table td:nth-child(2) { width: 30% !important; max-width: 0 !important; }
+            .excel-grid-table th:nth-child(3), .excel-grid-table td:nth-child(3) { width: 30% !important; max-width: 0 !important; }
             
             /* हेडर बैकग्राउंड कलर */
             .excel-grid-table thead th {
@@ -346,9 +361,8 @@ export function loadTeacherAttendanceDashboard() {
         </style>
     `;
 
-    // ध्यान दें: 'container-fluid' क्लास को हटाकर केवल 'container-layout-fix' या साधारण div इस्तेमाल किया है ताकि वह साइडबार को न दबाए
     container.innerHTML = style + `
-        <div class="p-4 dashboard-main-container">
+        <div class="p-3 dashboard-main-container">
             <div class="row mx-0 mb-4 w-100" style="min-width: 0;">
                 <div class="col-12 d-flex justify-content-between align-items-center px-0 flex-wrap gap-2">
                     <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
@@ -367,26 +381,24 @@ export function loadTeacherAttendanceDashboard() {
 
             <div class="row mx-0 w-100" style="min-width: 0;">
                 <div class="col-12 px-0">
-                    <div class="card shadow-sm border-0 rounded-3" style="overflow: hidden; width: 100%;">
-                        <div class="table-responsive-wrapper table-min-height">
-                            <table class="table mb-0 excel-grid-table">
-                                <thead>
-                                    <tr>
-                                        <th>शिक्षक का नाम</th>
-                                        <th>Check-In</th>
-                                        <th>Check-Out</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashboard-table-body">
-                                    <tr>
-                                        <td colspan="3" class="text-center py-4">
-                                            <div class="spinner-border spinner-border-sm text-primary"></div>
-                                            <span class="ms-2">डेटा लोड हो रहा है...</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive-wrapper table-min-height">
+                        <table class="table mb-0 excel-grid-table">
+                            <thead>
+                                <tr>
+                                    <th>शिक्षक का नाम</th>
+                                    <th>Check-In</th>
+                                    <th>Check-Out</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-table-body">
+                                <tr>
+                                    <td colspan="3" class="text-center py-4">
+                                        <div class="spinner-border spinner-border-sm text-primary"></div>
+                                        <span class="ms-2">डेटा लोड हो रहा है...</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -395,8 +407,6 @@ export function loadTeacherAttendanceDashboard() {
 
     fetchAttendanceData();
 }
-
-
 async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
     const totalCountEl = document.getElementById('total-present-count');
