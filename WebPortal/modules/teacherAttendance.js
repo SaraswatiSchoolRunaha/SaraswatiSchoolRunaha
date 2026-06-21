@@ -16,30 +16,103 @@ export function loadTeacherAttendance() {
         ? 'अपनी डिजिटल उपस्थिति दर्ज करने के लिए अपना सीक्रेट पिन नंबर डालें।' 
         : 'Enter your secret PIN number to log your digital attendance.';
 
-    // 🎨 प्रीमियम और मॉडर्न CSS (UI Enhancement)
+    // ==========================================
+    // 🟢 यहाँ से नया डिज़ाइन कोड शुरू हो रहा है 
+    // ==========================================
     if (!document.getElementById('attendance-premium-styles')) {
         const styleTag = document.createElement('style');
         styleTag.id = 'attendance-premium-styles';
         styleTag.innerHTML = `
-            .attendance-container { margin-top: 30px; padding: 10px; }
-            .attendance-card { background: #ffffff; border: none; border-radius: 24px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important; overflow: hidden; }
-            .pin-input-field { letter-spacing: 12px; text-align: center; font-size: 24px !important; border-radius: 16px !important; padding: 15px !important; background: #f8fafc; border: 2px solid #e2e8f0; }
-            .profile-box { background: #f8fafc; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; }
-            .info-label { color: #64748b; font-size: 14px; }
-            .info-value { color: #1e293b; font-weight: 700; font-size: 15px; }
-            .btn-modern { border-radius: 16px !important; padding: 14px !important; font-weight: 700 !important; transition: 0.3s; }
-            .btn-verify { background: #2563eb; color: #fff; }
-            .btn-camera { background: #059669; color: #fff; }
+            .attendance-container { margin-top: 40px; padding: 15px; }
+            .attendance-card { 
+                background: #ffffff; 
+                border: 1px solid #e2e8f0 !important; 
+                border-radius: 24px !important; 
+                box-shadow: 0 20px 40px rgba(0,0,0,0.05) !important; 
+                overflow: hidden;
+            }
+            .pin-input-field { 
+                letter-spacing: 16px; 
+                text-align: center; 
+                font-size: 28px !important; 
+                font-weight: bold;
+                border-radius: 16px !important; 
+                padding: 14px !important; 
+                background: #f8fafc; 
+                border: 2px solid #e2e8f0; 
+                transition: all 0.3s ease;
+            }
+            .pin-input-field:focus {
+                background: #ffffff;
+                border-color: #2563eb;
+                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+            }
+            .profile-box { 
+                background: linear-gradient(145deg, #f8fafc, #f1f5f9); 
+                border-radius: 16px; 
+                padding: 20px; 
+                border: 1px solid #e2e8f0; 
+            }
+            .info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px dashed #e2e8f0;
+            }
+            .info-row:last-child { border-bottom: none; }
+            .info-label { color: #64748b; font-size: 14px; font-weight: 500; }
+            .info-value { color: #1e293b; font-weight: 700; font-size: 16px; }
+
+            .btn-modern { 
+                border-radius: 16px !important; 
+                padding: 14px 20px !important; 
+                font-weight: 700 !important; 
+                font-size: 15px !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+                border: none !important;
+            }
+            .btn-verify { 
+                background: linear-gradient(135deg, #2563eb, #1d4ed8); 
+                color: #fff; 
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            }
+            .btn-verify:hover { 
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+                color: #fff;
+            }
+            .btn-camera { 
+                background: linear-gradient(135deg, #10b981, #059669); 
+                color: #fff; 
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            }
+            .btn-camera:hover { 
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+                color: #fff;
+            }
+            .notice-alert {
+                background-color: #fff8e1;
+                border-left: 4px solid #ffb300;
+                border-radius: 12px;
+                padding: 12px 16px;
+            }
+            .camera-container {
+                border: 3px solid #e2e8f0;
+                box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+            }
         `;
         document.head.appendChild(styleTag);
     }
 
     container.innerHTML = `
         <div class="attendance-container">
-            <div class="card attendance-card p-4 mx-auto" style="max-width: 450px;">
+            <div class="card attendance-card p-4 mx-auto" style="max-width: 420px;">
                 <div class="text-center mb-4">
-                    <h4 class="fw-bold text-dark">${mainTitle}</h4>
-                    <p class="text-muted small">${descText}</p>
+                    <div class="mb-2" style="font-size: 40px;">📝</div>
+                    <h4 class="fw-bold text-dark mb-1">${mainTitle}</h4>
+                    <p class="text-muted small px-2">${descText}</p>
                 </div>
                 
                 <div id="pin-section">
@@ -47,36 +120,36 @@ export function loadTeacherAttendance() {
                     <button id="verify-pin-btn" class="btn btn-modern btn-verify w-100">👤 पहचान सत्यापित करें</button>
                 </div>
 
-               <div id="profile-section" class="d-none">
-                        <div class="profile-box mb-3">
-                        <div class="d-flex justify-content-between mb-2">
-                        <span class="info-label">नाम:</span>
-                        <span id="lbl-name" class="info-value">-</span>
+                <div id="profile-section" class="d-none">
+                    <div class="profile-box mb-3">
+                        <div class="info-row">
+                            <span class="info-label">👤 नाम:</span>
+                            <span id="lbl-name" class="info-value">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">🪪 ID:</span>
+                            <span id="lbl-id" class="info-value">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">📱 मोबाइल:</span>
+                            <span id="lbl-phone" class="info-value">-</span>
+                        </div>
                     </div>
-                        <div class="d-flex justify-content-between mb-2">
-                        <span class="info-label">ID:</span>
-                        <span id="lbl-id" class="info-value">-</span>
-                    </div>
-                        <div class="d-flex justify-content-between">
-                        <span class="info-label">मोबाइल:</span>
-                        <span id="lbl-phone" class="info-value">-</span>
-                </div>
-                </div>
-                        <button id="open-cam-btn" class="btn btn-modern btn-camera w-100">📷 कैमरा चालू करें</button>
+                    <button id="open-cam-btn" class="btn btn-modern btn-camera w-100">📷 कैमरा चालू करें</button>
                 </div>
 
                 <div id="status-alert" class="alert mt-3 d-none text-center rounded-3"></div>
-                <div id="camera-preview" class="mt-3 rounded-4" style="display:none; height:250px; overflow:hidden; background:#000;"></div>
+                <div id="camera-preview" class="mt-3 rounded-4 camera-container" style="display:none; height:250px; overflow:hidden; background:#000;"></div>
 
-                <div class="mt-3 p-3 bg-light rounded-3">
-                    <p class="text-danger small m-0 fw-bold" style="font-size: 12px;">
-                        ⚠️ सूचना: उपस्थिति के लिए GPS ऑन रखें और 50 मीटर के दायरे में रहें।
+                <div class="notice-alert mt-4">
+                    <p class="text-warning-emphasis small m-0 fw-semibold" style="font-size: 12.5px; line-height: 1.5;">
+                        ⚠️ <strong>सूचना:</strong> उपस्थिति के लिए GPS ऑन रखें और स्कूल परिसर के 50 मीटर के दायरे में रहें।
                     </p>
                 </div>
             </div>
         </div>
     `;
-
+    
     // आवश्यक वेरिएबल्स और एलिमेंट्स
     const pinSection = document.getElementById('pin-section');
     const profileSection = document.getElementById('profile-section');
