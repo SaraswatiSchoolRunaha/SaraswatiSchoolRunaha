@@ -580,3 +580,170 @@ async function fetchAttendanceData() {
         listBody.innerHTML = '<div class="text-center py-4 text-danger bg-white rounded shadow-sm">❌ डेटा लोड करने में विफल।</div>';
     }
 }
+// --- नया शिक्षक जोड़ने का फॉर्म सेक्शन ---
+export function loadAddNewTeacherForm() {
+    const container = document.getElementById('contentArea');
+    if (!container) return;
+
+    // पुराने स्टाइल्स और डैटा को साफ करें
+    if (!document.getElementById('add-teacher-premium-styles')) {
+        const styleTag = document.createElement('style');
+        styleTag.id = 'add-teacher-premium-styles';
+        styleTag.innerHTML = `
+            .form-container { margin-top: 25px; padding: 10px; width: 100%; box-sizing: border-box; }
+            .form-card { 
+                background: #ffffff; 
+                border: 1px solid #e2e8f0 !important; 
+                border-radius: 20px !important; 
+                box-shadow: 0 15px 35px rgba(0,0,0,0.05) !important; 
+                overflow: hidden;
+                width: 100%;
+                max-width: 440px;
+                box-sizing: border-box;
+            }
+            .form-label-modern {
+                font-weight: 600;
+                color: #475569;
+                font-size: 14px;
+                margin-bottom: 6px;
+                display: block;
+            }
+            .input-field-modern {
+                border-radius: 12px !important;
+                padding: 12px 14px !important;
+                background: #f8fafc;
+                border: 2px solid #e2e8f0;
+                font-size: 15px !important;
+                transition: all 0.3s ease;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .input-field-modern:focus {
+                background: #ffffff;
+                border-color: #2563eb;
+                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+                outline: none;
+            }
+            .btn-save-teacher {
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                color: #fff;
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            }
+            .btn-save-teacher:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+                color: #fff;
+            }
+        `;
+        document.head.appendChild(styleTag);
+    }
+
+    container.innerHTML = `
+        <div class="form-container">
+            <div class="card form-card p-4 mx-auto">
+                <div class="text-center mb-4">
+                    <div class="mb-2" style="font-size: 40px;">➕</div>
+                    <h4 class="fw-bold text-dark mb-1">नया शिक्षक जोड़ें</h4>
+                    <p class="text-muted small">डेटाबेस में नया शिक्षक पंजीकृत करने के लिए विवरण भरें।</p>
+                </div>
+
+                <form id="add-teacher-form" onsubmit="return false;">
+                    <div class="mb-3">
+                        <label class="form-label-modern">🪪 शिक्षक ID (Teacher ID)</label>
+                        <input type="text" id="new-teacher-id" class="form-control input-field-modern" placeholder="जैसे: T101" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-modern">👤 शिक्षक का नाम (Teacher Name)</label>
+                        <input type="text" id="new-teacher-name" class="form-control input-field-modern" placeholder="पूरा नाम दर्ज करें" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-modern">📱 मोबाइल नंबर (Mobile No.)</label>
+                        <input type="tel" id="new-teacher-phone" class="form-control input-field-modern" placeholder="10 अंकों का मोबाइल नंबर" maxlength="10" inputmode="numeric" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-modern">🔑 सीक्रेट पिन (4-Digit PIN)</label>
+                        <input type="password" id="new-teacher-pin" class="form-control input-field-modern" placeholder="****" maxlength="4" inputmode="numeric" style="letter-spacing: 4px;" required>
+                    </div>
+
+                    <div id="form-status-alert" class="alert d-none text-center rounded-3 fw-bold p-3 mb-3 border-0"></div>
+
+                    <button type="submit" id="save-teacher-btn" class="btn btn-modern btn-save-teacher w-100">💾 शिक्षक रिकॉर्ड सुरक्षित करें</button>
+                </form>
+            </div>
+        </div>
+    `;
+
+    // इवेंट लिसनर जोड़ना
+    const form = document.getElementById('add-teacher-form');
+    const saveBtn = document.getElementById('save-teacher-btn');
+    const statusAlert = document.getElementById('form-status-alert');
+
+    form.addEventListener('submit', () => {
+        const tId = document.getElementById('new-teacher-id').value.trim();
+        const tName = document.getElementById('new-teacher-name').value.trim();
+        const tPhone = document.getElementById('new-teacher-phone').value.trim();
+        const tPin = document.getElementById('new-teacher-pin').value.trim();
+
+        // बेसिक वैलिडेशन
+        if (tPhone.length !== 10 || isNaN(tPhone)) {
+            showFormAlert("danger", "⚠️ कृपया एक वैध 10-अंकीय मोबाइल नंबर दर्ज करें!");
+            return;
+        }
+        if (tPin.length !== 4 || isNaN(tPin)) {
+            showFormAlert("danger", "⚠️ पिन नंबर अनिवार्य रूप से 4 अंकों का होना चाहिए!");
+            return;
+        }
+
+        // बटन को लोडिंग स्टेट में लाना
+        saveBtn.disabled = true;
+        const originalBtnText = saveBtn.innerHTML;
+        saveBtn.innerHTML = `⏳ डेटाबेस में सहेजा जा रहा है...`;
+        showFormAlert("primary", "🔄 सर्वर से संपर्क किया जा रहा है...");
+
+        const webAppUrl = sheetUrls['TeacherAttendance'];
+
+        // Google Sheet Apps Script पर डेटा भेजना
+        fetch(webAppUrl, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "addNewTeacher",
+                teacher_id: tId,
+                teacher_name: tName,
+                phone: tPhone,
+                pin: tPin
+            })
+        })
+        .then(res => res.json())
+        .then(response => {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalBtnText;
+
+            if (response.status === "success") {
+                showFormAlert("success", "🎉 " + response.message);
+                form.reset(); // फॉर्म क्लियर करें
+            } else {
+                showFormAlert("danger", "⚠️ " + response.message);
+            }
+        })
+        .catch(err => {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalBtnText;
+            showFormAlert("danger", "❌ नेटवर्क त्रुटि! रिकॉर्ड सेव नहीं हो सका।");
+            console.error(err);
+        });
+    });
+
+    // अलर्ट दिखाने का लोकल फंक्शन
+    function showFormAlert(type, message) {
+        let bgClass = `alert-${type}`;
+        if (type === 'primary') bgClass = 'bg-primary text-white';
+        if (type === 'success') bgClass = 'bg-success text-white';
+        if (type === 'danger') bgClass = 'bg-danger text-white';
+        
+        statusAlert.className = `alert ${bgClass} d-block fw-bold shadow-sm border-0 p-3 my-2`;
+        statusAlert.innerText = message;
+    }
+}
