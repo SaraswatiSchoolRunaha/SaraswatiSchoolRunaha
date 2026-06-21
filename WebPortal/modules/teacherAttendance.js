@@ -19,28 +19,39 @@ export function loadTeacherAttendance() {
     // ==========================================
     // 🟢 यहाँ से नया डिज़ाइन कोड शुरू हो रहा है 
     // ==========================================
+    // 🎨 पूरी तरह रिस्पॉन्सिव और परफेक्टली फिटेड CSS (Fixed Design)
     if (!document.getElementById('attendance-premium-styles')) {
         const styleTag = document.createElement('style');
         styleTag.id = 'attendance-premium-styles';
         styleTag.innerHTML = `
-            .attendance-container { margin-top: 40px; padding: 15px; }
+            .attendance-container { 
+                margin-top: 20px; 
+                padding: 10px; 
+                width: 100%;
+                box-sizing: border-box;
+            }
             .attendance-card { 
                 background: #ffffff; 
                 border: 1px solid #e2e8f0 !important; 
-                border-radius: 24px !important; 
-                box-shadow: 0 20px 40px rgba(0,0,0,0.05) !important; 
+                border-radius: 20px !important; 
+                box-shadow: 0 15px 35px rgba(0,0,0,0.05) !important; 
                 overflow: hidden;
+                width: 100%;
+                max-width: 420px;
+                box-sizing: border-box;
             }
             .pin-input-field { 
-                letter-spacing: 16px; 
+                letter-spacing: 12px; 
                 text-align: center; 
-                font-size: 28px !important; 
+                font-size: 24px !important; 
                 font-weight: bold;
-                border-radius: 16px !important; 
-                padding: 14px !important; 
+                border-radius: 14px !important; 
+                padding: 12px !important; 
                 background: #f8fafc; 
                 border: 2px solid #e2e8f0; 
                 transition: all 0.3s ease;
+                width: 100%;
+                box-sizing: border-box;
             }
             .pin-input-field:focus {
                 background: #ffffff;
@@ -49,9 +60,11 @@ export function loadTeacherAttendance() {
             }
             .profile-box { 
                 background: linear-gradient(145deg, #f8fafc, #f1f5f9); 
-                border-radius: 16px; 
-                padding: 20px; 
+                border-radius: 14px; 
+                padding: 15px; 
                 border: 1px solid #e2e8f0; 
+                width: 100%;
+                box-sizing: border-box;
             }
             .info-row {
                 display: flex;
@@ -59,18 +72,22 @@ export function loadTeacherAttendance() {
                 align-items: center;
                 padding: 10px 0;
                 border-bottom: 1px dashed #e2e8f0;
+                gap: 10px;
             }
             .info-row:last-child { border-bottom: none; }
-            .info-label { color: #64748b; font-size: 14px; font-weight: 500; }
-            .info-value { color: #1e293b; font-weight: 700; font-size: 16px; }
+            .info-label { color: #64748b; font-size: 14px; font-weight: 500; white-space: nowrap; }
+            .info-value { color: #1e293b; font-weight: 700; font-size: 15px; text-align: right; word-break: break-word; }
 
             .btn-modern { 
-                border-radius: 16px !important; 
-                padding: 14px 20px !important; 
+                border-radius: 14px !important; 
+                padding: 12px 15px !important; 
                 font-weight: 700 !important; 
                 font-size: 15px !important;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+                transition: all 0.2s ease; 
                 border: none !important;
+                width: 100% !important;
+                display: block;
+                box-sizing: border-box;
             }
             .btn-verify { 
                 background: linear-gradient(135deg, #2563eb, #1d4ed8); 
@@ -78,8 +95,8 @@ export function loadTeacherAttendance() {
                 box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
             }
             .btn-verify:hover { 
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
                 color: #fff;
             }
             .btn-camera { 
@@ -88,24 +105,27 @@ export function loadTeacherAttendance() {
                 box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
             }
             .btn-camera:hover { 
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
                 color: #fff;
             }
             .notice-alert {
                 background-color: #fff8e1;
                 border-left: 4px solid #ffb300;
                 border-radius: 12px;
-                padding: 12px 16px;
+                padding: 12px;
+                box-sizing: border-box;
+                width: 100%;
             }
             .camera-container {
                 border: 3px solid #e2e8f0;
                 box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+                width: 100%;
+                box-sizing: border-box;
             }
         `;
         document.head.appendChild(styleTag);
     }
-
     container.innerHTML = `
         <div class="attendance-container">
             <div class="card attendance-card p-4 mx-auto" style="max-width: 420px;">
