@@ -135,28 +135,14 @@ export function loadAdminAttendancePanel(mode) {
         document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
     }
 
- // 📝 मोड 2: सिर्फ मैन्युअल हाजिरी मैनेजमेंट इंटरफेस
+
+// 📝 मोड 2: सिर्फ मैन्युअल हाजिरी मैनेजमेंट इंटरफेस
 else if (mode === 'manual') {
     container.innerHTML = `
     <style>
         .manual-card { border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: none; }
-        /* चार कॉलम को एक लाइन में रखने के लिए */
-        .one-line-details { 
-            display: flex; 
-            flex-direction: row; 
-            gap: 5px; 
-            margin-bottom: 15px; 
-            width: 100%;
-        }
-        .data-pill { 
-            background: #f8f9fa; 
-            border: 1px solid #e9ecef; 
-            border-radius: 8px; 
-            padding: 8px 2px; 
-            flex: 1; 
-            text-align: center;
-            min-width: 0; /* बहुत जरूरी है एक लाइन के लिए */
-        }
+        .one-line-details { display: flex; flex-direction: row; gap: 5px; margin-bottom: 15px; width: 100%; }
+        .data-pill { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 8px 2px; flex: 1; text-align: center; min-width: 0; }
         .label-text { font-size: 0.6rem; color: #888; display: block; font-weight: 700; text-transform: uppercase; }
         .val-text { font-size: 0.75rem; font-weight: bold; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
     </style>
@@ -167,11 +153,13 @@ else if (mode === 'manual') {
                 <h5 class="fw-bold m-0"><i class="bi bi-clipboard-check"></i> मैनुअल उपस्थिति</h5>
             </div>
 
+            <div id="admin-status-alert" class="alert d-none mb-3" role="alert"></div>
+
             <select id="admin-teacher-select" class="form-select border-2 mb-3" style="border-radius: 10px;">
                 <option value="">👤 शिक्षक का नाम चुनें...</option>
             </select>
 
-            <div class="one-line-details">
+            <div id="teacher-details-card" class="one-line-details d-none">
                 <div class="data-pill"><span class="label-text">Name</span><b id="disp-name" class="val-text">-</b></div>
                 <div class="data-pill"><span class="label-text">ID</span><b id="disp-id" class="val-text">-</b></div>
                 <div class="data-pill"><span class="label-text">Mob</span><b id="disp-mob" class="val-text">-</b></div>
