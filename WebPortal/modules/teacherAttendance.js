@@ -379,11 +379,11 @@ async function fetchAttendanceData() {
 
                 return `
                     <tr>
-                        <td class="ps-4 fw-bold text-secondary text-truncate" style="width: 50%; max-width: 0;" title="${t.name}">
+                        <td class="ps-4 fw-bold text-secondary text-truncate" style="width: 10%; max-width: 0;" title="${t.name}">
                             ${t.name}
                         </td>
-                        <td class="text-success fw-bold" style="width: 25%;">${checkIn}</td>
-                        <td class="text-danger fw-bold" style="width: 25%;">${checkOut}</td>
+                        <td class="text-success fw-bold" style="width: 45%;">${checkIn}</td>
+                        <td class="text-danger fw-bold" style="width: 45%;">${checkOut}</td>
                     </tr>
                 `;
             }).join('');
