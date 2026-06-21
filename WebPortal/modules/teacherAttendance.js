@@ -283,14 +283,23 @@ export function loadTeacherAttendanceDashboard() {
     const style = `
         <style>
             .table-min-height { min-height: 100px; }
-            .table-responsive { overflow-x: auto; width: 100%; }
+            
+            /* मुख्य कंटेनर जो टेबल को साइड मेन्यू से अलग रखेगा */
+            .table-responsive-wrapper { 
+                overflow-x: auto; 
+                width: 100%; 
+                display: block;
+                clear: both;
+                max-width: 100%;
+            }
             
             /* टेबल लेआउट को फिक्स करके एक्सेल जैसी सीधी ग्रिड लाइन्स बनाना */
             .excel-grid-table { 
                 table-layout: fixed !important; 
                 width: 100% !important; 
-                min-width: 600px; 
+                min-width: 600px; /* छोटी स्क्रीन पर स्क्रॉल बार देगा, मेन्यू को नहीं दबाएगा */
                 border-collapse: collapse !important;
+                margin-bottom: 0 !important;
             }
             
             /* हर सेल (सेल के चारों तरफ) पर एक्सेल जैसी बॉर्डर लाइन */
@@ -312,13 +321,15 @@ export function loadTeacherAttendanceDashboard() {
 
     container.innerHTML = style + `
         <div class="container-fluid py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
-                <small class="text-muted" id="last-updated"></small>
+            <div class="row mb-4">
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                    <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
+                    <small class="text-muted" id="last-updated"></small>
+                </div>
             </div>
             
             <div class="row mb-4">
-                <div class="col-md-4">
+                <div class="col-12 col-md-4">
                     <div class="card p-3 shadow-sm border-0 bg-primary text-white rounded-3">
                         <div class="d-flex align-items-center">
                             <div class="me-3"><i class="bi bi-people-fill fs-2"></i></div>
@@ -331,25 +342,29 @@ export function loadTeacherAttendanceDashboard() {
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 rounded-3" style="overflow: hidden;">
-                <div class="table-responsive table-min-height">
-                    <table class="table mb-0 excel-grid-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 40%;">शिक्षक का नाम</th>
-                                <th style="width: 30%;">Check-In</th>
-                                <th style="width: 30%;">Check-Out</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dashboard-table-body">
-                            <tr>
-                                <td colspan="3" class="text-center py-4">
-                                    <div class="spinner-border spinner-border-sm text-primary"></div>
-                                    <span class="ms-2">डेटा लोड हो रहा है...</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 rounded-3" style="overflow: hidden;">
+                        <div class="table-responsive-wrapper table-min-height">
+                            <table class="table mb-0 excel-grid-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">शिक्षक का नाम</th>
+                                        <th style="width: 30%;">Check-In</th>
+                                        <th style="width: 30%;">Check-Out</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-table-body">
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4">
+                                            <div class="spinner-border spinner-border-sm text-primary"></div>
+                                            <span class="ms-2">डेटा लोड हो रहा है...</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
