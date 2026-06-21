@@ -5,7 +5,7 @@ import {
     showAbsentReport, showAddStudentForm, showDeleteStudentPortal, showPresentReport
 } from './attendance.js';
 
-import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm } from './teacherAttendance.js';
+import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm, loadTeacherListWithActions } from './teacherAttendance.js';
 import { loadAdminAttendancePanel } from './adminAttendance.js';
 
 function buildPortalMenu() {
