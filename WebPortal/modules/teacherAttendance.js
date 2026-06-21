@@ -838,42 +838,70 @@ export function loadTeacherListWithActions() {
         tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">⏳ सूची लोड की जा रही है...</td></tr>`;
         
         // सभी डेटा लाने के लिए doGet का उपयोग (बिना एक्शन पैरामीटर के)
-        fetch(webAppUrl)
-        .then(res => res.json())
-        .then(data => {
-            tbody.innerHTML = "";
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">कोई रिकॉर्ड नहीं मिला।</td></tr>`;
-                return;
-            }
+       fetch(`${webAppUrl}?action=getTeachersList`)
+.then(res => res.json())
+.then(response => {
 
-            data.forEach(teacher => {
-                const tr = document.createElement('tr');
-                tr.id = `teacher-row-${teacher.teacher_id}`;
-                tr.innerHTML = `
-                    <td class="fw-bold">${teacher.teacher_id}</td>
-                    <td class="t-name-cell">${teacher.teacher_name}</td>
-                    <td class="t-phone-cell">${teacher.phone}</td>
-                    <td class="t-pin-cell">••••</td>
-                    <td>
-                        <div class="action-btn-group">
-                            <button class="btn-action btn-edit-action" data-id="${teacher.teacher_id}">✏️ Edit</button>
-                            <button class="btn-action btn-delete-action" data-id="${teacher.teacher_id}">🗑️ Delete</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+    tbody.innerHTML = "";
 
-            // डायनेमिक इवेंट लिसनर्स सेट करना
-            attachActionEvents();
-        })
-        .catch(err => {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger font-weight-bold">❌ डेटा लोड करने में त्रुटि हुई!</td></tr>`;
-            console.error(err);
-        });
+    if (
+        response.status !== "success" ||
+        !response.teachers ||
+        response.teachers.length === 0
+    ) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-4 text-muted">
+                    कोई रिकॉर्ड नहीं मिला।
+                </td>
+            </tr>
+        `;
+        return;
     }
 
+    response.teachers.forEach(teacher => {
+
+        const tr = document.createElement('tr');
+
+        tr.id = `teacher-row-${teacher.id}`;
+
+        tr.innerHTML = `
+            <td class="fw-bold">${teacher.id}</td>
+            <td class="t-name-cell">${teacher.name}</td>
+            <td class="t-phone-cell">${teacher.mobile}</td>
+            <td class="t-pin-cell">••••</td>
+            <td>
+                <div class="action-btn-group">
+                    <button class="btn-action btn-edit-action"
+                        data-id="${teacher.id}">
+                        ✏️ Edit
+                    </button>
+
+                    <button class="btn-action btn-delete-action"
+                        data-id="${teacher.id}">
+                        🗑️ Delete
+                    </button>
+                </div>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+
+    attachActionEvents();
+})
+.catch(err => {
+    console.error("Teacher List Error:", err);
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="5" class="text-center py-4 text-danger">
+                ❌ डेटा लोड करने में त्रुटि हुई!
+            </td>
+        </tr>
+    `;
+});
+        
     function attachActionEvents() {
         // एडिट बटन के लिए लॉजिक
         document.querySelectorAll('.btn-edit-action').forEach(btn => {
