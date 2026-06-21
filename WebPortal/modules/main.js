@@ -5,7 +5,7 @@ import {
     showAbsentReport, showAddStudentForm, showDeleteStudentPortal, showPresentReport
 } from './attendance.js';
 
-import { loadTeacherAttendance, loadTeacherAttendanceDashboard } from './teacherAttendance.js';
+import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm } from './teacherAttendance.js';
 import { loadAdminAttendancePanel } from './adminAttendance.js';
 
 function buildPortalMenu() {
@@ -92,10 +92,10 @@ function executeModuleRouting(title) {
             loadTeacherAttendanceDashboard();
             break;
         case 'शिक्षक उपस्थिति': 
-            loadTeacherAttendance(); 'नया शिक्षक जोड़ें'
+            loadTeacherAttendance(); 
             break;
         case 'नया शिक्षक जोड़ें': 
-            loadTeacherAttendance(); 
+           loadAddNewTeacherForm()
             break;
         case 'QR कोड प्रबंधन': 
           loadAdminAttendancePanel('qr');
