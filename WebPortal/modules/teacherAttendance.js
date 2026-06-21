@@ -293,15 +293,35 @@ export function loadTeacherAttendanceDashboard() {
                 padding: 20px !important;
             }
             
-            /* काउंट बॉक्स का डिज़ाइन */
-            .attendance-card {
-                background-color: #0d6efd !important;
+            /* नया स्लीक और कॉम्पैक्ट काउंट रो डिज़ाइन */
+            .attendance-summary-bar {
+                background: linear-gradient(135deg, #0d6efd, #0056b3) !important;
                 color: #ffffff !important;
-                padding: 20px !important;
-                border-radius: 8px !important;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+                padding: 10px 18px !important;
+                border-radius: 10px !important;
+                box-shadow: 0 4px 10px rgba(13, 110, 253, 0.15) !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 12px !important;
+                width: auto !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+
+            .attendance-bar-label {
+                color: rgba(255, 255, 255, 0.9) !important;
+                font-size: 0.95rem !important;
+                font-weight: 600 !important;
+                margin-bottom: 0 !important;
+            }
+
+            .attendance-bar-count {
+                font-size: 1.4rem !important;
+                font-weight: 800 !important;
+                background: rgba(255, 255, 255, 0.2) !important;
+                padding: 2px 12px !important;
+                border-radius: 6px !important;
+                line-height: 1.2 !important;
                 display: inline-block !important;
-                min-width: 250px !important;
             }
 
             /* लिस्ट का कंटेनर */
@@ -351,25 +371,25 @@ export function loadTeacherAttendanceDashboard() {
 
     container.innerHTML = style + `
         <div class="attendance-dashboard-wrapper">
-            <div class="row mx-0 mb-4">
+            <div class="row mx-0 mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center px-0 flex-wrap gap-2">
-                    <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
+                    <h4 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h4>
                     <small class="text-muted" id="last-updated"></small>
                 </div>
             </div>
             
             <div class="row mx-0 mb-4">
                 <div class="col-12 px-0">
-                    <div class="attendance-card">
-                        <div class="text-white-50 small text-uppercase fw-bold mb-1">कुल उपस्थित (आज)</div>
-                        <h2 id="total-present-count" class="fw-bold mb-0" style="font-size: 2.5rem;">0</h2>
+                    <div class="attendance-summary-bar">
+                        <span class="attendance-bar-label">📋 कुल उपस्थित (आज):</span>
+                        <span id="total-present-count" class="attendance-bar-count">0</span>
                     </div>
                 </div>
             </div>
 
             <div class="row mx-0">
                 <div class="col-12 px-0">
-                    <h5 class="fw-bold text-secondary mb-3">📋 आज की उपस्थिति सूची</h5>
+                    <h6 class="fw-bold text-secondary mb-3">आज की उपस्थिति सूची</h6>
                     <div id="dashboard-list-body" class="attendance-list-container">
                         <div class="text-center py-4 text-muted">
                             <div class="spinner-border spinner-border-sm text-primary"></div>
@@ -432,7 +452,6 @@ async function fetchAttendanceData() {
                 lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
             }
             
-            // लिस्ट रेंडर करने का नया तरीका
             listBody.innerHTML = data.list.map(t => {
                 const checkIn = formatTime(t.checkIn);
                 const checkOut = formatTime(t.checkOut);
