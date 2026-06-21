@@ -901,7 +901,7 @@ export function loadTeacherListWithActions() {
         </tr>
     `;
 });
-        
+}       
     function attachActionEvents() {
         // एडिट बटन के लिए लॉजिक
         document.querySelectorAll('.btn-edit-action').forEach(btn => {
