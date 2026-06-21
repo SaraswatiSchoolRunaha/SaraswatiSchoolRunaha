@@ -283,68 +283,84 @@ export function loadTeacherAttendanceDashboard() {
         <style>
             .table-min-height { min-height: 100px; }
             
-            /* मुख्य कंटेनर जो टेबल की विड्थ को लॉक रखेगा और साइड मेन्यू को धक्का नहीं मारेगा */
+            /* मुख्य कंटेनर जो साइड मेन्यू को सुरक्षित रखता है */
+            .dashboard-main-container {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* टेबल को केवल अपने बॉक्स के अंदर स्क्रॉल कराने के लिए */
             .table-responsive-wrapper { 
                 overflow-x: auto !important; 
                 width: 100% !important; 
                 max-width: 100% !important;
                 display: block !important;
-                clear: both !important;
                 box-sizing: border-box !important;
+                -webkit-overflow-scrolling: touch;
             }
             
-            /* टेबल लेआउट को फिक्स करके एक्सेल जैसी सीधी ग्रिड लाइन्स बनाना */
+            /* एक्सेल ग्रिड टेबल डिजाइन */
             .excel-grid-table { 
                 table-layout: fixed !important; 
                 width: 100% !important; 
-                min-width: 600px; /* मोबाइल/छोटी स्क्रीन पर केवल टेबल के अंदर स्क्रॉल देगा, मेन्यू सुरक्षित रहेगा */
+                min-width: 600px;
                 border-collapse: collapse !important;
                 margin-bottom: 0 !important;
             }
             
-            /* हर सेल (सेल के चारों तरफ) पर एक्सेल जैसी बॉर्डर लाइन */
+            /* हर सेल के चारों तरफ एक्सेल जैसी ग्रिड बॉर्डर लाइन्स */
             .excel-grid-table th, .excel-grid-table td {
-                border: 1px solid #c0c0c0 !important; /* एक्सेल जैसी ग्रे लाइन */
+                border: 1px solid #c0c0c0 !important; 
                 padding: 12px 15px !important;
                 vertical-align: middle !important;
                 text-align: left !important;
             }
             
-            /* हेडर का बैकग्राउंड थोड़ा एक्सेल शीट जैसा ग्रे रखने के लिए */
+            /* हेडर बैकग्राउंड कलर */
             .excel-grid-table thead th {
                 background-color: #f2f2f2 !important;
                 color: #212529 !important;
                 font-weight: bold !important;
             }
+            
+            /* काउंट बॉक्स का सुधरा हुआ डिज़ाइन */
+            .attendance-card {
+                background-color: #0d6efd !important;
+                color: #ffffff !important;
+                padding: 20px !important;
+                border-radius: 8px !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+                display: inline-block !important;
+                min-width: 250px !important;
+            }
         </style>
     `;
 
     container.innerHTML = style + `
-        <div class="container-fluid py-4 px-3" style="box-sizing: border-box;">
-            <div class="row mx-0 mb-4">
-                <div class="col-12 d-flex justify-content-between align-items-center px-0">
+        <div class="container-fluid py-4 px-3 dashboard-main-container">
+            <div class="row mx-0 mb-4 w-100" style="min-width: 0;">
+                <div class="col-12 d-flex justify-content-between align-items-center px-0 flex-wrap gap-2">
                     <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
                     <small class="text-muted" id="last-updated"></small>
                 </div>
             </div>
             
-            <div class="row mx-0 mb-4">
-                <div class="col-12 col-md-4 px-0">
-                    <div class="card p-3 shadow-sm border-0 bg-primary text-white rounded-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3"><i class="bi bi-people-fill fs-2"></i></div>
-                            <div>
-                                <h6 class="mb-0 text-white-50">कुल उपस्थित (आज)</h6>
-                                <h2 id="total-present-count" class="fw-bold mb-0">0</h2>
-                            </div>
-                        </div>
+            <div class="row mx-0 mb-4 w-100" style="min-width: 0;">
+                <div class="col-12 px-0">
+                    <div class="attendance-card">
+                        <div class="text-white-50 small text-uppercase fw-bold mb-1">कुल उपस्थित (आज)</div>
+                        <h2 id="total-present-count" class="fw-bold mb-0" style="font-size: 2.5rem;">0</h2>
                     </div>
                 </div>
             </div>
 
-            <div class="row mx-0">
+            <div class="row mx-0 w-100" style="min-width: 0;">
                 <div class="col-12 px-0">
-                    <div class="card shadow-sm border-0 rounded-3" style="overflow: hidden;">
+                    <div class="card shadow-sm border-0 rounded-3" style="overflow: hidden; width: 100%;">
                         <div class="table-responsive-wrapper table-min-height">
                             <table class="table mb-0 excel-grid-table">
                                 <thead>
@@ -380,18 +396,42 @@ async function fetchAttendanceData() {
     
     if (!tbody || !totalCountEl) return;
 
-    // समय (Time) को साफ-सुथरा फॉर्मेट करने के लिए हेल्पर फंक्शन
+    // टाइम फॉर्मेट करने का एडवांस्ड हेल्पर फंक्शन (ISO और 1899 डेट बग फिक्स)
     const formatTime = (timeStr) => {
-        if (!timeStr || timeStr === "--") return "--:--";
+        if (!timeStr || timeStr === "--" || timeStr === "") return "--:--";
         
-        if (typeof timeStr === 'string' && timeStr.includes('T')) {
-            try {
-                const dateObj = new Date(timeStr);
-                return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-            } catch (e) {
-                return timeStr; 
-            }
+        // अगर पहले से सही फॉर्मेट में है (जैसे 07:44 AM)
+        if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) {
+            return timeStr;
         }
+
+        try {
+            let dateObj;
+            if (typeof timeStr === 'string' && timeStr.includes('T')) {
+                // ISO फॉर्मेट (e.g., 1899-12-30T02:23:00.000Z) को हैंडल करने के लिए
+                dateObj = new Date(timeStr);
+                
+                // अगर टाइमजोन की वजह से इनवैलिड या अजीब डेट आ रही है, तो केवल टाइम का हिस्सा निकालें
+                if (isNaN(dateObj.getTime()) || timeStr.startsWith('1899')) {
+                    const timeParts = timeStr.split('T')[1].split('.')[0]; // "02:23:00"
+                    const [hrs, mins] = timeParts.split(':');
+                    let hour = parseInt(hrs, 10);
+                    const ampm = hour >= 12 ? 'PM' : 'AM';
+                    hour = hour % 12;
+                    hour = hour ? hour : 12; // 0 को 12 बनाएं
+                    return `${String(hour).padStart(2, '0')}:${mins} ${ampm}`;
+                }
+            } else {
+                dateObj = new Date(timeStr);
+            }
+
+            if (!isNaN(dateObj.getTime())) {
+                return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            }
+        } catch (e) {
+            console.error("Time format error:", e);
+        }
+        
         return timeStr; 
     };
 
