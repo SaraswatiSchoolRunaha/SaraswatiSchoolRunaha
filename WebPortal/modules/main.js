@@ -92,7 +92,10 @@ function executeModuleRouting(title) {
             loadTeacherAttendanceDashboard();
             break;
         case 'शिक्षक उपस्थिति': 
-            loadTeacherAttendance();
+            loadTeacherAttendance(); 'नया शिक्षक जोड़ें'
+            break;
+        case 'नया शिक्षक जोड़ें': 
+            loadTeacherAttendance(); 
             break;
         case 'QR कोड प्रबंधन': 
           loadAdminAttendancePanel('qr');
