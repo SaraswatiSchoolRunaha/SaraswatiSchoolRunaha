@@ -746,3 +746,222 @@ fetch(webAppUrl, {
         statusAlert.innerText = message;
     }
 }
+// =========================================================================
+// 🆕 नया फ़ंक्शन: एडिट और डिलीट ऑप्शन के साथ सभी टीचर्स की लिस्ट दिखाना
+// =========================================================================
+export function loadTeacherListWithActions() {
+    const container = document.getElementById('contentArea');
+    if (!container) return;
+
+    // लिस्ट के प्रीमियम स्टाइल्स जोड़ें
+    if (!document.getElementById('teacher-list-premium-styles')) {
+        const styleTag = document.createElement('style');
+        styleTag.id = 'teacher-list-premium-styles';
+        styleTag.innerHTML = `
+            .list-wrapper { margin-top: 20px; padding: 15px; width: 100%; box-sizing: border-box; }
+            .list-card {
+                background: #ffffff;
+                border-radius: 16px !important;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+                border: 1px solid #e2e8f0 !important;
+                padding: 20px;
+            }
+            .teacher-table-container { overflow-x: auto; margin-top: 15px; }
+            .custom-table { width: 100%; border-collapse: collapse; }
+            .custom-table th { background-color: #f1f5f9; color: #475569; font-weight: 600; padding: 12px; text-align: left; font-size: 14px; border-bottom: 2px solid #e2e8f0; }
+            .custom-table td { padding: 14px 12px; font-size: 15px; color: #1e293b; border-bottom: 1px solid #f1f5f9; }
+            .custom-table tr:hover { background-color: #f8fafc; }
+            .action-btn-group { display: flex; gap: 6px; }
+            .btn-action { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
+            .btn-edit-action { background-color: #fef3c7; color: #d97706; }
+            .btn-edit-action:hover { background-color: #fde68a; }
+            .btn-delete-action { background-color: #fee2e2; color: #dc2626; }
+            .btn-delete-action:hover { background-color: #fca5a5; }
+        `;
+        document.head.appendChild(styleTag);
+    }
+
+    container.innerHTML = `
+        <div class="list-wrapper">
+            <div class="card list-card">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1">📋 सभी पंजीकृत शिक्षक</h4>
+                        <p class="text-muted small mb-0">शिक्षकों के विवरण को यहाँ से अपडेट या डिलीट किया जा सकता है।</p>
+                    </div>
+                    <button id="refresh-list-btn" class="btn btn-sm btn-outline-primary rounded-3 px-3 fw-bold">🔄 रीफ्रेश लिस्ट</button>
+                </div>
+                
+                <div id="list-status-alert" class="alert d-none text-center rounded-3 fw-bold p-3 mb-2 border-0"></div>
+
+                <div class="teacher-table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>शिक्षक का नाम</th>
+                                <th>मोबाइल नंबर</th>
+                                <th>पिन (PIN)</th>
+                                <th>एक्शन (Actions)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachers-list-tbody">
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">डेटा लोड हो रहा है...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const tbody = document.getElementById('teachers-list-tbody');
+    const refreshBtn = document.getElementById('refresh-list-btn');
+    const listAlert = document.getElementById('list-status-alert');
+    const webAppUrl = sheetUrls['TeacherAttendance'];
+
+    // अलर्ट प्रदर्शित करने का फंक्शन
+    function showListAlert(type, message) {
+        let bgClass = `alert-${type}`;
+        if (type === 'success') bgClass = 'bg-success text-white';
+        if (type === 'danger') bgClass = 'bg-danger text-white';
+        if (type === 'primary') bgClass = 'bg-primary text-white';
+        
+        listAlert.className = `alert ${bgClass} d-block fw-bold p-3 mb-3 text-center border-0 rounded-3`;
+        listAlert.innerText = message;
+        setTimeout(() => listAlert.className = 'd-none', 4000);
+    }
+
+    // शिक्षकों का डेटा लोड करने का मुख्य फ़ंक्शन
+    function fetchAllTeachers() {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">⏳ सूची लोड की जा रही है...</td></tr>`;
+        
+        // सभी डेटा लाने के लिए doGet का उपयोग (बिना एक्शन पैरामीटर के)
+        fetch(webAppUrl)
+        .then(res => res.json())
+        .then(data => {
+            tbody.innerHTML = "";
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">कोई रिकॉर्ड नहीं मिला।</td></tr>`;
+                return;
+            }
+
+            data.forEach(teacher => {
+                const tr = document.createElement('tr');
+                tr.id = `teacher-row-${teacher.teacher_id}`;
+                tr.innerHTML = `
+                    <td class="fw-bold">${teacher.teacher_id}</td>
+                    <td class="t-name-cell">${teacher.teacher_name}</td>
+                    <td class="t-phone-cell">${teacher.phone}</td>
+                    <td class="t-pin-cell">••••</td>
+                    <td>
+                        <div class="action-btn-group">
+                            <button class="btn-action btn-edit-action" data-id="${teacher.teacher_id}">✏️ Edit</button>
+                            <button class="btn-action btn-delete-action" data-id="${teacher.teacher_id}">🗑️ Delete</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // डायनेमिक इवेंट लिसनर्स सेट करना
+            attachActionEvents();
+        })
+        .catch(err => {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger font-weight-bold">❌ डेटा लोड करने में त्रुटि हुई!</td></tr>`;
+            console.error(err);
+        });
+    }
+
+    function attachActionEvents() {
+        // एडिट बटन के लिए लॉजिक
+        document.querySelectorAll('.btn-edit-action').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.target.getAttribute('data-id');
+                const row = document.getElementById(`teacher-row-${id}`);
+                const currentName = row.querySelector('.t-name-cell').innerText;
+                const currentPhone = row.querySelector('.t-phone-cell').innerText;
+
+                const newName = prompt("नया शिक्षक नाम दर्ज करें:", currentName);
+                if (newName === null || newName.trim() === "") return;
+
+                const newPhone = prompt("नया 10-अंकीय मोबाइल नंबर दर्ज करें:", currentPhone);
+                if (newPhone === null || newPhone.trim() === "" || isNaN(newPhone) || newPhone.trim().length !== 10) {
+                    alert("वैध मोबाइल नंबर आवश्यक है!");
+                    return;
+                }
+
+                const newPin = prompt("नया 4-अंकीय सीक्रेट पिन दर्ज करें (बदलाव नहीं करना हो तो पुराना पिन डालें):");
+                if (newPin === null || newPin.trim() === "" || isNaN(newPin) || newPin.trim().length !== 4) {
+                    alert("4-अंकीय पिन आवश्यक है!");
+                    return;
+                }
+
+                showListAlert("primary", "⏳ विवरण अपडेट किया जा रहा है...");
+
+                const updateData = new URLSearchParams();
+                updateData.append("action", "updateTeacher");
+                updateData.append("teacher_id", id);
+                updateData.append("teacher_name", newName.trim());
+                updateData.append("phone", newPhone.trim());
+                updateData.append("pin", newPin.trim());
+
+                fetch(webAppUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: updateData.toString()
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status === "success") {
+                        showListAlert("success", "🎉 " + res.message);
+                        fetchAllTeachers(); // लिस्ट अपडेट करें
+                    } else {
+                        showListAlert("danger", "⚠️ " + res.message);
+                    }
+                })
+                .catch(() => showListAlert("danger", "❌ नेटवर्क त्रुटि! रिकॉर्ड अपडेट नहीं हो सका।"));
+            });
+        });
+
+        // डिलीट बटन के लिए लॉजिक
+        document.querySelectorAll('.btn-delete-action').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.target.getAttribute('data-id');
+                const row = document.getElementById(`teacher-row-${id}`);
+                const teacherName = row.querySelector('.t-name-cell').innerText;
+
+                if (!confirm(`⚠️ सावधान! क्या आप वाकई शिक्षक "${teacherName}" का रिकॉर्ड डेटाबेस से हमेशा के लिए हटाना चाहते हैं?`)) {
+                    return;
+                }
+
+                showListAlert("primary", "⏳ रिकॉर्ड हटाया जा रहा है...");
+
+                const deleteData = new URLSearchParams();
+                deleteData.append("action", "deleteTeacher");
+                deleteData.append("teacher_id", id);
+
+                fetch(webAppUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: deleteData.toString()
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status === "success") {
+                        showListAlert("success", "🗑️ " + res.message);
+                        fetchAllTeachers(); // लिस्ट को रीलोड करें
+                    } else {
+                        showListAlert("danger", "⚠️ " + res.message);
+                    }
+                })
+                .catch(() => showListAlert("danger", "❌ नेटवर्क त्रुटि! रिकॉर्ड डिलीट नहीं हो सका।"));
+            });
+        });
+    }
+
+    refreshBtn.addEventListener('click', fetchAllTeachers);
+    fetchAllTeachers(); // फ़ंक्शन कॉल जिससे पहली बार में डेटा लोड हो जाए
+    }
+
