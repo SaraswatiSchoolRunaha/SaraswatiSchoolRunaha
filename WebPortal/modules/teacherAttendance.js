@@ -344,6 +344,23 @@ async function fetchAttendanceData() {
     
     if (!tbody || !totalCountEl) return;
 
+    // 1. समय (Time) को साफ-सुथरा फॉर्मेट करने के लिए हेल्पर फंक्शन
+    const formatTime = (timeStr) => {
+        if (!timeStr || timeStr === "--") return "--:--";
+        
+        // अगर Google Sheets से ISO स्ट्रिंग (जैसे: 1899-12-30T...) आ रही है
+        if (typeof timeStr === 'string' && timeStr.includes('T')) {
+            try {
+                const dateObj = new Date(timeStr);
+                // इसे केवल समय (HH:MM AM/PM) में बदलें
+                return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            } catch (e) {
+                return timeStr; // गड़बड़ होने पर ओरिजिनल डेटा ही दिखाएगा
+            }
+        }
+        return timeStr; // अगर पहले से ही साधारण समय फॉर्मेट में है
+    };
+
     try {
         const webAppUrl = sheetUrls['TeacherAttendance'];
         const res = await fetch(`${webAppUrl}?action=getTodayAttendance`);
@@ -351,17 +368,22 @@ async function fetchAttendanceData() {
         
         if (data.status === "success" && data.list && data.list.length > 0) {
             totalCountEl.innerText = data.list.length;
-            lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
+            if (lastUpdatedEl) {
+                lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
+            }
             
             tbody.innerHTML = data.list.map(t => {
-                const checkIn = (t.checkIn && t.checkIn !== "--") ? t.checkIn : "--:--";
-                const checkOut = (t.checkOut && t.checkOut !== "--") ? t.checkOut : "--:--";
+                // यहाँ टाइम फॉर्मेटिंग लागू की गई है
+                const checkIn = formatTime(t.checkIn);
+                const checkOut = formatTime(t.checkOut);
 
                 return `
                     <tr>
-                        <td class="ps-4 fw-bold text-secondary text-truncate">${t.name}</td>
-                        <td class="text-success fw-bold">${checkIn}</td>
-                        <td class="text-danger fw-bold">${checkOut}</td>
+                        <td class="ps-4 fw-bold text-secondary text-truncate" style="width: 50%; max-width: 0;" title="${t.name}">
+                            ${t.name}
+                        </td>
+                        <td class="text-success fw-bold" style="width: 25%;">${checkIn}</td>
+                        <td class="text-danger fw-bold" style="width: 25%;">${checkOut}</td>
                     </tr>
                 `;
             }).join('');
@@ -370,6 +392,7 @@ async function fetchAttendanceData() {
             tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-muted">📅 आज अभी तक कोई उपस्थिति दर्ज नहीं हुई है।</td></tr>';
         }
     } catch (e) {
+        console.error("Fetch Error:", e);
         tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-danger">❌ डेटा लोड करने में विफल।</td></tr>';
     }
 }
