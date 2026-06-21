@@ -7,7 +7,7 @@ import { showDashboard } from './dashboard.js';
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
 
-    const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
+    const allClasses = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const allMediums = ["Hindi", "English"];
 
     document.getElementById("contentArea").innerHTML = `
