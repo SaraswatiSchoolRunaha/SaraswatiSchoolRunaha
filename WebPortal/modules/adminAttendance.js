@@ -153,8 +153,6 @@ else if (mode === 'manual') {
                 <h5 class="fw-bold m-0"><i class="bi bi-clipboard-check"></i> मैनुअल उपस्थिति</h5>
             </div>
 
-            <div id="admin-status-alert" class="alert d-none mb-3" role="alert"></div>
-
             <select id="admin-teacher-select" class="form-select border-2 mb-3" style="border-radius: 10px;">
                 <option value="">👤 शिक्षक का नाम चुनें...</option>
             </select>
@@ -165,6 +163,9 @@ else if (mode === 'manual') {
                 <div class="data-pill"><span class="label-text">Mob</span><b id="disp-mob" class="val-text">-</b></div>
                 <div class="data-pill"><span class="label-text">PIN</span><b id="disp-pin" class="val-text text-success">-</b></div>
             </div>
+
+            <!-- ✅ अलर्ट बॉक्स अब यहाँ बटन्स के ऊपर आ गया है -->
+            <div id="admin-status-alert" class="alert d-none mb-3" role="alert"></div>
 
             <div class="d-flex gap-2">
                 <button id="btn-admin-checkin" class="btn btn-success flex-fill fw-bold" style="border-radius: 8px;">🌅 Check-In</button>
