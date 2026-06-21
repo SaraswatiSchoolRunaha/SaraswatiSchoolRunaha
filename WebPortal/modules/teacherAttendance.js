@@ -283,12 +283,13 @@ export function loadTeacherAttendanceDashboard() {
         <style>
             .table-min-height { min-height: 100px; }
             
-            /* मुख्य कंटेनर जो साइड मेन्यू को सुरक्षित रखता है */
+            /* मुख्य कंटेनर जो साइड मेनू को दबाएगा नहीं */
             .dashboard-main-container {
                 display: flex !important;
                 flex-direction: column !important;
                 width: 100% !important;
-                max-width: 100% !important;
+                /* flex-grow सुनिश्चित करता है कि यह बची हुई जगह ही ले */
+                flex: 1 1 0% !important; 
                 min-width: 0 !important;
                 box-sizing: border-box !important;
             }
@@ -320,6 +321,11 @@ export function loadTeacherAttendanceDashboard() {
                 text-align: left !important;
             }
             
+            /* कॉलम चौड़ाई को क्लासेस के जरिए फिक्स करना */
+            .excel-grid-table th:nth-child(1), .excel-grid-table td:nth-child(1) { width: 40%; max-width: 0; }
+            .excel-grid-table th:nth-child(2), .excel-grid-table td:nth-child(2) { width: 30%; max-width: 0; }
+            .excel-grid-table th:nth-child(3), .excel-grid-table td:nth-child(3) { width: 30%; max-width: 0; }
+            
             /* हेडर बैकग्राउंड कलर */
             .excel-grid-table thead th {
                 background-color: #f2f2f2 !important;
@@ -327,7 +333,7 @@ export function loadTeacherAttendanceDashboard() {
                 font-weight: bold !important;
             }
             
-            /* काउंट बॉक्स का सुधरा हुआ डिज़ाइन */
+            /* काउंट बॉक्स का सुधरा हुआ डिज़ाइन */
             .attendance-card {
                 background-color: #0d6efd !important;
                 color: #ffffff !important;
@@ -340,8 +346,9 @@ export function loadTeacherAttendanceDashboard() {
         </style>
     `;
 
+    // ध्यान दें: 'container-fluid' क्लास को हटाकर केवल 'container-layout-fix' या साधारण div इस्तेमाल किया है ताकि वह साइडबार को न दबाए
     container.innerHTML = style + `
-        <div class="container-fluid py-4 px-3 dashboard-main-container">
+        <div class="p-4 dashboard-main-container">
             <div class="row mx-0 mb-4 w-100" style="min-width: 0;">
                 <div class="col-12 d-flex justify-content-between align-items-center px-0 flex-wrap gap-2">
                     <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
@@ -365,9 +372,9 @@ export function loadTeacherAttendanceDashboard() {
                             <table class="table mb-0 excel-grid-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 40%;">शिक्षक का नाम</th>
-                                        <th style="width: 30%;">Check-In</th>
-                                        <th style="width: 30%;">Check-Out</th>
+                                        <th>शिक्षक का नाम</th>
+                                        <th>Check-In</th>
+                                        <th>Check-Out</th>
                                     </tr>
                                 </thead>
                                 <tbody id="dashboard-table-body">
@@ -388,6 +395,7 @@ export function loadTeacherAttendanceDashboard() {
 
     fetchAttendanceData();
 }
+
 
 async function fetchAttendanceData() {
     const tbody = document.getElementById('dashboard-table-body');
