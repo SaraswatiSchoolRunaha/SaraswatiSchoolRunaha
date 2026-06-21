@@ -280,12 +280,33 @@ export function loadTeacherAttendanceDashboard() {
     const container = document.getElementById('contentArea');
     if (!container) return;
     
-    // स्टाइल को अपडेट किया: table-fixed हटाया और टेबल को फ्लेक्सिबल बनाया
     const style = `
         <style>
             .table-min-height { min-height: 100px; }
-            /* टेबल को रिस्पॉन्सिव रखने के लिए */
             .table-responsive { overflow-x: auto; width: 100%; }
+            
+            /* टेबल लेआउट को फिक्स करके एक्सेल जैसी सीधी ग्रिड लाइन्स बनाना */
+            .excel-grid-table { 
+                table-layout: fixed !important; 
+                width: 100% !important; 
+                min-width: 600px; 
+                border-collapse: collapse !important;
+            }
+            
+            /* हर सेल (सेल के चारों तरफ) पर एक्सेल जैसी बॉर्डर लाइन */
+            .excel-grid-table th, .excel-grid-table td {
+                border: 1px solid #c0c0c0 !important; /* एक्सेल जैसी ग्रे लाइन */
+                padding: 12px 15px !important;
+                vertical-align: middle !important;
+                text-align: left !important;
+            }
+            
+            /* हेडर का बैकग्राउंड थोड़ा एक्सेल शीट जैसा ग्रे रखने के लिए */
+            .excel-grid-table thead th {
+                background-color: #f2f2f2 !important;
+                color: #212529 !important;
+                font-weight: bold !important;
+            }
         </style>
     `;
 
@@ -310,12 +331,12 @@ export function loadTeacherAttendanceDashboard() {
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 rounded-3">
+            <div class="card shadow-sm border-0 rounded-3" style="overflow: hidden;">
                 <div class="table-responsive table-min-height">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table mb-0 excel-grid-table">
+                        <thead>
                             <tr>
-                                <th class="ps-4" style="width: 40%;">शिक्षक का नाम</th>
+                                <th style="width: 40%;">शिक्षक का नाम</th>
                                 <th style="width: 30%;">Check-In</th>
                                 <th style="width: 30%;">Check-Out</th>
                             </tr>
@@ -344,21 +365,19 @@ async function fetchAttendanceData() {
     
     if (!tbody || !totalCountEl) return;
 
-    // 1. समय (Time) को साफ-सुथरा फॉर्मेट करने के लिए हेल्पर फंक्शन
+    // समय (Time) को साफ-सुथरा फॉर्मेट करने के लिए हेल्पर फंक्शन
     const formatTime = (timeStr) => {
         if (!timeStr || timeStr === "--") return "--:--";
         
-        // अगर Google Sheets से ISO स्ट्रिंग (जैसे: 1899-12-30T...) आ रही है
         if (typeof timeStr === 'string' && timeStr.includes('T')) {
             try {
                 const dateObj = new Date(timeStr);
-                // इसे केवल समय (HH:MM AM/PM) में बदलें
                 return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
             } catch (e) {
-                return timeStr; // गड़बड़ होने पर ओरिजिनल डेटा ही दिखाएगा
+                return timeStr; 
             }
         }
-        return timeStr; // अगर पहले से ही साधारण समय फॉर्मेट में है
+        return timeStr; 
     };
 
     try {
@@ -373,19 +392,17 @@ async function fetchAttendanceData() {
             }
             
             tbody.innerHTML = data.list.map(t => {
-                // यहाँ टाइम फॉर्मेटिंग लागू की गई है
                 const checkIn = formatTime(t.checkIn);
                 const checkOut = formatTime(t.checkOut);
 
                 return `
                     <tr>
-                        <td class="ps-4 fw-bold text-secondary text-truncate" style="width: 40%; max-width: 0;" title="${t.name}">
+                        <td class="fw-bold text-secondary text-truncate" style="width: 40%; max-width: 0;" title="${t.name}">
                             ${t.name}
                         </td>
-                        <td class="text-success fw-bold" style="width: 30%;">${checkIn}</td>
-                        <td class="text-danger fw-bold" style="width: 30%;">${checkOut}</td>
+                        <td class="text-success fw-bold text-truncate" style="width: 30%; max-width: 0;" title="${checkIn}">${checkIn}</td>
+                        <td class="text-danger fw-bold text-truncate" style="width: 30%; max-width: 0;" title="${checkOut}">${checkOut}</td>
                     </tr>
-               
                 `;
             }).join('');
         } else {
