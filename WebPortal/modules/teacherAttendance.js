@@ -411,33 +411,45 @@ async function fetchAttendanceData() {
     
     if (!listBody || !totalCountEl) return;
 
+    // 🛠️ बिल्कुल सटीक टाइम कनवर्टर (बिना किसी टाइमज़ोन गड़बड़ी के)
     const formatTime = (timeStr) => {
         if (!timeStr || timeStr === "--" || timeStr === "") return "--:--";
-        if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) return timeStr;
+        
+        // अगर पहले से AM/PM फॉर्मेट में है
+        if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) {
+            return timeStr;
+        }
 
         try {
-            let dateObj;
+            let timeParts = "";
+
+            // 1. अगर ISO फ़ॉर्मेट है (जैसे: "1899-12-30T07:44:10.000Z")
             if (typeof timeStr === 'string' && timeStr.includes('T')) {
-                dateObj = new Date(timeStr);
-                if (isNaN(dateObj.getTime()) || timeStr.startsWith('1899')) {
-                    const timeParts = timeStr.split('T')[1].split('.')[0];
-                    const [hrs, mins] = timeParts.split(':');
-                    let hour = parseInt(hrs, 10);
-                    const ampm = hour >= 12 ? 'PM' : 'AM';
-                    hour = hour % 12;
-                    hour = hour ? hour : 12;
-                    return `${String(hour).padStart(2, '0')}:${mins} ${ampm}`;
-                }
-            } else {
-                dateObj = new Date(timeStr);
+                timeParts = timeStr.split('T')[1].split('.')[0]; // "07:44:10" मिलेगा
+            } 
+            // 2. अगर सीधा फ़ॉर्मेट है (जैसे: "07:44:10" या "07:44")
+            else if (typeof timeStr === 'string' && timeStr.includes(':')) {
+                timeParts = timeStr;
             }
 
-            if (!isNaN(dateObj.getTime())) {
-                return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            if (timeParts) {
+                const parts = timeParts.split(':');
+                let hours = parseInt(parts[0], 10);
+                const minutes = parts[1]; // मिनट का हिस्सा निकालें (e.g., "44")
+                
+                if (!isNaN(hours) && minutes) {
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // 0 को 12 बनाएँ
+                    
+                    const finalHours = String(hours).padStart(2, '0');
+                    return `${finalHours}:${minutes} ${ampm}`;
+                }
             }
         } catch (e) {
-            console.error("Time format error:", e);
+            console.error("Time formatting error:", e);
         }
+        
         return timeStr; 
     };
 
@@ -449,7 +461,7 @@ async function fetchAttendanceData() {
         if (data.status === "success" && data.list && data.list.length > 0) {
             totalCountEl.innerText = data.list.length;
             if (lastUpdatedEl) {
-                lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString();
+                lastUpdatedEl.innerText = "अंतिम अपडेट: " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             }
             
             listBody.innerHTML = data.list.map(t => {
