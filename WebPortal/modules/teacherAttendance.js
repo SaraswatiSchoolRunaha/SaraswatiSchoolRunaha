@@ -411,43 +411,57 @@ async function fetchAttendanceData() {
     
     if (!listBody || !totalCountEl) return;
 
-    // 🛠️ बिल्कुल सटीक टाइम कनवर्टर (बिना किसी टाइमज़ोन गड़बड़ी के)
+    // 🛠️ टाइमज़ोन फिक्सर: यह समय में जबरदस्ती 5 घंटे 30 मिनट जोड़ेगा ताकि IST समय मिले
     const formatTime = (timeStr) => {
         if (!timeStr || timeStr === "--" || timeStr === "") return "--:--";
         
-        // अगर पहले से AM/PM फॉर्मेट में है
+        // अगर डेटा पहले से ही AM/PM में है तो सीधे भेजें
         if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) {
             return timeStr;
         }
 
         try {
-            let timeParts = "";
+            let hours = 0;
+            let minutes = 0;
+            let match = null;
 
-            // 1. अगर ISO फ़ॉर्मेट है (जैसे: "1899-12-30T07:44:10.000Z")
+            // 1. अगर ISO फ़ॉर्मेट है (जैसे: "1899-12-30T02:23:10.000Z")
             if (typeof timeStr === 'string' && timeStr.includes('T')) {
-                timeParts = timeStr.split('T')[1].split('.')[0]; // "07:44:10" मिलेगा
+                const timePart = timeStr.split('T')[1]; 
+                match = timePart.match(/^(\d+):(\d+)/);
             } 
-            // 2. अगर सीधा फ़ॉर्मेट है (जैसे: "07:44:10" या "07:44")
-            else if (typeof timeStr === 'string' && timeStr.includes(':')) {
-                timeParts = timeStr;
+            // 2. अगर सीधा फ़ॉर्मेट है (जैसे: "02:23:10" या "02:23")
+            else if (typeof timeStr === 'string') {
+                match = timeStr.match(/^(\d+):(\d+)/);
             }
 
-            if (timeParts) {
-                const parts = timeParts.split(':');
-                let hours = parseInt(parts[0], 10);
-                const minutes = parts[1]; // मिनट का हिस्सा निकालें (e.g., "44")
-                
-                if (!isNaN(hours) && minutes) {
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    hours = hours % 12;
-                    hours = hours ? hours : 12; // 0 को 12 बनाएँ
-                    
-                    const finalHours = String(hours).padStart(2, '0');
-                    return `${finalHours}:${minutes} ${ampm}`;
+            if (match) {
+                hours = parseInt(match[1], 10);
+                minutes = parseInt(match[2], 10);
+
+                // 🕒 टाइमज़ोन फिक्स: यहाँ हम 5 घंटे और 30 मिनट जोड़ रहे हैं
+                minutes += 30;
+                if (minutes >= 60) {
+                    minutes -= 60;
+                    hours += 1;
                 }
+                hours += 5;
+                if (hours >= 24) {
+                    hours -= 24;
+                }
+
+                // 12-घंटे के AM/PM फ़ॉर्मेट में बदलें
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // 0 को 12 बनाएं
+
+                const finalHours = String(hours).padStart(2, '0');
+                const finalMinutes = String(minutes).padStart(2, '0');
+
+                return `${finalHours}:${finalMinutes} ${ampm}`;
             }
         } catch (e) {
-            console.error("Time formatting error:", e);
+            console.error("Time logic error:", e);
         }
         
         return timeStr; 
