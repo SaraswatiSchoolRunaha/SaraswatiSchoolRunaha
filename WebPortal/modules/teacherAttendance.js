@@ -315,9 +315,9 @@ export function loadTeacherAttendanceDashboard() {
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4" style="width: 50%;">शिक्षक का नाम</th>
-                                <th style="width: 25%;">Check-In</th>
-                                <th style="width: 25%;">Check-Out</th>
+                                <th class="ps-4" style="width: 60%;">शिक्षक का नाम</th>
+                                <th style="width: 20%;">Check-In</th>
+                                <th style="width: 20%;">Check-Out</th>
                             </tr>
                         </thead>
                         <tbody id="dashboard-table-body">
