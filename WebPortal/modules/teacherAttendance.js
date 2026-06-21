@@ -411,46 +411,45 @@ async function fetchAttendanceData() {
     
     if (!listBody || !totalCountEl) return;
 
-    // 🛠️ शीट का हूबहू टाइम दिखाने वाला फंक्शन (No Javascript Timezone interference)
+    // 🛠️ बिल्कुल सटीक टाइमज़ोन फिक्सर (जो सीधे Google Sheet के टाइम को IST में बदलेगा)
     const formatTime = (timeStr) => {
         if (!timeStr || timeStr === "--" || timeStr === "") return "--:--";
         
-        // अगर शीट से पहले से ही AM/PM लिखा हुआ आ रहा है (जैसे: "07:44 AM")
+        // यदि डेटा पहले से ही AM/PM टेक्स्ट के रूप में मिल रहा है
         if (typeof timeStr === 'string' && (timeStr.includes('AM') || timeStr.includes('PM'))) {
             return timeStr;
         }
 
         try {
-            let cleanTime = "";
+            let dateObj;
 
-            // 1. अगर ISO फ़ॉर्मेट है (जैसे: "1899-12-30T07:44:10.000Z") तो सिर्फ टाइम का हिस्सा "07:44:10" अलग करें
-            if (typeof timeStr === 'string' && timeStr.includes('T')) {
-                cleanTime = timeStr.split('T')[1].split('.')[0]; 
+            // 1. यदि डेटा केवल "07:44:10" या "02:14:10" जैसी सिंपल स्ट्रिंग है
+            if (typeof timeStr === 'string' && timeStr.includes(':') && !timeStr.includes('T') && !timeStr.includes('Z')) {
+                // आज की तारीख का आधार लेकर एक वैलिड टाइम ऑब्जेक्ट तैयार करें
+                const todayStr = new Date().toISOString().split('T')[0];
+                
+                // अगर आपके बैकएंड से आने वाला समय पहले से ही UTC में शिफ्टेड आ रहा है (जैसे 02:14) 
+                // तो उसे Z (UTC) मानकर ब्राउज़र को भारतीय समय (Asia/Kolkata) में बदलने की अनुमति दें
+                dateObj = new Date(`${todayStr}T${timeStr.trim()}${timeStr.length <= 8 ? 'Z' : ''}`);
             } 
-            // 2. अगर सीधा "07:44:10" आ रहा है
-            else if (typeof timeStr === 'string') {
-                cleanTime = timeStr.trim();
+            // 2. यदि पूरा ISO फॉर्मेट आ रहा है (जैसे: "1899-12-30T02:14:10.000Z")
+            else {
+                dateObj = new Date(timeStr);
             }
 
-            // अब इसमें से घंटा (Hour) और मिनट (Minute) निकालकर AM/PM सेट करें
-            if (cleanTime && cleanTime.includes(':')) {
-                const parts = cleanTime.split(':');
-                let hours = parseInt(parts[0], 10);
-                let minutes = parts[1]; // मिनट जैसा है वैसा ही रहेगा (e.g., "44")
-
-                if (!isNaN(hours) && minutes) {
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    hours = hours % 12;
-                    hours = hours ? hours : 12; // 0 को 12 बनाएं
-
-                    return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
-                }
+            // भारतीय समयानुसार (IST) 12-घंटे के AM/PM फॉर्मेट में रिटर्न करें
+            if (!isNaN(dateObj.getTime())) {
+                return dateObj.toLocaleTimeString('en-US', {
+                    timeZone: 'Asia/Kolkata',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
             }
         } catch (e) {
-            console.error("Time show error:", e);
+            console.error("Time parsing failed, fallback used:", e);
         }
         
-        // अगर ऊपर कुछ भी मैच न हो, तो जो शीट से आया है वही सीधे दिखा दो (ताकि गलत न हो)
         return timeStr; 
     };
 
@@ -466,7 +465,6 @@ async function fetchAttendanceData() {
             }
             
             listBody.innerHTML = data.list.map(t => {
-                // यहाँ सीधे शीट का टाइम पास होगा
                 const checkIn = formatTime(t.checkIn);
                 const checkOut = formatTime(t.checkOut);
 
