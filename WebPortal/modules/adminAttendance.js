@@ -227,3 +227,4 @@ document.getElementById('admin-teacher-select').addEventListener('change', (e) =
 // इवेंट लिसनर्स बाइंडिंग
 document.getElementById('btn-admin-checkin').addEventListener('click', () => markManualAttendance('Check-In'));
 document.getElementById('btn-admin-checkout').addEventListener('click', () => markManualAttendance('Check-Out'));
+}
