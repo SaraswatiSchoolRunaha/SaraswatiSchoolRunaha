@@ -283,20 +283,21 @@ export function loadTeacherAttendanceDashboard() {
         <style>
             .table-min-height { min-height: 100px; }
             
-            /* मुख्य कंटेनर जो टेबल को साइड मेन्यू से अलग रखेगा */
+            /* मुख्य कंटेनर जो टेबल की विड्थ को लॉक रखेगा और साइड मेन्यू को धक्का नहीं मारेगा */
             .table-responsive-wrapper { 
-                overflow-x: auto; 
-                width: 100%; 
-                display: block;
-                clear: both;
-                max-width: 100%;
+                overflow-x: auto !important; 
+                width: 100% !important; 
+                max-width: 100% !important;
+                display: block !important;
+                clear: both !important;
+                box-sizing: border-box !important;
             }
             
             /* टेबल लेआउट को फिक्स करके एक्सेल जैसी सीधी ग्रिड लाइन्स बनाना */
             .excel-grid-table { 
                 table-layout: fixed !important; 
                 width: 100% !important; 
-                min-width: 600px; /* छोटी स्क्रीन पर स्क्रॉल बार देगा, मेन्यू को नहीं दबाएगा */
+                min-width: 600px; /* मोबाइल/छोटी स्क्रीन पर केवल टेबल के अंदर स्क्रॉल देगा, मेन्यू सुरक्षित रहेगा */
                 border-collapse: collapse !important;
                 margin-bottom: 0 !important;
             }
@@ -319,16 +320,16 @@ export function loadTeacherAttendanceDashboard() {
     `;
 
     container.innerHTML = style + `
-        <div class="container-fluid py-4">
-            <div class="row mb-4">
-                <div class="col-12 d-flex justify-content-between align-items-center">
+        <div class="container-fluid py-4 px-3" style="box-sizing: border-box;">
+            <div class="row mx-0 mb-4">
+                <div class="col-12 d-flex justify-content-between align-items-center px-0">
                     <h3 class="fw-bold mb-0 text-dark">📊 शिक्षक उपस्थिति डैशबोर्ड</h3>
                     <small class="text-muted" id="last-updated"></small>
                 </div>
             </div>
             
-            <div class="row mb-4">
-                <div class="col-12 col-md-4">
+            <div class="row mx-0 mb-4">
+                <div class="col-12 col-md-4 px-0">
                     <div class="card p-3 shadow-sm border-0 bg-primary text-white rounded-3">
                         <div class="d-flex align-items-center">
                             <div class="me-3"><i class="bi bi-people-fill fs-2"></i></div>
@@ -341,8 +342,8 @@ export function loadTeacherAttendanceDashboard() {
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12">
+            <div class="row mx-0">
+                <div class="col-12 px-0">
                     <div class="card shadow-sm border-0 rounded-3" style="overflow: hidden;">
                         <div class="table-responsive-wrapper table-min-height">
                             <table class="table mb-0 excel-grid-table">
