@@ -20,23 +20,22 @@ export async function markManualAttendance(type) {
     const btnCheckIn = document.getElementById('btn-admin-checkin');
     const btnCheckOut = document.getElementById('btn-admin-checkout');
 
-    if (!selectElement) return;
-
-    const teacherId = selectElement.value;
-    const teacherName = selectElement.options[selectElement.selectedIndex]?.text;
-
-    if (!teacherId) {
-        showAdminAlert("danger", "⚠️ कृपया पहले शिक्षक का नाम चुनें!");
+    if (!selectElement || !selectElement.value) {
+        showAdminAlert("danger", "⚠️ कृपया पहले सूची से शिक्षक का नाम चुनें!");
         return;
     }
 
+    const teacherName = selectElement.options[selectElement.selectedIndex].dataset.name;
+    const teacherId = selectElement.value;
+
+    // बटन को डिसेबल करें ताकि डबल क्लिक न हो
     if (btnCheckIn) btnCheckIn.disabled = true;
     if (btnCheckOut) btnCheckOut.disabled = true;
 
-    showAdminAlert("primary", `⏳ ${teacherName} की ${type} दर्ज की जा रही है...`);
+    // प्रोसेसिंग के दौरान अलर्ट
+    showAdminAlert("primary", `⏳ <b>${teacherName}</b> के लिए ${type} प्रक्रिया चल रही है, कृपया प्रतीक्षा करें...`);
 
     try {
-
         const formData = new URLSearchParams();
         formData.append("action", "adminManualMark");
         formData.append("teacher_id", teacherId);
@@ -48,35 +47,37 @@ export async function markManualAttendance(type) {
             body: formData
         });
 
-        if (!response.ok) {
-            throw new Error("सर्वर से कोई प्रतिक्रिया नहीं मिली।");
-        }
+        if (!response.ok) throw new Error("सर्वर रिस्पॉन्स फेल रहा।");
 
         const result = await response.json();
 
         if (result.status === "success") {
-            showAdminAlert("success", `✅ ${result.message}`);
+            // सफल होने पर विशिष्ट मैसेज
+            const successMsg = type === 'Check-In' 
+                ? `✅ <b>${teacherName}</b> की <b>Check-In</b> सफलतापूर्वक दर्ज कर ली गई है।` 
+                : `✅ <b>${teacherName}</b> की <b>Check-Out</b> सफलतापूर्वक दर्ज कर ली गई है।`;
+            
+            showAdminAlert("success", successMsg);
 
+            // अगर डैशबोर्ड अपडेट फंक्शन मौजूद है तो उसे कॉल करें
             if (typeof loadTeacherAttendanceDashboard === 'function') {
                 loadTeacherAttendanceDashboard();
             }
-
         } else {
-            showAdminAlert("danger", `⚠️ ${result.message}`);
+            // सर्वर से प्राप्त एरर मैसेज
+            showAdminAlert("danger", `⚠️ <b>त्रुटि:</b> ${result.message}`);
         }
 
     } catch (e) {
-
         console.error("Manual Attendance Error:", e);
-        showAdminAlert("danger", "❌ सर्वर से जुड़ने में समस्या आई।");
-
+        showAdminAlert("danger", "❌ सर्वर से जुड़ने में असमर्थ। कृपया अपना इंटरनेट कनेक्शन जांचें।");
     } finally {
-
+        // बटन को वापस इनेबल करें
         if (btnCheckIn) btnCheckIn.disabled = false;
         if (btnCheckOut) btnCheckOut.disabled = false;
-
     }
 }
+
 // 🎛️ एडमिन उपस्थिति पैनल लोड करने का आर्किटेक्चरल फंक्शन
 export function loadAdminAttendancePanel(mode) {
     const container = document.getElementById('contentArea');
