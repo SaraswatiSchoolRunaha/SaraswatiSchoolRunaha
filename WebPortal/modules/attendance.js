@@ -635,7 +635,7 @@ function printAbsentListWindow() {
 export async function showPresentReport() {
     const today = new Date().toISOString().split('T')[0];
 
-    const fallbackClasses = ["KG1","KG2","1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th"];
+    const fallbackClasses = ["Nursary","KG1","KG2","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
     const fallbackMediums = ["Hindi", "English"];
 
     try {
