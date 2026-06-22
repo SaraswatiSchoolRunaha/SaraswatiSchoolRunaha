@@ -694,6 +694,7 @@ export function loadAddNewTeacherForm() {
         const tName = document.getElementById('new-teacher-name').value.trim();
         const tPhone = document.getElementById('new-teacher-phone').value.trim();
         const tPin = document.getElementById('new-teacher-pin').value.trim();
+        const tSalary = document.getElementById('new-teacher-salary').value.trim();
 
         // बेसिक वैलिडेशन
         if (tPhone.length !== 10 || isNaN(tPhone)) {
