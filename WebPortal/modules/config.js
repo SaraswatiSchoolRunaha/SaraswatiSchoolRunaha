@@ -51,7 +51,7 @@ export const translations = {
 export const icons = {
     'डैशबोर्ड': 'fa-house', 'छात्र मॉड्यूल': 'fa-user-graduate', 'उपस्थिति मॉड्यूल': 'fa-calendar-check',
     'फीस मॉड्यूल': 'fa-money-bill-wave', 'TC मॉड्यूल': 'fa-file-signature', 'Exam मॉड्यूल': 'fa-file-lines', 'Admit Card मॉड्यूल': 'fa-id-card', 'शिक्षक मॉड्यूल': 'fa-chalkboard-user',
-    'प्रबंधन पोर्टल' : 'fas fa-cogs','वेतन प्रबंधन': 'fa-wallet',
+    'प्रबंधन पोर्टल' : 'fas fa-cogs', 'वेतन प्रबंधन मॉड्यूल' : 'fa-wallet',
 };
 
 // Permission Mapping Framework
