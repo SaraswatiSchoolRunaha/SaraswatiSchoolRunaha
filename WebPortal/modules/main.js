@@ -7,7 +7,7 @@ import {
 
 import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm, loadTeacherListWithActions } from './teacherAttendance.js';
 import { loadAdminAttendancePanel } from './adminAttendance.js';
-import { loadSalaryDashboard,loadSalaryReport,loadSalaryPayment,loadPayslip } from './salaryManagement.js';
+import { loadSalaryDashboard, loadSalaryReport, loadSalaryPayment, loadPayslip } from './salaryManagement.js';
 
 
 function buildPortalMenu() {
@@ -101,6 +101,18 @@ function executeModuleRouting(title) {
             break;
         case 'अपडेट/डिलीट': 
            loadTeacherListWithActions()
+            break;
+        case 'वेतन डैशबोर्ड':
+            loadSalaryDashboard();
+            break;
+        case 'वेतन रिपोर्ट':
+            loadSalaryReport();
+            break;
+        case 'वेतन भुगतान':
+            loadSalaryPayment();
+            break;
+        case 'वेतन पर्ची':
+            loadPayslip();
             break;
         case 'QR कोड प्रबंधन': 
           loadAdminAttendancePanel('qr');
