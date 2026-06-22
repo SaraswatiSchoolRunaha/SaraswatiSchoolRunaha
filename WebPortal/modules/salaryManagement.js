@@ -7,13 +7,13 @@ return document.getElementById('contentArea');
 function renderPage(title, content) {
 const container = getContainer();
 
-```
+
 if (!container) {
     console.error("contentArea not found");
     return;
 }
 
-container.innerHTML = `
+container.innerHTML = 
     <style>
         .salary-page {
             animation: fadeIn .3s ease;
@@ -66,7 +66,6 @@ container.innerHTML = `
 
     </div>
 `;
-```
 
 }
 
@@ -75,12 +74,8 @@ container.innerHTML = `
 // ===============================
 
 export function loadSalaryDashboard() {
-
-```
-renderPage("💰 वेतन डैशबोर्ड", `
-
+renderPage("💰 वेतन डैशबोर्ड", 
     <div class="row g-4">
-
         <div class="col-md-3">
             <div class="card salary-card">
                 <div class="card-body text-center">
@@ -98,7 +93,6 @@ renderPage("💰 वेतन डैशबोर्ड", `
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <div class="card salary-card">
                 <div class="card-body text-center">
@@ -118,69 +112,47 @@ renderPage("💰 वेतन डैशबोर्ड", `
         </div>
 
     </div>
-
     <div class="card salary-card mt-4">
         <div class="card-body">
-
             <h5>⚡ Quick Actions</h5>
-
             <div class="d-flex flex-wrap gap-2 mt-3">
-
                 <button class="btn btn-primary quick-btn">
                     📋 Salary Report
                 </button>
-
                 <button class="btn btn-success quick-btn">
                     💵 Payment
                 </button>
-
                 <button class="btn btn-warning quick-btn">
                     🧾 Payslip
                 </button>
-
             </div>
-
         </div>
     </div>
-
 `);
-```
-
 }
 
 // ===============================
 // Salary Report
 // ===============================
-
 export function loadSalaryReport() {
-
-```
 renderPage("📋 वेतन रिपोर्ट", `
-
     <div class="card salary-card">
-
         <div class="card-body">
-
             <div class="row g-3">
-
                 <div class="col-md-4">
                     <label class="form-label">माह चुनें</label>
                     <input type="month"
                            class="form-control"
                            id="salaryMonth">
                 </div>
-
                 <div class="col-md-4">
                     <button class="btn btn-primary w-100"
                             id="generateSalaryBtn">
                         ⚙️ रिपोर्ट बनाएं
                     </button>
                 </div>
-
             </div>
-
             <div id="salaryReportResult" class="mt-4">
-
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -190,7 +162,6 @@ renderPage("📋 वेतन रिपोर्ट", `
                             <th>स्थिति</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <tr>
                             <td colspan="4" class="text-center">
@@ -198,38 +169,28 @@ renderPage("📋 वेतन रिपोर्ट", `
                             </td>
                         </tr>
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
-
     </div>
 
 `);
 
 document.getElementById("generateSalaryBtn")
     ?.addEventListener("click", async () => {
-
         const month =
             document.getElementById("salaryMonth").value;
-
         if (!month) {
             alert("कृपया माह चुनें");
             return;
         }
-
         document.getElementById(
             "salaryReportResult"
         ).innerHTML =
             '<div class="text-primary">Loading...</div>';
-
         // API CALL
         // fetch(...)
     });
-```
-
 }
 
 // ===============================
@@ -237,29 +198,21 @@ document.getElementById("generateSalaryBtn")
 // ===============================
 
 export function loadSalaryPayment() {
-
-```
 renderPage("💵 वेतन भुगतान", `
-
     <div class="card salary-card">
-
         <div class="card-body">
-
             <div class="row g-3">
-
                 <div class="col-md-4">
                     <label>शिक्षक</label>
                     <select class="form-select">
                         <option>Teacher Select</option>
                     </select>
                 </div>
-
                 <div class="col-md-4">
                     <label>राशि</label>
                     <input type="number"
                            class="form-control">
                 </div>
-
                 <div class="col-md-4">
                     <label>भुगतान मोड</label>
                     <select class="form-select">
@@ -268,77 +221,50 @@ renderPage("💵 वेतन भुगतान", `
                         <option>Bank</option>
                     </select>
                 </div>
-
             </div>
-
             <button class="btn btn-success mt-3">
                 💾 Payment Save
             </button>
-
         </div>
-
     </div>
-
 `);
-```
-
 }
-
 // ===============================
 // Payslip
 // ===============================
 
 export function loadPayslip() {
-
-```
 renderPage("🧾 पेस्लिप", `
-
     <div class="card salary-card">
-
         <div class="card-body">
-
             <div id="payslipArea">
-
                 <h4 class="text-center">
                     Saraswati School Runaha
                 </h4>
-
                 <hr>
-
                 <p><b>Teacher:</b> __________</p>
                 <p><b>Month:</b> __________</p>
 
                 <table class="table">
-
                     <tr>
                         <td>Basic Salary</td>
                         <td>₹0</td>
                     </tr>
-
                     <tr>
                         <td>Present Days</td>
                         <td>0</td>
                     </tr>
-
                     <tr>
                         <td>Net Salary</td>
                         <td>₹0</td>
                     </tr>
-
                 </table>
-
             </div>
-
             <button class="btn btn-primary"
                     onclick="window.print()">
                 🖨️ Print Payslip
             </button>
-
         </div>
-
     </div>
-
 `);
-```
-
 }
