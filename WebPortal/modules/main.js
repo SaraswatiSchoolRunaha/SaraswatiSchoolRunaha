@@ -9,6 +9,7 @@ import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeache
 import { loadAdminAttendancePanel } from './adminAttendance.js';
 import { loadSalaryDashboard,loadSalaryReport,loadSalaryPayment,loadPayslip } from './salaryManagement.js';
 
+
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
     container.innerHTML = "";
