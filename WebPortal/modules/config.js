@@ -31,6 +31,7 @@ export const translations = {
         'परीक्षा सूची': 'परीक्षा सूची', 'अंक प्रविष्टि': 'अंक प्रविष्टि', 'परीक्षा रिपोर्ट': 'परीक्षा रिपोर्ट',
         'एडमिट कार्ड जारी करें': 'एडमिट कार्ड जारी करें', 'प्रिंट एडमिट कार्ड': 'प्रिंट एडमिट कार्ड', 
         'शिक्षक मॉड्यूल': 'शिक्षक मॉड्यूल', 'शिक्षक उपस्थिति Dashboard': 'शिक्षक उपस्थिति Dashboard', 'शिक्षक उपस्थिति': 'शिक्षक उपस्थिति', 'नया शिक्षक जोड़ें': 'नया शिक्षक जोड़ें', 'अपडेट/डिलीट': 'अपडेट/डिलीट', 'शिक्षक उपस्थिति रिपोर्ट': 'शिक्षक उपस्थिति रिपोर्ट',
+        'वेतन प्रबंधन मॉड्यूल': 'वेतन प्रबंधन मॉड्यूल', 'वेतन डैशबोर्ड': 'वेतन डैशबोर्ड',   'वेतन रिपोर्ट': 'वेतन रिपोर्ट', 'वेतन भुगतान': 'वेतन भुगतान','वेतन पर्ची': 'वेतन पर्ची',
         'प्रबंधन पोर्टल': 'प्रबंधन पोर्टल', 'QR कोड प्रबंधन': 'QR कोड प्रबंधन' ,'मैन्युअल उपस्थिति': 'मैन्युअल उपस्थिति',
     },
     'EN': {
@@ -39,9 +40,10 @@ export const translations = {
         'दैनिक उपस्थिति': 'Daily Attendance', 'अवकाश प्रबंधन': 'Leave Management', 'उपस्थिति डैशबोर्ड': 'Attendance Dashboard', 'छात्र उपस्थिति रिपोर्ट': 'Students Attendance Report', 'उपस्थिति सुधार': 'Attendance Update', 'छात्र को जोड़ें': 'Add Students (Sync)', 'छात्र को हटाएँ': 'Delete Student', 'अनुपस्थित छात्रों की सूची':'Absent Student List', 'उपस्थित छात्रों की सूची': 'List of Present Students', 
         'फीस भुगतान': 'Fee Payment', 'बकाया लिस्ट': 'Pending List', 'रसीद हिस्ट्री': 'Receipt History', 'फीस स्ट्रक्चर': 'Fee Structure', 'कुल आय रिपोर्ट': 'Income Report',
         'सत्यापन': 'Verification', 'विवरण चेक करें': 'Check Details', 'TC जनरेट करना': 'Generate TC', 'जारी करना': 'Issue TC', 
-        'शिक्षक मॉड्यूल': 'Teacher Module', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'शिक्षक उपस्थिति': 'Teacher Attendance', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'शिक्षक उपस्थिति रिपोर्ट': 'Teacher Attendance Report',
         'परीक्षा सूची': 'Exam List', 'अंक प्रविष्टि': 'Marks Entry', 'परीक्षा रिपोर्ट': 'Exam Report', 
         'एडमिट कार्ड जारी करें': 'Issue Admit Card', 'प्रिंट एडमिट कार्ड': 'Print Admit Card',
+        'शिक्षक मॉड्यूल': 'Teacher Module', 'शिक्षक उपस्थिति Dashboard': 'Teacher Attendance Dashboard', 'शिक्षक उपस्थिति': 'Teacher Attendance', 'नया शिक्षक जोड़ें': 'Add New Teacher', 'अपडेट/डिलीट': 'Update/Delete', 'शिक्षक उपस्थिति रिपोर्ट': 'Teacher Attendance Report',
+        'वेतन प्रबंधन मॉड्यूल': 'Payroll Management', 'वेतन डैशबोर्ड': 'Salary Dashboard', 'वेतन रिपोर्ट': 'Salary Report', 'वेतन भुगतान': 'Salary Payment','वेतन पर्ची': 'Payslip',
         'प्रबंधन पोर्टल': 'Management Portal', 'QR कोड प्रबंधन': 'QR Code Management', 'मैन्युअल उपस्थिति': 'Manual Entry',
     }
 };
