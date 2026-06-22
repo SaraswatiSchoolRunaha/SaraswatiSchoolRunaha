@@ -667,7 +667,15 @@ export function loadAddNewTeacherForm() {
                         <label class="form-label-modern">🔑 सीक्रेट पिन (4-Digit PIN)</label>
                         <input type="password" id="new-teacher-pin" class="form-control input-field-modern" placeholder="****" maxlength="4" inputmode="numeric" style="letter-spacing: 4px;" required>
                     </div>
-
+                        <div class="mb-4">
+                        <label class="form-label-modern">💰 मासिक वेतन (Monthly Salary)</label>
+                        <input
+                        type="number"
+                        id="new-teacher-salary"
+                        class="form-control input-field-modern"
+                        placeholder="25000"
+                        required>
+                    </div>
                     <div id="form-status-alert" class="alert d-none text-center rounded-3 fw-bold p-3 mb-3 border-0"></div>
 
                     <button type="submit" id="save-teacher-btn" class="btn btn-modern btn-save-teacher w-100">💾 शिक्षक रिकॉर्ड सुरक्षित करें</button>
@@ -713,7 +721,8 @@ fetch(webAppUrl, {
         teacher_id: tId,
         teacher_name: tName,
         phone: tPhone,
-        pin: tPin
+        pin: tPin,
+        salary: tSalary
     })
 })
 .then(res => res.json())
