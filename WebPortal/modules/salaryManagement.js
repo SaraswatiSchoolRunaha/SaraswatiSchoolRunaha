@@ -1,270 +1,132 @@
 import { sheetUrls } from './config.js';
 
-function getContainer() {
-return document.getElementById('contentArea');
-}
-
+/** * UI हेल्पर फंक्शन: कंटेंट को रेंडर करने के लिए 
+ */
 function renderPage(title, content) {
-const container = getContainer();
+    const container = document.getElementById('contentArea');
+    if (!container) return;
 
-
-if (!container) {
-    console.error("contentArea not found");
-    return;
-}
-
-container.innerHTML = 
-    <style>
-        .salary-page {
-            animation: fadeIn .3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity:0; transform:translateY(10px); }
-            to { opacity:1; transform:translateY(0); }
-        }
-
-        .salary-card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 4px 15px rgba(0,0,0,.08);
-            transition: .3s;
-        }
-
-        .salary-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .salary-stat {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .salary-header {
-            background: linear-gradient(135deg,#2563eb,#1e40af);
-            color: white;
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .quick-btn {
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 600;
-        }
-    </style>
-
-    <div class="container-fluid p-4 salary-page">
-
-        <div class="salary-header">
-            <h3 class="fw-bold mb-1">${title}</h3>
-            <small>School Salary Management System</small>
+    container.innerHTML = `
+        <div class="container-fluid p-4 animate__animated animate__fadeIn">
+            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                <div>
+                    <h3 class="fw-bold text-primary mb-0">${title}</h3>
+                    <small class="text-muted">सरस्वती बाल विद्या मंदिर - वेतन प्रबंधन प्रणाली</small>
+                </div>
+            </div>
+            ${content}
         </div>
-
-        ${content}
-
-    </div>
-`;
-
+    `;
 }
 
 // ===============================
-// Dashboard
+// 1. Dashboard
 // ===============================
-
 export function loadSalaryDashboard() {
-renderPage("💰 वेतन डैशबोर्ड", 
-    <div class="row g-4">
-        <div class="col-md-3">
-            <div class="card salary-card">
-                <div class="card-body text-center">
-                    <h6>👨‍🏫 कुल शिक्षक</h6>
-                    <div class="salary-stat" id="totalTeachers">0</div>
+    renderPage("💰 वेतन डैशबोर्ड", `
+        <div class="row g-4">
+            ${statCard("कुल शिक्षक", "0", "totalTeachers", "primary")}
+            ${statCard("कुल मासिक वेतन", "₹0", "totalSalary", "success")}
+            ${statCard("देय वेतन", "₹0", "payableSalary", "warning")}
+            ${statCard("भुगतान स्थिति", "--", "paymentStatus", "info")}
+        </div>
+        <div class="card mt-4 border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h5>⚡ क्विक एक्शन्स</h5>
+                <div class="d-flex flex-wrap gap-3 mt-3">
+                    <button class="btn btn-outline-primary px-4 py-2" onclick="loadSalaryReport()">📋 वेतन रिपोर्ट</button>
+                    <button class="btn btn-outline-success px-4 py-2" onclick="loadSalaryPayment()">💵 वेतन भुगतान</button>
+                    <button class="btn btn-outline-warning px-4 py-2" onclick="loadPayslip()">🧾 पेस्लिप</button>
                 </div>
             </div>
         </div>
+    `);
+}
 
+function statCard(title, val, id, color) {
+    return `
         <div class="col-md-3">
-            <div class="card salary-card">
-                <div class="card-body text-center">
-                    <h6>💰 कुल वेतन</h6>
-                    <div class="salary-stat" id="totalSalary">₹0</div>
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">${title}</h6>
+                    <h2 class="fw-bold text-${color}" id="${id}">${val}</h2>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card salary-card">
-                <div class="card-body text-center">
-                    <h6>📊 देय वेतन</h6>
-                    <div class="salary-stat" id="payableSalary">₹0</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card salary-card">
-                <div class="card-body text-center">
-                    <h6>⏳ भुगतान स्थिति</h6>
-                    <div class="salary-stat" id="paymentStatus">--</div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="card salary-card mt-4">
-        <div class="card-body">
-            <h5>⚡ Quick Actions</h5>
-            <div class="d-flex flex-wrap gap-2 mt-3">
-                <button class="btn btn-primary quick-btn">
-                    📋 Salary Report
-                </button>
-                <button class="btn btn-success quick-btn">
-                    💵 Payment
-                </button>
-                <button class="btn btn-warning quick-btn">
-                    🧾 Payslip
-                </button>
-            </div>
-        </div>
-    </div>
-`);
+    `;
 }
 
 // ===============================
-// Salary Report
+// 2. Salary Report
 // ===============================
 export function loadSalaryReport() {
-renderPage("📋 वेतन रिपोर्ट", `
-    <div class="card salary-card">
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label">माह चुनें</label>
-                    <input type="month"
-                           class="form-control"
-                           id="salaryMonth">
+    renderPage("📋 वेतन रिपोर्ट", `
+        <div class="card border-0 shadow-sm rounded-4 p-3">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">माह चुनें</label>
+                        <input type="month" class="form-control form-control-lg" id="salaryMonth">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary btn-lg w-100" id="generateSalaryBtn">⚙️ रिपोर्ट बनाएं</button>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <button class="btn btn-primary w-100"
-                            id="generateSalaryBtn">
-                        ⚙️ रिपोर्ट बनाएं
-                    </button>
+                <div id="salaryReportResult" class="mt-4 table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr><th>शिक्षक</th><th>उपस्थिति</th><th>वेतन</th><th>स्थिति</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4" class="text-center py-4">रिपोर्ट लोड करने के लिए माह चुनें</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-            <div id="salaryReportResult" class="mt-4">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>शिक्षक</th>
-                            <th>उपस्थिति</th>
-                            <th>वेतन</th>
-                            <th>स्थिति</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="4" class="text-center">
-                                रिपोर्ट उपलब्ध नहीं
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
-    </div>
-
-`);
-
-document.getElementById("generateSalaryBtn")
-    ?.addEventListener("click", async () => {
-        const month =
-            document.getElementById("salaryMonth").value;
-        if (!month) {
-            alert("कृपया माह चुनें");
-            return;
-        }
-        document.getElementById(
-            "salaryReportResult"
-        ).innerHTML =
-            '<div class="text-primary">Loading...</div>';
-        // API CALL
-        // fetch(...)
-    });
+    `);
 }
 
 // ===============================
-// Salary Payment
+// 3. Salary Payment
 // ===============================
-
 export function loadSalaryPayment() {
-renderPage("💵 वेतन भुगतान", `
-    <div class="card salary-card">
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label>शिक्षक</label>
-                    <select class="form-select">
-                        <option>Teacher Select</option>
-                    </select>
+    renderPage("💵 वेतन भुगतान", `
+        <div class="card border-0 shadow-sm rounded-4 p-3">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4"><label class="form-label">शिक्षक का नाम</label><select class="form-select form-select-lg"><option>शिक्षक चुनें...</option></select></div>
+                    <div class="col-md-4"><label class="form-label">राशि (₹)</label><input type="number" class="form-control form-control-lg" placeholder="0.00"></div>
+                    <div class="col-md-4"><label class="form-label">मोड</label><select class="form-select form-select-lg"><option>Cash</option><option>UPI</option><option>Bank</option></select></div>
                 </div>
-                <div class="col-md-4">
-                    <label>राशि</label>
-                    <input type="number"
-                           class="form-control">
-                </div>
-                <div class="col-md-4">
-                    <label>भुगतान मोड</label>
-                    <select class="form-select">
-                        <option>Cash</option>
-                        <option>UPI</option>
-                        <option>Bank</option>
-                    </select>
-                </div>
+                <button class="btn btn-success btn-lg mt-4 px-5">💾 भुगतान सुरक्षित करें</button>
             </div>
-            <button class="btn btn-success mt-3">
-                💾 Payment Save
-            </button>
         </div>
-    </div>
-`);
+    `);
 }
-// ===============================
-// Payslip
-// ===============================
 
+// ===============================
+// 4. Payslip
+// ===============================
 export function loadPayslip() {
-renderPage("🧾 पेस्लिप", `
-    <div class="card salary-card">
-        <div class="card-body">
-            <div id="payslipArea">
-                <h4 class="text-center">
-                    Saraswati School Runaha
-                </h4>
+    renderPage("🧾 पेस्लिप", `
+        <div class="card border-0 shadow-sm rounded-4 p-4" style="max-width: 600px; margin: auto;">
+            <div id="payslipArea" class="text-center">
+                <h4 class="fw-bold">सरस्वती बाल विद्या मंदिर, रुनहा</h4>
+                <p class="text-muted">मासिक वेतन रसीद</p>
                 <hr>
-                <p><b>Teacher:</b> __________</p>
-                <p><b>Month:</b> __________</p>
-
-                <table class="table">
-                    <tr>
-                        <td>Basic Salary</td>
-                        <td>₹0</td>
-                    </tr>
-                    <tr>
-                        <td>Present Days</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>Net Salary</td>
-                        <td>₹0</td>
-                    </tr>
-                </table>
+                <div class="text-start">
+                    <p><b>शिक्षक:</b> __________</p>
+                    <p><b>माह:</b> __________</p>
+                    <table class="table table-bordered">
+                        <tr><td>बेसिक वेतन</td><td>₹0</td></tr>
+                        <tr><td>कुल कार्य दिवस</td><td>22</td></tr>
+                        <tr><td>उपस्थिति</td><td>0</td></tr>
+                        <tr class="table-primary"><td><b>नेट पे (Net Salary)</b></td><td><b>₹0</b></td></tr>
+                    </table>
+                </div>
             </div>
-            <button class="btn btn-primary"
-                    onclick="window.print()">
-                🖨️ Print Payslip
-            </button>
+            <button class="btn btn-primary btn-lg mt-3" onclick="window.print()">🖨️ पेस्लिप प्रिंट करें</button>
         </div>
-    </div>
-`);
+    `);
 }
