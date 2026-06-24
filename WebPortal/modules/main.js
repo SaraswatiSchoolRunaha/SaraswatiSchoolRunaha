@@ -142,3 +142,22 @@ window.addEventListener('DOMContentLoaded', () => {
     buildPortalMenu();
     showDashboard();
 });
+
+// 📱 👇 यह नया कोड यहाँ नीचे जोड़ा गया है 👇
+    const menuBtn = document.getElementById('menuToggleBtn');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('active'); // बटन दबाने पर साइडबार दिखेगी/छुपेगी
+        });
+
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                sidebar.classList.remove('active'); // बाहर टच करने पर साइडबार बंद होगी
+            }
+        });
+    }
+    // 📱 👆 नया कोड यहाँ समाप्त 👆
+});
