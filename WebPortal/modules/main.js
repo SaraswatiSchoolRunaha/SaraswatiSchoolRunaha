@@ -145,7 +145,6 @@ document.getElementById('btnLogout').addEventListener('click', () => {
 window.addEventListener('DOMContentLoaded', () => {
     buildPortalMenu();
     showDashboard();
-});
 
 // 📱 मोबाइल मेन्यू ओपन/क्लोज़ लॉजिक (अब सुरक्षित रूप से DOMContentLoaded के अंदर है)
     const menuBtn = document.getElementById('menuToggleBtn');
