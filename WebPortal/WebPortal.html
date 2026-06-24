@@ -22,20 +22,22 @@
         <header class="top-navbar">
             <div id="pageTitle" style="font-size: 1.2rem; font-weight: bold;">डैशबोर्ड</div>
             <div class="user-profile">
-                <div class="user-profile">
+               
                     <!-- 🕒 लाइव डेट और टाइम बॉक्स यहाँ जुड़ गया है -->
-                            <div id="liveDateTime" class="datetime-container">
-                                <span class="time-box">
-                                <i class="fa-regular fa-clock"></i> 
-                                <span id="clockDisplay">00:00:00 AM</span>
-                            </span>
-                                <span class="divider">|</span>
-                                <span class="date-box">
-                                <i class="fa-regular fa-calendar-days"></i> 
-                                <span id="dateDisplay">00-00-2026</span>
-                            </span>
-                        </div>
+                       <div class="user-profile">
+                <div id="liveDateTime" style="display: flex; align-items: center; background: linear-gradient(135deg, #f8fafc, #f1f5f9); color: #1e293b; padding: 6px 16px; border-radius: 50px; font-size: 0.88rem; font-weight: 600; margin-right: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">
+                    <span style="display: flex; align-items: center;">
+                        <i class="fa-regular fa-clock" style="color: #4f46e5; margin-right: 6px; font-size: 0.95rem;"></i> 
+                        <span id="clockDisplay" style="font-family: 'Courier New', Courier, monospace; font-weight: 700;">00:00:00 AM</span>
+                    </span>
+                    <span style="margin: 0 12px; color: #cbd5e1; font-weight: 300;">|</span>
+                    <span style="display: flex; align-items: center;">
+                        <i class="fa-regular fa-calendar-days" style="color: #4f46e5; margin-right: 6px; font-size: 0.95rem;"></i> 
+                        <span id="dateDisplay">00-00-2026</span>
+                    </span>
+                </div>
 
+               
                 <button class="lang-btn" id="btnLangEN">EN</button>
                 <button class="lang-btn" id="btnLangHN">HN</button>
                 <span id="userRoleBadge" class="role-badge"></span>
