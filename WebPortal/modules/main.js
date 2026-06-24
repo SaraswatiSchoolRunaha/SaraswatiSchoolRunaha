@@ -43,6 +43,7 @@ function buildPortalMenu() {
         if (sidebar) sidebar.classList.remove('active'); // 📱 मोबाइल पर साइडबार बंद करें
     });
 }
+}
     // Expand / Collapse animations toggle click listeners
     document.querySelectorAll('.module-btn.type-expandable').forEach(btn => {
         btn.addEventListener('click', function() {
