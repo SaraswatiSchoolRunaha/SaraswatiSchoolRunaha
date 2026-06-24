@@ -238,7 +238,7 @@ table {
     body {
         flex-direction: column; 
     }
-
+    
     /* 1. साइडबार - Floating Overlay */
     .sidebar {
         position: fixed;
@@ -249,8 +249,10 @@ table {
         z-index: 9999;
         transition: left 0.3s ease-in-out;
         box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        background: #fff; /* बैकग्राउंड पक्का करें */
+        overflow-y: auto; /* यह जोड़ना जरूरी है ताकि लंबा मेन्यू स्क्रॉल हो सके */
     }
-
+    
     .sidebar.active {
         left: 0; 
     }
