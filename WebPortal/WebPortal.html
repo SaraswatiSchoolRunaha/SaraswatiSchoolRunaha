@@ -52,7 +52,40 @@
         </div>
     </main>
 
+    <script>
+        function runLiveClock() {
+            const now = new Date();
+            
+            // समय का फॉर्मेट (HH:MM:SS AM/PM)
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; 
+            const timeString = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+            
+            // दिनांक का फॉर्मेट (DD-MM-YYYY)
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); 
+            const year = now.getFullYear();
+            const dateString = `${day}-${month}-${year}`;
+            
+            // स्क्रीन पर दिखाना
+            const clockEl = document.getElementById('clockDisplay');
+            const dateEl = document.getElementById('dateDisplay');
+            
+            if (clockEl) clockEl.textContent = timeString;
+            if (dateEl) dateEl.textContent = dateString;
+        }
+
+        // हर 1 सेकंड में खुद अपडेट होगा
+        setInterval(runLiveClock, 1000);
+        runLiveClock();
+    </script>
+
     <script type="module" src="modules/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
 </body>
 </html>
