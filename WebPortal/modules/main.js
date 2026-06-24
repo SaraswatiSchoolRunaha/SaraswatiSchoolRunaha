@@ -36,11 +36,13 @@ function buildPortalMenu() {
         }
         container.appendChild(li);
 
-        if (options.length === 0) {
-            document.getElementById(`menu_root_${module}`).addEventListener('click', showDashboard);
-        }
-    }
-
+       if (options.length === 0) {
+        document.getElementById(`menu_root_${module}`).addEventListener('click', () => {
+        showDashboard();
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) sidebar.classList.remove('active'); // 📱 मोबाइल पर साइडबार बंद करें
+    });
+}
     // Expand / Collapse animations toggle click listeners
     document.querySelectorAll('.module-btn.type-expandable').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -57,12 +59,14 @@ function buildPortalMenu() {
         });
     });
 
-    document.querySelectorAll('.sub-menu-item').forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            executeModuleRouting(this.getAttribute('data-opt'));
-        });
+   document.querySelectorAll('.sub-menu-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        executeModuleRouting(this.getAttribute('data-opt'));
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) sidebar.classList.remove('active'); // 📱 क्लिक होते ही साइडबार बंद करें
     });
+});
 }
 
 function executeModuleRouting(title) {
@@ -143,21 +147,20 @@ window.addEventListener('DOMContentLoaded', () => {
     showDashboard();
 });
 
-// 📱 👇 यह नया कोड यहाँ नीचे जोड़ा गया है 👇
+// 📱 मोबाइल मेन्यू ओपन/क्लोज़ लॉजिक (अब सुरक्षित रूप से DOMContentLoaded के अंदर है)
     const menuBtn = document.getElementById('menuToggleBtn');
     const sidebar = document.querySelector('.sidebar');
 
     if (menuBtn && sidebar) {
         menuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            sidebar.classList.toggle('active'); // बटन दबाने पर साइडबार दिखेगी/छुपेगी
+            sidebar.classList.toggle('active'); 
         });
 
         document.addEventListener('click', (e) => {
             if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
-                sidebar.classList.remove('active'); // बाहर टच करने पर साइडबार बंद होगी
+                sidebar.classList.remove('active'); 
             }
         });
     }
-    // 📱 👆 नया कोड यहाँ समाप्त 👆
-});
+}); //
