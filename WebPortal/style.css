@@ -281,35 +281,29 @@ table {
 
 /* --- Principal Box Design --- */
 .principal-box {
-    background: linear-gradient(135deg, #ffffff, #f0f4ff);
-    color: #1e3a8a;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 1rem;
-    border: 1px solid #dbeafe;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-/* --- Date & Time Container Design --- */
-.datetime-container {
-    background: #1e3a8a;
-    color: #ffffff;
-    padding: 10px 20px;
-    border-radius: 50px; /* गोलाकार कोने */
+    background: #f1f5f9;
+    padding: 8px 16px;
+    border-radius: 50px;
     font-size: 0.9rem;
+    color: #1e3a8a;
+    border: 1px solid #cbd5e1;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+    gap: 8px;
 }
 
-.datetime-container span {
-    font-family: 'Courier New', Courier, monospace; /* डिजिटल घड़ी जैसा लुक */
-    letter-spacing: 1px;
+/* --- Modern Date & Time Capsule --- */
+.datetime-container {
+    display: inline-flex;
+    align-items: center;
+    background: #1e3a8a;
+    color: #ffffff;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
 }
+
+#clockDisplay { font-family: 'Courier New', monospace; font-weight: bold; margin: 0 5px; }
