@@ -316,3 +316,10 @@ table {
         white-space: nowrap; /* टेक्स्ट को नीचे टूटने से रोकने के लिए */
     }
 }
+
+/* डेस्कटॉप (लैपटॉप) के लिए: मेन्यू बटन को छुपाएं */
+@media screen and (min-width: 769px) {
+    #menuToggleBtn {
+        display: none !important;
+    }
+}
