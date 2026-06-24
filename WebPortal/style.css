@@ -187,3 +187,45 @@ table {
         border: none !important; /* अगर प्रिंट में बॉर्डर नहीं चाहिए */
     }
 }
+
+/* ==========================================================================
+   🕒 लाइव डेट-टाइम का मॉडर्न कैप्सूल डिज़ाइन (नया कोड)
+   ========================================================================== */
+.datetime-container {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9); /* हल्का प्रीमियम बैकग्राउंड */
+    color: #1e293b; /* गहरा डार्क टेक्स्ट */
+    padding: 6px 16px;
+    border-radius: 50px; /* परफेक्ट कैप्सूल शेप */
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-right: 15px; /* EN बटन से थोड़ी दूरी */
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* आइकॉन्स का कलर (सुंदर इंडिगो/ब्लू) */
+.datetime-container i {
+    color: #4f46e5; 
+    margin-right: 6px;
+    font-size: 0.95rem;
+}
+
+/* टाइम डिस्प्ले को स्थिर रखने के लिए ताकि नंबर हिलें नहीं */
+#clockDisplay {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+}
+
+/* बीच का डिवाइडर डंडा (|) */
+.datetime-container .divider {
+    margin: 0 12px;
+    color: #cbd5e1;
+    font-weight: 300;
+}
+
+.time-box, .date-box {
+    display: flex;
+    align-items: center;
+}
