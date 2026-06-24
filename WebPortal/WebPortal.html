@@ -23,28 +23,33 @@
         </ul>
 </aside>
 
-    <main class="main-content">
-      <header class="top-navbar">
-    <div class="navbar-row-top">
-        <button id="menuToggleBtn" class="btn-action">मेन्यू</button>
-        <div id="pageTitle">डैशबोर्ड</div>
+   <header class="top-navbar">
+    <div class="navbar-row-top" style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+        
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button id="menuToggleBtn" class="btn-action">मेन्यू</button>
+            <div id="pageTitle" style="font-size: 1.4rem; font-weight: bold;">डैशबोर्ड</div>
+        </div>
+
+        <div class="principal-box">
+            <i class="fa-solid fa-user-tie"></i> प्रधानाचार्य: श्रीमान राकेश गुप्ता
+        </div>
     </div>
 
-    <div class="navbar-row-middle">
-        <div class="principal-box">प्रधानाचार्य: श्रीमान राकेश गुप्ता</div>
-    </div>
-
-    <div class="navbar-row-bottom">
+    <div class="navbar-row-bottom" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
         <div id="liveDateTime" class="datetime-container">
-            <span id="clockDisplay">00:00</span> | <span id="dateDisplay">00-00-2026</span>
+            <i class="fa-solid fa-clock"></i> <span id="clockDisplay">00:00</span> | 
+            <i class="fa-solid fa-calendar-days"></i> <span id="dateDisplay">00-00-2026</span>
         </div>
         
-        <div class="lang-selector">
-    <button id="btnLangEN" class="lang-btn">EN</button>
-    <button id="btnLangHN" class="lang-btn">HN</button>
-    </div>
-        <div class="user-profile">
-            <button id="btnLogout" class="btn-action">लॉगआउट</button>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div class="lang-selector">
+                <button id="btnLangEN" class="lang-btn">EN</button>
+                <button id="btnLangHN" class="lang-btn">HN</button>
+            </div>
+            <div class="user-profile">
+                <button id="btnLogout" class="btn-action">लॉगआउट</button>
+            </div>
         </div>
     </div>
 </header>
