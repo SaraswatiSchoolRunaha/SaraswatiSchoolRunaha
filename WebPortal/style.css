@@ -314,9 +314,14 @@ table {
     }
 }
 
-/* डेस्कटॉप के लिए: मेन्यू बटन छिपाएं */
-@media screen and (min-width: 769px) {
-    #menuToggleBtn {
-        display: none !important;
+@media screen and (max-width: 768px) {
+    /* डेस्कटॉप वाली सेटिंग्स को यहाँ मोबाइल के लिए रिसेट करें */
+    .top-navbar {
+        height: auto !important; 
+        padding: 10px !important;
+        flex-direction: column !important; /* ये सिर्फ मोबाइल पर काम करेगा */
+        justify-content: center !important;
     }
+    
+    /* डेस्कटॉप पर नेवबार जैसा था वैसा ही रहे, इसके लिए ये जोड़ें */
 }
