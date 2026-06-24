@@ -232,85 +232,10 @@ table {
 }
 
 /* ==========================================================================
-   📱 मोबाइल रिस्पॉन्सिव डिज़ाइन (इसे सबसे नीचे रखें)
-   ========================================================================== */
-@media screen and (max-width: 768px) {
-    body {
-        flex-direction: column; 
-    }
-    
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: -270px;
-        height: 100vh;
-        width: 260px;
-        z-index: 9999;
-        transition: left 0.3s ease-in-out;
-        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-        background: #fff;
-        overflow-y: auto;
-    }
-    
-    .sidebar.active {
-        left: 0; 
-    }
-
-    .main-content {
-        width: 100%;
-        margin-left: 0 !important;
-    }
-
-    /* नेवबार को मोबाइल के लिए 2-3 पंक्तियों में व्यवस्थित करें */
-    .top-navbar {
-        height: auto !important; 
-        min-height: 60px;
-        flex-direction: column !important; 
-        padding: 10px !important;
-        gap: 10px !important;
-    }
-
-    .top-navbar > div {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        gap: 8px !important;
-    }
-
-    .datetime-container {
-        margin: 0 !important;
-        padding: 4px 12px;
-        font-size: 0.78rem;
-        width: 100% !important;
-        justify-content: center;
-    }
-
-    .user-profile {
-        font-size: 0.85rem;
-        justify-content: center !important;
-        width: 100% !important;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-
-    .page-body {
-        padding: 15px;
-    }
-
-    table {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-}
-
-/* ==========================================================================
    📱 रिस्पॉन्सिव डिज़ाइन - इसे अपनी फाइल में सबसे नीचे रखें
    ========================================================================== */
 
-/* 1. डेस्कटॉप के लिए (जो एक लाइन में दिखेगा) */
+/* 1. डेस्कटॉप के लिए (769px से बड़ी स्क्रीन) */
 @media screen and (min-width: 769px) {
     #menuToggleBtn { display: none !important; }
     
@@ -321,9 +246,9 @@ table {
     }
 }
 
-/* 2. मोबाइल के लिए (जो सब कुछ एक के नीचे एक कर देगा) */
+/* 2. मोबाइल के लिए (768px या उससे छोटी स्क्रीन) */
 @media screen and (max-width: 768px) {
-    body { flex-direction: column; }
+    body { flex-direction: column !important; }
     
     .sidebar {
         position: fixed; top: 0; left: -270px; height: 100vh; width: 260px;
@@ -331,9 +256,9 @@ table {
         background: #fff; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.1);
     }
     .sidebar.active { left: 0; }
-    .main-content { width: 100%; margin-left: 0 !important; }
+    .main-content { width: 100% !important; margin-left: 0 !important; }
 
-    /* नेवबार को मोबाइल के लिए कॉलम में बदलना */
+    /* नेवबार को मोबाइल के लिए कॉलम में व्यवस्थित करना */
     .top-navbar {
         height: auto !important; padding: 10px !important;
         flex-direction: column !important; gap: 10px !important;
@@ -346,4 +271,9 @@ table {
         flex-wrap: wrap !important;
         gap: 8px !important;
     }
+
+    /* मोबाइल के अन्य एलिमेंट्स */
+    .datetime-container { width: 100% !important; justify-content: center !important; }
+    .user-profile { width: 100% !important; justify-content: center !important; }
+    table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; }
 }
