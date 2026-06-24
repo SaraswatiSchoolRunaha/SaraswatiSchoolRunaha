@@ -319,15 +319,6 @@ table {
     align-items: center;
     gap: 10px;
 }
-
-/* 2. मोबाइल के लिए (जो सब कुछ एक के नीचे एक कर देगा) */
-@media screen and (max-width: 768px) {
-    .top-navbar {
-        flex-direction: column !important;
-        height: auto !important;
-        padding: 10px !important;
-    }
-    
     .navbar-row-top, .navbar-row-middle, .navbar-row-bottom {
         justify-content: center !important;
         width: 100% !important;
