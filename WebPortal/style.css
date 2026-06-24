@@ -278,3 +278,38 @@ table {
     .user-profile { width: 100% !important; justify-content: center !important; }
     table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; }
 }
+
+/* --- Principal Box Design --- */
+.principal-box {
+    background: linear-gradient(135deg, #ffffff, #f0f4ff);
+    color: #1e3a8a;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 1px solid #dbeafe;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* --- Date & Time Container Design --- */
+.datetime-container {
+    background: #1e3a8a;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 50px; /* गोलाकार कोने */
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+}
+
+.datetime-container span {
+    font-family: 'Courier New', Courier, monospace; /* डिजिटल घड़ी जैसा लुक */
+    letter-spacing: 1px;
+}
