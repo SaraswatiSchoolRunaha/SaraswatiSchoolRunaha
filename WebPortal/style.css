@@ -306,22 +306,44 @@ table {
     }
 }
 
-/* डेस्कटॉप के लिए: मेन्यू बटन छिपाएं */
+/* ==========================================================================
+   📱 रिस्पॉन्सिव डिज़ाइन - इसे अपनी फाइल में सबसे नीचे रखें
+   ========================================================================== */
+
+/* 1. डेस्कटॉप के लिए (जो एक लाइन में दिखेगा) */
 @media screen and (min-width: 769px) {
-    #menuToggleBtn {
-        display: none !important;
+    #menuToggleBtn { display: none !important; }
+    
+    .navbar-row-top, .navbar-row-middle, .navbar-row-bottom {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
     }
 }
 
-/* 1. डेस्कटॉप के लिए (जो एक लाइन में दिखेगा) */
-.navbar-row-top, .navbar-row-middle, .navbar-row-bottom {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+/* 2. मोबाइल के लिए (जो सब कुछ एक के नीचे एक कर देगा) */
+@media screen and (max-width: 768px) {
+    body { flex-direction: column; }
+    
+    .sidebar {
+        position: fixed; top: 0; left: -270px; height: 100vh; width: 260px;
+        z-index: 9999; transition: left 0.3s ease-in-out;
+        background: #fff; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    }
+    .sidebar.active { left: 0; }
+    .main-content { width: 100%; margin-left: 0 !important; }
+
+    /* नेवबार को मोबाइल के लिए कॉलम में बदलना */
+    .top-navbar {
+        height: auto !important; padding: 10px !important;
+        flex-direction: column !important; gap: 10px !important;
+    }
+
     .navbar-row-top, .navbar-row-middle, .navbar-row-bottom {
+        display: flex !important;
         justify-content: center !important;
         width: 100% !important;
-        margin-bottom: 5px;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
     }
 }
