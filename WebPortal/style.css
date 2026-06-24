@@ -230,3 +230,89 @@ table {
     display: flex;
     align-items: center;
 }
+
+/* ==========================================================================
+   📱 मोबाइल स्क्रीन्स के लिए रिस्पॉन्सिव डिज़ाइन (max-width: 768px)
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+    body {
+        flex-direction: column; /* साइडबार और कंटेंट को एक के नीचे एक करने के लिए */
+    }
+
+    /* 1. साइडबार को मोबाइल पर तैरता हुआ (Floating Overlay) बनाएँ */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -270px; /* शुरुआत में स्क्रीन से बाहर छिपा रहेगा */
+        height: 100vh;
+        width: 260px;
+        z-index: 9999; /* सबसे ऊपर रखने के लिए */
+        transition: left 0.3s ease-in-out;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    }
+
+    /* जब साइडबार एक्टिव हो (menuToggleBtn दबाने पर) */
+    .sidebar.active {
+        left: 0; 
+    }
+
+    /* 2. मेन कंटेंट को पूरी स्क्रीन का स्पेस दें */
+    .main-content {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+
+    /* 3. टॉप नेवबार का लेआउट सुधारें (ओवरलैपिंग फिक्स) */
+    .top-navbar {
+        height: auto; /* फिक्स्ड 70px हटाकर ऑटो किया */
+        min-height: 60px;
+        flex-direction: column; /* एलिमेंट्स को एक के नीचे एक या फ्लेक्स रैप में लाने के लिए */
+        padding: 10px 15px;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    /* नेवबार के अंदर के आइटम्स को सही से अरेंज करें */
+    .top-navbar > div {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* 4. लाइव डेट-टाइम कैप्सूल का साइज मोबाइल के लिए छोटा करें */
+    .datetime-container {
+        margin-right: 0; /* मार्जिन हटाकर सेंटर अलाइनमेंट */
+        padding: 4px 12px;
+        font-size: 0.78rem;
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .datetime-container .divider {
+        margin: 0 6px; /* मोबाइल पर डंडे (|) की दूरी कम करें */
+    }
+
+    /* 5. यूजर प्रोफाइल और बटन्स को व्यवस्थित करें */
+    .user-profile {
+        font-size: 0.85rem;
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .page-body {
+        padding: 15px; /* मोबाइल पर बॉडी पैडिंग कम करें ताकि टेबल कटे नहीं */
+    }
+
+    /* 6. टेबल को मोबाइल पर स्क्रॉल-एबल बनाएँ ताकि स्क्रीन से बाहर न भागे */
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap; /* टेक्स्ट को नीचे टूटने से रोकने के लिए */
+    }
+}
