@@ -232,14 +232,13 @@ table {
 }
 
 /* ==========================================================================
-   📱 मोबाइल स्क्रीन्स के लिए रिस्पॉन्सिव डिज़ाइन (max-width: 768px)
+   📱 मोबाइल रिस्पॉन्सिव डिज़ाइन (इसे सबसे नीचे रखें)
    ========================================================================== */
 @media screen and (max-width: 768px) {
     body {
         flex-direction: column; 
     }
     
-    /* 1. साइडबार - Floating Overlay */
     .sidebar {
         position: fixed;
         top: 0;
@@ -249,31 +248,28 @@ table {
         z-index: 9999;
         transition: left 0.3s ease-in-out;
         box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-        background: #fff; /* बैकग्राउंड पक्का करें */
-        overflow-y: auto; /* यह जोड़ना जरूरी है ताकि लंबा मेन्यू स्क्रॉल हो सके */
+        background: #fff;
+        overflow-y: auto;
     }
     
     .sidebar.active {
         left: 0; 
     }
 
-    /* 2. मेन कंटेंट */
     .main-content {
         width: 100%;
         margin-left: 0 !important;
     }
 
-    /* 3. टॉप नेवबार - ओवरलैपिंग फिक्स */
+    /* नेवबार को मोबाइल के लिए 2-3 पंक्तियों में व्यवस्थित करें */
     .top-navbar {
         height: auto !important; 
         min-height: 60px;
         flex-direction: column !important; 
         padding: 10px !important;
         gap: 10px !important;
-        justify-content: center !important;
     }
 
-    /* यहाँ बदलाव किया है: ताकि नेवबार के अंदर के div दबें नहीं */
     .top-navbar > div {
         width: 100% !important;
         display: flex !important;
@@ -282,17 +278,14 @@ table {
         gap: 8px !important;
     }
 
-    /* 4. लाइव डेट-टाइम कैप्सूल */
     .datetime-container {
         margin: 0 !important;
         padding: 4px 12px;
         font-size: 0.78rem;
         width: 100% !important;
         justify-content: center;
-        box-sizing: border-box;
     }
 
-    /* 5. यूजर प्रोफाइल और बटन्स */
     .user-profile {
         font-size: 0.85rem;
         justify-content: center !important;
@@ -305,7 +298,6 @@ table {
         padding: 15px;
     }
 
-    /* 6. टेबल स्क्रॉल-एबल */
     table {
         display: block;
         width: 100%;
@@ -314,14 +306,9 @@ table {
     }
 }
 
-@media screen and (max-width: 768px) {
-    /* डेस्कटॉप वाली सेटिंग्स को यहाँ मोबाइल के लिए रिसेट करें */
-    .top-navbar {
-        height: auto !important; 
-        padding: 10px !important;
-        flex-direction: column !important; /* ये सिर्फ मोबाइल पर काम करेगा */
-        justify-content: center !important;
+/* डेस्कटॉप के लिए: मेन्यू बटन छिपाएं */
+@media screen and (min-width: 769px) {
+    #menuToggleBtn {
+        display: none !important;
     }
-    
-    /* डेस्कटॉप पर नेवबार जैसा था वैसा ही रहे, इसके लिए ये जोड़ें */
 }
