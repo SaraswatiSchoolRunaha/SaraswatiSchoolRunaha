@@ -19,30 +19,21 @@
 
     <main class="main-content">
       <header class="top-navbar">
-    <div class="navbar-row-top" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px;">
-        <button id="menuToggleBtn" class="btn-action">
-            <i class="fa-solid fa-bars"></i> मेन्यू
-        </button>
-        <div id="pageTitle" style="font-size: 1.1rem; font-weight: bold;">डैशबोर्ड</div>
+    <div class="navbar-row-top">
+        <button id="menuToggleBtn" class="btn-action">मेन्यू</button>
+        <div id="pageTitle">डैशबोर्ड</div>
     </div>
 
-    <div class="navbar-row-middle" style="display: flex; justify-content: center; width: 100%; margin-bottom: 8px;">
-        <div style="display: flex; align-items: center; background: #eff6ff; color: #1e40af; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; border: 1px solid #bfdbfe;">
-            <i class="fa-solid fa-user-tie" style="margin-right: 5px;"></i>
-            <span>प्रधानाचार्य: श्रीमान राकेश गुप्ता</span>
-        </div>
+    <div class="navbar-row-middle">
+        <div class="principal-box">प्रधानाचार्य: श्रीमान राकेश गुप्ता</div>
     </div>
 
-    <div class="navbar-row-bottom" style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%;">
-        <div id="liveDateTime" class="datetime-container" style="font-size: 0.75rem; padding: 4px 10px;">
-            <i class="fa-regular fa-clock"></i> <span id="clockDisplay">00:00:00 AM</span> | 
-            <i class="fa-regular fa-calendar-days"></i> <span id="dateDisplay">00-00-2026</span>
+    <div class="navbar-row-bottom">
+        <div id="liveDateTime" class="datetime-container">
+            <span id="clockDisplay">00:00</span> | <span id="dateDisplay">00-00-2026</span>
         </div>
-        <div class="user-profile" style="display: flex; gap: 4px; align-items: center;">
-            <button class="lang-btn" id="btnLangEN">EN</button>
-            <button class="lang-btn" id="btnLangHN">HN</button>
-            <span id="userRoleBadge" class="role-badge"></span>
-            <button id="btnLogout" class="btn-action" style="padding: 4px 8px; font-size: 0.8rem;">लॉगआउट</button>
+        <div class="user-profile">
+            <button id="btnLogout" class="btn-action">लॉगआउट</button>
         </div>
     </div>
 </header>
