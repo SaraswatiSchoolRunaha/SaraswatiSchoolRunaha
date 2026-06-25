@@ -1,4 +1,4 @@
- promoteSelectedStudentimport { state, currentUserRole, permissions, translations, icons, fetchSheetData } from './config.js';
+import { state, currentUserRole, permissions, translations, icons, fetchSheetData } from './config.js';
 import { showDashboard } from './dashboard.js';
 import { 
     showAttendanceForm, showAttendanceDashboard, showCorrectionPortal, 
