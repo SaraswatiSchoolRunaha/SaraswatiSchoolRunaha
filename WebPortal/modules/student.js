@@ -45,7 +45,7 @@ export async function renderStudentList() {
 
         if (ids.length === 0) return alert("कम से कम एक छात्र चुनें!");
 
-        const res = await promoteSelectedStudents(ids);
+        const res = await promoteSelectedStudent(ids);
         if (res.status === "success") {
             alert("सफलतापूर्वक प्रमोट किया गया!");
             renderStudentList(); // लिस्ट रीफ्रेश करें
