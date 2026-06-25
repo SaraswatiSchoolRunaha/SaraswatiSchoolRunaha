@@ -24,9 +24,14 @@ export async function promoteSelectedStudent(studentIds, targetClass, targetSess
 // --- UI Rendering ---
 export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
+    
+    // रोमन क्लास लिस्ट जनरेटर
+    const romanClasses = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const generateOptions = () => romanClasses.map(c => `<option value="${c}">${c}</option>`).join('');
 
     contentArea.innerHTML = `
     <style>
+        .promote-title { color: #2c3e50; margin-bottom: 15px; font-weight: bold; }
         .filter-box { padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
         .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .student-table th { background: #4a90e2; color: white; padding: 12px; text-align: left; }
@@ -35,9 +40,10 @@ export async function renderStudentList() {
         .btn-promote { background: #27ae60; }
     </style>
 
+    <div class="promote-title">🎓 छात्रों को प्रमोट करें</div>
     <div class="filter-box">
         <label>Class:</label>
-        <select id="classSelect"><option value="Nursery">Nursery</option><option value="KG1">KG1</option><option value="1">1</option><option value="2">2</option></select>
+        <select id="classSelect">${generateOptions()}</select>
         <label>Medium:</label>
         <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
         <button id="loadListBtn" class="btn-primary">Load List</button>
@@ -53,15 +59,16 @@ export async function renderStudentList() {
             
             if (!students || students.length === 0) return displayArea.innerHTML = "कोई रिकॉर्ड नहीं मिला!";
 
-            let html = `<table class="student-table"><tr><th><input type="checkbox" id="selectAll"></th><th>ID</th><th>Name</th><th>Father's Name</th></tr>`;
+            let html = `<table class="student-table"><tr><th><input type="checkbox" id="selectAll"></th><th>Student ID</th><th>Name</th><th>Father's Name</th></tr>`;
             students.forEach(s => {
-                html += `<tr><td><input type="checkbox" class="studentCheck" value="${s.id}"></td><td>${s.id}</td><td>${s.name}</td><td>${s.father}</td></tr>`;
+                // यहाँ s.studentid (Column Y) का प्रयोग किया गया है
+                html += `<tr><td><input type="checkbox" class="studentCheck" value="${s.studentid}"></td><td>${s.studentid}</td><td>${s.name}</td><td>${s.father}</td></tr>`;
             });
             
             html += `</table>
             <div style="margin-top:20px; padding:15px; background:#f9f9f9; border-radius:8px;">
                 <label>Promote to Class:</label>
-                <select id="targetClass"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                <select id="targetClass">${generateOptions()}</select>
                 <input type="text" id="targetSession" placeholder="Session (e.g. 2026-27)" style="padding:6px; margin:0 10px;">
                 <button id="promoteBtn" class="btn-primary btn-promote">Promote Selected Students</button>
             </div>`;
