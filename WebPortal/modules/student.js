@@ -1,4 +1,4 @@
-import { sheetUrls, translations, state } from './config.js';
+import { sheetUrls } from './config.js';
 
 // 1. फ़िल्टर फंक्शन (इसे बदलने की जरूरत नहीं है)
 export async function getStudentsByFilter(className, medium) {
