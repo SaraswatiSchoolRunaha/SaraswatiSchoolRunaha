@@ -25,9 +25,12 @@ export async function promoteSelectedStudent(studentIds, targetClass, targetSess
 export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
     
-    // रोमन क्लास लिस्ट जनरेटर
+    // डेटा सूचियाँ
     const romanClasses = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-    const generateOptions = () => romanClasses.map(c => `<option value="${c}">${c}</option>`).join('');
+    const sessions = ["2026-27", "2027-28", "2028-29", "2029-30"];
+
+    // जनरेटर फंक्शन
+    const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
 
     contentArea.innerHTML = `
     <style>
@@ -43,7 +46,7 @@ export async function renderStudentList() {
     <div class="promote-title">🎓 छात्रों को प्रमोट करें</div>
     <div class="filter-box">
         <label>Class:</label>
-        <select id="classSelect">${generateOptions()}</select>
+        <select id="classSelect">${generateOptions(romanClasses)}</select>
         <label>Medium:</label>
         <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
         <button id="loadListBtn" class="btn-primary">Load List</button>
@@ -61,16 +64,18 @@ export async function renderStudentList() {
 
             let html = `<table class="student-table"><tr><th><input type="checkbox" id="selectAll"></th><th>Student ID</th><th>Name</th><th>Father's Name</th></tr>`;
             students.forEach(s => {
-                // यहाँ s.studentid (Column Y) का प्रयोग किया गया है
                 html += `<tr><td><input type="checkbox" class="studentCheck" value="${s.studentid}"></td><td>${s.studentid}</td><td>${s.name}</td><td>${s.father}</td></tr>`;
             });
             
             html += `</table>
             <div style="margin-top:20px; padding:15px; background:#f9f9f9; border-radius:8px;">
                 <label>Promote to Class:</label>
-                <select id="targetClass">${generateOptions()}</select>
-                <input type="text" id="targetSession" placeholder="Session (e.g. 2026-27)" style="padding:6px; margin:0 10px;">
-                <button id="promoteBtn" class="btn-primary btn-promote">Promote Selected Students</button>
+                <select id="targetClass">${generateOptions(romanClasses)}</select>
+                
+                <label style="margin-left: 15px;">Session:</label>
+                <select id="targetSession">${generateOptions(sessions)}</select>
+                
+                <button id="promoteBtn" class="btn-primary btn-promote" style="margin-left: 15px;">Promote Selected Students</button>
             </div>`;
             displayArea.innerHTML = html;
         }
@@ -87,7 +92,6 @@ export async function renderStudentList() {
             const targetSession = document.getElementById('targetSession').value;
             
             if (ids.length === 0) return alert("कृपया छात्र चुनें!");
-            if (!targetSession) return alert("कृपया नया सेशन लिखें!");
             
             if (confirm(`क्या आप ${ids.length} छात्रों को Class ${targetClass} (${targetSession}) में प्रमोट करना चाहते हैं?`)) {
                 e.target.innerText = "Processing...";
