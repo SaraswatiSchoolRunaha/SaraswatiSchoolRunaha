@@ -7,11 +7,16 @@ export async function getStudentsByFilter(className, medium) {
     return await response.json();
 }
 
-export async function promoteSelectedStudent(studentIds) {
+export async function promoteSelectedStudent(studentIds, targetClass, targetSession) {
     const response = await fetch(sheetUrls['Database'], {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: 'bulkPromote', ids: studentIds })
+        body: JSON.stringify({ 
+            action: 'bulkPromote', 
+            ids: studentIds,
+            newClass: targetClass,
+            newSession: targetSession 
+        })
     });
     return await response.json();
 }
@@ -20,73 +25,46 @@ export async function promoteSelectedStudent(studentIds) {
 export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
 
-    // 1. बेहतर UI के लिए CSS और Layout
     contentArea.innerHTML = `
     <style>
-        .filter-box { padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
-        .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; }
+        .filter-box { padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .student-table th { background: #4a90e2; color: white; padding: 12px; text-align: left; }
         .student-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .student-table tr:hover { background: #f9f9f9; }
-        .btn-primary { padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        .btn-primary:hover { background: #357abd; }
+        .btn-primary { padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer; }
         .btn-promote { background: #27ae60; }
     </style>
 
     <div class="filter-box">
         <label>Class:</label>
-        <select id="classSelect" style="padding:8px;">
-            <option value="Nursery">Nursery</option>
-            <option value="KG1">KG1</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-        </select>
+        <select id="classSelect"><option value="Nursery">Nursery</option><option value="KG1">KG1</option><option value="1">1</option><option value="2">2</option></select>
         <label>Medium:</label>
-        <select id="mediumSelect" style="padding:8px;">
-            <option value="Hindi">Hindi</option>
-            <option value="English">English</option>
-        </select>
+        <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
         <button id="loadListBtn" class="btn-primary">Load List</button>
     </div>
     <div id="studentDisplayArea"></div>`;
 
-    // 2. Event Delegation
     contentArea.onclick = async (e) => {
-        
-        // Load List Button
+        // Load List
         if (e.target.id === 'loadListBtn') {
-            const className = document.getElementById('classSelect').value;
-            const medium = document.getElementById('mediumSelect').value;
             const displayArea = document.getElementById('studentDisplayArea');
+            displayArea.innerHTML = "Loading...";
+            const students = await getStudentsByFilter(document.getElementById('classSelect').value, document.getElementById('mediumSelect').value);
             
-            displayArea.innerHTML = "<p>Loading students...</p>";
-            
-            const students = await getStudentsByFilter(className, medium);
-            
-            if (!students || students.length === 0) {
-                displayArea.innerHTML = "<p style='color:red;'>कोई रिकॉर्ड नहीं मिला!</p>";
-                return;
-            }
+            if (!students || students.length === 0) return displayArea.innerHTML = "कोई रिकॉर्ड नहीं मिला!";
 
-            let html = `
-            <table class="student-table">
-                <tr>
-                    <th><input type="checkbox" id="selectAll"></th>
-                    <th>ID</th><th>Session</th><th>Name</th><th>Father's Name</th>
-                </tr>`;
-
+            let html = `<table class="student-table"><tr><th><input type="checkbox" id="selectAll"></th><th>ID</th><th>Name</th><th>Father's Name</th></tr>`;
             students.forEach(s => {
-                html += `<tr>
-                    <td><input type="checkbox" class="studentCheck" value="${s.id}"></td>
-                    <td>${s.id}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
-                </tr>`;
+                html += `<tr><td><input type="checkbox" class="studentCheck" value="${s.id}"></td><td>${s.id}</td><td>${s.name}</td><td>${s.father}</td></tr>`;
             });
             
             html += `</table>
-            <div style="margin-top:20px;">
+            <div style="margin-top:20px; padding:15px; background:#f9f9f9; border-radius:8px;">
+                <label>Promote to Class:</label>
+                <select id="targetClass"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                <input type="text" id="targetSession" placeholder="Session (e.g. 2026-27)" style="padding:6px; margin:0 10px;">
                 <button id="promoteBtn" class="btn-primary btn-promote">Promote Selected Students</button>
             </div>`;
-            
             displayArea.innerHTML = html;
         }
 
@@ -95,16 +73,18 @@ export async function renderStudentList() {
             document.querySelectorAll('.studentCheck').forEach(cb => cb.checked = e.target.checked);
         }
 
-        // Promote Logic
+        // Promote Action
         if (e.target.id === 'promoteBtn') {
-            const selected = document.querySelectorAll('.studentCheck:checked');
-            const ids = Array.from(selected).map(cb => cb.value);
+            const ids = Array.from(document.querySelectorAll('.studentCheck:checked')).map(cb => cb.value);
+            const targetClass = document.getElementById('targetClass').value;
+            const targetSession = document.getElementById('targetSession').value;
             
-            if (ids.length === 0) return alert("कृपया कम से कम एक छात्र को चुनें!");
+            if (ids.length === 0) return alert("कृपया छात्र चुनें!");
+            if (!targetSession) return alert("कृपया नया सेशन लिखें!");
             
-            if (confirm(`क्या आप ${ids.length} छात्रों को प्रमोट करना चाहते हैं?`)) {
+            if (confirm(`क्या आप ${ids.length} छात्रों को Class ${targetClass} (${targetSession}) में प्रमोट करना चाहते हैं?`)) {
                 e.target.innerText = "Processing...";
-                const res = await promoteSelectedStudent(ids);
+                const res = await promoteSelectedStudent(ids, targetClass, targetSession);
                 if (res.status === "success") {
                     alert("सफलतापूर्वक प्रमोट किया गया!");
                     document.getElementById('loadListBtn').click(); 
