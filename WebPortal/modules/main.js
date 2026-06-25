@@ -74,7 +74,7 @@ function executeModuleRouting(title) {
     document.getElementById('pageTitle').innerText = translations[state.currentLang][title] || title;
 
     switch(title) {
-         case 'उपस्थिति डैशबोर्ड':
+         case 'छात्र प्रमोट':
              promoteSelectedStudent();
              break;
         case 'उपस्थिति डैशबोर्ड':
