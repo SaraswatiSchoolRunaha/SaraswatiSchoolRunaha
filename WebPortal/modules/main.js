@@ -1,4 +1,4 @@
-import { state, currentUserRole, permissions, translations, icons, fetchSheetData } from './config.js';
+ promoteSelectedStudentimport { state, currentUserRole, permissions, translations, icons, fetchSheetData } from './config.js';
 import { showDashboard } from './dashboard.js';
 import { 
     showAttendanceForm, showAttendanceDashboard, showCorrectionPortal, 
@@ -8,7 +8,7 @@ import {
 import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm, loadTeacherListWithActions } from './teacherAttendance.js';
 import { loadAdminAttendancePanel } from './adminAttendance.js';
 import { loadSalaryDashboard, loadSalaryReport, loadSalaryPayment, loadPayslip } from './salaryManagement.js';
-import {  } from './student.js';
+import { promoteSelectedStudent } from './student.js';
 
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
@@ -74,6 +74,9 @@ function executeModuleRouting(title) {
     document.getElementById('pageTitle').innerText = translations[state.currentLang][title] || title;
 
     switch(title) {
+         case 'उपस्थिति डैशबोर्ड':
+             promoteSelectedStudent();
+             break;
         case 'उपस्थिति डैशबोर्ड':
             showAttendanceDashboard();
             break;
