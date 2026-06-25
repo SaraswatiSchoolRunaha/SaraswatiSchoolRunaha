@@ -8,7 +8,7 @@ export async function getStudentsByFilter(className, medium) {
 }
 
 // 2. प्रमोट फंक्शन (no-cors हटा दिया गया है)
-export async function promoteSelectedStudents(studentIds) {
+export async function promoteSelectedStudent (studentIds) {
     const url = sheetUrls['Database'];
     const response = await fetch(url, {
         method: 'POST',
