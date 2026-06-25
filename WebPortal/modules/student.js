@@ -17,3 +17,24 @@ export async function promoteSelectedStudents(studentIds) {
     });
     return await response.json();
 }
+
+// Main dashboard file mein
+async function renderStudentList() {
+    const className = document.getElementById('classSelect').value;
+    const medium = document.getElementById('mediumSelect').value;
+    
+    const students = await getStudentsByFilter(className, medium);
+    
+    let html = `<table>
+        <tr><th><input type="checkbox" id="selectAll"></th><th>Student ID</th><th>Session</th><th>Name</th><th>Father's Name</th></tr>`;
+    
+    students.forEach(s => {
+        html += `<tr>
+            <td><input type="checkbox" class="studentCheck" value="${s.id}"></td>
+            <td>${s.id}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
+        </tr>`;
+    });
+    html += `</table> <button onclick="processBulkPromotion()">Promote Selected</button>`;
+    
+    document.getElementById('contentArea').innerHTML = html;
+}
