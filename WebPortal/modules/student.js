@@ -20,82 +20,163 @@ export async function promoteSelectedStudent (studentIds) {
 
 // 3. Main Dashboard रेंडरिंग और बटन हैंडलर
 export async function renderStudentList() {
-    const className = document.getElementById('classSelect').value;
-    const medium = document.getElementById('mediumSelect').value;
     const contentArea = document.getElementById('contentArea');
 
-    // 1. लोडिंग स्टेट दिखाएं
-    contentArea.innerHTML = `<div style="padding:20px;">Loading students, please wait...</div>`;
+    // 1. फिल्टर बार का HTML रेंडर करें
+    contentArea.innerHTML = `
+    <div id="filterBar" style="padding:15px; background:#f1f5f9; border-radius:8px; margin-bottom:20px;">
+        <select id="classSelect" style="padding:8px; margin-right:10px;">
+            <option value="Nursery">Nursery</option>
+            <option value="KG1">KG1</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+        <select id="mediumSelect" style="padding:8px; margin-right:10px;">
+            <option value="Hindi">Hindi</option>
+            <option value="English">English</option>
+        </select>
+        <button id="loadListBtn" class="btn-primary" style="padding:8px 20px; cursor:pointer;">Load List</button>
+    </div>
+    <div id="studentDisplayArea"></div>`; // लिस्ट इस एरिया में आएगी
 
-    try {
-        const students = await getStudentsByFilter(className, medium);
+    // 2. पूरे contentArea पर क्लिक मॉनिटर करें (Event Delegation)
+    contentArea.onclick = async (e) => {
+        
+        // जब 'Load List' बटन क्लिक हो
+        if (e.target && e.target.id === 'loadListBtn') {
+            const className = document.getElementById('classSelect').value;
+            const medium = document.getElementById('mediumSelect').value;
+            const displayArea = document.getElementById('studentDisplayArea');
+            
+            displayArea.innerHTML = "Loading...";
+            
+            const students = await getStudentsByFilter(className, medium);
+            
+            if (!students || students.length === 0) {
+                displayArea.innerHTML = "कोई छात्र नहीं मिला!";
+                return;
+            }
 
-        if (!students || students.length === 0) {
-            contentArea.innerHTML = `<div style="padding:20px;">कोई छात्र नहीं मिला!</div>`;
-            return;
+            let html = `
+            <table class="student-table" style="width:100%; border-collapse: collapse;">
+                <tr style="background:#e2e8f0;">
+                    <th style="padding:10px;"><input type="checkbox" id="selectAll"></th>
+                    <th style="padding:10px;">ID</th><th>Session</th><th>Name</th><th>Father's Name</th>
+                </tr>`;
+
+            students.forEach(s => {
+                html += `<tr>
+                    <td style="text-align:center;"><input type="checkbox" class="studentCheck" value="${s.id}"></td>
+                    <td>${s.id}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
+                </tr>`;
+            });
+            
+            html += `</table>
+            <div style="margin-top:20px;">
+                <button id="promoteBtn" class="btn-primary" style="padding:10px 20px;">Promote Selected</button>
+            </div>`;
+            
+            displayArea.innerHTML = html;
         }
 
-        // 2. HTML स्ट्रक्चर तैयार करें
-        let html = `
-        <table class="student-table" style="width:100%; border-collapse: collapse;">
-            <tr style="background:#f1f5f9;">
-                <th style="padding:10px;"><input type="checkbox" id="selectAll"></th>
-                <th style="padding:10px;">ID</th>
-                <th style="padding:10px;">Session</th>
-                <th style="padding:10px;">Name</th>
-                <th style="padding:10px;">Father's Name</th>
-            </tr>`;
+        // 'Select All' चेकबॉक्स
+        if (e.target && e.target.id === 'selectAll') {
+            document.querySelectorAll('.studentCheck').forEach(cb => cb.checked = e.target.checked);
+        }
 
-        students.forEach(s => {
-            html += `<tr>
-                <td style="text-align:center;"><input type="checkbox" class="studentCheck" value="${s.id}"></td>
-                <td style="text-align:center;">${s.id}</td>
-                <td>${s.session}</td>
-                <td>${s.name}</td>
-                <td>${s.father}</td>
-            </tr>`;
-        });
-        
-        html += `</table>
-        <div style="margin-top:20px;">
-            <button id="promoteBtn" class="btn-primary" style="padding:10px 20px; cursor:pointer;">Promote Selected Students</button>
-        </div>`;
-
-        contentArea.innerHTML = html;
-
-        // 3. 'Select All' चेकबॉक्स का लॉजिक
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.studentCheck');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
-
-        // 4. 'Promote' बटन का लॉजिक
-        document.getElementById('promoteBtn').addEventListener('click', async () => {
+        // 'Promote' बटन
+        if (e.target && e.target.id === 'promoteBtn') {
             const selected = document.querySelectorAll('.studentCheck:checked');
             const ids = Array.from(selected).map(cb => cb.value);
-
-            if (ids.length === 0) return alert("कृपया कम से कम एक छात्र को चुनें!");
-
-            if (!confirm(`क्या आप वाकई ${ids.length} छात्रों को प्रमोट करना चाहते हैं?`)) return;
-
-            // बटन को डिसेबल करें ताकि डबल क्लिक न हो
-            const btn = document.getElementById('promoteBtn');
-            btn.innerText = "Processing...";
-            btn.disabled = true;
-
-            const res = await promoteSelectedStudent(ids);
+            if (ids.length === 0) return alert("कम से कम एक छात्र चुनें!");
             
-            if (res.status === "success") {
-                alert("सफलतापूर्वक प्रमोट किया गया!");
-                renderStudentList(); // लिस्ट रीफ्रेश करें
-            } else {
-                alert("एरर: " + (res.message || "Something went wrong"));
-                btn.innerText = "Promote Selected";
-                btn.disabled = false;
+            if (confirm(`क्या आप ${ids.length} छात्रों को प्रमोट करना चाहते हैं?`)) {
+                const res = await promoteSelectedStudent(ids);
+                if (res.status === "success") {
+                    alert("सफलतापूर्वक प्रमोट किया गया!");
+                    document.getElementById('loadListBtn').click(); // लिस्ट को रिफ्रेश करें
+                }
             }
-        });
+        }
+    };
+}export async function renderStudentList() {
+    const contentArea = document.getElementById('contentArea');
 
-    } catch (err) {
-        contentArea.innerHTML = `<div style="color:red; padding:20px;">डेटा लोड करने में समस्या: ${err.message}</div>`;
-    }
+    // 1. फिल्टर बार का HTML रेंडर करें
+    contentArea.innerHTML = `
+    <div id="filterBar" style="padding:15px; background:#f1f5f9; border-radius:8px; margin-bottom:20px;">
+        <select id="classSelect" style="padding:8px; margin-right:10px;">
+            <option value="Nursery">Nursery</option>
+            <option value="KG1">KG1</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+        <select id="mediumSelect" style="padding:8px; margin-right:10px;">
+            <option value="Hindi">Hindi</option>
+            <option value="English">English</option>
+        </select>
+        <button id="loadListBtn" class="btn-primary" style="padding:8px 20px; cursor:pointer;">Load List</button>
+    </div>
+    <div id="studentDisplayArea"></div>`; // लिस्ट इस एरिया में आएगी
+
+    // 2. पूरे contentArea पर क्लिक मॉनिटर करें (Event Delegation)
+    contentArea.onclick = async (e) => {
+        
+        // जब 'Load List' बटन क्लिक हो
+        if (e.target && e.target.id === 'loadListBtn') {
+            const className = document.getElementById('classSelect').value;
+            const medium = document.getElementById('mediumSelect').value;
+            const displayArea = document.getElementById('studentDisplayArea');
+            
+            displayArea.innerHTML = "Loading...";
+            
+            const students = await getStudentsByFilter(className, medium);
+            
+            if (!students || students.length === 0) {
+                displayArea.innerHTML = "कोई छात्र नहीं मिला!";
+                return;
+            }
+
+            let html = `
+            <table class="student-table" style="width:100%; border-collapse: collapse;">
+                <tr style="background:#e2e8f0;">
+                    <th style="padding:10px;"><input type="checkbox" id="selectAll"></th>
+                    <th style="padding:10px;">ID</th><th>Session</th><th>Name</th><th>Father's Name</th>
+                </tr>`;
+
+            students.forEach(s => {
+                html += `<tr>
+                    <td style="text-align:center;"><input type="checkbox" class="studentCheck" value="${s.id}"></td>
+                    <td>${s.id}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
+                </tr>`;
+            });
+            
+            html += `</table>
+            <div style="margin-top:20px;">
+                <button id="promoteBtn" class="btn-primary" style="padding:10px 20px;">Promote Selected</button>
+            </div>`;
+            
+            displayArea.innerHTML = html;
+        }
+
+        // 'Select All' चेकबॉक्स
+        if (e.target && e.target.id === 'selectAll') {
+            document.querySelectorAll('.studentCheck').forEach(cb => cb.checked = e.target.checked);
+        }
+
+        // 'Promote' बटन
+        if (e.target && e.target.id === 'promoteBtn') {
+            const selected = document.querySelectorAll('.studentCheck:checked');
+            const ids = Array.from(selected).map(cb => cb.value);
+            if (ids.length === 0) return alert("कम से कम एक छात्र चुनें!");
+            
+            if (confirm(`क्या आप ${ids.length} छात्रों को प्रमोट करना चाहते हैं?`)) {
+                const res = await promoteSelectedStudent(ids);
+                if (res.status === "success") {
+                    alert("सफलतापूर्वक प्रमोट किया गया!");
+                    document.getElementById('loadListBtn').click(); // लिस्ट को रिफ्रेश करें
+                }
+            }
+        }
+    };
 }
