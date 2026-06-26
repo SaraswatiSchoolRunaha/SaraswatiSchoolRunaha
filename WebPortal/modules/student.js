@@ -33,7 +33,7 @@ export async function renderStudentList() {
     
     // डेटा सूचियाँ
     const romanClasses = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-    const sessions = ["2026-27", "2027-28", "2028-29", "2029-30"];
+    const sessions = ["Select Year", "2027-28", "2028-29", "2029-30"];
 
     // जनरेटर फंक्शन
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
