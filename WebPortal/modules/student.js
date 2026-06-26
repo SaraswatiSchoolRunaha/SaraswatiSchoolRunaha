@@ -27,6 +27,7 @@ export async function promoteSelectedStudent(studentIds, targetClass, targetSess
     }
 }
 
+
 // --- UI Rendering ---
 export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
