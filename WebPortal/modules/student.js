@@ -191,6 +191,10 @@ export async function renderStudentProfile() {
                     <div class="field"><label>Enrollment No</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
                     <div class="field"><label>Mobile Number</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
                     <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" value="${data.subject || ''}"></div>
+                    <div class="field" style="grid-column: span 2;">
+                        <label>Address</label>
+                        <input id="uAddress" value="${data.address || ''}">
+                    </div>
                     
                     <div class="section-title">Bank & Security</div>
                     <div class="field"><label>Aadhar Number</label><input id="uAadhar" value="[Redacted]"></div>
@@ -227,6 +231,7 @@ export async function renderStudentProfile() {
             payload.append("medium", document.getElementById('uMedium').value);
             payload.append("enrolment", document.getElementById('uEnrol').value);
             payload.append("mobile1", document.getElementById('uMobile').value);
+           payload.append("address", document.getElementById('uAddress').value);
             payload.append("subject", document.getElementById('uSubject')?.value || "");
             payload.append("accountnumber", document.getElementById('uBank').value);
             payload.append("ifsc", document.getElementById('uIfsc').value);
