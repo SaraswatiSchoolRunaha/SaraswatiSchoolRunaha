@@ -155,7 +155,7 @@ export async function renderStudentProfile() {
         <button id="searchBtn" style="padding: 15px 30px; background: #2c3e50; color: #fff; border:none; border-radius:10px; cursor:pointer; font-weight: 600;">Search</button>
     </div>
     <div id="formArea"></div>
-</div>
+
 
     contentArea.onclick = async (e) => {
         if (e.target.id === 'searchBtn') {
