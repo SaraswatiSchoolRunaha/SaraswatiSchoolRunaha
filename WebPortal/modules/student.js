@@ -55,7 +55,7 @@ export async function renderStudentList() {
         <label>Class:</label>
         <select id="classSelect">${generateOptions(romanClasses)}</select>
         <label>Medium:</label>
-        <select id="mediumSelect"><option value="MediumSelect">Hindi</option><option value="English">English</option></select>
+        <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
         <button id="loadListBtn" class="btn-primary">Load List</button>
     </div>
     <div id="studentDisplayArea"></div>`;
