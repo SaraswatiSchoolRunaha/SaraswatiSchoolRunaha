@@ -153,21 +153,38 @@ export async function renderStudentProfile() {
                 const res = await fetch(`${sheetUrls['Database']}?action=searchById&studentId=${id}`);
                 const data = await res.json();
                 
-                if(data.status === "found") {
-                    document.getElementById('displayArea').innerHTML = `
-                    <form id="editForm" class="grid-form">
-                        <div class="input-group"><label>नाम:</label><input type="text" id="uName" value="${data.name || ''}"></div>
-                        <div class="input-group"><label>पिता का नाम:</label><input type="text" id="uFather" value="${data.father || ''}"></div>
-                        <div class="input-group"><label>माता का नाम:</label><input type="text" id="uMother" value="${data.mother || ''}"></div>
-                        <div class="input-group"><label>कक्षा:</label><input type="text" id="uClass" value="${data.className || ''}"></div>
-                        <div class="input-group"><label>मोबाइल:</label><input type="text" id="uMobile" value="${data.mobile1 || ''}"></div>
-                        <div class="input-group"><label>आधार नंबर:</label><input type="text" id="uAdhar" value="[Aadhaar Redacted]"></div>
-                        <div class="input-group"><label>बैंक खाता:</label><input type="text" id="uBank" value="${data.accountnumber || ''}"></div>
-                        <div class="input-group"><label>IFSC:</label><input type="text" id="uIfsc" value="${data.ifsc || ''}"></div>
-                        <div class="input-group" style="grid-column: span 2;"><label>पता:</label><input type="text" id="uAddress" value="${data.address || ''}"></div>
-                        <button type="button" id="saveBtn" class="btn-action">प्रोफ़ाइल सुरक्षित करें (Save Changes)</button>
-                    </form>`;
-                } else {
+               if(data.status === "found") {
+    document.getElementById('displayArea').innerHTML = `
+    <form id="editForm" class="grid-form">
+        <!-- फोटो बॉक्स -->
+        <div style="grid-column: span 2; text-align:center; padding:10px;">
+            <img src="${data.photo || ''}" style="width:120px; height:150px; border:2px solid #ddd; border-radius:10px;" alt="Photo">
+        </div>
+
+        <!-- 1. केवल देखने योग्य (ReadOnly) फील्ड्स -->
+        <div class="input-group"><label>Student ID:</label><input type="text" value="${data.studentId}" disabled></div>
+        <div class="input-group"><label>Session:</label><input type="text" value="${data.session || ''}" disabled></div>
+        <div class="input-group"><label>DOB:</label><input type="text" value="${data.dob || ''}" disabled></div>
+        <div class="input-group"><label>Medium:</label><input type="text" value="${data.medium || ''}" disabled></div>
+        <div class="input-group"><label>Gender:</label><input type="text" value="${data.gender || ''}" disabled></div>
+        <div class="input-group"><label>Cast:</label><input type="text" value="${data.category || ''}" disabled></div>
+        <div class="input-group"><label>Subject:</label><input type="text" value="${data.subject || ''}" disabled></div>
+        <div class="input-group"><label>Aadhaar:</label><input type="text" value="[Aadhaar Redacted]" disabled></div>
+        <div class="input-group"><label>Samagra ID:</label><input type="text" value="${data.samgra || ''}" disabled></div>
+
+        <!-- 2. अपडेट करने योग्य फील्ड्स -->
+        <div class="input-group"><label>नाम:</label><input type="text" id="uName" value="${data.name || ''}"></div>
+        <div class="input-group"><label>पिता का नाम:</label><input type="text" id="uFather" value="${data.father || ''}"></div>
+        <div class="input-group"><label>माता का नाम:</label><input type="text" id="uMother" value="${data.mother || ''}"></div>
+        <div class="input-group"><label>कक्षा:</label><input type="text" id="uClass" value="${data.className || ''}"></div>
+        <div class="input-group"><label>मोबाइल:</label><input type="text" id="uMobile" value="${data.mobile1 || ''}"></div>
+        <div class="input-group"><label>बैंक खाता:</label><input type="text" id="uBank" value="${data.accountnumber || ''}"></div>
+        <div class="input-group"><label>IFSC:</label><input type="text" id="uIfsc" value="${data.ifsc || ''}"></div>
+        <div class="input-group" style="grid-column: span 2;"><label>पूरा पता:</label><input type="text" id="uAddress" value="${data.address || ''}"></div>
+        
+        <button type="button" id="saveBtn" class="btn-action">अपडेट सुरक्षित करें</button>
+    </form>`;
+        } else {
                     document.getElementById('displayArea').innerHTML = `<p style="color:red; text-align:center;">${data.message}</p>`;
                 }
             } catch (err) {
