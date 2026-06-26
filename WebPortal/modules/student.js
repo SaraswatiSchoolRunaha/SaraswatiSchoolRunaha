@@ -115,7 +115,6 @@ export async function renderStudentList() {
     };
 }
 
-import { sheetUrls } from './config.js';
 
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
