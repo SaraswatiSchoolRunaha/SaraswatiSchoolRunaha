@@ -77,7 +77,7 @@ function executeModuleRouting(title) {
          case 'छात्र प्रमोट':
             renderStudentList();
              break;
-        case 'छात्र प्रमोट':
+        case 'छात्र प्रोफ़ाइल':
            renderStudentProfile();
              break;
         case 'उपस्थिति डैशबोर्ड':
