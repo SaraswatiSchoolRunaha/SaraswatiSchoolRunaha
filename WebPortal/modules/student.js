@@ -121,34 +121,37 @@ export async function renderStudentProfile() {
 
     contentArea.innerHTML = `
     <style>
-        .profile-wrapper { max-width: 950px; margin: 30px auto; background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 25px; }
-        .p-header { background: #357abd; color: white; padding: 20px; text-align: center; font-size: 22px; font-weight: 700; border-radius: 12px; margin-bottom: 25px; }
+        .profile-wrapper { max-width: 950px; margin: 30px auto; background: #f8f9fa; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; }
+        .p-header { background: linear-gradient(135deg, #357abd, #2c3e50); color: white; padding: 25px; text-align: center; font-size: 24px; font-weight: 700; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(53, 122, 189, 0.3); }
         
-        /* Layout Grid: 3 columns (2 for form, 1 for photo) */
-        .main-layout { display: grid; grid-template-columns: 1fr 1fr 160px; gap: 20px; align-items: start; }
-        .form-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; grid-column: span 2; }
+        .main-layout { display: grid; grid-template-columns: 1fr 220px; gap: 30px; align-items: start; }
         
-        .photo-section img { width: 150px; height: 150px; border-radius: 10px; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); object-fit: cover; }
+        /* Form Box */
+        .form-fields { background: white; padding: 25px; border-radius: 15px; border: 1px solid #eee; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* Photo Box */
+        .photo-section { background: white; padding: 20px; border-radius: 15px; border: 1px solid #eee; text-align: center; }
+        .photo-section img { width: 180px; height: 180px; border-radius: 12px; border: 4px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.15); object-fit: cover; margin-bottom: 15px; }
         
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 11px; font-weight: 800; color: #555; margin-bottom: 6px; text-transform: uppercase; }
-        .field input, .field select { padding: 11px; border: 1.5px solid #dcdfe6; border-radius: 8px; font-size: 14px; }
+        .field label { font-size: 11px; font-weight: 700; color: #7f8c8d; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .field input, .field select { padding: 12px; border: 1.5px solid #e1e8ed; border-radius: 10px; font-size: 14px; background: #fafafa; transition: 0.3s; }
+        .field input:focus { border-color: #357abd; background: #fff; outline: none; }
         
-        .section-title { grid-column: span 2; font-size: 14px; font-weight: bold; color: #357abd; border-bottom: 2px solid #eef2f7; padding: 10px 0 5px 0; margin-top: 15px; text-transform: uppercase; }
-        .action-btn { grid-column: span 2; padding: 14px 30px; background: #27ae60; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: fit-content; margin-top: 15px; }
+        .section-title { grid-column: span 2; font-size: 15px; font-weight: 700; color: #357abd; border-left: 4px solid #357abd; padding-left: 10px; margin: 15px 0 5px 0; text-transform: uppercase; }
         
-        @media (max-width: 850px) { 
-            .main-layout { grid-template-columns: 1fr; }
-            .form-fields { grid-column: span 1; }
-            .photo-section { order: -1; text-align: center; margin-bottom: 20px; }
-        }
+        .action-btn { grid-column: span 2; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; margin-top: 10px; }
+        .action-btn:hover { background: #219150; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
+        .change-photo-btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; }
+        
+        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
     </style>
 
     <div class="profile-wrapper">
         <div class="p-header">🎓 Student Profile Management</div>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <input id="studentId" placeholder="Enter Student ID..." style="flex:1; padding:12px; border:1px solid #ddd; border-radius:8px;">
-            <button id="searchBtn" style="padding:12px 25px; background:#2c3e50; color:#fff; border:none; border-radius:8px; cursor:pointer;">Search</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 30px;">
+            <input id="studentId" placeholder="Search by Student ID..." style="flex:1; padding:15px; border:1px solid #ddd; border-radius:10px; font-size: 16px;">
+            <button id="searchBtn" style="padding:0 30px; background:#2c3e50; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight: 600;">Search</button>
         </div>
         <div id="formArea"></div>
     </div>`;
@@ -159,7 +162,7 @@ export async function renderStudentProfile() {
             if (!id) return alert("Enter ID");
             
             const formArea = document.getElementById('formArea');
-            formArea.innerHTML = "<p style='text-align:center;'>Loading...</p>";
+            formArea.innerHTML = "<p style='text-align:center; padding:50px;'>Loading profile...</p>";
 
             const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}`);
             const data = await res.json();
@@ -195,23 +198,18 @@ export async function renderStudentProfile() {
                     <div class="field"><label>IFSC Code</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
 
                     <button class="action-btn" id="saveBtn">Update Record</button>
-               <div class="photo-section">
-                    <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
-                    <input type="file" id="photoInput" style="display:none" accept="image/*">
-                    <button class="action-btn" style="background:#3498db; width:100%; margin-top:10px;" onclick="document.getElementById('photoInput').click()">Change Photo</button>
-                </div>
                 </div>
                 
-                <div class="photo-section"><img src="${data.photo || 'https://via.placeholder.com/150'}"></div>
+                <div class="photo-section">
+                    <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
+                    <input type="file" id="photoInput" style="display:none" accept="image/*">
+                    <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">Change Photo</button>
+                </div>
             </div>
-            <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
+            <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold; font-size:16px;"></div>`;
         }
 
-
-
-
-        
-
+        // Save logic remains the same...
         if (e.target.id === 'saveBtn') {
             const btn = e.target;
             btn.innerText = "Updating...";
