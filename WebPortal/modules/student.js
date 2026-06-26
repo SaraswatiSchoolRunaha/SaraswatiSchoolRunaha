@@ -17,11 +17,20 @@ export async function promoteSelectedStudent(studentIds, targetClass, targetSess
     formData.append("newSession", targetSession);
 
     const response = await fetch(sheetUrls['Database'], {
-        method: "POST",
-        body: formData
-    });
+    method: "POST",
+    body: formData
+});
 
-    return await response.json();
+// 1. पहले रिस्पांस को टेक्स्ट के रूप में लें
+const textResponse = await response.text();
+
+try {
+    // 2. अब कोशिश करें कि इसे JSON में बदलें
+    return JSON.parse(textResponse);
+} catch (e) {
+    // 3. अगर JSON नहीं बना, तो कंसोल में साफ़-साफ़ देखें कि सर्वर ने क्या गलती भेजी है
+    console.error("सर्वर से गलत डेटा आया है:", textResponse);
+    throw new Error("सर्वर से JSON डेटा नहीं मिला। रिस्पांस देखें: " + textResponse);
 }
 
 // --- UI Rendering ---
@@ -110,3 +119,5 @@ export async function renderStudentList() {
         }
     };
 }
+
+
