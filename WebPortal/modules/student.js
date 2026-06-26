@@ -8,29 +8,26 @@ export async function getStudentsByFilter(className, medium) {
 }
 
 export async function promoteSelectedStudent(studentIds, targetClass, targetSession) {
-
-    const formData = new FormData();
-
-    formData.append("action", "bulkPromote");
-    formData.append("ids", JSON.stringify(studentIds));
-    formData.append("newClass", targetClass);
-    formData.append("newSession", targetSession);
-
     const response = await fetch(sheetUrls['Database'], {
-    method: "POST",
-    body: formData
-});
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json" // यह बताना जरूरी है कि आप JSON भेज रहे हैं
+        },
+        body: JSON.stringify({
+            action: "bulkPromote",
+            ids: studentIds, // Array ही भेजें, stringify करने की जरूरत नहीं
+            newClass: targetClass,
+            newSession: targetSession
+        })
+    });
 
-// 1. पहले रिस्पांस को टेक्स्ट के रूप में लें
-const textResponse = await response.text();
-
-try {
-    // 2. अब कोशिश करें कि इसे JSON में बदलें
-    return JSON.parse(textResponse);
-} catch (e) {
-    // 3. अगर JSON नहीं बना, तो कंसोल में साफ़-साफ़ देखें कि सर्वर ने क्या गलती भेजी है
-    console.error("सर्वर से गलत डेटा आया है:", textResponse);
-    throw new Error("सर्वर से JSON डेटा नहीं मिला। रिस्पांस देखें: " + textResponse);
+    const textResponse = await response.text();
+    try {
+        return JSON.parse(textResponse);
+    } catch (e) {
+        console.error("सर्वर का रिस्पांस जो JSON नहीं है:", textResponse);
+        throw new Error("सर्वर से गलत रिस्पांस मिला।");
+    }
 }
 
 // --- UI Rendering ---
