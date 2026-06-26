@@ -69,7 +69,7 @@ export async function renderStudentList() {
             
             if (!students || students.length === 0) return displayArea.innerHTML = "कोई रिकॉर्ड नहीं मिला!";
 
-            let html = `<table class="student-table"><tr><th><input type="checkbox" id="selectAll"></th><th>Student ID</th><th>Name</th><th>Father's Name</th></tr>`;
+            let html = `<table class="student-table"><tr><th><input type="checkbox" id="selectAll"></th><th>Student ID</th><th>Session</th><th>Name</th><th>Father's Name</th></tr>`;
             students.forEach(s => {
                 html += `<tr><td><input type="checkbox" class="studentCheck" value="${s.studentid}"></td><td>${s.studentid}</td><td>${s.name}</td><td>${s.father}</td></tr>`;
             });
