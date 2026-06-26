@@ -145,11 +145,16 @@ export async function renderStudentProfile() {
                 if(data.status === "found") {
                     document.getElementById('displayArea').innerHTML = `
                     <form id="editForm" style="display:grid; gap:15px;">
-                        <div><label>नाम:</label><input type="text" id="uName" value="${data.name}" style="width:100%; padding:8px;"></div>
-                        <div><label>पिता का नाम:</label><input type="text" id="uFather" value="${data.father}" style="width:100%; padding:8px;"></div>
-                        <div><label>कक्षा:</label><input type="text" id="uClass" value="${data.className}" style="width:100%; padding:8px;"></div>
-                        <div><label>मोबाइल:</label><input type="text" id="uMobile" value="${data.mobile}" style="width:100%; padding:8px;"></div>
-                        <button type="button" id="saveBtn" style="padding:12px; background:#27ae60; color:white; border:none; border-radius:5px; cursor:pointer;">अपडेट सुरक्षित करें (Save)</button>
+                        <div class="input-group"><label>नाम:</label><input type="text" id="uName" value="${data.name || ''}"></div>
+                        <div class="input-group"><label>पिता का नाम:</label><input type="text" id="uFather" value="${data.father || ''}"></div>
+                        <div class="input-group"><label>माता का नाम:</label><input type="text" id="uMother" value="${data.mother || ''}"></div>
+                        <div class="input-group"><label>कक्षा:</label><input type="text" id="uClass" value="${data.className || ''}"></div>
+                        <div class="input-group"><label>मोबाइल:</label><input type="text" id="uMobile" value="${data.mobile1 || ''}"></div>
+                        <div class="input-group"><label>आधार नंबर:</label><input type="text" id="uAdhar" value="${data.adhar || ''}"></div>
+                        <div class="input-group"><label>बैंक खाता:</label><input type="text" id="uBank" value="${data.accountnumber || ''}"></div>
+                        <div class="input-group"><label>IFSC:</label><input type="text" id="uIfsc" value="${data.ifsc || ''}"></div>
+                        <div class="input-group" style="grid-column: span 2;"><label>पता:</label><input type="text" id="uAddress" value="${data.address || ''}"></div>
+                        <button type="button" id="saveBtn" class="btn-action">सभी जानकारी अपडेट करें</button>
                     </form>`;
                 } else {
                     document.getElementById('displayArea').innerHTML = `<p style="color:red;">${data.message}</p>`;
