@@ -154,7 +154,7 @@ export async function renderStudentProfile() {
         <input id="studentId" placeholder="Search by Student ID..." style="flex:1; padding:15px; border:1px solid #ddd; border-radius:10px; font-size: 16px;">
         <button id="searchBtn" style="padding: 15px 30px; background: #2c3e50; color: #fff; border:none; border-radius:10px; cursor:pointer; font-weight: 600;">Search</button>
     </div>
-    <div id="formArea"></div>
+    <div id="formArea"></div>`;
 
 
     contentArea.onclick = async (e) => {
