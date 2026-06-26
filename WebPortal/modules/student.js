@@ -10,12 +10,9 @@ export async function getStudentsByFilter(className, medium) {
 export async function promoteSelectedStudent(studentIds, targetClass, targetSession) {
     const response = await fetch(sheetUrls['Database'], {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json" // यह बताना जरूरी है कि आप JSON भेज रहे हैं
-        },
         body: JSON.stringify({
             action: "bulkPromote",
-            ids: studentIds, // Array ही भेजें, stringify करने की जरूरत नहीं
+            ids: studentIds,
             newClass: targetClass,
             newSession: targetSession
         })
@@ -25,8 +22,8 @@ export async function promoteSelectedStudent(studentIds, targetClass, targetSess
     try {
         return JSON.parse(textResponse);
     } catch (e) {
-        console.error("सर्वर का रिस्पांस जो JSON नहीं है:", textResponse);
-        throw new Error("सर्वर से गलत रिस्पांस मिला।");
+        console.error("Server response:", textResponse);
+        throw new Error("Invalid server response");
     }
 }
 
