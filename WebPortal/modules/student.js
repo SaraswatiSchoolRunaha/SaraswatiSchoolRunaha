@@ -122,12 +122,15 @@ export async function renderStudentProfile() {
     contentArea.innerHTML = `
     <style>
         .profile-wrapper { max-width: 900px; margin: 30px auto; background: #ffffff; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        .p-header { background: linear-gradient(135deg, #4a90e2, #357abd); color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: 700; }
+        .p-header { background: #357abd; color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: 700; }
         .form-grid { padding: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 11px; font-weight: 700; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; }
         .field input, .field select { padding: 10px; border: 1.5px solid #dee2e6; border-radius: 8px; font-size: 14px; }
-        .action-btn { grid-column: span 2; padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; width: fit-content; justify-self: center; font-weight: bold; }
+        .photo-section { grid-column: span 2; text-align: center; margin-bottom: 15px; }
+        .photo-section img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #357abd; object-fit: cover; }
+        .section-title { grid-column: span 2; font-weight: bold; color: #357abd; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 10px; }
+        .action-btn { grid-column: span 2; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .action-btn { grid-column: span 1; } }
     </style>
 
@@ -150,49 +153,37 @@ export async function renderStudentProfile() {
 
             const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}`);
             const data = await res.json();
-
             if (data.status !== "found") return formArea.innerHTML = `<p style="color:red; text-align:center;">${data.message}</p>`;
 
             formArea.innerHTML = `
             <div class="form-grid">
-                <div class="field"><label>Student Name</label><input id="uName" value="${data.name || ''}"></div>
-                <div class="field"><label>Enrollment No</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
+                <div class="photo-section"><img src="${data.photo || 'https://via.placeholder.com/150'}"><br><small>Profile Photo</small></div>
                 
+                <div class="section-title">Personal Information</div>
+                <div class="field"><label>Student ID</label><input value="${data.studentId}" disabled></div>
+                <div class="field"><label>Samagra ID</label><input id="uSamagra" value="${data.samgra || ''}"></div>
+                <div class="field"><label>Student Name</label><input id="uName" value="${data.name || ''}"></div>
+                <div class="field"><label>Father Name</label><input id="uFather" value="${data.father || ''}"></div>
+                <div class="field"><label>Mother Name</label><input id="uMother" value="${data.mother || ''}"></div>
+                <div class="field"><label>Date of Birth</label><input id="uDob" type="date" value="${data.dob || ''}"></div>
+                <div class="field"><label>Gender</label><select id="uGender"><option ${data.gender=='Male'?'selected':''}>Male</option><option ${data.gender=='Female'?'selected':''}>Female</option></select></div>
+                <div class="field"><label>Category</label><select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select></div>
+
+                <div class="section-title">Academic & Contact</div>
                 <div class="field"><label>Class</label>
                     <select id="uClass" onchange="window.toggleSub()">
-                        <option value="Nurssary" ${data.class == 'Nurssary' ? 'selected' : ''}>Nurssary</option>
-                        <option value="KG1" ${data.class == 'KG1' ? 'selected' : ''}>KG1</option>
-                        <option value="KG2" ${data.class == 'KG2' ? 'selected' : ''}>KG2</option>
-                        <option value="I" ${data.class == 'I' ? 'selected' : ''}>I</option>
-                        <option value="II" ${data.class == 'II' ? 'selected' : ''}>II</option>
-                        <option value="III" ${data.class == 'III' ? 'selected' : ''}>III</option>
-                        <option value="IV" ${data.class == 'IV' ? 'selected' : ''}>IV</option>
-                        <option value="V" ${data.class == 'V' ? 'selected' : ''}>V</option>
-                        <option value="VI" ${data.class == 'VI' ? 'selected' : ''}>VI</option>
-                        <option value="VII" ${data.class == 'VII' ? 'selected' : ''}>VII</option>
-                        <option value="VIII" ${data.class == 'VIII' ? 'selected' : ''}>VIII</option>
-                        <option value="IX" ${data.class == 'IX' ? 'selected' : ''}>IX</option>
-                         <option value="X" ${data.class == 'X' ? 'selected' : ''}>X</option>
-                        <option value="XI" ${data.class == 'XI' ? 'selected' : ''}>XI</option>
-                        <option value="XII" ${data.class == 'XII' ? 'selected' : ''}>XII</option>
+                        ${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
                     </select>
                 </div>
-
-                <div class="field"><label>Medium</label>
-                    <select id="uMedium"><option ${data.medium=='Hindi'?'selected':''}>Hindi</option><option ${data.medium=='English'?'selected':''}>English</option></select>
-                </div>
-
-                <div class="field"><label>Gender</label>
-                    <select id="uGender"><option ${data.gender=='Male'?'selected':''}>Male</option><option ${data.gender=='Female'?'selected':''}>Female</option></select>
-                </div>
-
-                <div class="field"><label>Category</label>
-                    <select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select>
-                </div>
-
-                <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}">
-                    <label>Subject</label><input id="uSubject" value="${data.subject || ''}">
-                </div>
+                <div class="field"><label>Medium</label><select id="uMedium"><option ${data.medium=='Hindi'?'selected':''}>Hindi</option><option ${data.medium=='English'?'selected':''}>English</option></select></div>
+                <div class="field"><label>Enrollment No</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
+                <div class="field"><label>Mobile Number</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
+                <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" value="${data.subject || ''}"></div>
+                
+                <div class="section-title">Bank & Security</div>
+                <div class="field"><label>Aadhar Number</label><input id="uAadhar" value="${data.aadhar || ''}"></div>
+                <div class="field"><label>Bank Account</label><input id="uBank" value="${data.accountnumber || ''}"></div>
+                <div class="field"><label>IFSC Code</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
 
                 <button class="action-btn" id="saveBtn">Update Record</button>
             </div>
@@ -213,6 +204,7 @@ export async function renderStudentProfile() {
             payload.append("gender", document.getElementById('uGender').value);
             payload.append("category", document.getElementById('uCast').value);
             payload.append("subject", document.getElementById('uSubject')?.value || "");
+            // Add other fields (Father, Mother, Aadhar, etc.) here if needed
 
             const res = await fetch(sheetUrls.Database, { method: "POST", body: payload });
             const result = await res.json();
