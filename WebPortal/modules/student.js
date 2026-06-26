@@ -121,35 +121,21 @@ export async function renderStudentProfile() {
 
     contentArea.innerHTML = `
     <style>
-        .profile-wrapper { max-width: 900px; margin: 30px auto; background: #ffffff; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid #e1e8ed; }
-        .p-header { background: linear-gradient(135deg, #4a90e2, #357abd); color: white; padding: 25px; text-align: center; font-size: 24px; font-weight: 700; letter-spacing: 1px; }
-        .search-area { padding: 25px; display: flex; gap: 12px; background: #f8f9fa; border-bottom: 1px solid #eee; }
-        .search-area input { flex: 1; padding: 12px 20px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; transition: 0.3s; }
-        .search-area input:focus { border-color: #4a90e2; outline: none; }
-        .search-area button { padding: 10px 30px; background: #2c3e50; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .search-area button:hover { background: #34495e; }
-
-        .form-grid { padding: 30px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .profile-wrapper { max-width: 900px; margin: 30px auto; background: #ffffff; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .p-header { background: linear-gradient(135deg, #4a90e2, #357abd); color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: 700; }
+        .form-grid { padding: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 12px; font-weight: 700; color: #7f8c8d; margin-bottom: 8px; text-transform: uppercase; }
-        .field input { padding: 12px; border: 1.5px solid #dee2e6; border-radius: 8px; font-size: 14px; background: #fff; transition: 0.3s; }
-        .field input:focus { border-color: #4a90e2; background: #fff; }
-        .readonly input { background: #f1f3f5; cursor: not-allowed; color: #6c757d; }
-
-        .photo-section { grid-column: span 2; display: flex; justify-content: center; margin-bottom: 10px; }
-        .photo-section img { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #4a90e2; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
-        .full-width { grid-column: span 2; }
-        .action-btn { grid-column: span 2; padding: 16px; background: #27ae60; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .action-btn:hover { background: #219150; transform: translateY(-2px); }
-        .status-msg { grid-column: span 2; text-align: center; font-weight: 600; padding: 10px; border-radius: 8px; }
+        .field label { font-size: 11px; font-weight: 700; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; }
+        .field input, .field select { padding: 10px; border: 1.5px solid #dee2e6; border-radius: 8px; font-size: 14px; }
+        .action-btn { grid-column: span 2; padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; width: fit-content; justify-self: center; font-weight: bold; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .action-btn { grid-column: span 1; } }
     </style>
 
     <div class="profile-wrapper">
-        <div class="p-header">🎓 Student Profile Management</div>
-        <div class="search-area">
-            <input id="studentId" placeholder="Enter Student ID to fetch record...">
-            <button id="searchBtn">Search Profile</button>
+        <div class="p-header">🎓 Student Profile Update</div>
+        <div style="padding: 20px; display: flex; gap: 10px;">
+            <input id="studentId" placeholder="Enter Student ID..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:5px;">
+            <button id="searchBtn" style="padding:10px 20px; background:#2c3e50; color:#fff; border:none; border-radius:5px;">Search</button>
         </div>
         <div id="formArea"></div>
     </div>`;
@@ -157,73 +143,75 @@ export async function renderStudentProfile() {
     contentArea.onclick = async (e) => {
         if (e.target.id === 'searchBtn') {
             const id = document.getElementById('studentId').value.trim();
-            if (!id) return alert("Please enter a Student ID");
+            if (!id) return alert("Enter ID");
             
             const formArea = document.getElementById('formArea');
-            formArea.innerHTML = "<p style='text-align:center; padding:20px;'>Fetching data, please wait...</p>";
+            formArea.innerHTML = "<p style='text-align:center;'>Loading...</p>";
 
             const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}`);
             const data = await res.json();
 
-            if (data.status !== "found") {
-                formArea.innerHTML = `<p style="color:red; text-align:center; padding:20px;">${data.message}</p>`;
-                return;
-            }
+            if (data.status !== "found") return formArea.innerHTML = `<p style="color:red; text-align:center;">${data.message}</p>`;
 
             formArea.innerHTML = `
             <div class="form-grid">
-                <div class="photo-section"><img src="${data.photo || 'https://via.placeholder.com/150'}"></div>
-                <div class="field readonly"><label>Student ID</label><input id="uId" value="${data.studentId}" disabled></div>
-                <div class="field readonly"><label>Session</label><input value="${data.session || 'N/A'}" disabled></div>
-                
                 <div class="field"><label>Student Name</label><input id="uName" value="${data.name || ''}"></div>
-                <div class="field"><label>Father Name</label><input id="uFather" value="${data.father || ''}"></div>
-                <div class="field"><label>Mother Name</label><input id="uMother" value="${data.mother || ''}"></div>
-                <div class="field"><label>Date of Birth</label><input id="uDob" value="${data.dob || ''}"></div>
-                <div class="field"><label>Medium</label><input id="uMedium" value="${data.medium || ''}"></div>
-                <div class="field"><label>Class</label><input id="uClass" value="${data.class || ''}"></div>
-                <div class="field"><label>Gender</label><input id="uGender" value="${data.gender || ''}"></div>
-                <div class="field"><label>Category</label><input id="uCast" value="${data.category || ''}"></div>
-                <div class="field"><label>Subject</label><input id="uSubject" value="${data.subject || ''}"></div>
-                <div class="field full-width"><label>Full Address</label><input id="uAddress" value="${data.address || ''}"></div>
-                <div class="field"><label>Aadhaar Number</label><input id="uAadhaar" value="[Redacted]" disabled></div>
-                <div class="field"><label>Bank Account</label><input id="uBank" value="${data.accountnumber || ''}"></div>
-                <div class="field"><label>IFSC Code</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
-                <div class="field"><label>Mobile Number</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
-                <div class="field"><label>Samagra ID</label><input id="uSamagra" value="${data.samgra || ''}" disabled></div>
+                <div class="field"><label>Enrollment No</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
                 
-                <button class="action-btn" id="saveBtn">💾 Update Student Information</button>
-                <div id="msg" class="status-msg"></div>
-            </div>`;
+                <div class="field"><label>Class</label>
+                    <select id="uClass" onchange="window.toggleSub()">
+                        <option value="9" ${data.class == '9' ? 'selected' : ''}>9th</option>
+                        <option value="10" ${data.class == '10' ? 'selected' : ''}>10th</option>
+                        <option value="11" ${data.class == '11' ? 'selected' : ''}>11th</option>
+                        <option value="12" ${data.class == '12' ? 'selected' : ''}>12th</option>
+                    </select>
+                </div>
+
+                <div class="field"><label>Medium</label>
+                    <select id="uMedium"><option ${data.medium=='Hindi'?'selected':''}>Hindi</option><option ${data.medium=='English'?'selected':''}>English</option></select>
+                </div>
+
+                <div class="field"><label>Gender</label>
+                    <select id="uGender"><option ${data.gender=='Male'?'selected':''}>Male</option><option ${data.gender=='Female'?'selected':''}>Female</option></select>
+                </div>
+
+                <div class="field"><label>Category</label>
+                    <select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select>
+                </div>
+
+                <div class="field" id="subField" style="display:${(data.class=='11'||data.class=='12')?'flex':'none'}">
+                    <label>Subject</label><input id="uSubject" value="${data.subject || ''}">
+                </div>
+
+                <button class="action-btn" id="saveBtn">Update Record</button>
+            </div>
+            <div id="msg" style="text-align:center; padding-bottom:20px;"></div>`;
         }
 
         if (e.target.id === 'saveBtn') {
             const btn = e.target;
-            btn.innerText = "Processing...";
+            btn.innerText = "Saving...";
             
             const payload = new URLSearchParams();
             payload.append("action", "update");
-            payload.append("appNo", document.getElementById('uId').value);
+            payload.append("appNo", document.getElementById('studentId').value);
             payload.append("studentName", document.getElementById('uName').value);
-            payload.append("fatherName", document.getElementById('uFather').value);
-            payload.append("motherName", document.getElementById('uMother').value);
-            payload.append("dob", document.getElementById('uDob').value);
-            payload.append("medium", document.getElementById('uMedium').value);
+            payload.append("enrolment", document.getElementById('uEnrol').value);
             payload.append("class", document.getElementById('uClass').value);
+            payload.append("medium", document.getElementById('uMedium').value);
             payload.append("gender", document.getElementById('uGender').value);
             payload.append("category", document.getElementById('uCast').value);
-            payload.append("subject", document.getElementById('uSubject').value);
-            payload.append("address", document.getElementById('uAddress').value);
-            payload.append("accountnumber", document.getElementById('uBank').value);
-            payload.append("ifsc", document.getElementById('uIfsc').value);
-            payload.append("mobile1", document.getElementById('uMobile').value);
+            payload.append("subject", document.getElementById('uSubject')?.value || "");
 
             const res = await fetch(sheetUrls.Database, { method: "POST", body: payload });
             const result = await res.json();
-            
             document.getElementById('msg').innerText = result.message;
-            document.getElementById('msg').style.color = result.status === "success" ? "green" : "red";
-            btn.innerText = "💾 Update Student Information";
+            btn.innerText = "Update Record";
         }
+    };
+
+    window.toggleSub = () => {
+        const c = document.getElementById('uClass').value;
+        document.getElementById('subField').style.display = (c == '11' || c == '12') ? 'flex' : 'none';
     };
 }
