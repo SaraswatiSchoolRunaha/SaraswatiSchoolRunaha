@@ -160,10 +160,21 @@ export async function renderStudentProfile() {
                 
                 <div class="field"><label>Class</label>
                     <select id="uClass" onchange="window.toggleSub()">
-                        <option value="9" ${data.class == '9' ? 'selected' : ''}>9th</option>
-                        <option value="10" ${data.class == '10' ? 'selected' : ''}>10th</option>
-                        <option value="11" ${data.class == '11' ? 'selected' : ''}>11th</option>
-                        <option value="12" ${data.class == '12' ? 'selected' : ''}>12th</option>
+                        <option value="Nurssary" ${data.class == 'Nurssary' ? 'selected' : ''}>Nurssary</option>
+                        <option value="KG1" ${data.class == 'KG1' ? 'selected' : ''}>KG1</option>
+                        <option value="KG2" ${data.class == 'KG2' ? 'selected' : ''}>KG2</option>
+                        <option value="I" ${data.class == 'I' ? 'selected' : ''}>I</option>
+                        <option value="II" ${data.class == 'II' ? 'selected' : ''}>II</option>
+                        <option value="III" ${data.class == 'III' ? 'selected' : ''}>III</option>
+                        <option value="IV" ${data.class == 'IV' ? 'selected' : ''}>IV</option>
+                        <option value="V" ${data.class == 'V' ? 'selected' : ''}>V</option>
+                        <option value="VI" ${data.class == 'VI' ? 'selected' : ''}>VI</option>
+                        <option value="VII" ${data.class == 'VII' ? 'selected' : ''}>VII</option>
+                        <option value="VIII" ${data.class == 'VIII' ? 'selected' : ''}>VIII</option>
+                        <option value="IX" ${data.class == 'IX' ? 'selected' : ''}>IX</option>
+                         <option value="X" ${data.class == 'X' ? 'selected' : ''}>X</option>
+                        <option value="XI" ${data.class == 'XI' ? 'selected' : ''}>XI</option>
+                        <option value="XII" ${data.class == 'XII' ? 'selected' : ''}>XII</option>
                     </select>
                 </div>
 
@@ -179,7 +190,7 @@ export async function renderStudentProfile() {
                     <select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select>
                 </div>
 
-                <div class="field" id="subField" style="display:${(data.class=='11'||data.class=='12')?'flex':'none'}">
+                <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}">
                     <label>Subject</label><input id="uSubject" value="${data.subject || ''}">
                 </div>
 
@@ -212,6 +223,6 @@ export async function renderStudentProfile() {
 
     window.toggleSub = () => {
         const c = document.getElementById('uClass').value;
-        document.getElementById('subField').style.display = (c == '11' || c == '12') ? 'flex' : 'none';
+        document.getElementById('subField').style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
     };
 }
