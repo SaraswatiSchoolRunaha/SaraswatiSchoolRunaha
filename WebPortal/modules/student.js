@@ -115,28 +115,39 @@ export async function renderStudentList() {
     };
 }
 
-
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
     
-    // UI डिज़ाइन: एक व्यवस्थित फॉर्म
     contentArea.innerHTML = `
-    <div style="max-width: 600px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-        <h2 style="color: #2c3e50; text-align: center;">🎓 छात्र प्रोफाइल</h2>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <input type="text" id="sId" placeholder="Student ID डालें" style="flex:1; padding:10px; border:1px solid #ddd; border-radius:5px;">
-            <button id="searchBtn" style="padding:10px 20px; background:#4a90e2; color:white; border:none; border-radius:5px; cursor:pointer;">Search</button>
+    <style>
+        .profile-container { max-width: 800px; margin: 30px auto; padding: 30px; background: #f9f9f9; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 5px solid #4a90e2; }
+        .profile-header { text-align: center; margin-bottom: 25px; color: #2c3e50; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 30px; }
+        .search-box input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; }
+        .search-box input:focus { border-color: #4a90e2; }
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-group label { display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .btn-action { grid-column: span 2; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .btn-action:hover { background: #219150; }
+        .btn-search { padding: 10px 25px; background: #4a90e2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    </style>
+
+    <div class="profile-container">
+        <h2 class="profile-header">🎓 छात्र प्रोफाइल प्रबंधन</h2>
+        <div class="search-box">
+            <input type="text" id="sId" placeholder="यहाँ Student ID दर्ज करें...">
+            <button id="searchBtn" class="btn-search">Search</button>
         </div>
         <div id="displayArea"></div>
     </div>`;
 
     contentArea.onclick = async (e) => {
-        // 1. सर्च लॉजिक
         if (e.target.id === 'searchBtn') {
             const id = document.getElementById('sId').value;
             if(!id) return alert("कृपया Student ID दर्ज करें!");
             
-            document.getElementById('displayArea').innerHTML = "Loading...";
+            document.getElementById('displayArea').innerHTML = "<p style='text-align:center;'>प्रोफ़ाइल ढूँढ रहे हैं...</p>";
             
             try {
                 const res = await fetch(`${sheetUrls['Database']}?action=searchById&studentId=${id}`);
@@ -144,38 +155,42 @@ export async function renderStudentProfile() {
                 
                 if(data.status === "found") {
                     document.getElementById('displayArea').innerHTML = `
-                    <form id="editForm" style="display:grid; gap:15px;">
+                    <form id="editForm" class="grid-form">
                         <div class="input-group"><label>नाम:</label><input type="text" id="uName" value="${data.name || ''}"></div>
                         <div class="input-group"><label>पिता का नाम:</label><input type="text" id="uFather" value="${data.father || ''}"></div>
                         <div class="input-group"><label>माता का नाम:</label><input type="text" id="uMother" value="${data.mother || ''}"></div>
                         <div class="input-group"><label>कक्षा:</label><input type="text" id="uClass" value="${data.className || ''}"></div>
                         <div class="input-group"><label>मोबाइल:</label><input type="text" id="uMobile" value="${data.mobile1 || ''}"></div>
-                        <div class="input-group"><label>आधार नंबर:</label><input type="text" id="uAdhar" value="${data.adhar || ''}"></div>
+                        <div class="input-group"><label>आधार नंबर:</label><input type="text" id="uAdhar" value="[Aadhaar Redacted]"></div>
                         <div class="input-group"><label>बैंक खाता:</label><input type="text" id="uBank" value="${data.accountnumber || ''}"></div>
                         <div class="input-group"><label>IFSC:</label><input type="text" id="uIfsc" value="${data.ifsc || ''}"></div>
                         <div class="input-group" style="grid-column: span 2;"><label>पता:</label><input type="text" id="uAddress" value="${data.address || ''}"></div>
-                        <button type="button" id="saveBtn" class="btn-action">सभी जानकारी अपडेट करें</button>
+                        <button type="button" id="saveBtn" class="btn-action">प्रोफ़ाइल सुरक्षित करें (Save Changes)</button>
                     </form>`;
                 } else {
-                    document.getElementById('displayArea').innerHTML = `<p style="color:red;">${data.message}</p>`;
+                    document.getElementById('displayArea').innerHTML = `<p style="color:red; text-align:center;">${data.message}</p>`;
                 }
             } catch (err) {
-                alert("सर्च करने में एरर आया!");
+                alert("सर्वर से संपर्क करने में समस्या आई!");
             }
         }
 
-        // 2. अपडेट लॉजिक
         if (e.target.id === 'saveBtn') {
             const payload = {
-                action: "updateById",
-                studentId: document.getElementById('sId').value,
-                name: document.getElementById('uName').value,
-                father: document.getElementById('uFather').value,
-                className: document.getElementById('uClass').value,
-                mobile: document.getElementById('uMobile').value
+                action: "update",
+                appNo: document.getElementById('sId').value,
+                studentName: document.getElementById('uName').value,
+                fatherName: document.getElementById('uFather').value,
+                motherName: document.getElementById('uMother').value,
+                class: document.getElementById('uClass').value,
+                mobile1: document.getElementById('uMobile').value,
+                adhar: "[Aadhaar Redacted]",
+                accountnumber: document.getElementById('uBank').value,
+                ifsc: document.getElementById('uIfsc').value,
+                address: document.getElementById('uAddress').value
             };
             
-            e.target.innerText = "Updating...";
+            e.target.innerText = "अपडेट हो रहा है...";
             
             const res = await fetch(sheetUrls['Database'], {
                 method: "POST",
@@ -183,7 +198,7 @@ export async function renderStudentProfile() {
             });
             const result = await res.json();
             alert(result.message);
-            e.target.innerText = "अपडेट सुरक्षित करें (Save)";
+            e.target.innerText = "प्रोफ़ाइल सुरक्षित करें (Save Changes)";
         }
     };
 }
