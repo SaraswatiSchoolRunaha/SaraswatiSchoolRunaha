@@ -8,17 +8,17 @@ export async function getStudentsByFilter(className, medium) {
 }
 
 export async function promoteSelectedStudent(studentIds, targetClass, targetSession) {
+
+    const formData = new FormData();
+
+    formData.append("action", "bulkPromote");
+    formData.append("ids", JSON.stringify(studentIds));
+    formData.append("newClass", targetClass);
+    formData.append("newSession", targetSession);
+
     const response = await fetch(sheetUrls['Database'], {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            action: "bulkPromote",
-            ids: studentIds, // यहाँ Array सीधे भेजें
-            newClass: targetClass,
-            newSession: targetSession
-        })
+        body: formData
     });
 
     return await response.json();
