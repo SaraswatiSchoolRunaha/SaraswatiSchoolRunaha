@@ -150,19 +150,10 @@ export async function renderStudentProfile() {
     <div class="profile-wrapper">
         <div class="p-header">🎓 Student Profile Management</div>
         <div style="display: flex; gap: 10px; margin-bottom: 30px;">
+            <div class="search-wrapper">
             <input id="studentId" placeholder="Search by Student ID..." style="flex:1; padding:15px; border:1px solid #ddd; border-radius:10px; font-size: 16px;">
-           <button id="searchBtn" style="
-            padding: 15px 30px; 
-            background: #2c3e50; 
-            color: #fff; 
-            border: none; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            width: 100%; /* Mobile par full width lega */
-            max-width: 200px; /* Desktop par bahut zyada bada nahi hoga */
-            margin-top: 10px; /* Agar mobile par neeche aaye to gap rahega */
-        ">Search</button>
+            <button id="searchBtn" style="...">Search</button>
+            </div>
 
         <div id="formArea"></div>
     </div>`;
