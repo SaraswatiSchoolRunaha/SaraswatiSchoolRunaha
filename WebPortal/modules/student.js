@@ -195,12 +195,22 @@ export async function renderStudentProfile() {
                     <div class="field"><label>IFSC Code</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
 
                     <button class="action-btn" id="saveBtn">Update Record</button>
+               <div class="photo-section">
+                    <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
+                    <input type="file" id="photoInput" style="display:none" accept="image/*">
+                    <button class="action-btn" style="background:#3498db; width:100%; margin-top:10px;" onclick="document.getElementById('photoInput').click()">Change Photo</button>
+                </div>
                 </div>
                 
                 <div class="photo-section"><img src="${data.photo || 'https://via.placeholder.com/150'}"></div>
             </div>
             <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
         }
+
+
+
+
+        
 
         if (e.target.id === 'saveBtn') {
             const btn = e.target;
