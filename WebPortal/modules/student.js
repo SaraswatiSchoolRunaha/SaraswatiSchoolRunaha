@@ -151,7 +151,6 @@ export async function renderSearchList() {
         .student-table th { background: #4a90e2; color: white; padding: 12px; text-align: left; }
         .student-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .btn-primary { padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-promote { background: #27ae60; }
         .btn-danger { background: red; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
     </style>
 
@@ -159,26 +158,29 @@ export async function renderSearchList() {
     <div class="filter-box">
         <label>Class:</label>
         <select id="classSelect">${generateOptions(classes)}</select>
-        
         <label>Medium:</label>
         <select id="mediumSelect">
             <option value="Hindi">Hindi</option>
             <option value="English">English</option>
         </select>
-        
         <label>Session:</label>
         <select id="sessionSelect">
             <option value="">Select Session</option>
             ${generateOptions(years)}
         </select>
-        
         <button id="loadListBtn" class="btn-primary">Load List</button>
     </div>
     
-    <div id="studentDisplayArea"> </div>`;
+    <table class="student-table">
+        <thead>
+            <tr>
+                <th>ID</th><th>Name</th><th>Father</th><th>DOB</th><th>Gender</th><th>Category</th><th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>`;
 
     contentArea.onclick = async (e) => {
-        // Search Logic
         if (e.target.id === 'loadListBtn') {
             const c = document.getElementById('classSelect').value;
             const m = document.getElementById('mediumSelect').value;
@@ -190,7 +192,6 @@ export async function renderSearchList() {
             tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Loading...</td></tr>";
 
             try {
-                // Assuming getStudentsByFilter is imported or available globally
                 const students = await getStudentsByFilter(c, m, y); 
                 
                 if (!students || students.length === 0) {
@@ -219,44 +220,6 @@ export async function renderSearchList() {
         }
     };
 }
-
-window.deleteStudent = async (studentId) => {
-    const isConfirmed = confirm("क्या आप वाकई इस छात्र को हटाना चाहते हैं?");
-    
-    if (isConfirmed) {
-        try {
-            // Google Apps Script को डिलीट रिक्वेस्ट भेजें
-            // यहाँ 'sheetUrls.Database' वही URL है जो आप सर्च/अपडेट के लिए यूज़ कर रहे हैं
-            const response = await fetch(sheetUrls.Database, {
-                method: "POST",
-                body: new URLSearchParams({
-                    action: "delete", // यह एक्शन आपकी Google Script में होना चाहिए
-                    studentId: studentId
-                })
-            });
-
-            const result = await response.json();
-
-            if (result.status === "success") {
-                alert("छात्र का रिकॉर्ड सफलतापूर्वक हटा दिया गया है।");
-                // टेबल को रिफ्रेश करें
-                const loadBtn = document.getElementById('loadListBtn');
-                if (loadBtn) loadBtn.click();
-            } else {
-                alert("डिलीट करने में एरर: " + (result.message || "Unknown error"));
-            }
-        } catch (error) {
-            console.error("Error deleting student:", error);
-            alert("सर्वर से कनेक्ट नहीं हो पा रहा है।");
-        }
-    }
-};
-
-// 3. अगर आपने 'editStudent' भी बनाया है, तो उसे भी ऐसे ही window के साथ लिखें:
-window.editStudent = (studentId) => {
-    console.log("Editing student:", studentId);
-    // एडिट का कोड यहाँ आएगा
-};
 
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
