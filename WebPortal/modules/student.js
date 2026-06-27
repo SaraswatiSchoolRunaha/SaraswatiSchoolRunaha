@@ -76,7 +76,7 @@ export async function renderStudentList() {
         if (e.target.id === 'loadListBtn') {
             const displayArea = document.getElementById('studentDisplayArea');
             displayArea.innerHTML = "Loading...";
-            const students = await getStudentsByFilter(document.getElementById('classSelect').value, document.getElementById('mediumSelect').value);
+            const students = await getStudentsByFilter(document.getElementById('classSelect').value, document.getElementById('mediumSelect').value,document.getElementById('sessionSelect').value);
             
             if (!students || students.length === 0) return displayArea.innerHTML = "कोई रिकॉर्ड नहीं मिला!";
 
