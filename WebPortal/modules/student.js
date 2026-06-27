@@ -118,14 +118,34 @@ export async function renderStudentList() {
 
 export async function renderSearchList() {
     const contentArea = document.getElementById('contentArea');
-    
+
+    // Dynamic Lists
+    const classes = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const years = ["2026-27", "2027-28", "2028-29", "2029-30"];
+
+    // Helper to generate options
+    const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
+
     contentArea.innerHTML = `
     <div class="filter-box">
-        <select id="classSelect"><option value="">Class</option><option value="10">10</option><option value="12">12</option></select>
-        <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
-        <input type="text" id="yearInput" placeholder="Year">
+        <select id="classSelect">
+            <option value="">Select Class</option>
+            ${generateOptions(classes)}
+        </select>
+        
+        <select id="mediumSelect">
+            <option value="Hindi">Hindi</option>
+            <option value="English">English</option>
+        </select>
+        
+        <select id="yearInput">
+            <option value="">Select Year</option>
+            ${generateOptions(years)}
+        </select>
+        
         <button id="searchBtnList" class="btn-primary">Search</button>
     </div>
+    
     <table class="student-table" id="studentTable">
         <thead>
             <tr>
@@ -141,10 +161,20 @@ export async function renderSearchList() {
             const c = document.getElementById('classSelect').value;
             const m = document.getElementById('mediumSelect').value;
             const y = document.getElementById('yearInput').value;
-            
-            // Yahan wahi backend call use karein jo aapne pehle define ki hai
-            const students = await getStudentsByFilter(c, m); 
+
+            if (!c || !y) return alert("कृपया Class और Year दोनों select करें!");
+
             const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = "<tr><td colspan='6'>Loading...</td></tr>";
+
+            // API Call: Yahan 'y' (year) pass karna na bhoolein
+            const students = await getStudentsByFilter(c, m, y); 
+            
+            if (!students || students.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6'>कोई रिकॉर्ड नहीं मिला।</td></tr>";
+                return;
+            }
+
             tbody.innerHTML = students.map(s => `
                 <tr>
                     <td>${s.studentid}</td>
@@ -152,13 +182,12 @@ export async function renderSearchList() {
                     <td>${s.father}</td>
                     <td>${s.mother}</td>
                     <td>${s.class}</td>
-                    <td><button onclick="editStudent('${s.studentid}')">Edit</button></td>
+                    <td><button class="btn-primary" onclick="window.editStudent('${s.studentid}')">Edit</button></td>
                 </tr>
             `).join('');
         }
     };
 }
-
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
 
