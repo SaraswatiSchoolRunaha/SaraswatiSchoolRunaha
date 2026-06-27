@@ -238,6 +238,30 @@ export async function renderSearchList() {
     };
 }
 
+// 2. इसके नीचे अपना नया 'deleteStudent' फंक्शन यहाँ जोड़ें
+window.deleteStudent = async (studentId) => {
+    const isConfirmed = confirm("क्या आप वाकई इस छात्र को हटाना चाहते हैं?");
+    
+    if (isConfirmed) {
+        try {
+            // यहाँ अपना असली delete logic लिखें (जैसे Firebase या API कॉल)
+            console.log("Deleting student:", studentId);
+
+            // डिलीट होने के बाद लिस्ट अपडेट करने के लिए
+            const loadBtn = document.getElementById('loadListBtn');
+            if (loadBtn) loadBtn.click();
+        } catch (error) {
+            alert("डिलीट करने में एरर आया!");
+        }
+    }
+};
+
+// 3. अगर आपने 'editStudent' भी बनाया है, तो उसे भी ऐसे ही window के साथ लिखें:
+window.editStudent = (studentId) => {
+    console.log("Editing student:", studentId);
+    // एडिट का कोड यहाँ आएगा
+};
+
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
 
