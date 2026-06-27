@@ -144,34 +144,34 @@ export async function renderSearchList() {
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
 
     contentArea.innerHTML = `
-    <div class="filter-box">
-        <select id="classSelect">
-            <option value="">Select Class</option>
-            ${generateOptions(classes)}
-        </select>
-        
-        <select id="mediumSelect">
-            <option value="Hindi">Hindi</option>
-            <option value="English">English</option>
-        </select>
-        
-        <select id="yearInput">
-            <option value="">Select Year</option>
-            ${generateOptions(years)}
-        </select>
-        
-        <button id="searchBtnList" class="btn-primary">Search</button>
-    </div>
-    
-    <table class="student-table" id="studentTable">
-        <thead>
-            <tr>
-                <th>Student ID</th><th>Name</th><th>Father</th><th>DOB</th><th>Gender</th><th>Cast</th><th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>`;
+    <style>
+        .promote-title { color: #2c3e50; margin-bottom: 15px; font-weight: bold; }
+        .filter-box { padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .student-table th { background: #4a90e2; color: white; padding: 12px; text-align: left; }
+        .student-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .btn-primary { padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-promote { background: #27ae60; }
+    </style>
 
+    <div class="promote-title">🎓 छात्र प्रोफाइल अपडेट</div>
+    <div class="filter-box">
+        <label>Class:</label>
+        <select id="classSelect">${generateOptions(romanClasses)}</select>
+        <label>Medium:</label>
+        <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
+        <label>Session:</label>
+            <select id="sessionSelect">
+                <option value="">Select Session</option>
+                <option value="2026-27">2026-27</option>
+                <option value="2027-28">2027-28</option>
+                <option value="2028-29">2028-29</option>
+                <option value="2029-30">2029-30</option>
+            </select>
+        <button id="loadListBtn" class="btn-primary">Load List</button>
+    </div>
+    <div id="studentDisplayArea"></div>`;
+    
     contentArea.onclick = async (e) => {
         // Search Logic
         if (e.target.id === 'searchBtnList') {
