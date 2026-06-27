@@ -45,6 +45,7 @@ export async function renderStudentList() {
     
     // डेटा सूचियाँ
     const romanClasses = ["Select Class", "Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const medium = ["Select medium", "Hindi", "English"];
     const sessions = ["Select Year", "2027-28", "2028-29", "2029-30"];
 
     // जनरेटर फंक्शन
