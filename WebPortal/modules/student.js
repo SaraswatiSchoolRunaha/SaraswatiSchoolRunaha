@@ -238,20 +238,34 @@ export async function renderSearchList() {
     };
 }
 
-// 2. इसके नीचे अपना नया 'deleteStudent' फंक्शन यहाँ जोड़ें
 window.deleteStudent = async (studentId) => {
     const isConfirmed = confirm("क्या आप वाकई इस छात्र को हटाना चाहते हैं?");
     
     if (isConfirmed) {
         try {
-            // यहाँ अपना असली delete logic लिखें (जैसे Firebase या API कॉल)
-            console.log("Deleting student:", studentId);
+            // Google Apps Script को डिलीट रिक्वेस्ट भेजें
+            // यहाँ 'sheetUrls.Database' वही URL है जो आप सर्च/अपडेट के लिए यूज़ कर रहे हैं
+            const response = await fetch(sheetUrls.Database, {
+                method: "POST",
+                body: new URLSearchParams({
+                    action: "delete", // यह एक्शन आपकी Google Script में होना चाहिए
+                    studentId: studentId
+                })
+            });
 
-            // डिलीट होने के बाद लिस्ट अपडेट करने के लिए
-            const loadBtn = document.getElementById('loadListBtn');
-            if (loadBtn) loadBtn.click();
+            const result = await response.json();
+
+            if (result.status === "success") {
+                alert("छात्र का रिकॉर्ड सफलतापूर्वक हटा दिया गया है।");
+                // टेबल को रिफ्रेश करें
+                const loadBtn = document.getElementById('loadListBtn');
+                if (loadBtn) loadBtn.click();
+            } else {
+                alert("डिलीट करने में एरर: " + (result.message || "Unknown error"));
+            }
         } catch (error) {
-            alert("डिलीट करने में एरर आया!");
+            console.error("Error deleting student:", error);
+            alert("सर्वर से कनेक्ट नहीं हो पा रहा है।");
         }
     }
 };
