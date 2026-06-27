@@ -122,117 +122,93 @@ export async function renderStudentProfile() {
     contentArea.innerHTML = `
     <style>
         .profile-wrapper { max-width: 950px; margin: 30px auto; background: #f8f9fa; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; }
-        .p-header { background: linear-gradient(135deg, #357abd, #2c3e50); color: white; padding: 25px; text-align: center; font-size: 24px; font-weight: 700; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(53, 122, 189, 0.3); }
+        .p-header { background: linear-gradient(135deg, #357abd, #2c3e50); color: white; padding: 25px; text-align: center; font-size: 24px; font-weight: 700; border-radius: 15px; margin-bottom: 30px; }
+        
+        .search-wrapper { display: flex; gap: 10px; margin-bottom: 20px; }
         
         .main-layout { display: grid; grid-template-columns: 1fr 220px; gap: 30px; align-items: start; }
         
-        /* Form Box */
         .form-fields { background: white; padding: 25px; border-radius: 15px; border: 1px solid #eee; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
-        /* Photo Box */
         .photo-section { background: white; padding: 20px; border-radius: 15px; border: 1px solid #eee; text-align: center; }
         .photo-section img { width: 180px; height: 180px; border-radius: 12px; border: 4px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.15); object-fit: cover; margin-bottom: 15px; }
         
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 11px; font-weight: 700; color: #7f8c8d; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .field input, .field select { padding: 12px; border: 1.5px solid #e1e8ed; border-radius: 10px; font-size: 14px; background: #fafafa; transition: 0.3s; }
-        .field input:focus { border-color: #357abd; background: #fff; outline: none; }
+        .field label { font-size: 11px; font-weight: 700; color: #7f8c8d; margin-bottom: 6px; text-transform: uppercase; }
+        .field input, .field select { padding: 12px; border: 1.5px solid #e1e8ed; border-radius: 10px; font-size: 14px; background: #fafafa; }
         
-        .section-title { grid-column: span 2; font-size: 15px; font-weight: 700; color: #357abd; border-left: 4px solid #357abd; padding-left: 10px; margin: 15px 0 5px 0; text-transform: uppercase; }
+        .section-title { grid-column: span 2; font-size: 15px; font-weight: 700; color: #357abd; border-left: 4px solid #357abd; padding-left: 10px; margin: 15px 0 5px 0; }
         
-        .action-btn { grid-column: span 2; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; margin-top: 10px; }
-        .action-btn:hover { background: #219150; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
+        .action-btn { grid-column: span 2; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
         .change-photo-btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; }
         
-        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 850px) { 
+            .main-layout { grid-template-columns: 1fr; } 
+            .photo-section { order: -1; }
+            .search-wrapper { flex-direction: column; }
+        }
     </style>
 
     <div class="profile-wrapper">
-    <div class="p-header">🎓 Student Profile Management</div>
-    
-    <div class="search-wrapper">
-        <input id="studentId" placeholder="Search by Student ID..." style="flex:1; padding:15px; border:1px solid #ddd; border-radius:10px; font-size: 16px;">
-        <button id="searchBtn" style="padding: 15px 30px; background: #2c3e50; color: #fff; border:none; border-radius:10px; cursor:pointer; font-weight: 600;">Search</button>
-    </div>
-    <div id="formArea"></div>
-</div>`;
+        <div class="p-header">🎓 Student Profile Management</div>
+        <div class="search-wrapper">
+            <input id="studentId" placeholder="Search by Student ID..." style="flex:1; padding:15px; border:1px solid #ddd; border-radius:10px;">
+            <select id="searchSession" style="padding: 15px; border:1px solid #ddd; border-radius:10px;">
+                <option value="2025-26">2025-26</option>
+                <option value="2026-27">2026-27</option>
+            </select>
+            <button id="searchBtn" style="padding: 15px 30px; background: #2c3e50; color: #fff; border:none; border-radius:10px; cursor:pointer;">Search</button>
+        </div>
+        <div id="formArea"></div>
+    </div>`;
 
     contentArea.onclick = async (e) => {
         if (e.target.id === 'searchBtn') {
             const id = document.getElementById('studentId').value.trim();
+            const session = document.getElementById('searchSession').value;
             if (!id) return alert("Enter ID");
             
             const formArea = document.getElementById('formArea');
-            formArea.innerHTML = "<p style='text-align:center; padding:50px;'>Loading profile...</p>";
+            formArea.innerHTML = "<p style='text-align:center;'>Loading...</p>";
 
-            const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}`);
+            const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}&session=${session}`);
             const data = await res.json();
             if (data.status !== "found") return formArea.innerHTML = `<p style="color:red; text-align:center;">${data.message}</p>`;
 
             formArea.innerHTML = `
-<div class="main-layout">
-    <div class="form-fields">
-        <div class="section-title">व्यक्तिगत विवरण (Personal Details)</div>
-        <div class="field"><label>Student ID</label><input value="${data.studentId}" disabled></div>
-        <div class="field"><label>समग्र आईडी (Samagra ID)</label><input id="uSamagra" value="${data.samgra || ''}"></div>
-        <div class="field"><label>छात्र का नाम (Name)</label><input id="uName" value="${data.name || ''}"></div>
-        <div class="field"><label>पिता का नाम (Father Name)</label><input id="uFather" value="${data.father || ''}"></div>
-        <div class="field"><label>माता का नाम (Mother Name)</label><input id="uMother" value="${data.mother || ''}"></div>
-        <div class="field"><label>जन्म तिथि (DOB)</label><input id="uDob" type="date" value="${data.dob || ''}"></div>
-        <div class="field"><label>लिंग (Gender)</label>
-            <select id="uGender">
-                <option ${data.gender=='Male'?'selected':''}>Male</option>
-                <option ${data.gender=='Female'?'selected':''}>Female</option>
-            </select>
-        </div>
-        <div class="field"><label>वर्ग (Category)</label>
-            <select id="uCast">
-                <option ${data.category=='General'?'selected':''}>General</option>
-                <option ${data.category=='OBC'?'selected':''}>OBC</option>
-                <option ${data.category=='SC'?'selected':''}>SC</option>
-                <option ${data.category=='ST'?'selected':''}>ST</option>
-            </select>
-        </div>
+            <div class="main-layout">
+                <div class="form-fields">
+                    <div class="section-title">व्यक्तिगत विवरण (Personal Details)</div>
+                    <div class="field"><label>Student ID</label><input value="${data.studentId}" disabled></div>
+                    <div class="field"><label>समग्र आईडी</label><input id="uSamagra" value="${data.samgra || ''}"></div>
+                    <div class="field"><label>छात्र का नाम</label><input id="uName" value="${data.name || ''}"></div>
+                    <div class="field"><label>पिता का नाम</label><input id="uFather" value="${data.father || ''}"></div>
+                    <div class="field"><label>माता का नाम</label><input id="uMother" value="${data.mother || ''}"></div>
+                    <div class="field"><label>जन्म तिथि</label><input id="uDob" type="date" value="${data.dob || ''}"></div>
+                    <div class="field"><label>लिंग</label><select id="uGender"><option ${data.gender=='Male'?'selected':''}>Male</option><option ${data.gender=='Female'?'selected':''}>Female</option></select></div>
+                    <div class="field"><label>वर्ग</label><select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select></div>
+                    <div class="section-title">शैक्षणिक और संपर्क</div>
+                    <div class="field"><label>कक्षा</label><select id="uClass" onchange="window.toggleSub()">${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+                    <div class="field"><label>माध्यम</label><select id="uMedium"><option ${data.medium=='Hindi'?'selected':''}>Hindi</option><option ${data.medium=='English'?'selected':''}>English</option></select></div>
+                    <div class="field"><label>नामांकन संख्या</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
+                    <div class="field"><label>मोबाइल नंबर</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
+                    <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>विषय</label><input id="uSubject" value="${data.subject || ''}"></div>
+                    <div class="field" style="grid-column: span 2;"><label>पता</label><input id="uAddress" value="${data.address || ''}"></div>
+                    <div class="section-title">बैंक और सुरक्षा</div>
+                    <div class="field"><label>आधार नंबर</label><input value="[Redacted]" disabled></div>
+                    <div class="field"><label>बैंक खाता</label><input id="uBank" value="${data.accountnumber || ''}"></div>
+                    <div class="field"><label>आईएफएससी</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
+                    <button class="action-btn" id="saveBtn">रिकॉर्ड अपडेट करें</button>
+                </div>
+                <div class="photo-section">
+                    <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
+                    <input type="file" id="photoInput" style="display:none" accept="image/*">
+                    <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">फोटो बदलें</button>
+                </div>
+            </div>
+            <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
+        }
 
-        <div class="section-title">शैक्षणिक और संपर्क (Academic & Contact)</div>
-        <div class="field"><label>कक्षा (Class)</label>
-            <select id="uClass" onchange="window.toggleSub()">
-                ${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
-            </select>
-        </div>
-        <div class="field"><label>माध्यम (Medium)</label>
-            <select id="uMedium">
-                <option ${data.medium=='Hindi'?'selected':''}>Hindi</option>
-                <option ${data.medium=='English'?'selected':''}>English</option>
-            </select>
-        </div>
-        <div class="field"><label>नामांकन संख्या (Enrolment No)</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
-        <div class="field"><label>मोबाइल नंबर (Mobile)</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
-        <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}">
-            <label>विषय (Subject)</label><input id="uSubject" value="${data.subject || ''}">
-        </div>
-        <div class="field" style="grid-column: span 2;">
-            <label>पता (Address)</label>
-            <input id="uAddress" value="${data.address || ''}">
-        </div>
-        
-        <div class="section-title">बैंक और सुरक्षा (Bank & Security)</div>
-        <div class="field"><label>आधार नंबर (Aadhar)</label><input id="uAadhar" value="[Redacted]"></div>
-        <div class="field"><label>बैंक खाता (Bank Account)</label><input id="uBank" value="${data.accountnumber || ''}"></div>
-        <div class="field"><label>आईएफएससी कोड (IFSC Code)</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
-
-        <button class="action-btn" id="saveBtn">रिकॉर्ड अपडेट करें</button>
-    </div>
-    
-    <div class="photo-section">
-        <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
-        <input type="file" id="photoInput" style="display:none" accept="image/*">
-        <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">फोटो बदलें</button>
-    </div>
-</div>
-<div id="msg" style="text-align:center; margin-top:20px; font-weight:bold; font-size:16px;"></div>`;
-
-        // Save logic remains the same...
         if (e.target.id === 'saveBtn') {
             const btn = e.target;
             btn.innerText = "Updating...";
@@ -250,7 +226,7 @@ export async function renderStudentProfile() {
             payload.append("medium", document.getElementById('uMedium').value);
             payload.append("enrolment", document.getElementById('uEnrol').value);
             payload.append("mobile1", document.getElementById('uMobile').value);
-           payload.append("address", document.getElementById('uAddress').value);
+            payload.append("address", document.getElementById('uAddress').value);
             payload.append("subject", document.getElementById('uSubject')?.value || "");
             payload.append("accountnumber", document.getElementById('uBank').value);
             payload.append("ifsc", document.getElementById('uIfsc').value);
@@ -265,6 +241,7 @@ export async function renderStudentProfile() {
 
     window.toggleSub = () => {
         const c = document.getElementById('uClass').value;
-        document.getElementById('subField').style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
+        const sub = document.getElementById('subField');
+        if(sub) sub.style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
     };
 }
