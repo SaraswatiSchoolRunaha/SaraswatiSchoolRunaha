@@ -119,11 +119,9 @@ export async function renderStudentList() {
 export async function renderSearchList() {
     const contentArea = document.getElementById('contentArea');
 
-    // Dynamic Lists
     const classes = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const years = ["2026-27", "2027-28", "2028-29", "2029-30"];
 
-    // Helper to generate options
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
 
     contentArea.innerHTML = `
@@ -149,14 +147,14 @@ export async function renderSearchList() {
     <table class="student-table" id="studentTable">
         <thead>
             <tr>
-                <th>Student ID</th><th>Name</th><th>Father</th><th>Mother</th><th>Class</th><th>Action</th>
+                <th>Student ID</th><th>Name</th><th>Father</th><th>DOB</th><th>Gender</th><th>Cast</th><th>Action</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
     </table>`;
 
-    // Event Delegation
     contentArea.onclick = async (e) => {
+        // Search Logic
         if (e.target.id === 'searchBtnList') {
             const c = document.getElementById('classSelect').value;
             const m = document.getElementById('mediumSelect').value;
@@ -165,13 +163,12 @@ export async function renderSearchList() {
             if (!c || !y) return alert("कृपया Class और Year दोनों select करें!");
 
             const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = "<tr><td colspan='6'>Loading...</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
 
-            // API Call: Yahan 'y' (year) pass karna na bhoolein
             const students = await getStudentsByFilter(c, m, y); 
             
             if (!students || students.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='6'>कोई रिकॉर्ड नहीं मिला।</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='7'>कोई रिकॉर्ड नहीं मिला।</td></tr>";
                 return;
             }
 
@@ -180,14 +177,19 @@ export async function renderSearchList() {
                     <td>${s.studentid}</td>
                     <td>${s.name}</td>
                     <td>${s.father}</td>
-                    <td>${s.mother}</td>
-                    <td>${s.class}</td>
-                    <td><button class="btn-primary" onclick="window.editStudent('${s.studentid}')">Edit</button></td>
+                    <td>${s.dob || '-'}</td>
+                    <td>${s.gender || '-'}</td>
+                    <td>${s.category || '-'}</td>
+                    <td>
+                        <button class="btn-primary" onclick="window.editStudent('${s.studentid}')">Edit</button>
+                        <button class="btn-danger" onclick="window.deleteStudent('${s.studentid}')" style="background:red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Delete</button>
+                    </td>
                 </tr>
             `).join('');
         }
     };
 }
+
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
 
