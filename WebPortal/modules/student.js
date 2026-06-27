@@ -67,7 +67,7 @@ export async function renderStudentList() {
         <label>Class:</label>
         <select id="classSelect">${generateOptions(romanClasses)}</select>
         <label>Medium:</label>
-        <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
+        <select id="mediumSelect"> <option value="">Select Medium</option><option value="Hindi">Hindi</option><option value="English">English</option></select>
         <label>Session:</label>
             <select id="sessionSelect">
                 <option value="">Select Session</option>
