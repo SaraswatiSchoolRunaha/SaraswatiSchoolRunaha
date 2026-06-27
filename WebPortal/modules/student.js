@@ -116,6 +116,49 @@ export async function renderStudentList() {
 }
 
 
+export async function renderSearchList() {
+    const contentArea = document.getElementById('contentArea');
+    
+    contentArea.innerHTML = `
+    <div class="filter-box">
+        <select id="classSelect"><option value="">Class</option><option value="10">10</option><option value="12">12</option></select>
+        <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
+        <input type="text" id="yearInput" placeholder="Year">
+        <button id="searchBtnList" class="btn-primary">Search</button>
+    </div>
+    <table class="student-table" id="studentTable">
+        <thead>
+            <tr>
+                <th>Student ID</th><th>Name</th><th>Father</th><th>Mother</th><th>Class</th><th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>`;
+
+    // Event Delegation
+    contentArea.onclick = async (e) => {
+        if (e.target.id === 'searchBtnList') {
+            const c = document.getElementById('classSelect').value;
+            const m = document.getElementById('mediumSelect').value;
+            const y = document.getElementById('yearInput').value;
+            
+            // Yahan wahi backend call use karein jo aapne pehle define ki hai
+            const students = await getStudentsByFilter(c, m); 
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = students.map(s => `
+                <tr>
+                    <td>${s.studentid}</td>
+                    <td>${s.name}</td>
+                    <td>${s.father}</td>
+                    <td>${s.mother}</td>
+                    <td>${s.class}</td>
+                    <td><button onclick="editStudent('${s.studentid}')">Edit</button></td>
+                </tr>
+            `).join('');
+        }
+    };
+}
+
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
 
