@@ -154,8 +154,10 @@ export async function renderStudentProfile() {
         <div class="search-wrapper">
             <input id="studentId" placeholder="Search by Student ID..." style="flex:1; padding:15px; border:1px solid #ddd; border-radius:10px;">
             <select id="searchSession" style="padding: 15px; border:1px solid #ddd; border-radius:10px;">
-                <option value="2025-26">2025-26</option>
                 <option value="2026-27">2026-27</option>
+                <option value="2027-28">2027-28</option>
+                <option value="2028-29">2028-29</option>
+                <option value="2029-30">2029-30</option>
             </select>
             <button id="searchBtn" style="padding: 15px 30px; background: #2c3e50; color: #fff; border:none; border-radius:10px; cursor:pointer;">Search</button>
         </div>
