@@ -1,9 +1,20 @@
 import { sheetUrls } from './config.js';
 
 // --- API Functions ---
-export async function getStudentsByFilter(className, medium) {
-    const url = `${sheetUrls['Database']}?action=filter&class=${className}&medium=${medium}`;
+export async function getStudentsByFilter(className, medium, session) {
+
+    const url =
+        `${sheetUrls['Database']}?action=filter` +
+        `&class=${encodeURIComponent(className)}` +
+        `&medium=${encodeURIComponent(medium)}` +
+        `&session=${encodeURIComponent(session)}`;
+
     const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+    }
+
     return await response.json();
 }
 
