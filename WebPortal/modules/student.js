@@ -44,9 +44,9 @@ export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
     
     // डेटा सूचियाँ
-    const romanClasses = ["Select Class", "Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-    const medium = ["Select medium", "Hindi", "English"];
-    const sessions = ["Select Year", "2027-28", "2028-29", "2029-30"];
+    const romanClasses = [ "Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const medium = ["Hindi", "English"];
+    const sessions = ["2027-28", "2028-29", "2029-30"];
 
     // जनरेटर फंक्शन
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
