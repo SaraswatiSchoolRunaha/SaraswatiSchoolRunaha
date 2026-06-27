@@ -79,7 +79,6 @@ export async function renderStudentList() {
         <button id="loadListBtn" class="btn-primary">Load List</button>
     </div>
     <div id="studentDisplayArea"></div>`;
-
     contentArea.onclick = async (e) => {
         // Load List
         if (e.target.id === 'loadListBtn') {
@@ -176,25 +175,8 @@ export async function renderSearchList() {
         <button id="loadListBtn" class="btn-primary">Load List</button>
     </div>
     
-    <div id="studentDisplayArea">
-        <table class="student-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Father's Name</th>
-                    <th>DOB</th>
-                    <th>Gender</th>
-                    <th>Category</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <tr><td colspan="7" style="text-align: center;">Please select filters and click Load List</td></tr>
-            </tbody>
-        </table>
-    </div>`;
-    
+    <div id="studentDisplayArea"> </div>`;
+
     contentArea.onclick = async (e) => {
         // Search Logic
         if (e.target.id === 'loadListBtn') {
