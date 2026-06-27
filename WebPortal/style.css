@@ -308,15 +308,23 @@ table {
 
 #clockDisplay { font-family: 'Courier New', monospace; font-weight: bold; margin: 0 5px; }
 
-/* CSS me ye add karein */
-.search-wrapper { 
-    display: flex; 
-    gap: 10px; 
-    margin-bottom: 30px; 
-    flex-wrap: wrap; /* Isse agar screen choti hui to button niche aa jayega */
+/* Layout Update */
+.main-layout { 
+    display: grid; 
+    grid-template-columns: 1fr 220px; 
+    gap: 20px; 
+    align-items: start; 
 }
 
-@media (max-width: 600px) {
-    .search-wrapper { flex-direction: column; }
-    #studentId { width: 100%; box-sizing: border-box; }
+/* Mobile responsive fix */
+@media (max-width: 850px) { 
+    .main-layout { 
+        grid-template-columns: 1fr; /* Mobile par ek hi column */
+    }
+    
+    /* Photo section ko form ke upar le aane ke liye */
+    .photo-section { 
+        order: -1; /* Ye photo ko sabse upar dikhayega */
+        margin-bottom: 20px;
+    }
 }
