@@ -67,6 +67,14 @@ export async function renderStudentList() {
         <select id="classSelect">${generateOptions(romanClasses)}</select>
         <label>Medium:</label>
         <select id="mediumSelect"><option value="Hindi">Hindi</option><option value="English">English</option></select>
+        <label>Session:</label>
+            <select id="sessionSelect">
+                <option value="">Select Session</option>
+                <option value="2026-27">2026-27</option>
+                <option value="2027-28">2027-28</option>
+                <option value="2028-29">2028-29</option>
+                <option value="2029-30">2029-30</option>
+            </select>
         <button id="loadListBtn" class="btn-primary">Load List</button>
     </div>
     <div id="studentDisplayArea"></div>`;
