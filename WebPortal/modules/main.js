@@ -8,7 +8,7 @@ import {
 import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm, loadTeacherListWithActions } from './teacherAttendance.js';
 import { loadAdminAttendancePanel } from './adminAttendance.js';
 import { loadSalaryDashboard, loadSalaryReport, loadSalaryPayment, loadPayslip } from './salaryManagement.js';
-import { renderStudentList, renderStudentProfile } from './student.js';
+import { renderStudentList, renderSearchList } from './student.js';
 
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
@@ -78,7 +78,7 @@ function executeModuleRouting(title) {
             renderStudentList();
              break;
         case 'छात्र प्रोफ़ाइल':
-           renderStudentProfile();
+           renderSearchList();
              break;
         case 'उपस्थिति डैशबोर्ड':
             showAttendanceDashboard();
