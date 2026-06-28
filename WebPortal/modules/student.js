@@ -239,11 +239,19 @@ window.deleteStudent = async (id, session) => {
 };
 
 window.editStudent = (id) => {
-    // यहाँ अपनी एडिट लॉजिक (जैसे प्रोफाइल खोलना) लिखें
-    console.log("Edit ID:", id);
+    // 1. प्रोफाइल रेंडरिंग फंक्शन को कॉल करें
+    renderStudentProfile();
+    
+    // 2. प्रोफाइल रेंडर होने के बाद, ID को इनपुट में डालें और सर्च बटन दबाएं
+    // setTimeout का उपयोग इसलिए किया है ताकि HTML लोड होने का समय मिल जाए
+    setTimeout(() => {
+        const idInput = document.getElementById('studentId');
+        if (idInput) {
+            idInput.value = id; // यहाँ छात्र की ID भरें
+            document.getElementById('searchBtn').click(); // सर्च बटन पर ऑटोमैटिक क्लिक करें
+        }
+    }, 500);
 };
-
-
 
 
 
