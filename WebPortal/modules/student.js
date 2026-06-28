@@ -199,20 +199,20 @@ export async function renderSearchList() {
                     return;
                 }
 
-                tbody.innerHTML = students.map(s => `
+               tbody.innerHTML = students.map(s => `
                     <tr>
-                        <td>${s.studentid}</td>
-                        <td>${s.name}</td>
-                        <td>${s.father}</td>
-                        <td>${s.dob || '-'}</td>
-                        <td>${s.gender || '-'}</td>
-                        <td>${s.category || '-'}</td>
-                        <td>
-                            <button class="btn-primary" onclick="window.editStudent('${s.studentid}')" style="padding: 5px 10px; margin-right: 5px;">Edit</button>
-                            <button class="btn-danger" onclick="window.deleteStudent('${s.studentid}')">Delete</button>
-                        </td>
-                    </tr>
-                `).join('');
+                    <td>${s.studentid}</td>
+                    <td>${s.name}</td>
+                    <td>${s.father}</td>
+                    <td>${s.dob || '-'}</td>
+                    <td>${s.gender || '-'}</td>
+                    <td>${s.category || '-'}</td>
+                    <td>
+                    <button class="btn-primary" onclick="window.editStudent('${s.studentid}')" style="padding: 5px 10px; margin-right: 5px;">Edit</button>
+                    <button class="btn-danger" onclick="window.deleteStudent('${s.studentid}', '${s.session}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
             } catch (error) {
                 console.error("Error fetching students:", error);
                 tbody.innerHTML = "<tr><td colspan='7' style='text-align: center; color: red;'>डेटा लोड करने में त्रुटि।</td></tr>";
@@ -222,16 +222,18 @@ export async function renderSearchList() {
 }
 
 // यह फंक्शन डिलीट बटन को चालू करेगा
-window.deleteStudent = async (id) => {
+window.deleteStudent = async (id, session) => {
     if (confirm("क्या आप सच में इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
-        // यहाँ से डेटा Google Apps Script को भेजा जाएगा
         const res = await fetch(sheetUrls.Database, {
             method: "POST",
-            body: JSON.stringify({ action: "delete", studentId: id })
+            body: JSON.stringify({ 
+                action: "delete", 
+                studentId: id, 
+                session: session // यहाँ सेशन भेज रहे हैं
+            })
         });
         const result = await res.json();
         alert(result.message);
-        // लिस्ट को रिफ्रेश करें
         document.getElementById('loadListBtn').click();
     }
 };
