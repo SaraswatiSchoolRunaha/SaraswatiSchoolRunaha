@@ -221,6 +221,30 @@ export async function renderSearchList() {
     };
 }
 
+// यह फंक्शन डिलीट बटन को चालू करेगा
+window.deleteStudent = async (id) => {
+    if (confirm("क्या आप सच में इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
+        // यहाँ से डेटा Google Apps Script को भेजा जाएगा
+        const res = await fetch(sheetUrls.Database, {
+            method: "POST",
+            body: JSON.stringify({ action: "delete", studentId: id })
+        });
+        const result = await res.json();
+        alert(result.message);
+        // लिस्ट को रिफ्रेश करें
+        document.getElementById('loadListBtn').click();
+    }
+};
+
+window.editStudent = (id) => {
+    // यहाँ अपनी एडिट लॉजिक (जैसे प्रोफाइल खोलना) लिखें
+    console.log("Edit ID:", id);
+};
+
+
+
+
+
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
 
