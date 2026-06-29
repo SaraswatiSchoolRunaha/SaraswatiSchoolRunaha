@@ -75,7 +75,7 @@ function executeModuleRouting(title) {
 
     switch(title) {
          case 'छात्र प्रमोट':
-            renderStudentList();
+            renderIdAssignment();
              break;
         case 'छात्र प्रोफ़ाइल':
            renderSearchList();
