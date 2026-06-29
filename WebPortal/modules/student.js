@@ -477,4 +477,4 @@ if (e.target.id === 'submitIdBtn') {
         msgDiv.innerHTML = `<p style="color:red;">Server connection error! Try again.</p>`;
     }
 }
-
+}
