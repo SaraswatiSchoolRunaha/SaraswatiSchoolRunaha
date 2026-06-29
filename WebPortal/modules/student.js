@@ -391,3 +391,69 @@ export async function renderStudentProfile() {
         if(sub) sub.style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
     };
 }
+
+
+export async function renderIdAssignment() {
+    const contentArea = document.getElementById('contentArea');
+
+    contentArea.innerHTML = `
+    <style>
+        .assign-wrapper { max-width: 600px; margin: 30px auto; padding: 25px; background: #fff; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .details-card { padding: 20px; background: #f9f9f9; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #4a90e2; }
+        .field { margin-bottom: 10px; }
+        .field label { font-weight: bold; color: #555; }
+    </style>
+
+    <div class="assign-wrapper">
+        <h3 style="color: #2c3e50;">🆔 Student ID Assignment</h3>
+        <div class="input-group">
+            <input id="searchAppNo" placeholder="Enter Application Number..." style="flex:1; padding:10px; border:1px solid #ccc; border-radius:5px;">
+            <button id="searchAppBtn" class="btn-primary">Search</button>
+        </div>
+        <div id="resultArea"></div>
+    </div>`;
+
+    contentArea.onclick = async (e) => {
+        // Search Logic
+        if (e.target.id === 'searchAppBtn') {
+            const appNo = document.getElementById('searchAppNo').value.trim();
+            const resArea = document.getElementById('resultArea');
+            
+            resArea.innerHTML = "Searching...";
+            // अपने API का उपयोग करें
+            const res = await fetch(`${sheetUrls.Database}?action=getByAppNo&appNo=${appNo}`);
+            const data = await res.json();
+
+            if (data.status !== "found") return resArea.innerHTML = "<p style='color:red;'>Record not found!</p>";
+
+            resArea.innerHTML = `
+            <div class="details-card">
+                <div class="field"><label>Name:</label> ${data.name}</div>
+                <div class="field"><label>Father:</label> ${data.father}</div>
+                <div class="field"><label>Mother:</label> ${data.mother}</div>
+                <div class="field"><label>Class:</label> ${data.class}</div>
+                <hr>
+                <div class="field">
+                    <label>Assign Student ID:</label>
+                    <input id="newStudentId" type="text" value="${data.studentid || ''}" style="width:100%; padding:8px; margin-top:5px;">
+                </div>
+                <button id="submitIdBtn" class="btn-primary" style="margin-top:15px; width:100%;">Update Student ID</button>
+            </div>
+            <div id="msg"></div>`;
+        }
+
+        // Update Logic
+        if (e.target.id === 'submitIdBtn') {
+            const newId = document.getElementById('newStudentId').value;
+            const appNo = document.getElementById('searchAppNo').value;
+            
+            const res = await fetch(sheetUrls.Database, {
+                method: "POST",
+                body: JSON.stringify({ action: "updateStudentId", appNo: appNo, newId: newId })
+            });
+            const result = await res.json();
+            document.getElementById('msg').innerHTML = `<p style="color:green;">${result.message}</p>`;
+        }
+    };
+}
