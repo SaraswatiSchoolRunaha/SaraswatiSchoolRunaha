@@ -74,8 +74,11 @@ function executeModuleRouting(title) {
     document.getElementById('pageTitle').innerText = translations[state.currentLang][title] || title;
 
     switch(title) {
-         case 'छात्र प्रमोट':
+     case 'छात्र आईडी जोड़ें':
             renderIdAssignment();
+             break;
+        case 'छात्र प्रमोट':
+            renderStudentList();
              break;
         case 'छात्र प्रोफ़ाइल':
            renderSearchList();
