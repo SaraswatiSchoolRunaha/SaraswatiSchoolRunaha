@@ -458,17 +458,17 @@ if (e.target.id === 'submitIdBtn') {
     msgDiv.innerHTML = "Processing...";
 
     try {
-
-        const body = new URLSearchParams({
-            action: "updateStudentId",
-            appNo: appNo,
-            newId: newId
-        });
-
         const res = await fetch(sheetUrls.Database, {
-            method: "POST",
-            body: body
-        });
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        action: "updateStudentId",
+        appNo: appNo,
+        newId: newId
+    })
+    });
 
         const result = await res.json();
 
