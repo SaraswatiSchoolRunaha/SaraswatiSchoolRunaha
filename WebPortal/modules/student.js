@@ -447,9 +447,8 @@ export async function renderIdAssignment() {
             </div>
             <div id="msg"></div>`;
         }
-
-    // Update Logic
-    if (e.target.id === 'submitIdBtn') {
+// Update Logic
+if (e.target.id === 'submitIdBtn') {
 
     const newId = document.getElementById('newStudentId').value.trim();
     const appNo = document.getElementById('searchAppNo').value.trim();
@@ -458,34 +457,35 @@ export async function renderIdAssignment() {
     msgDiv.innerHTML = "Processing...";
 
     try {
+        // URLSearchParams हटा दें, इसकी जगह सीधा JSON ऑब्जेक्ट बनाएं
+        const payload = {
+            action: "updateStudentId",
+            appNo: appNo,
+            newId: newId
+        };
 
-        const body = new URLSearchParams();
-        body.append("action", "updateStudentId");
-        body.append("appNo", appNo);
-        body.append("newId", newId);
-
-        const res = await fetch(sheetUrls.Database, {
+        const response = await fetch(sheetUrls.Database, {
             method: "POST",
-            body: body
+            headers: {
+                "Content-Type": "application/json" // यह बहुत जरूरी है
+            },
+            body: JSON.stringify(payload) // डेटा को JSON स्ट्रिंग में बदलें
         });
 
-        // 🔥 SAFE RESPONSE HANDLING
-        const text = await res.text();
-        console.log("RAW RESPONSE:", text);
-
-        const result = JSON.parse(text);
+        const result = await response.json(); 
 
         if (result.status === "success") {
-            msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
+            msgDiv.innerHTML = "सफलता: " + result.message;
         } else {
-            msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
+            msgDiv.innerHTML = "एरर: " + result.message;
         }
 
     } catch (err) {
-        console.error(err);
-        msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
+        msgDiv.innerHTML = "सिस्टम एरर: " + err.message;
+        console.error("Error details:", err);
     }
 }
+        
 }; 
 } 
 
