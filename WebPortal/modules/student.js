@@ -421,7 +421,6 @@ export async function renderIdAssignment() {
             const resArea = document.getElementById('resultArea');
             
             resArea.innerHTML = "Searching...";
-            // अपने API का उपयोग करें
             const res = await fetch(`${sheetUrls.Database}?action=getByAppNo&appNo=${appNo}`);
             const data = await res.json();
 
@@ -443,38 +442,37 @@ export async function renderIdAssignment() {
             <div id="msg"></div>`;
         }
 
-       // Update Logic
-if (e.target.id === 'submitIdBtn') {
-    const newId = document.getElementById('newStudentId').value;
-    const appNo = document.getElementById('searchAppNo').value;
-    const msgDiv = document.getElementById('msg');
-    
-    msgDiv.innerHTML = "Processing..."; // यूजर को फीडबैक दें
+        // Update Logic
+        if (e.target.id === 'submitIdBtn') {
+            const newId = document.getElementById('newStudentId').value;
+            const appNo = document.getElementById('searchAppNo').value;
+            const msgDiv = document.getElementById('msg');
+            
+            msgDiv.innerHTML = "Processing...";
 
-    try {
-        const res = await fetch(sheetUrls.Database, {
-            method: "POST",
-            mode: "cors", // CORS को स्पष्ट रूप से सक्षम करें
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ 
-                action: "updateStudentId", 
-                appNo: appNo, 
-                newId: newId 
-            })
-        });
+            try {
+                const res = await fetch(sheetUrls.Database, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        action: "updateStudentId", 
+                        appNo: appNo, 
+                        newId: newId 
+                    })
+                });
 
-        const result = await res.json();
-        
-        if (result.status === "success") {
-            msgDiv.innerHTML = `<p style="color:green; font-weight:bold;">✅ ${result.message}</p>`;
-        } else {
-            msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
+                const result = await res.json();
+                
+                if (result.status === "success") {
+                    msgDiv.innerHTML = `<p style="color:green; font-weight:bold;">✅ ${result.message}</p>`;
+                } else {
+                    msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
+            }
         }
-    } catch (err) {
-        console.error("Fetch Error:", err);
-        msgDiv.innerHTML = `<p style="color:red;">Server connection error! Try again.</p>`;
-    }
-}
-}
+    }; // <--- यह onclick वाला ब्रैकेट बंद है
+} // <--- यह मुख्य function वाला ब्रैकेट बंद है
