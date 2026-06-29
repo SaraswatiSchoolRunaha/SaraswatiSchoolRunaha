@@ -449,7 +449,6 @@ export async function renderIdAssignment() {
         }
 // Update Logic
 if (e.target.id === 'submitIdBtn') {
-
     const newId = document.getElementById('newStudentId').value.trim();
     const appNo = document.getElementById('searchAppNo').value.trim();
     const msgDiv = document.getElementById('msg');
@@ -457,35 +456,31 @@ if (e.target.id === 'submitIdBtn') {
     msgDiv.innerHTML = "Processing...";
 
     try {
-        // URLSearchParams हटा दें, इसकी जगह सीधा JSON ऑब्जेक्ट बनाएं
+        // 1. URLSearchParams की जगह सीधा ऑब्जेक्ट बनाएं
         const payload = {
             action: "updateStudentId",
             appNo: appNo,
             newId: newId
         };
 
-        const response = await fetch(sheetUrls.Database, {
+        const res = await fetch(sheetUrls.Database, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json" // यह बहुत जरूरी है
-            },
-            body: JSON.stringify(payload) // डेटा को JSON स्ट्रिंग में बदलें
+            headers: { "Content-Type": "application/json" }, // यह बहुत जरूरी है
+            body: JSON.stringify(payload) // JSON में बदलें
         });
 
-        const result = await response.json(); 
+        const result = await res.json(); // अब यह सीधा JSON पार्स करेगा
 
         if (result.status === "success") {
-            msgDiv.innerHTML = "सफलता: " + result.message;
+            msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
         } else {
-            msgDiv.innerHTML = "एरर: " + result.message;
+            msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
         }
-
     } catch (err) {
-        msgDiv.innerHTML = "सिस्टम एरर: " + err.message;
-        console.error("Error details:", err);
+        console.error("Error:", err);
+        msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
     }
-}
-        
+}        
 }; 
 } 
 
