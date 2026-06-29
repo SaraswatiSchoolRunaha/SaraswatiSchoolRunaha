@@ -470,7 +470,9 @@ if (e.target.id === 'submitIdBtn') {
     })
     });
 
-        const result = await res.json();
+    const text = await res.text();
+    console.log(text);
+    alert(text);
 
         if (result.status === "success") {
             msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
