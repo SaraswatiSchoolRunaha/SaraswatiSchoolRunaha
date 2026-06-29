@@ -476,3 +476,4 @@ export async function renderIdAssignment() {
         }
     }; // <--- यह onclick वाला ब्रैकेट बंद है
 } // <--- यह मुख्य function वाला ब्रैकेट बंद है
+
