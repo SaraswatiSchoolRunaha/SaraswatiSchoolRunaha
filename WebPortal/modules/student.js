@@ -427,8 +427,9 @@ export async function renderIdAssignment() {
             console.log(data);
             alert(JSON.stringify(data));
             
-            if (data.status !== "found") return resArea.innerHTML = "<p style='color:red;'>Record not found!</p>";
-
+           if (data.status !== "success") {
+    return resArea.innerHTML = `<p style="color:red;">${data.message || "Record not found!"}</p>`;
+}
            resArea.innerHTML = `
                 <div class="details-card">
                     <div class="field"><label>Name:</label> ${data.studentName}</div>
