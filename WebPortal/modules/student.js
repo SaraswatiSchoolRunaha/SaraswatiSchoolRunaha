@@ -458,6 +458,7 @@ if (e.target.id === 'submitIdBtn') {
     try {
         const response = await fetch(sheetUrls.Database, {
             method: "POST",
+            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json" // यह सबसे जरूरी है
             },
