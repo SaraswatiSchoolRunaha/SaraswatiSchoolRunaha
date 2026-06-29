@@ -448,8 +448,8 @@ export async function renderIdAssignment() {
             <div id="msg"></div>`;
         }
 
-       // Update Logic
-if (e.target.id === 'submitIdBtn') {
+    // Update Logic
+    if (e.target.id === 'submitIdBtn') {
 
     const newId = document.getElementById('newStudentId').value.trim();
     const appNo = document.getElementById('searchAppNo').value.trim();
@@ -459,23 +459,21 @@ if (e.target.id === 'submitIdBtn') {
 
     try {
 
-        const body = new URLSearchParams({
-            action: "updateStudentId",
-            appNo: appNo,
-            newId: newId
-        });
+        const body = new URLSearchParams();
+        body.append("action", "updateStudentId");
+        body.append("appNo", appNo);
+        body.append("newId", newId);
 
         const res = await fetch(sheetUrls.Database, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: body
-    });
+            method: "POST",
+            body: body
+        });
 
-        const result = await res.json();
+        // 🔥 SAFE RESPONSE HANDLING
+        const text = await res.text();
+        console.log("RAW RESPONSE:", text);
 
-        console.log(result);
+        const result = JSON.parse(text);
 
         if (result.status === "success") {
             msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
