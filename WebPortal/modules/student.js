@@ -426,18 +426,22 @@ export async function renderIdAssignment() {
 
             if (data.status !== "found") return resArea.innerHTML = "<p style='color:red;'>Record not found!</p>";
 
-            resArea.innerHTML = `
-            <div class="details-card">
-                <div class="field"><label>Name:</label> ${data.name}</div>
-                <div class="field"><label>Father:</label> ${data.father}</div>
-                <div class="field"><label>Mother:</label> ${data.mother}</div>
-                <div class="field"><label>Class:</label> ${data.class}</div>
+           resArea.innerHTML = `
+                <div class="details-card">
+                    <div class="field"><label>Name:</label> ${data.studentName}</div>
+                    <div class="field"><label>Father:</label> ${data.fatherName}</div>
+                    <div class="field"><label>Mother:</label> ${data.motherName}</div>
+                    <div class="field"><label>Class:</label> ${data.class}</div>
                 <hr>
+
                 <div class="field">
                     <label>Assign Student ID:</label>
-                    <input id="newStudentId" type="text" value="${data.studentid || ''}" style="width:100%; padding:8px; margin-top:5px;">
+                    <input id="newStudentId" value="${data.studentId || ''}">
                 </div>
-                <button id="submitIdBtn" class="btn-primary" style="margin-top:15px; width:100%;">Update Student ID</button>
+
+                    <button id="submitIdBtn" class="btn-primary">
+                    Update Student ID
+              </button>
             </div>
             <div id="msg"></div>`;
         }
