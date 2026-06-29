@@ -458,21 +458,21 @@ if (e.target.id === 'submitIdBtn') {
     msgDiv.innerHTML = "Processing...";
 
     try {
-        const res = await fetch(sheetUrls.Database, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        action: "updateStudentId",
-        appNo: appNo,
-        newId: newId
-    })
-    });
 
-    const text = await res.text();
-    console.log(text);
-    alert(text);
+        const body = new URLSearchParams({
+            action: "updateStudentId",
+            appNo: appNo,
+            newId: newId
+        });
+
+        const res = await fetch(sheetUrls.Database, {
+            method: "POST",
+            body: body
+        });
+
+        const result = await res.json();
+
+        console.log(result);
 
         if (result.status === "success") {
             msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
@@ -484,8 +484,7 @@ if (e.target.id === 'submitIdBtn') {
         console.error(err);
         msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
     }
-}   
-    
+}
 }; 
 } 
 
