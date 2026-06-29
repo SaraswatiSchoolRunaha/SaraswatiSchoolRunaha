@@ -8,7 +8,7 @@ import {
 import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm, loadTeacherListWithActions } from './teacherAttendance.js';
 import { loadAdminAttendancePanel } from './adminAttendance.js';
 import { loadSalaryDashboard, loadSalaryReport, loadSalaryPayment, loadPayslip } from './salaryManagement.js';
-import { renderStudentList, renderSearchList } from './student.js';
+import { renderStudentList, renderSearchList,renderIdAssignment } from './student.js';
 
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
