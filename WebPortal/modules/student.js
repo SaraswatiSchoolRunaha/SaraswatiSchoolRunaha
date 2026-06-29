@@ -466,11 +466,12 @@ if (e.target.id === 'submitIdBtn') {
         });
 
         const res = await fetch(sheetUrls.Database, {
-            method: "POST",
-            headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
         },
         body: body
+    });
 
         const result = await res.json();
 
