@@ -443,18 +443,38 @@ export async function renderIdAssignment() {
             <div id="msg"></div>`;
         }
 
-        // Update Logic
-        if (e.target.id === 'submitIdBtn') {
-            const newId = document.getElementById('newStudentId').value;
-            const appNo = document.getElementById('searchAppNo').value;
-            
-            const res = await fetch(sheetUrls.Database, {
-                method: "POST",
-                body: JSON.stringify({ action: "updateStudentId", appNo: appNo, newId: newId })
-            });
-            const result = await res.json();
-            document.getElementById('msg').innerHTML = `<p style="color:green;">${result.message}</p>`;
+       // Update Logic
+if (e.target.id === 'submitIdBtn') {
+    const newId = document.getElementById('newStudentId').value;
+    const appNo = document.getElementById('searchAppNo').value;
+    const msgDiv = document.getElementById('msg');
+    
+    msgDiv.innerHTML = "Processing..."; // यूजर को फीडबैक दें
+
+    try {
+        const res = await fetch(sheetUrls.Database, {
+            method: "POST",
+            mode: "cors", // CORS को स्पष्ट रूप से सक्षम करें
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ 
+                action: "updateStudentId", 
+                appNo: appNo, 
+                newId: newId 
+            })
+        });
+
+        const result = await res.json();
+        
+        if (result.status === "success") {
+            msgDiv.innerHTML = `<p style="color:green; font-weight:bold;">✅ ${result.message}</p>`;
+        } else {
+            msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
         }
-    };
+    } catch (err) {
+        console.error("Fetch Error:", err);
+        msgDiv.innerHTML = `<p style="color:red;">Server connection error! Try again.</p>`;
+    }
 }
 
