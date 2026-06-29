@@ -448,38 +448,42 @@ export async function renderIdAssignment() {
             <div id="msg"></div>`;
         }
 
-        // Update Logic
-        if (e.target.id === 'submitIdBtn') {
-            const newId = document.getElementById('newStudentId').value;
-            const appNo = document.getElementById('searchAppNo').value;
-            const msgDiv = document.getElementById('msg');
-            
-            msgDiv.innerHTML = "Processing...";
+       // Update Logic
+if (e.target.id === 'submitIdBtn') {
 
-            try {
-                const res = await fetch(sheetUrls.Database, {
-                    method: "POST",
-                    mode: "cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        action: "updateStudentId", 
-                        appNo: appNo, 
-                        newId: newId 
-                    })
-                });
+    const newId = document.getElementById('newStudentId').value.trim();
+    const appNo = document.getElementById('searchAppNo').value.trim();
+    const msgDiv = document.getElementById('msg');
 
-                const result = await res.json();
-                
-                if (result.status === "success") {
-                    msgDiv.innerHTML = `<p style="color:green; font-weight:bold;">✅ ${result.message}</p>`;
-                } else {
-                    msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
-                }
-            } catch (err) {
-                console.error("Fetch Error:", err);
-                msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
-            }
+    msgDiv.innerHTML = "Processing...";
+
+    try {
+
+        const body = new URLSearchParams({
+            action: "updateStudentId",
+            appNo: appNo,
+            newId: newId
+        });
+
+        const res = await fetch(sheetUrls.Database, {
+            method: "POST",
+            body: body
+        });
+
+        const result = await res.json();
+
+        if (result.status === "success") {
+            msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
+        } else {
+            msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
         }
-    }; // <--- यह onclick वाला ब्रैकेट बंद है
-} // <--- यह मुख्य function वाला ब्रैकेट बंद है
+
+    } catch (err) {
+        console.error(err);
+        msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
+    }
+}   
+    
+}; 
+} 
 
