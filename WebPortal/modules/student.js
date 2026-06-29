@@ -424,9 +424,7 @@ export async function renderIdAssignment() {
             const res = await fetch(`${sheetUrls.Database}?action=getByAppNo&appNo=${appNo}`);
             const data = await res.json();
 
-            console.log(data);
-            alert(JSON.stringify(data));
-            
+    
            if (data.status !== "success") {
     return resArea.innerHTML = `<p style="color:red;">${data.message || "Record not found!"}</p>`;
 }
