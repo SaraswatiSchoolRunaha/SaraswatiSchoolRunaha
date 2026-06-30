@@ -468,17 +468,7 @@ if (e.target.id === 'submitIdBtn') {
         })
     });
         // सर्वर से रिस्पॉन्स को JSON की तरह पढ़ें
-       const text = await response.text();
-    console.log("SERVER RESPONSE =", text);
-
-    let result;
-
-    try {
-        result = JSON.parse(text);
-    } catch (e) {
-        alert(text);
-        return;
-    
+          const result = await response.json();
     
         if (result.status === "success") {
             msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
