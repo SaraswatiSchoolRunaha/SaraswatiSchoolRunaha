@@ -210,7 +210,7 @@ export async function renderSearchList() {
                     <td>${s.category || '-'}</td>
                     <td>
                     <button class="btn-primary" onclick="window.editStudent('${s.studentid}')" style="padding: 5px 10px; margin-right: 5px;">Edit</button>
-                    <button class="btn-danger" onclick="window.deleteStudent('${s.studentid}', '${s.session}')">Delete</button>
+                    <button class="btn-danger" onclick="window.deleteStudent('${s.appno}','${s.studentid}', '${s.session}')">Delete</button>
                     </td>
                 </tr>
             `).join('');
@@ -228,7 +228,8 @@ window.deleteStudent = async (id, session) => {
         const res = await fetch(sheetUrls.Database, {
             method: "POST",
             body: JSON.stringify({ 
-                action: "delete", 
+                action: "delete",
+                appNo: appNo,
                 studentId: id, 
                 session: session // यहाँ सेशन भेज रहे हैं
             })
