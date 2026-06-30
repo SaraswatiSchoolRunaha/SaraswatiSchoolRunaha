@@ -456,16 +456,19 @@ if (e.target.id === 'submitIdBtn') {
     msgDiv.innerHTML = "Processing...";
 
     try {
-        const payload = new URLSearchParams();
+       const response = await fetch(sheetUrls.Database, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        action: "updateStudentId",
+        appNo: appNo,
+        newId: newId
+    })
+});
 
-            payload.append("action", "updateStudentId");
-            payload.append("appNo", appNo);
-            payload.append("newId", newId);
-
-            const response = await fetch(sheetUrls.Database, {
-                method: "POST",
-                body: payload
-        });
+const result = await response.json();
 
         // सर्वर से रिस्पॉन्स को JSON की तरह पढ़ें
         const result = await response.json();
