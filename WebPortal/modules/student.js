@@ -44,7 +44,7 @@ export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
     
     // डेटा सूचियाँ
-    const romanClasses = [ "Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const romanClasses = [ "Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const medium = ["Hindi", "English"];
     const sessions = ["2027-28", "2028-29", "2029-30"];
 
@@ -138,7 +138,7 @@ export async function renderStudentList() {
 export async function renderSearchList() {
     const contentArea = document.getElementById('contentArea');
 
-    const classes = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const classes = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const years = ["2026-27", "2027-28", "2028-29", "2029-30"];
 
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
