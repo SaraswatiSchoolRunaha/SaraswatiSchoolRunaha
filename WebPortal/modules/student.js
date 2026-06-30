@@ -223,20 +223,24 @@ export async function renderSearchList() {
 }
 
 // यह फंक्शन डिलीट बटन को चालू करेगा
-window.deleteStudent = async (id, session) => {
+window.deleteStudent = async (appNo, studentId, session) => {
     if (confirm("क्या आप सच में इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
         const res = await fetch(sheetUrls.Database, {
             method: "POST",
             body: JSON.stringify({ 
                 action: "delete",
-                appNo: appNo,
-                studentId: id, 
-                session: session // यहाँ सेशन भेज रहे हैं
+                appNo: appNo,        // अब यह सही काम करेगा
+                studentId: studentId, // आपने id को studentId में बदला
+                session: session 
             })
         });
         const result = await res.json();
         alert(result.message);
-        document.getElementById('loadListBtn').click();
+        
+        // लिस्ट तभी रिफ्रेश करें जब डिलीट सफल हो
+        if (result.status === "success") {
+            document.getElementById('loadListBtn').click();
+        }
     }
 };
 
