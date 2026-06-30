@@ -174,7 +174,7 @@ export async function renderSearchList() {
     <table class="student-table">
         <thead>
             <tr>
-                <th>ID</th><th>Name</th><th>Father</th><th>DOB</th><th>Gender</th><th>Category</th><th>Action</th>
+               <th>App No</th><th>ID</th><th>Name</th><th>Father</th><th>DOB</th><th>Gender</th><th>Category</th><th>Action</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -201,6 +201,7 @@ export async function renderSearchList() {
 
                tbody.innerHTML = students.map(s => `
                     <tr>
+                    <td>${s.appNo || s.appno || '-'}</td>
                     <td>${s.studentid}</td>
                     <td>${s.name}</td>
                     <td>${s.father}</td>
