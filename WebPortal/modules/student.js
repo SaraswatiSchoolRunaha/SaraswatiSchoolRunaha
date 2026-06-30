@@ -465,11 +465,8 @@ if (e.target.id === 'submitIdBtn') {
         action: "updateStudentId",
         appNo: appNo,
         newId: newId
-    })
-});
-
-const result = await response.json();
-
+        })
+    });
         // सर्वर से रिस्पॉन्स को JSON की तरह पढ़ें
         const result = await response.json();
 
