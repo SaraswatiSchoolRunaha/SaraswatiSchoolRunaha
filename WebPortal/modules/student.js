@@ -209,9 +209,11 @@ export async function renderSearchList() {
                     <td>${s.gender || '-'}</td>
                     <td>${s.category || '-'}</td>
                     <td>
-                    <button class="btn-primary" onclick="window.editStudent('${s.studentid}')" style="padding: 5px 10px; margin-right: 5px;">Edit</button>
-                    <button class="btn-danger" onclick="window.deleteStudent('${s.appno}','${s.studentid}', '${s.session}')">Delete</button>
-                    </td>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                    <button class="btn-primary" onclick="window.editStudent('${s.studentid}')" style="padding: 5px 10px;">Edit</button>
+                    <button class="btn-danger" onclick="window.deleteStudent('${s.appno}','${s.studentid}', '${s.session}')" style="padding: 5px 10px;">Delete</button>
+                    </div>
+                </td>
                 </tr>
             `).join('');
             } catch (error) {
