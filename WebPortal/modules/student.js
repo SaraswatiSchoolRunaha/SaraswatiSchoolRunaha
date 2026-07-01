@@ -246,30 +246,70 @@ window.deleteStudent = async (appNo, studentId, session) => {
     }
 };
 
-// एडिट फ़ंक्शन (जब एडिट पर क्लिक करेंगे, तो सीधे छात्र की प्रोफाइल लोड होगी)
-window.editStudent = (id, session) => {
-    // 1. सबसे पहले मुख्य स्क्रीन पर स्टूडेंट प्रोफाइल का लेआउट (ढांचा) लोड करें
-    renderStudentProfile();
+// सुधरा हुआ एडिट फ़ंक्शन (यह सीधे विदाउट एरर डेटा रेंडर करेगा)
+window.editStudent = async (id, session) => {
+    if (!id) return alert("Student ID नहीं मिली!");
+
+    // 1. सबसे पहले प्रोफाइल का लेआउट लोड करें
+    await renderStudentProfile();
     
-    // 2. लेआउट लोड होने के बाद (500ms का डिले देकर), सर्च बॉक्स में ऑटोमैटिक डेटा भरकर सर्च रन करें
-    setTimeout(() => {
-        const idInput = document.getElementById('studentId');
-        const sessionSelect = document.getElementById('searchSession');
-        const searchBtn = document.getElementById('searchBtn');
-
-        if (idInput && searchBtn) {
-            idInput.value = id; // टेबल से मिली Student ID यहाँ सेट होगी
-            
-            if (session && sessionSelect) {
-                sessionSelect.value = session; // टेबल का सही शैक्षणिक सत्र (Session) यहाँ सेट होगा
-            }
-            
-            // सर्च बटन को ऑटोमैटिक क्लिक करें ताकि छात्र का पूरा फॉर्म खुलकर सामने आ जाए
-            searchBtn.click();
+    // 2. सर्च बॉक्स और सेशन इनपुट ढूंढें और फ़ील्ड्स में वैल्यू डालें
+    const idInput = document.getElementById('studentId');
+    const sessionSelect = document.getElementById('searchSession');
+    const formArea = document.getElementById('formArea');
+    
+    if (idInput) idInput.value = id;
+    if (session && sessionSelect) sessionSelect.value = session;
+    
+    // 3. सीधे वेरिएबल्स का उपयोग करके डेटा लोड करें
+    formArea.innerHTML = "<p style='text-align:center;'>Searching...</p>";
+    
+    try {
+        const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}&session=${session}`);
+        const data = await res.json();
+        
+        if (data.status !== "found") {
+            formArea.innerHTML = `<p style="color:red; text-align:center;">${data.message || "Record not found for this session."}</p>`;
+            return;
         }
-    }, 500);
-};
 
+        // 4. डेटा डायरेक्ट फॉर्म में इंजेक्ट करें
+        formArea.innerHTML = `
+        <div class="main-layout">
+            <div class="form-fields">
+                <div class="section-title">Personal Details</div>
+                <div class="field"><label>Student ID</label><input value="${data.studentId}" disabled></div>
+                <div class="field"><label>Samagra ID</label><input id="uSamagra" value="${data.samgra || ''}"></div>
+                <div class="field"><label>Name</label><input id="uName" value="${data.name || ''}"></div>
+                <div class="field"><label>Father Name</label><input id="uFather" value="${data.father || ''}"></div>
+                <div class="field"><label>Mother Name</label><input id="uMother" value="${data.mother || ''}"></div>
+                <div class="field"><label>Date of Birth</label><input id="uDob" type="date" value="${data.dob || ''}"></div>
+                <div class="field"><label>Gender</label><select id="uGender"><option ${data.gender=='Male'?'selected':''}>Male</option><option ${data.gender=='Female'?'selected':''}>Female</option></select></div>
+                <div class="field"><label>Category</label><select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select></div>
+                <div class="section-title">Academic & Contact</div>
+                <div class="field"><label>Class</label><select id="uClass" onchange="window.toggleSub()">${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+                <div class="field"><label>Medium</label><select id="uMedium"><option ${data.medium=='Hindi'?'selected':''}>Hindi</option><option ${data.medium=='English'?'selected':''}>English</option></select></div>
+                <div class="field"><label>Enrolment No</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
+                <div class="field"><label>Mobile</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
+                <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" value="${data.subject || ''}"></div>
+                <div class="field" style="grid-column: span 2;"><label>Address</label><input id="uAddress" value="${data.address || ''}"></div>
+                <div class="section-title">Bank & Security</div>
+                <div class="field"><label>Aadhaar</label><input value="[Redacted]" disabled></div>
+                <div class="field"><label>Bank Account</label><input id="uBank" value="${data.accountnumber || ''}"></div>
+                <div class="field"><label>IFSC</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
+                <button class="action-btn" id="saveBtn">Update Record</button>
+            </div>
+            <div class="photo-section">
+                <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
+                <input type="file" id="photoInput" style="display:none" accept="image/*">
+                <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">Change Photo</button>
+            </div>
+        </div>
+        <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
+    } catch (err) {
+        formArea.innerHTML = `<p style="color:red; text-align:center;">Error connecting to server.</p>`;
+    }
+};
 
 
 export async function renderStudentProfile() {
@@ -326,13 +366,11 @@ export async function renderStudentProfile() {
                 const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}&session=${session}`);
                 const data = await res.json();
                 
-                // अगर डेटा नहीं मिला, तो फॉर्म रेंडर न करें
                 if (data.status !== "found") {
                     formArea.innerHTML = `<p style="color:red; text-align:center;">${data.message || "Record not found for this session."}</p>`;
                     return;
                 }
 
-                // अगर डेटा मिल गया, तो ही फॉर्म दिखाएं
                 formArea.innerHTML = `
                 <div class="main-layout">
                     <div class="form-fields">
@@ -441,10 +479,9 @@ export async function renderIdAssignment() {
             const res = await fetch(`${sheetUrls.Database}?action=getByAppNo&appNo=${appNo}`);
             const data = await res.json();
 
-    
            if (data.status !== "success") {
-    return resArea.innerHTML = `<p style="color:red;">${data.message || "Record not found!"}</p>`;
-}
+                return resArea.innerHTML = `<p style="color:red;">${data.message || "Record not found!"}</p>`;
+            }
            resArea.innerHTML = `
                 <div class="details-card">
                     <div class="field"><label>Name:</label> ${data.studentName}</div>
@@ -464,38 +501,37 @@ export async function renderIdAssignment() {
             </div>
             <div id="msg"></div>`;
         }
-// Update Logic (ये हिस्सा अपने student.js में Replace करें)
-if (e.target.id === 'submitIdBtn') {
-    const newId = document.getElementById('newStudentId').value.trim();
-    const appNo = document.getElementById('searchAppNo').value.trim();
-    const msgDiv = document.getElementById('msg');
+        
+        // Update Logic
+        if (e.target.id === 'submitIdBtn') {
+            const newId = document.getElementById('newStudentId').value.trim();
+            const appNo = document.getElementById('searchAppNo').value.trim();
+            const msgDiv = document.getElementById('msg');
 
-    msgDiv.innerHTML = "Processing...";
+            msgDiv.innerHTML = "Processing...";
 
-    try {
-       const formData = new FormData();
-formData.append("action", "updateStudentId");
-formData.append("appNo", appNo);
-formData.append("newId", newId);
+            try {
+                const formData = new FormData();
+                formData.append("action", "updateStudentId");
+                formData.append("appNo", appNo);
+                formData.append("newId", newId);
 
-const response = await fetch(sheetUrls.Database, {
-    method: "POST",
-    body: formData
-});
+                const response = await fetch(sheetUrls.Database, {
+                    method: "POST",
+                    body: formData
+                });
 
-// सर्वर से रिस्पॉन्स को JSON की तरह पढ़ें
-const result = await response.json();
-    
-        if (result.status === "success") {
-            msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
-        } else {
-            msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
+                const result = await response.json();
+                    
+                if (result.status === "success") {
+                    msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
+                } else {
+                    msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
+            }
         }
-    } catch (err) {
-        console.error("Error:", err);
-        msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
-    }
+    }; 
 }
-}; 
-} 
-
