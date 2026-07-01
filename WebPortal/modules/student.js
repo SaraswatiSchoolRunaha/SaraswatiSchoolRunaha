@@ -246,17 +246,26 @@ window.deleteStudent = async (appNo, studentId, session) => {
     }
 };
 
-window.editStudent = (id) => {
-    // 1. प्रोफाइल रेंडरिंग फंक्शन को कॉल करें
+// एडिट फ़ंक्शन (जब एडिट पर क्लिक करेंगे, तो सीधे छात्र की प्रोफाइल लोड होगी)
+window.editStudent = (id, session) => {
+    // 1. सबसे पहले मुख्य स्क्रीन पर स्टूडेंट प्रोफाइल का लेआउट (ढांचा) लोड करें
     renderStudentProfile();
     
-    // 2. प्रोफाइल रेंडर होने के बाद, ID को इनपुट में डालें और सर्च बटन दबाएं
-    // setTimeout का उपयोग इसलिए किया है ताकि HTML लोड होने का समय मिल जाए
+    // 2. लेआउट लोड होने के बाद (500ms का डिले देकर), सर्च बॉक्स में ऑटोमैटिक डेटा भरकर सर्च रन करें
     setTimeout(() => {
         const idInput = document.getElementById('studentId');
-        if (idInput) {
-            idInput.value = id; // यहाँ छात्र की ID भरें
-            document.getElementById('searchBtn').click(); // सर्च बटन पर ऑटोमैटिक क्लिक करें
+        const sessionSelect = document.getElementById('searchSession');
+        const searchBtn = document.getElementById('searchBtn');
+
+        if (idInput && searchBtn) {
+            idInput.value = id; // टेबल से मिली Student ID यहाँ सेट होगी
+            
+            if (session && sessionSelect) {
+                sessionSelect.value = session; // टेबल का सही शैक्षणिक सत्र (Session) यहाँ सेट होगा
+            }
+            
+            // सर्च बटन को ऑटोमैटिक क्लिक करें ताकि छात्र का पूरा फॉर्म खुलकर सामने आ जाए
+            searchBtn.click();
         }
     }, 500);
 };
