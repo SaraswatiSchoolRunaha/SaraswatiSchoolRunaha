@@ -211,7 +211,7 @@ export async function renderSearchList() {
                     <td>
                     <div style="display: flex; gap: 6px; align-items: center;">
                     <button class="btn-primary" onclick="window.editStudent('${s.studentid}')" style="padding: 5px 10px;">Edit</button>
-                    <button class="btn-danger" onclick="window.deleteStudent('${s.appno}','${s.studentid}', '${s.session}')" style="padding: 5px 10px;">Delete</button>
+                    <button class="btn-danger" onclick="window.deleteStudent('${s.appNo}','${s.studentid}', '${s.session}')" style="padding: 5px 10px;">Delete</button>
                     </div>
                 </td>
                 </tr>
