@@ -231,29 +231,95 @@ window.deleteStudent = async (appNo, studentId, session) => {
             method: "POST",
             body: JSON.stringify({ 
                 action: "delete",
-                appNo: appNo,        // अब यह सही काम करेगा
-                studentId: studentId, // आपने id को studentId में बदला
+                appNo: appNo,
+                studentId: studentId,
                 session: session 
             })
         });
         const result = await res.json();
         alert(result.message);
         
-        // लिस्ट तभी रिफ्रेश करें जब डिलीट सफल हो
         if (result.status === "success") {
-            document.getElementById('loadListBtn').click();
+            const loadListBtn = document.getElementById('loadListBtn');
+            if (loadListBtn) loadListBtn.click();
         }
     }
 };
 
-// सुधरा हुआ एडिट फ़ंक्शन (यह सीधे विदाउट एरर डेटा रेंडर करेगा)
+// शिक्षा पोर्टल 3.0 थीम आधारित फॉर्म रेंडरर फ़ंक्शन
+function getProfileFormHTML(data) {
+    return `
+    <div class="main-layout">
+        <div class="form-fields">
+            <input type="hidden" id="uAppNo" value="${data.appNo || ''}">
+            <input type="hidden" id="uSession" value="${data.session || ''}">
+            
+            <div class="section-title">👤 व्यक्तिगत विवरण (Personal Details)</div>
+            <div class="field"><label>Student ID</label><input id="uStudentId" class="portal-input input-disabled" value="${data.studentId || ''}" disabled></div>
+            <div class="field"><label>Samagra ID</label><input id="uSamagra" class="portal-input" value="${data.samgra || ''}"></div>
+            <div class="field"><label>Name</label><input id="uName" class="portal-input" value="${data.name || ''}"></div>
+            <div class="field"><label>Father Name</label><input id="uFather" class="portal-input" value="${data.father || ''}"></div>
+            <div class="field"><label>Mother Name</label><input id="uMother" class="portal-input" value="${data.mother || ''}"></div>
+            <div class="field"><label>Date of Birth</label><input id="uDob" class="portal-input" type="date" value="${data.dob || ''}"></div>
+            <div class="field">
+                <label>Gender</label>
+                <select id="uGender" class="portal-input">
+                    <option value="Male" ${data.gender=='Male'?'selected':''}>Male</option>
+                    <option value="Female" ${data.gender=='Female'?'selected':''}>Female</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Category</label>
+                <select id="uCast" class="portal-input">
+                    <option value="General" ${data.category=='General'?'selected':''}>General</option>
+                    <option value="OBC" ${data.category=='OBC'?'selected':''}>OBC</option>
+                    <option value="SC" ${data.category=='SC'?'selected':''}>SC</option>
+                    <option value="ST" ${data.category=='ST'?'selected':''}>ST</option>
+                </select>
+            </div>
+            
+            <div class="section-title">🏫 शैक्षणिक एवं संपर्क विवरण (Academic & Contact)</div>
+            <div class="field">
+                <label>Class</label>
+                <select id="uClass" class="portal-input" onchange="window.toggleSub()">
+                    ${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
+                </select>
+            </div>
+            <div class="field">
+                <label>Medium</label>
+                <select id="uMedium" class="portal-input">
+                    <option value="Hindi" ${data.medium=='Hindi'?'selected':''}>Hindi</option>
+                    <option value="English" ${data.medium=='English'?'selected':''}>English</option>
+                </select>
+            </div>
+            <div class="field"><label>Enrolment No</label><input id="uEnrol" class="portal-input" value="${data.enrolment || ''}"></div>
+            <div class="field"><label>Mobile</label><input id="uMobile" class="portal-input" value="${data.mobile1 || ''}"></div>
+            <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" class="portal-input" value="${data.subject || ''}"></div>
+            <div class="field" style="grid-column: span 2;"><label>Address</label><input id="uAddress" class="portal-input" value="${data.address || ''}"></div>
+            
+            <div class="section-title">🏦 बैंक एवं सुरक्षा विवरण (Bank & Security)</div>
+            <div class="field"><label>Aadhaar</label><input class="portal-input input-disabled" value="[Redacted]" disabled></div>
+            <div class="field"><label>Bank Account</label><input id="uBank" class="portal-input" value="${data.accountnumber || ''}"></div>
+            <div class="field"><label>IFSC</label><input id="uIfsc" class="portal-input" value="${data.ifsc || ''}"></div>
+            
+            <button class="action-btn" id="saveBtn">💾 Update Student Profile</button>
+        </div>
+        <div class="photo-section">
+            <div class="photo-label">STUDENT PHOTO</div>
+            <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
+            <input type="file" id="photoInput" style="display:none" accept="image/*">
+            <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">🔄 Change Photo</button>
+        </div>
+    </div>
+    <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
+}
+
+// सुधरा हुआ एडिट फ़ंक्शन जो बाहर से कॉल होने पर काम करेगा
 window.editStudent = async (id, session) => {
     if (!id) return alert("Student ID नहीं मिली!");
 
-    // 1. सबसे पहले प्रोफाइल का लेआउट लोड करें
     await renderStudentProfile();
     
-    // 2. सर्च बॉक्स और सेशन इनपुट ढूंढें और फ़ील्ड्स में वैल्यू डालें
     const idInput = document.getElementById('studentId');
     const sessionSelect = document.getElementById('searchSession');
     const formArea = document.getElementById('formArea');
@@ -261,93 +327,225 @@ window.editStudent = async (id, session) => {
     if (idInput) idInput.value = id;
     if (session && sessionSelect) sessionSelect.value = session;
     
-    // 3. सीधे वेरिएबल्स का उपयोग करके डेटा लोड करें
-    formArea.innerHTML = "<p style='text-align:center;'>Searching...</p>";
+    formArea.innerHTML = "<p style='text-align:center; font-weight:bold; color:#1a365d;'>🔄 Fetching Profile Data from Portal...</p>";
     
     try {
         const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}&session=${session}`);
         const data = await res.json();
         
         if (data.status !== "found") {
-            formArea.innerHTML = `<p style="color:red; text-align:center;">${data.message || "Record not found for this session."}</p>`;
+            formArea.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">${data.message || "Record not found for this session."}</p>`;
             return;
         }
 
-        // 4. डेटा डायरेक्ट फॉर्म में इंजेक्ट करें
-        formArea.innerHTML = `
-        <div class="main-layout">
-            <div class="form-fields">
-                <div class="section-title">Personal Details</div>
-                <div class="field"><label>Student ID</label><input value="${data.studentId}" disabled></div>
-                <div class="field"><label>Samagra ID</label><input id="uSamagra" value="${data.samgra || ''}"></div>
-                <div class="field"><label>Name</label><input id="uName" value="${data.name || ''}"></div>
-                <div class="field"><label>Father Name</label><input id="uFather" value="${data.father || ''}"></div>
-                <div class="field"><label>Mother Name</label><input id="uMother" value="${data.mother || ''}"></div>
-                <div class="field"><label>Date of Birth</label><input id="uDob" type="date" value="${data.dob || ''}"></div>
-                <div class="field"><label>Gender</label><select id="uGender"><option ${data.gender=='Male'?'selected':''}>Male</option><option ${data.gender=='Female'?'selected':''}>Female</option></select></div>
-                <div class="field"><label>Category</label><select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select></div>
-                <div class="section-title">Academic & Contact</div>
-                <div class="field"><label>Class</label><select id="uClass" onchange="window.toggleSub()">${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
-                <div class="field"><label>Medium</label><select id="uMedium"><option ${data.medium=='Hindi'?'selected':''}>Hindi</option><option ${data.medium=='English'?'selected':''}>English</option></select></div>
-                <div class="field"><label>Enrolment No</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
-                <div class="field"><label>Mobile</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
-                <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" value="${data.subject || ''}"></div>
-                <div class="field" style="grid-column: span 2;"><label>Address</label><input id="uAddress" value="${data.address || ''}"></div>
-                <div class="section-title">Bank & Security</div>
-                <div class="field"><label>Aadhaar</label><input value="[Redacted]" disabled></div>
-                <div class="field"><label>Bank Account</label><input id="uBank" value="${data.accountnumber || ''}"></div>
-                <div class="field"><label>IFSC</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
-                <button class="action-btn" id="saveBtn">Update Record</button>
-            </div>
-            <div class="photo-section">
-                <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
-                <input type="file" id="photoInput" style="display:none" accept="image/*">
-                <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">Change Photo</button>
-            </div>
-        </div>
-        <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
+        formArea.innerHTML = getProfileFormHTML(data);
+        setupPhotoHandler();
     } catch (err) {
-        formArea.innerHTML = `<p style="color:red; text-align:center;">Error connecting to server.</p>`;
+        formArea.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">Error connecting to portal server.</p>`;
     }
 };
 
+function setupPhotoHandler() {
+    const photoInput = document.getElementById('photoInput');
+    const profileImg = document.getElementById('profileImg');
+    
+    if (photoInput && profileImg) {
+        photoInput.onchange = function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImg.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        };
+    }
+}
 
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
 
     contentArea.innerHTML = `
     <style>
-        .profile-wrapper { max-width: 950px; margin: 30px auto; background: #f8f9fa; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; }
-        .p-header { background: linear-gradient(135deg, #357abd, #2c3e50); color: white; padding: 25px; text-align: center; font-size: 24px; font-weight: 700; border-radius: 15px; margin-bottom: 30px; }
-        .search-wrapper { display: flex; gap: 10px; margin-bottom: 20px; }
-        .main-layout { display: grid; grid-template-columns: 1fr 220px; gap: 30px; align-items: start; }
-        .form-fields { background: white; padding: 25px; border-radius: 15px; border: 1px solid #eee; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .photo-section { background: white; padding: 20px; border-radius: 15px; border: 1px solid #eee; text-align: center; }
-        .photo-section img { width: 180px; height: 180px; border-radius: 12px; border: 4px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.15); object-fit: cover; margin-bottom: 15px; }
+        /* शिक्षा पोर्टल 3.0 थीम कलर्स */
+        .profile-wrapper { 
+            max-width: 1050px; 
+            margin: 30px auto; 
+            background: #f0f4f8; /* पोर्टल लाइट ग्रे-ब्लू बैकग्राउंड */
+            border-radius: 12px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12); 
+            padding: 25px;
+            border-top: 5px solid #1a365d; /* मुख्य विभाग का डार्क ब्लू */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .p-header { 
+            background: #1a365d; /* Education Department Dark Blue */
+            color: #ffffff; 
+            padding: 15px 25px; 
+            text-align: left; 
+            font-size: 20px; 
+            font-weight: 600; 
+            border-radius: 6px; 
+            margin-bottom: 25px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(26, 54, 93, 0.2);
+        }
+        .search-wrapper { 
+            display: flex; 
+            gap: 12px; 
+            margin-bottom: 25px; 
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #d2d6dc;
+        }
+        .main-layout { display: grid; grid-template-columns: 1fr 240px; gap: 25px; align-items: start; }
+        
+        .form-fields { 
+            background: #ffffff; 
+            padding: 25px; 
+            border-radius: 8px; 
+            border: 1px solid #d2d6dc; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 18px; 
+        }
+        .photo-section { 
+            background: #ffffff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid #d2d6dc; 
+            text-align: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .photo-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+        .photo-section img { 
+            width: 170px; 
+            height: 190px; 
+            border-radius: 4px; 
+            border: 1px solid #cbd5e0; 
+            object-fit: cover; 
+            margin-bottom: 15px; 
+            background: #f7fafc;
+        }
+        
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 11px; font-weight: 700; color: #7f8c8d; margin-bottom: 6px; text-transform: uppercase; }
-        .field input, .field select { padding: 12px; border: 1.5px solid #e1e8ed; border-radius: 10px; font-size: 14px; background: #fafafa; }
-        .section-title { grid-column: span 2; font-size: 15px; font-weight: 700; color: #357abd; border-left: 4px solid #357abd; padding-left: 10px; margin: 15px 0 5px 0; }
-        .action-btn { grid-column: span 2; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .change-photo-btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; }
+        .field label { 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: #2d3748; 
+            margin-bottom: 6px; 
+        }
+        
+        /* पोर्टल स्टाइल इनपुट बॉक्स */
+        .portal-input { 
+            padding: 10px 12px; 
+            border: 1px solid #a0aec0; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            background: #ffffff; 
+            color: #2d3748;
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box;
+        }
+        .portal-input:focus {
+            border-color: #3182ce;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
+            background: #fffdf5; /* फोकस होने पर हल्का सा पोर्टल हाइलाइट कलर */
+        }
+        .input-disabled {
+            background: #edf2f7 !important;
+            color: #718096;
+            cursor: not-allowed;
+            border: 1px dashed #cbd5e0;
+        }
+        
+        .section-title { 
+            grid-column: span 2; 
+            font-size: 14px; 
+            font-weight: 700; 
+            color: #1a365d; 
+            background: #e2e8f0;
+            padding: 8px 12px; 
+            margin: 10px 0 5px 0; 
+            border-radius: 4px;
+            border-left: 4px solid #3182ce;
+        }
+        
+        /* बटन्स */
+        .action-btn { 
+            grid-column: span 2; 
+            padding: 12px; 
+            background: #2b6cb0; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 15px;
+            transition: background 0.2s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        .action-btn:hover { background: #2c5282; }
+        
+        .change-photo-btn { 
+            background: #4a5568; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-weight: 600; 
+            font-size: 13px;
+        }
+        .change-photo-btn:hover { background: #2d3748; }
+
+        .search-btn {
+            padding: 0 25px; 
+            background: #3182ce; 
+            color: #fff; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: 600;
+        }
+        .search-btn:hover { background: #2b6cb0; }
+        
         @media (max-width: 850px) { 
             .main-layout { grid-template-columns: 1fr; } 
             .photo-section { order: -1; }
             .search-wrapper { flex-direction: column; }
+            .form-fields { grid-template-columns: 1fr; }
+            .section-title { grid-column: span 1; }
+            .action-btn { grid-column: span 1; }
         }
     </style>
 
     <div class="profile-wrapper">
-        <div class="p-header">🎓 Student Profile Management</div>
+        <div class="p-header">💻 शिक्षा पोर्टल 3.0 - Student Profile Management</div>
         <div class="search-wrapper">
-            <input id="studentId" placeholder="Search by Student ID..." style="flex:1; padding:15px; border:1px solid #ddd; border-radius:10px;">
-            <select id="searchSession" style="padding: 15px; border:1px solid #ddd; border-radius:10px;">
+            <input id="studentId" class="portal-input" placeholder="Search by Student ID..." style="flex:1;">
+            <select id="searchSession" class="portal-input" style="width: 150px;">
                 <option value="2026-27">2026-27</option>
                 <option value="2027-28">2027-28</option>
                 <option value="2028-29">2028-29</option>
                 <option value="2029-30">2029-30</option>
             </select>
-            <button id="searchBtn" style="padding: 15px 30px; background: #2c3e50; color: #fff; border:none; border-radius:10px; cursor:pointer;">Search</button>
+            <button id="searchBtn" class="search-btn">🔍 Search</button>
         </div>
         <div id="formArea"></div>
     </div>`;
@@ -360,60 +558,34 @@ export async function renderStudentProfile() {
             
             if (!id) return alert("Please enter Student ID");
             
-            formArea.innerHTML = "<p style='text-align:center;'>Searching...</p>";
+            formArea.innerHTML = "<p style='text-align:center;font-weight:bold; color:#1a365d;'>🔄 Fetching Profile Data...</p>";
 
             try {
                 const res = await fetch(`${sheetUrls.Database}?action=searchById&studentId=${id}&session=${session}`);
                 const data = await res.json();
                 
                 if (data.status !== "found") {
-                    formArea.innerHTML = `<p style="color:red; text-align:center;">${data.message || "Record not found for this session."}</p>`;
+                    formArea.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">${data.message || "Record not found for this session."}</p>`;
                     return;
                 }
 
-                formArea.innerHTML = `
-                <div class="main-layout">
-                    <div class="form-fields">
-                        <div class="section-title">Personal Details</div>
-                        <div class="field"><label>Student ID</label><input value="${data.studentId}" disabled></div>
-                        <div class="field"><label>Samagra ID</label><input id="uSamagra" value="${data.samgra || ''}"></div>
-                        <div class="field"><label>Name</label><input id="uName" value="${data.name || ''}"></div>
-                        <div class="field"><label>Father Name</label><input id="uFather" value="${data.father || ''}"></div>
-                        <div class="field"><label>Mother Name</label><input id="uMother" value="${data.mother || ''}"></div>
-                        <div class="field"><label>Date of Birth</label><input id="uDob" type="date" value="${data.dob || ''}"></div>
-                        <div class="field"><label>Gender</label><select id="uGender"><option ${data.gender=='Male'?'selected':''}>Male</option><option ${data.gender=='Female'?'selected':''}>Female</option></select></div>
-                        <div class="field"><label>Category</label><select id="uCast"><option ${data.category=='General'?'selected':''}>General</option><option ${data.category=='OBC'?'selected':''}>OBC</option><option ${data.category=='SC'?'selected':''}>SC</option><option ${data.category=='ST'?'selected':''}>ST</option></select></div>
-                        <div class="section-title">Academic & Contact</div>
-                        <div class="field"><label>Class</label><select id="uClass" onchange="window.toggleSub()">${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
-                        <div class="field"><label>Medium</label><select id="uMedium"><option ${data.medium=='Hindi'?'selected':''}>Hindi</option><option ${data.medium=='English'?'selected':''}>English</option></select></div>
-                        <div class="field"><label>Enrolment No</label><input id="uEnrol" value="${data.enrolment || ''}"></div>
-                        <div class="field"><label>Mobile</label><input id="uMobile" value="${data.mobile1 || ''}"></div>
-                        <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" value="${data.subject || ''}"></div>
-                        <div class="field" style="grid-column: span 2;"><label>Address</label><input id="uAddress" value="${data.address || ''}"></div>
-                        <div class="section-title">Bank & Security</div>
-                        <div class="field"><label>Aadhaar</label><input value="[Redacted]" disabled></div>
-                        <div class="field"><label>Bank Account</label><input id="uBank" value="${data.accountnumber || ''}"></div>
-                        <div class="field"><label>IFSC</label><input id="uIfsc" value="${data.ifsc || ''}"></div>
-                        <button class="action-btn" id="saveBtn">Update Record</button>
-                    </div>
-                    <div class="photo-section">
-                        <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
-                        <input type="file" id="photoInput" style="display:none" accept="image/*">
-                        <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">Change Photo</button>
-                    </div>
-                </div>
-                <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
+                formArea.innerHTML = getProfileFormHTML(data);
+                setupPhotoHandler();
             } catch (err) {
-                formArea.innerHTML = `<p style="color:red; text-align:center;">Error connecting to server.</p>`;
+                formArea.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">Error connecting to portal server.</p>`;
             }
         }
 
         if (e.target.id === 'saveBtn') {
             const btn = e.target;
-            btn.innerText = "Updating...";
+            btn.innerText = "⏳ Syncing with Portal...";
+            btn.disabled = true;
+
             const payload = new URLSearchParams({
                 action: "update",
-                appNo: document.getElementById('studentId').value,
+                appNo: document.getElementById('uAppNo').value,
+                studentId: document.getElementById('uStudentId').value,
+                session: document.getElementById('uSession').value,
                 samgra: document.getElementById('uSamagra').value,
                 studentName: document.getElementById('uName').value,
                 father: document.getElementById('uFather').value,
@@ -428,15 +600,24 @@ export async function renderStudentProfile() {
                 address: document.getElementById('uAddress').value,
                 subject: document.getElementById('uSubject')?.value || "",
                 accountnumber: document.getElementById('uBank').value,
-                ifsc: document.getElementById('uIfsc').value
+                ifsc: document.getElementById('uIfsc').value,
+                photo: document.getElementById('profileImg').src
             });
 
-            const res = await fetch(sheetUrls.Database, { method: "POST", body: payload });
-            const result = await res.json();
-            const msgBox = document.getElementById('msg');
-            msgBox.innerText = result.message;
-            msgBox.style.color = result.status === "success" ? "green" : "red";
-            btn.innerText = "Update Record";
+            try {
+                const res = await fetch(sheetUrls.Database, { method: "POST", body: payload });
+                const result = await res.json();
+                const msgBox = document.getElementById('msg');
+                if(msgBox) {
+                    msgBox.innerText = result.message;
+                    msgBox.style.color = result.status === "success" ? "#2f855a" : "#c53030";
+                }
+            } catch (error) {
+                alert("पोर्टल अपडेट करने में सर्वर एरर आई।");
+            } finally {
+                btn.innerText = "💾 Update Student Profile";
+                btn.disabled = false;
+            }
         }
     };
 
@@ -447,68 +628,68 @@ export async function renderStudentProfile() {
     };
 }
 
-
 export async function renderIdAssignment() {
     const contentArea = document.getElementById('contentArea');
 
     contentArea.innerHTML = `
     <style>
-        .assign-wrapper { max-width: 600px; margin: 30px auto; padding: 25px; background: #fff; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .assign-wrapper { max-width: 600px; margin: 30px auto; padding: 25px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 4px solid #1a365d;}
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        .details-card { padding: 20px; background: #f9f9f9; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #4a90e2; }
-        .field { margin-bottom: 10px; }
-        .field label { font-weight: bold; color: #555; }
+        .details-card { padding: 20px; background: #f7fafc; border-radius: 6px; margin-bottom: 20px; border-left: 5px solid #3182ce; border-box: 1px solid #e2e8f0; }
+        .field { margin-bottom: 12px; display: flex; flex-direction: column;}
+        .field label { font-weight: bold; color: #2d3748; margin-bottom: 4px; font-size: 13px;}
     </style>
 
     <div class="assign-wrapper">
-        <h3 style="color: #2c3e50;">🆔 Student ID Assignment</h3>
+        <h3 style="color: #1a365d; margin-top:0;">🆔 Student ID Allocation Portal</h3>
         <div class="input-group">
-            <input id="searchAppNo" placeholder="Enter Application Number..." style="flex:1; padding:10px; border:1px solid #ccc; border-radius:5px;">
-            <button id="searchAppBtn" class="btn-primary">Search</button>
+            <input id="searchAppNo" class="portal-input" placeholder="Enter Application Number..." style="flex:1;">
+            <button id="searchAppBtn" class="search-btn">🔍 Search</button>
         </div>
         <div id="resultArea"></div>
     </div>`;
 
     contentArea.onclick = async (e) => {
-        // Search Logic
         if (e.target.id === 'searchAppBtn') {
             const appNo = document.getElementById('searchAppNo').value.trim();
             const resArea = document.getElementById('resultArea');
             
-            resArea.innerHTML = "Searching...";
-            const res = await fetch(`${sheetUrls.Database}?action=getByAppNo&appNo=${appNo}`);
-            const data = await res.json();
+            if(!appNo) return alert("Please enter Application Number");
+            resArea.innerHTML = "<p style='color:#1a365d; font-weight:bold;'>Searching Application...</p>";
+            
+            try {
+                const res = await fetch(`${sheetUrls.Database}?action=getByAppNo&appNo=${appNo}`);
+                const data = await res.json();
 
-           if (data.status !== "success") {
-                return resArea.innerHTML = `<p style="color:red;">${data.message || "Record not found!"}</p>`;
-            }
-           resArea.innerHTML = `
-                <div class="details-card">
-                    <div class="field"><label>Name:</label> ${data.studentName}</div>
-                    <div class="field"><label>Father:</label> ${data.fatherName}</div>
-                    <div class="field"><label>Mother:</label> ${data.motherName}</div>
-                    <div class="field"><label>Class:</label> ${data.class}</div>
-                <hr>
-
-                <div class="field">
-                    <label>Assign Student ID:</label>
-                    <input id="newStudentId" value="${data.studentId || ''}">
+                if (data.status !== "success") {
+                    return resArea.innerHTML = `<p style="color:red; font-weight:bold;">❌ ${data.message || "Record not found!"}</p>`;
+                }
+                resArea.innerHTML = `
+                    <div class="details-card">
+                        <div class="field"><label>Student Name:</label> <input class="portal-input input-disabled" value="${data.studentName}" disabled></div>
+                        <div class="field"><label>Father Name:</label> <input class="portal-input input-disabled" value="${data.fatherName}" disabled></div>
+                        <div class="field"><label>Mother Name:</label> <input class="portal-input input-disabled" value="${data.motherName}" disabled></div>
+                        <div class="field"><label>Class:</label> <input class="portal-input input-disabled" value="${data.class}" disabled></div>
+                    <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
+                    <div class="field">
+                        <label style="color:#1a365d;">Assign New Student ID:</label>
+                        <input id="newStudentId" class="portal-input" value="${data.studentId || ''}" style="font-weight:bold; color:#2b6cb0;">
+                    </div>
+                    <button id="submitIdBtn" class="action-btn" style="margin-top:10px; width:100%;">🆔 Update & Allocate Student ID</button>
                 </div>
-
-                    <button id="submitIdBtn" class="btn-primary">
-                    Update Student ID
-              </button>
-            </div>
-            <div id="msg"></div>`;
+                <div id="msg" style="text-align:center; font-weight:bold;"></div>`;
+            } catch (err) {
+                resArea.innerHTML = `<p style="color:red; font-weight:bold;">Server connection error!</p>`;
+            }
         }
         
-        // Update Logic
         if (e.target.id === 'submitIdBtn') {
             const newId = document.getElementById('newStudentId').value.trim();
             const appNo = document.getElementById('searchAppNo').value.trim();
             const msgDiv = document.getElementById('msg');
 
-            msgDiv.innerHTML = "Processing...";
+            if(!newId) return alert("Please enter a valid Student ID");
+            msgDiv.innerHTML = "Processing allocation...";
 
             try {
                 const formData = new FormData();
@@ -524,12 +705,11 @@ export async function renderIdAssignment() {
                 const result = await response.json();
                     
                 if (result.status === "success") {
-                    msgDiv.innerHTML = `<p style="color:green;font-weight:bold;">✅ ${result.message}</p>`;
+                    msgDiv.innerHTML = `<p style="color:#2f855a;font-weight:bold;">✅ ${result.message}</p>`;
                 } else {
-                    msgDiv.innerHTML = `<p style="color:red;">❌ ${result.message}</p>`;
+                    msgDiv.innerHTML = `<p style="color:#c53030;">❌ ${result.message}</p>`;
                 }
             } catch (err) {
-                console.error("Error:", err);
                 msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
             }
         }
