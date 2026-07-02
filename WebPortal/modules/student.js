@@ -692,3 +692,4 @@ export async function renderStudentProfile() {
         if(sub) sub.style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
     };
 }
+}
