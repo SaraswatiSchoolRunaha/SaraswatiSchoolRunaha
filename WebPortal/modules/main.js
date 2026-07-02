@@ -173,6 +173,3 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-
-
