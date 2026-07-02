@@ -697,9 +697,9 @@ export async function renderIdAssignment() {
                     <div class="info-grid">
                         <div class="info-item"><strong>App No:</strong> ${data.appNo || data.appno || appNo}</div>
                         <div class="info-item"><strong>Current Student ID:</strong> ${data.studentid || data.studentId || '<span style="color:orange;">Not Assigned</span>'}</div>
-                        <div class="info-item"><strong>Student Name:</strong> ${data.studentName || data.name || '-'}</div>
-                        <div class="info-item"><strong>Father Name:</strong> ${data.fatherName || data.father || '-'}</div>
-                        <div class="info-item"><strong>Mother Name:</strong> ${data.motherName || data.mother || '-'}</div>
+                        <div class="info-item"><strong>Student Name:</strong> ${data.name|| data.name || '-'}</div>
+                        <div class="info-item"><strong>Father Name:</strong> ${data.father || data.father || '-'}</div>
+                        <div class="info-item"><strong>Mother Name:</strong> ${data.mother || data.mother || '-'}</div>
                         <div class="info-item"><strong>Class:</strong> ${data.class || data.className || '-'}</div>
                         <div class="info-item"><strong>Medium:</strong> ${data.medium || '-'}</div>
                         <div class="info-item"><strong>Samagra ID:</strong> ${data.samgra || data.samagra || '-'}</div>
