@@ -625,3 +625,145 @@ export async function renderStudentProfile() {
       };
 }
 
+
+
+// --- Application Number से Student ID असाइन करने का इंटरफ़ेस ---
+export async function renderIdAssignment() {
+    const contentArea = document.getElementById('contentArea');
+    const years = ["2026-27", "2027-28", "2028-29", "2029-30"];
+    const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
+
+    contentArea.innerHTML = `
+    <style>
+        .portal-title { color: #1a365d; margin-bottom: 15px; font-weight: bold; font-size: 20px; }
+        .search-box { padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; border: 1px solid #d2d6dc; }
+        .details-wrapper { background: #ffffff; padding: 25px; border-radius: 8px; border: 1px solid #d2d6dc; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .info-item { font-size: 14px; color: #2d3748; padding: 8px; background: #f7fafc; border-radius: 4px; border: 1px solid #edf2f7; }
+        .info-item strong { color: #1a365d; }
+        .assign-section { background: #f0f4f8; padding: 15px; border-radius: 6px; border-left: 4px solid #3182ce; margin-top: 15px; display: flex; gap: 15px; align-items: center; }
+        .portal-input { padding: 10px 12px; border: 1px solid #a0aec0; border-radius: 5px; font-size: 14px; background: #ffffff; box-sizing: border-box; }
+        .btn-submit { padding: 10px 20px; background: #3182ce; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-submit:hover { background: #2b6cb0; }
+        .btn-update { background: #2f855a; }
+        .btn-update:hover { background: #22543d; }
+        #assignMsg { text-align: center; margin-top: 15px; font-weight: bold; font-size: 15px; }
+    </style>
+
+    <div class="portal-title">🆔 छात्र ID आवंटन (Student ID Assignment)</div>
+    <div class="search-box">
+        <label><strong>Application No:</strong></label>
+        <input type="text" id="searchAppNo" class="portal-input" placeholder="Enter App No..." style="width: 200px;">
+        
+        <label><strong>Session:</strong></label>
+        <select id="searchAppSession" class="portal-input" style="width: 150px;">
+            ${generateOptions(years)}
+        </select>
+        <button id="searchAppBtn" class="btn-submit">🔍 Search Student</button>
+    </div>
+    
+    <div id="studentDetailsWrapper" class="details-wrapper"></div>
+    <div id="assignMsg"></div>`;
+
+    // इवेंट लिस्नर अटैच करना (Overwrite से सुरक्षित)
+    contentArea.addEventListener('click', async (e) => {
+        // 1. Search Button Action
+        if (e.target.id === 'searchAppBtn') {
+            const appNo = document.getElementById('searchAppNo').value.trim();
+            const session = document.getElementById('searchAppSession').value;
+            const wrapper = document.getElementById('studentDetailsWrapper');
+            const msgBox = document.getElementById('assignMsg');
+
+            if (!appNo) return alert("कृपया Application Number दर्ज करें!");
+            
+            msgBox.innerText = "";
+            wrapper.style.display = "none";
+            wrapper.innerHTML = "<p style='text-align:center; font-weight:bold; color:#1a365d;'>🔄 Searching Record...</p>";
+            wrapper.style.display = "block";
+
+            try {
+                // आपके Google Apps Script API पर App No से सर्च करने का अनुरोध
+                const res = await fetch(`${sheetUrls.Database}?action=searchByAppNo&appNo=${encodeURIComponent(appNo)}&session=${session}`);
+                const data = await res.json();
+
+                if (data.status !== "found") {
+                    wrapper.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">❌ ${data.message || "यह Application Number रिकॉर्ड में नहीं मिला।"}</p>`;
+                    return;
+                }
+
+                // छात्र की पूरी जानकारी दिखाना
+                wrapper.innerHTML = `
+                    <h3 style="color:#1a365d; margin-top:0; border-bottom:2px solid #e2e8f0; padding-bottom:8px;">📋 Student Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>App No:</strong> ${data.appNo || data.appno || appNo}</div>
+                        <div class="info-item"><strong>Current Student ID:</strong> ${data.studentid || data.studentId || '<span style="color:orange;">Not Assigned</span>'}</div>
+                        <div class="info-item"><strong>Student Name:</strong> ${data.name || '-'}</div>
+                        <div class="info-item"><strong>Father Name:</strong> ${data.father || '-'}</div>
+                        <div class="info-item"><strong>Mother Name:</strong> ${data.mother || '-'}</div>
+                        <div class="info-item"><strong>Class:</strong> ${data.class || data.className || '-'}</div>
+                        <div class="info-item"><strong>Medium:</strong> ${data.medium || '-'}</div>
+                        <div class="info-item"><strong>Samagra ID:</strong> ${data.samgra || data.samagra || '-'}</div>
+                    </div>
+                    
+                    <div class="assign-section">
+                        <label><strong>Enter New Student ID:</strong></label>
+                        <input type="text" id="newStudentId" class="portal-input" placeholder="e.g. SCH2026001" value="${data.studentid || data.studentId || ''}" style="width: 250px;">
+                        
+                        <input type="hidden" id="hiddenAppNo" value="${data.appNo || data.appno || appNo}">
+                        <input type="hidden" id="hiddenSession" value="${data.session || session}">
+                        
+                        <button id="updateIdBtn" class="btn-submit btn-update">💾 Update Student ID</button>
+                    </div>`;
+            } catch (err) {
+                console.error(err);
+                wrapper.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">❌ सर्वर से कनेक्ट करने में त्रुटि आई।</p>`;
+            }
+        }
+
+        // 2. Update Button Action
+        if (e.target.id === 'updateIdBtn') {
+            const btn = e.target;
+            const newId = document.getElementById('newStudentId').value.trim();
+            const appNo = document.getElementById('hiddenAppNo').value;
+            const session = document.getElementById('hiddenSession').value;
+            const msgBox = document.getElementById('assignMsg');
+
+            if (!newId) return alert("कृपया Student ID दर्ज करें!");
+
+            btn.innerText = "⏳ Updating...";
+            btn.disabled = true;
+            msgBox.innerText = "";
+
+            const payload = new URLSearchParams({
+                action: "assignStudentId",
+                appNo: appNo,
+                session: session,
+                studentId: newId
+            });
+
+            try {
+                const res = await fetch(sheetUrls.Database, { method: "POST", body: payload });
+                const result = await res.json();
+
+                if (result.status === "success") {
+                    msgBox.style.color = "#2f855a";
+                    msgBox.innerText = "🎉 Student ID successfully updated!";
+                    
+                    // 3 सेकंड बाद रिकॉर्ड को रीलोड करें ताकि अपडेटेड ID दिखने लगे
+                    setTimeout(() => {
+                        const searchBtn = document.getElementById('searchAppBtn');
+                        if (searchBtn) searchBtn.click();
+                    }, 1500);
+                } else {
+                    msgBox.style.color = "#c53030";
+                    msgBox.innerText = "❌ Error: " + result.message;
+                }
+            } catch (error) {
+                alert("आईडी अपडेट करने में सर्वर त्रुटि आई।");
+            } finally {
+                btn.innerText = "💾 Update Student ID";
+                btn.disabled = false;
+            }
+        }
+    });
+}
