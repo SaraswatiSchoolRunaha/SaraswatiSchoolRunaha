@@ -735,10 +735,10 @@ export async function renderIdAssignment() {
             msgBox.innerText = "";
 
             const payload = new URLSearchParams({
-                action: "assignStudentId",
+                action: "updateStudentId",
                 appNo: appNo,
                 session: session,
-                studentId: newId
+                newId: newId
             });
 
             try {
