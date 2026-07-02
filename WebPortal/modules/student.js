@@ -314,7 +314,74 @@ function getProfileFormHTML(data) {
     <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
 }
 
-// सुधरा हुआ एडिट फ़ंक्शन जो बाहर से कॉल होने पर काम करेगा
+// शिक्षा पोर्टल 3.0 थीम आधारित फॉर्म रेंडरर फ़ंक्शन
+function getProfileFormHTML(data) {
+    return `
+    <div class="main-layout">
+        <div class="form-fields">
+            <input type="hidden" id="uSession" value="${data.session || ''}">
+            
+            <div class="section-title">👤 व्यक्तिगत विवरण (Personal Details)</div>
+            <div class="field"><label>Student ID</label><input id="uStudentId" class="portal-input input-disabled" value="${data.studentId || ''}" disabled></div>
+            <div class="field"><label>Samagra ID</label><input id="uSamagra" class="portal-input" value="${data.samgra || ''}"></div>
+            <div class="field"><label>Name</label><input id="uName" class="portal-input" value="${data.name || ''}"></div>
+            <div class="field"><label>Father Name</label><input id="uFather" class="portal-input" value="${data.father || ''}"></div>
+            <div class="field"><label>Mother Name</label><input id="uMother" class="portal-input" value="${data.mother || ''}"></div>
+            <div class="field"><label>Date of Birth</label><input id="uDob" class="portal-input" type="date" value="${data.dob || ''}"></div>
+            <div class="field">
+                <label>Gender</label>
+                <select id="uGender" class="portal-input">
+                    <option value="Male" ${data.gender=='Male'?'selected':''}>Male</option>
+                    <option value="Female" ${data.gender=='Female'?'selected':''}>Female</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Category</label>
+                <select id="uCast" class="portal-input">
+                    <option value="General" ${data.category=='General'?'selected':''}>General</option>
+                    <option value="OBC" ${data.category=='OBC'?'selected':''}>OBC</option>
+                    <option value="SC" ${data.category=='SC'?'selected':''}>SC</option>
+                    <option value="ST" ${data.category=='ST'?'selected':''}>ST</option>
+                </select>
+            </div>
+            
+            <div class="section-title">🏫 शैक्षणिक एवं संपर्क विवरण (Academic & Contact)</div>
+            <div class="field">
+                <label>Class</label>
+                <select id="uClass" class="portal-input" onchange="window.toggleSub()">
+                    ${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
+                </select>
+            </div>
+            <div class="field">
+                <label>Medium</label>
+                <select id="uMedium" class="portal-input">
+                    <option value="Hindi" ${data.medium=='Hindi'?'selected':''}>Hindi</option>
+                    <option value="English" ${data.medium=='English'?'selected':''}>English</option>
+                </select>
+            </div>
+            <div class="field"><label>Enrolment No</label><input id="uEnrol" class="portal-input" value="${data.enrolment || ''}"></div>
+            <div class="field"><label>Mobile</label><input id="uMobile" class="portal-input" value="${data.mobile1 || ''}"></div>
+            <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" class="portal-input" value="${data.subject || ''}"></div>
+            <div class="field" style="grid-column: span 2;"><label>Address</label><input id="uAddress" class="portal-input" value="${data.address || ''}"></div>
+            
+            <div class="section-title">🏦 बैंक एवं सुरक्षा विवरण (Bank & Security)</div>
+            <div class="field"><label>Aadhaar</label><input class="portal-input input-disabled" value="[Redacted]" disabled></div>
+            <div class="field"><label>Bank Account</label><input id="uBank" class="portal-input" value="${data.accountnumber || ''}"></div>
+            <div class="field"><label>IFSC</label><input id="uIfsc" class="portal-input" value="${data.ifsc || ''}"></div>
+            
+            <button class="action-btn" id="saveBtn">💾 Update Student Profile</button>
+        </div>
+        <div class="photo-section">
+            <div class="photo-label">STUDENT PHOTO</div>
+            <img id="profileImg" src="${data.photo || 'https://via.placeholder.com/150'}">
+            <input type="file" id="photoInput" style="display:none" accept="image/*">
+            <button class="change-photo-btn" onclick="document.getElementById('photoInput').click()">🔄 Change Photo</button>
+        </div>
+    </div>
+    <div id="msg" style="text-align:center; margin-top:20px; font-weight:bold;"></div>`;
+}
+
+// बाहरी कॉल के लिए एडिट फ़ंक्शन
 window.editStudent = async (id, session) => {
     if (!id) return alert("Student ID नहीं मिली!");
 
@@ -363,6 +430,7 @@ function setupPhotoHandler() {
     }
 }
 
+// मुख्य सुधरा हुआ इंटरफ़ेस (Exclusive Correction Section)
 export async function renderStudentProfile() {
     const contentArea = document.getElementById('contentArea');
 
@@ -372,15 +440,15 @@ export async function renderStudentProfile() {
         .profile-wrapper { 
             max-width: 1050px; 
             margin: 30px auto; 
-            background: #f0f4f8; /* पोर्टल लाइट ग्रे-ब्लू बैकग्राउंड */
+            background: #f0f4f8; 
             border-radius: 12px; 
             box-shadow: 0 8px 24px rgba(0,0,0,0.12); 
             padding: 25px;
-            border-top: 5px solid #1a365d; /* मुख्य विभाग का डार्क ब्लू */
+            border-top: 5px solid #1a365d; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .p-header { 
-            background: #1a365d; /* Education Department Dark Blue */
+            background: #1a365d; 
             color: #ffffff; 
             padding: 15px 25px; 
             text-align: left; 
@@ -449,7 +517,6 @@ export async function renderStudentProfile() {
             margin-bottom: 6px; 
         }
         
-        /* पोर्टल स्टाइल इनपुट बॉक्स */
         .portal-input { 
             padding: 10px 12px; 
             border: 1px solid #a0aec0; 
@@ -464,7 +531,7 @@ export async function renderStudentProfile() {
             border-color: #3182ce;
             outline: none;
             box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
-            background: #fffdf5; /* फोकस होने पर हल्का सा पोर्टल हाइलाइट कलर */
+            background: #fffdf5; 
         }
         .input-disabled {
             background: #edf2f7 !important;
@@ -485,7 +552,6 @@ export async function renderStudentProfile() {
             border-left: 4px solid #3182ce;
         }
         
-        /* बटन्स */
         .action-btn { 
             grid-column: span 2; 
             padding: 12px; 
@@ -583,7 +649,6 @@ export async function renderStudentProfile() {
 
             const payload = new URLSearchParams({
                 action: "update",
-                appNo: document.getElementById('uAppNo').value,
                 studentId: document.getElementById('uStudentId').value,
                 session: document.getElementById('uSession').value,
                 samgra: document.getElementById('uSamagra').value,
@@ -626,92 +691,4 @@ export async function renderStudentProfile() {
         const sub = document.getElementById('subField');
         if(sub) sub.style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
     };
-}
-
-export async function renderIdAssignment() {
-    const contentArea = document.getElementById('contentArea');
-
-    contentArea.innerHTML = `
-    <style>
-        .assign-wrapper { max-width: 600px; margin: 30px auto; padding: 25px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 4px solid #1a365d;}
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        .details-card { padding: 20px; background: #f7fafc; border-radius: 6px; margin-bottom: 20px; border-left: 5px solid #3182ce; border-box: 1px solid #e2e8f0; }
-        .field { margin-bottom: 12px; display: flex; flex-direction: column;}
-        .field label { font-weight: bold; color: #2d3748; margin-bottom: 4px; font-size: 13px;}
-    </style>
-
-    <div class="assign-wrapper">
-        <h3 style="color: #1a365d; margin-top:0;">🆔 Student ID Allocation Portal</h3>
-        <div class="input-group">
-            <input id="searchAppNo" class="portal-input" placeholder="Enter Application Number..." style="flex:1;">
-            <button id="searchAppBtn" class="search-btn">🔍 Search</button>
-        </div>
-        <div id="resultArea"></div>
-    </div>`;
-
-    contentArea.onclick = async (e) => {
-        if (e.target.id === 'searchAppBtn') {
-            const appNo = document.getElementById('searchAppNo').value.trim();
-            const resArea = document.getElementById('resultArea');
-            
-            if(!appNo) return alert("Please enter Application Number");
-            resArea.innerHTML = "<p style='color:#1a365d; font-weight:bold;'>Searching Application...</p>";
-            
-            try {
-                const res = await fetch(`${sheetUrls.Database}?action=getByAppNo&appNo=${appNo}`);
-                const data = await res.json();
-
-                if (data.status !== "success") {
-                    return resArea.innerHTML = `<p style="color:red; font-weight:bold;">❌ ${data.message || "Record not found!"}</p>`;
-                }
-                resArea.innerHTML = `
-                    <div class="details-card">
-                        <div class="field"><label>Student Name:</label> <input class="portal-input input-disabled" value="${data.studentName}" disabled></div>
-                        <div class="field"><label>Father Name:</label> <input class="portal-input input-disabled" value="${data.fatherName}" disabled></div>
-                        <div class="field"><label>Mother Name:</label> <input class="portal-input input-disabled" value="${data.motherName}" disabled></div>
-                        <div class="field"><label>Class:</label> <input class="portal-input input-disabled" value="${data.class}" disabled></div>
-                    <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
-                    <div class="field">
-                        <label style="color:#1a365d;">Assign New Student ID:</label>
-                        <input id="newStudentId" class="portal-input" value="${data.studentId || ''}" style="font-weight:bold; color:#2b6cb0;">
-                    </div>
-                    <button id="submitIdBtn" class="action-btn" style="margin-top:10px; width:100%;">🆔 Update & Allocate Student ID</button>
-                </div>
-                <div id="msg" style="text-align:center; font-weight:bold;"></div>`;
-            } catch (err) {
-                resArea.innerHTML = `<p style="color:red; font-weight:bold;">Server connection error!</p>`;
-            }
-        }
-        
-        if (e.target.id === 'submitIdBtn') {
-            const newId = document.getElementById('newStudentId').value.trim();
-            const appNo = document.getElementById('searchAppNo').value.trim();
-            const msgDiv = document.getElementById('msg');
-
-            if(!newId) return alert("Please enter a valid Student ID");
-            msgDiv.innerHTML = "Processing allocation...";
-
-            try {
-                const formData = new FormData();
-                formData.append("action", "updateStudentId");
-                formData.append("appNo", appNo);
-                formData.append("newId", newId);
-
-                const response = await fetch(sheetUrls.Database, {
-                    method: "POST",
-                    body: formData
-                });
-
-                const result = await response.json();
-                    
-                if (result.status === "success") {
-                    msgDiv.innerHTML = `<p style="color:#2f855a;font-weight:bold;">✅ ${result.message}</p>`;
-                } else {
-                    msgDiv.innerHTML = `<p style="color:#c53030;">❌ ${result.message}</p>`;
-                }
-            } catch (err) {
-                msgDiv.innerHTML = `<p style="color:red;">Server connection error!</p>`;
-            }
-        }
-    }; 
 }
