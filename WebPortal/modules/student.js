@@ -690,6 +690,7 @@ export async function renderStudentProfile() {
         const c = document.getElementById('uClass').value;
         const sub = document.getElementById('subField');
         if(sub) sub.style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
-    };
+  }
 }
-
+}; 
+} 
