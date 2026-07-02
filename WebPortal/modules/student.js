@@ -623,6 +623,5 @@ export async function renderStudentProfile() {
         const sub = document.getElementById('subField');
         if(sub) sub.style.display = (c == 'XI' || c == 'XII') ? 'flex' : 'none';
   }
-}
 }; 
 
