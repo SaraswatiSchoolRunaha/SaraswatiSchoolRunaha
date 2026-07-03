@@ -1349,3 +1349,122 @@ export async function renderBankUpdate() {
         }
     };
 }
+
+export function renderPhotoUpload() {
+    const contentArea = document.getElementById('contentArea');
+
+    contentArea.innerHTML = `
+    <style>
+        .portal-wrapper { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #f4f6f9; padding: 10px; border-radius: 12px; }
+        .portal-title { color: #0d3558; font-size: 22px; font-weight: 700; margin-bottom: 20px; border-bottom: 3px solid #1a73e8; padding-bottom: 8px; }
+        
+        .upload-card { padding: 24px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; max-width: 450px; }
+        .input-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        .input-field label { color: #4a5568; font-size: 14px; font-weight: 600; }
+        .input-field input[type="text"] { padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; text-transform: uppercase; }
+        .input-field input[type="file"] { padding: 8px 0; font-size: 14px; }
+        
+        /* Image Preview Style */
+        .preview-box { width: 120px; height: 150px; border: 2px dashed #cbd5e1; margin-top: 10px; display: flex; align-items: center; justify-content: center; border-radius: 6px; overflow: hidden; background: #f8fafc; }
+        .preview-box img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-text { color: #94a3b8; font-size: 12px; text-align: center; padding: 5px; }
+
+        .btn-upload { background: #1a73e8; color: white; padding: 11px 24px; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 15px; text-transform: uppercase; }
+        .btn-upload:hover { background: #1557b0; }
+        .btn-upload:disabled { background: #cbd5e1; cursor: not-allowed; }
+    </style>
+
+    <div class="portal-wrapper">
+        <div class="portal-title">📸 छात्र फोटो अपडेशन मॉड्यूल</div>
+        
+        <div class="upload-card">
+            <div class="input-field">
+                <label>Student ID दर्ज करें:</label>
+                <input type="text" id="photoStudentId" placeholder="उदा. STU1001" autocomplete="off">
+            </div>
+            
+            <div class="input-field">
+                <label>छात्र की फोटो चुनें (JPG/PNG):</label>
+                <input type="file" id="photoFileArr" accept="image/*">
+                
+                <!-- फोटो का प्रीव्यू देखने के लिए बॉक्स -->
+                <div class="preview-box" id="photoPreviewBox">
+                    <span class="preview-text" id="previewTxt">कोई फोटो नहीं चुनी गई</span>
+                </div>
+            </div>
+            
+            <button id="submitPhotoBtn" class="btn-upload">फोटो अपलोड करें</button>
+        </div>
+    </div>`;
+
+    const fileInput = document.getElementById('photoFileArr');
+    const previewBox = document.getElementById('photoPreviewBox');
+    const previewTxt = document.getElementById('previewTxt');
+
+    // फोटो सेलेक्ट करते ही स्क्रीन पर उसका प्रीव्यू (Preview) दिखाना
+    fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                previewBox.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewBox.innerHTML = `<span class="preview-text">कोई फोटो नहीं चुनी गई</span>`;
+        }
+    };
+
+    // अपलोड बटन क्लिक इवेंट हैंडलर
+    contentArea.onclick = async (e) => {
+        if (e.target.id === 'submitPhotoBtn') {
+            const submitBtn = e.target;
+            const studentId = document.getElementById('photoStudentId').value.trim().toUpperCase();
+            const file = fileInput.files[0];
+
+            if (!studentId) return alert("कृपया Student ID दर्ज करें!");
+            if (!file) return alert("कृपया अपलोड करने के लिए एक फोटो चुनें!");
+
+            submitBtn.innerText = "UPLOADING...";
+            submitBtn.disabled = true;
+
+            // FileReader की मदद से इमेज को Base64 स्ट्रिंग में बदलना
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64Data = reader.result;
+                const mimeType = file.type;
+
+                try {
+                    const res = await fetch(sheetUrls.Database, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify({
+                            action: "uploadStudentPhoto",
+                            studentId: studentId,
+                            photoData: base64Data,
+                            mimeType: mimeType
+                        })
+                    });
+                    const result = await res.json();
+
+                    if (result.status === "success") {
+                        alert("✅ " + result.message);
+                        // फॉर्म रीसेट करें
+                        document.getElementById('photoStudentId').value = '';
+                        fileInput.value = '';
+                        previewBox.innerHTML = `<span class="preview-text">कोई फोटो नहीं चुनी गई</span>`;
+                    } else {
+                        alert("❌ त्रुटi: " + result.message);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("फोटो अपलोड करने में तकनीकी समस्या आई।");
+                } finally {
+                    submitBtn.innerText = "फोटो अपलोड करें";
+                    submitBtn.disabled = false;
+                }
+            };
+        }
+    };
+}
