@@ -216,40 +216,85 @@ export async function renderSearchList() {
 
     contentArea.innerHTML = `
     <style>
-        .promote-title { color: #2c3e50; margin-bottom: 15px; font-weight: bold; }
-        .filter-box { padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
-        .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .student-table th { background: #4a90e2; color: white; padding: 12px; text-align: left; }
-        .student-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .btn-primary { padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-danger { background: red; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        /* Shiksha Portal 3.0 UI Design */
+        .portal-wrapper { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #f4f6f9; padding: 10px; border-radius: 12px; }
+        .promote-title { color: #0d3558; font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 3px solid #1a73e8; padding-bottom: 8px; }
+        
+        /* Filter Box Design */
+        .filter-box { padding: 24px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-bottom: 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; align-items: flex-end; border: 1px solid #e2e8f0; }
+        .filter-field { display: flex; flex-direction: column; gap: 6px; }
+        .filter-field label { color: #4a5568; font-size: 14px; font-weight: 600; }
+        .filter-box select { padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 6px; background-color: #fff; color: #334155; font-size: 14px; outline: none; transition: all 0.2s ease; cursor: pointer; }
+        .filter-box select:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
+        
+        /* Modern Table Components */
+        .table-responsive { overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; margin-top: 15px; }
+        .student-table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; }
+        .student-table th { background: #0d3558; color: white; padding: 14px 16px; font-size: 14px; font-weight: 600; letter-spacing: 0.5px; }
+        .student-table td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px; vertical-align: middle; }
+        .student-table tr:hover { background-color: #f8fafc; }
+        
+        /* Buttons Upgrade */
+        .btn-portal { padding: 11px 24px; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-load { background: #1a73e8; color: white; height: 42px; box-shadow: 0 2px 6px rgba(26,115,232,0.2); }
+        .btn-load:hover { background: #1557b0; transform: translateY(-1px); }
+        
+        /* Action Buttons inside Table */
+        .action-container { display: flex; gap: 8px; align-items: center; }
+        .btn-action { padding: 6px 14px; font-size: 13px; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; transition: all 0.15s ease; text-transform: capitalize; }
+        .btn-edit { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .btn-edit:hover { background-color: #2563eb; color: white; }
+        .btn-danger { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .btn-danger:hover { background-color: #dc2626; color: white; }
+        
+        .loading-text { padding: 30px; font-size: 15px; text-align: center; color: #64748b; font-weight: 500; }
     </style>
 
-    <div class="promote-title">🎓 छात्र प्रोफाइल अपडेट</div>
-    <div class="filter-box">
-        <label>Class:</label>
-        <select id="classSelect">${generateOptions(classes)}</select>
-        <label>Medium:</label>
-        <select id="mediumSelect">
-            <option value="Hindi">Hindi</option>
-            <option value="English">English</option>
-        </select>
-        <label>Session:</label>
-        <select id="sessionSelect">
-            <option value="">Select Session</option>
-            ${generateOptions(years)}
-        </select>
-        <button id="loadListBtn" class="btn-primary">Load List</button>
-    </div>
-    
-    <table class="student-table">
-        <thead>
-            <tr>
-               <th>App No</th><th>ID</th><th>Name</th><th>Father</th><th>DOB</th><th>Gender</th><th>Category</th><th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>`;
+    <div class="portal-wrapper">
+        <div class="promote-title">🎓 छात्र प्रोफाइल प्रबंधन और संशोधन (Shiksha Portal 3.0)</div>
+        <div class="filter-box">
+            <div class="filter-field">
+                <label>Class / कक्षा:</label>
+                <select id="classSelect">${generateOptions(classes)}</select>
+            </div>
+            <div class="filter-field">
+                <label>Medium / माध्यम:</label>
+                <select id="mediumSelect">
+                    <option value="Hindi">Hindi</option>
+                    <option value="English">English</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label>Session / शैक्षणिक सत्र:</label>
+                <select id="sessionSelect">
+                    <option value="">Select Session</option>
+                    ${generateOptions(years)}
+                </select>
+            </div>
+            <button id="loadListBtn" class="btn-portal btn-load">सूची लोड करें (Load List)</button>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="student-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Father's Name</th>
+                        <th>DOB</th>
+                        <th>Gender</th>
+                        <th>Category</th>
+                        <th style="text-align: center; width: 160px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="7" class="loading-text">कृपया विवरण खोजें के लिए ऊपर फ़िल्टर सेट करके 'सूची लोड करें' पर क्लिक करें।</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>`;
 
     contentArea.onclick = async (e) => {
         if (e.target.id === 'loadListBtn') {
@@ -260,36 +305,35 @@ export async function renderSearchList() {
             if (!c || !y) return alert("कृपया Class और Session दोनों select करें!");
 
             const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Loading...</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='7' class='loading-text'>🔄 कृपया प्रतीक्षा करें, डेटा लोड हो रहा है...</td></tr>";
 
             try {
                 const students = await getStudentsByFilter(c, m, y); 
                 
                 if (!students || students.length === 0) {
-                    tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>कोई रिकॉर्ड नहीं मिला।</td></tr>";
+                    tbody.innerHTML = "<tr><td colspan='7' class='loading-text' style='color: #ef4444;'>⚠️ चयनित फ़िल्टर के अनुसार कोई रिकॉर्ड नहीं मिला।</td></tr>";
                     return;
                 }
 
-               tbody.innerHTML = students.map(s => `
+                tbody.innerHTML = students.map(s => `
                     <tr>
-                    <td>${s.appNo || s.appno || '-'}</td>
-                    <td>${s.studentid}</td>
-                    <td>${s.name}</td>
-                    <td>${s.father}</td>
-                    <td>${s.dob || '-'}</td>
-                    <td>${s.gender || '-'}</td>
-                    <td>${s.category || '-'}</td>
-                    <td>
-                    <div style="display: flex; gap: 6px; align-items: center;">
-                    <button class="btn-primary" onclick="window.editStudent('${s.studentid}')" style="padding: 5px 10px;">Edit</button>
-                    <button class="btn-danger" onclick="window.deleteStudent('${s.appNo}','${s.studentid}', '${s.session}')" style="padding: 5px 10px;">Delete</button>
-                    </div>
-                </td>
-                </tr>
-            `).join('');
+                        <td style="font-weight: 600; color: #475569;">${s.studentid}</td>
+                        <td style="font-weight: 500; color: #1e293b;">${s.name}</td>
+                        <td>${s.father}</td>
+                        <td>${s.dob || '-'}</td>
+                        <td>${s.gender || '-'}</td>
+                        <td><span style="padding: 2px 8px; background: #f1f5f9; border-radius: 4px; font-size: 12px; font-weight: 500;">${s.category || '-'}</span></td>
+                        <td>
+                            <div class="action-container">
+                                <button class="btn-action btn-edit" onclick="window.editStudent('${s.studentid}')">Edit</button>
+                                <button class="btn-action btn-danger" onclick="window.deleteStudent('${s.appNo || s.appno || ''}','${s.studentid}', '${s.session}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
             } catch (error) {
                 console.error("Error fetching students:", error);
-                tbody.innerHTML = "<tr><td colspan='7' style='text-align: center; color: red;'>डेटा लोड करने में त्रुटि।</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='7' class='loading-text' style='color: #dc2626;'>❌ डेटा लोड करने में त्रुटि आई है। कृपया पुनः प्रयास करें।</td></tr>";
             }
         }
     };
@@ -297,22 +341,27 @@ export async function renderSearchList() {
 
 // यह फंक्शन डिलीट बटन को चालू करेगा
 window.deleteStudent = async (appNo, studentId, session) => {
-    if (confirm("क्या आप सच में इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
-        const res = await fetch(sheetUrls.Database, {
-            method: "POST",
-            body: JSON.stringify({ 
-                action: "delete",
-                appNo: appNo,
-                studentId: studentId,
-                session: session 
-            })
-        });
-        const result = await res.json();
-        alert(result.message);
-        
-        if (result.status === "success") {
-            const loadListBtn = document.getElementById('loadListBtn');
-            if (loadListBtn) loadListBtn.click();
+    if (confirm("⚠️ चेतावनी: क्या आप सच में इस छात्र का रिकॉर्ड हमेशा के लिए डिलीट करना चाहते हैं?")) {
+        try {
+            const res = await fetch(sheetUrls.Database, {
+                method: "POST",
+                body: JSON.stringify({ 
+                    action: "delete",
+                    appNo: appNo,
+                    studentId: studentId,
+                    session: session 
+                })
+            });
+            const result = await res.json();
+            alert(result.message);
+            
+            if (result.status === "success") {
+                const loadListBtn = document.getElementById('loadListBtn');
+                if (loadListBtn) loadListBtn.click();
+            }
+        } catch (error) {
+            console.error("Delete Error:", error);
+            alert("रिकॉर्ड डिलीट करने में सर्वर से कोई समस्या आई है।");
         }
     }
 };
