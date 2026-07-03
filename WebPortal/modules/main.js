@@ -83,6 +83,9 @@ function executeModuleRouting(title) {
         case 'छात्र प्रोफ़ाइल':
            renderSearchList();
              break;
+        case 'छात्र प्रोफ़ाइल':
+           renderSearchList();
+             break;
         case 'उपस्थिति डैशबोर्ड':
             showAttendanceDashboard();
             break;
