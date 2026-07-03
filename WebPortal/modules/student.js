@@ -251,7 +251,7 @@ export async function renderSearchList() {
     </style>
 
     <div class="portal-wrapper">
-        <div class="promote-title">🎓 छात्र प्रोफाइल प्रबंधन और संशोधन (Shiksha Portal 3.0)</div>
+        <div class="promote-title">🎓 छात्र प्रोफाइल प्रबंधन और संशोधन (Student Profile Management & Update)</div>
         <div class="filter-box">
             <div class="filter-field">
                 <label>Class / कक्षा:</label>
@@ -654,7 +654,7 @@ export async function renderStudentProfile() {
     </style>
 
     <div class="profile-wrapper">
-        <div class="p-header">💻 शिक्षा पोर्टल 3.0 - Student Profile Management</div>
+        <div class="p-header">💻 छात्र प्रोफ़ाइल प्रबंधन (Student Profile Management) </div>
         <div class="search-wrapper">
             <input id="studentId" class="portal-input" placeholder="Search by Student ID..." style="flex:1;">
             <select id="searchSession" class="portal-input" style="width: 150px;">
