@@ -89,7 +89,7 @@ function executeModuleRouting(title) {
         case 'छात्र आधार अपडेट':
           renderAadharUpdate();
              break;
-        case 'छात्र आधार अपडेट':
+        case 'छात्र फोटो अपडेट':
           renderPhotoUpload();
              break;  
       case 'छात्र बैंक खाता':
