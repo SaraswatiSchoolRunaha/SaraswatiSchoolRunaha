@@ -1107,7 +1107,7 @@ export async function renderSamagraUpdate() {
                         
                         <div class="input-field" style="margin-top: 20px;">
                             <label>Samagra Member ID (9 अंक):</label>
-                            <input type="text" id="newSamagraInput" value="${student.samagra || ''}" maxlength="9" placeholder="123456789" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="text" id="newSamagraInput" value="${student.samagra || ''}" maxlength="9" placeholder="Enter Samgra ID" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
                         
                         <input type="hidden" id="hiddenStudentId" value="${student.studentid}">
