@@ -83,7 +83,7 @@ function executeModuleRouting(title) {
         case 'छात्र प्रोफ़ाइल':
            renderSearchList();
              break;  
-        case 'छात्र प्रोफ़ाइल':
+        case 'छात्र समग्र अपडेट':
           renderSamagraUpdate();
              break;  
         case 'छात्र आधार अपडेट':
