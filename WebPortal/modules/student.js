@@ -1181,4 +1181,171 @@ export async function renderSamagraUpdate() {
             }
         }
     };
+} 
+
+export async function renderBankUpdate() {
+    const contentArea = document.getElementById('contentArea');
+
+    contentArea.innerHTML = `
+    <style>
+        /* Shiksha Portal 3.0 Portal Style */
+        .portal-wrapper { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #f4f6f9; padding: 10px; border-radius: 12px; }
+        .portal-title { color: #0d3558; font-size: 22px; font-weight: 700; margin-bottom: 20px; border-bottom: 3px solid #1a73e8; padding-bottom: 8px; }
+        
+        /* Search Box Design */
+        .search-card { padding: 24px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .search-group { display: flex; gap: 15px; align-items: flex-end; max-width: 500px; }
+        .input-field { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
+        .input-field label { color: #4a5568; font-size: 14px; font-weight: 600; }
+        .input-field input { padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; transition: all 0.2s ease; }
+        .input-field input:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
+        
+        /* Buttons */
+        .btn-portal { padding: 11px 24px; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; }
+        .btn-search { background: #1a73e8; color: white; height: 42px; }
+        .btn-search:hover { background: #1557b0; }
+        .btn-search:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .btn-update { background: #1a73e8; color: white; margin-top: 15px; width: 100%; }
+        .btn-update:hover { background: #1557b0; }
+        .btn-update:disabled { background: #cbd5e1; cursor: not-allowed; }
+        
+        /* Result Update Form Card */
+        .update-card { padding: 24px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; max-width: 500px; margin-top: 20px; }
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 14px; color: #334155; }
+        .info-label { font-weight: 600; color: #4a5568; }
+        .row-flex { display: flex; gap: 15px; margin-top: 15px; }
+    </style>
+
+    <div class="portal-wrapper">
+        <div class="portal-title">🏦 बैंक खाता एवं IFSC कोड अपडेशन मॉड्यूल</div>
+        
+        <div class="search-card">
+            <div class="search-group">
+                <div class="input-field">
+                    <label>Student ID दर्ज करें:</label>
+                    <input type="text" id="searchStudentId" placeholder="उदा. STU1001" autocomplete="off">
+                </div>
+                <button id="searchBankBtn" class="btn-portal btn-search">खोजें (Search)</button>
+            </div>
+        </div>
+        
+        <div id="updateArea"></div>
+    </div>`;
+
+    // बटन क्लिक इवेंट्स हैंडलर
+    contentArea.onclick = async (e) => {
+        
+        // 1. सर्च एक्शन
+        if (e.target.id === 'searchBankBtn') {
+            const searchBtn = e.target;
+            const studentId = document.getElementById('searchStudentId').value.trim();
+            if (!studentId) return alert("कृपया Student ID दर्ज करें!");
+
+            const updateArea = document.getElementById('updateArea');
+            updateArea.innerHTML = '<div style="color: #64748b; font-weight: 500;">🔄 बैंक विवरण खोजा जा रहा है...</div>';
+            
+            searchBtn.disabled = true;
+            searchBtn.innerText = "खोज रहे हैं...";
+
+            try {
+                const response = await fetch(`${sheetUrls.Database}?action=getStudentForBank&studentId=${encodeURIComponent(studentId)}`);
+                const result = await response.json();
+
+                if (result.status === "error") {
+                    updateArea.innerHTML = `<div style="color: #ef4444; font-weight: 500; padding: 10px; background: #fef2f2; border-radius: 6px; border: 1px solid #fecaca; max-width: 500px;">⚠️ ${result.message}</div>`;
+                    return;
+                }
+
+                const student = result.data;
+                updateArea.innerHTML = `
+                    <div class="update-card">
+                        <h4 style="margin-top:0; color: #0d3558; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">छात्र का विवरण</h4>
+                        <div class="info-row"><span class="info-label">नाम:</span> <span>${student.name}</span></div>
+                        <div class="info-row"><span class="info-label">पिता का नाम:</span> <span>${student.father}</span></div>
+                        <div class="info-row"><span class="info-label">कक्षा / सत्र:</span> <span>${student.class} (${student.session})</span></div>
+                        
+                        <div class="input-field" style="margin-top: 15px;">
+                            <label>बेंक का नाम (Bank Name):</label>
+                            <input type="text" id="newBankName" value="${student.bank || ''}" placeholder="State Bank of India">
+                        </div>
+
+                        <div class="row-flex">
+                            <div class="input-field">
+                                <label>खाता नंबर (Account No):</label>
+                                <input type="text" id="newAccountInput" value="${student.accountnumber || ''}" placeholder="1234567890" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <div class="input-field">
+                                <label>IFSC कोड (11 अंक):</label>
+                                <input type="text" id="newIfscInput" value="${student.ifsc || ''}" placeholder="SBIN0001234" maxlength="11" style="text-transform: uppercase;">
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" id="hiddenStudentId" value="${student.studentid}">
+                        <input type="hidden" id="hiddenSession" value="${student.session}">
+                        
+                        <button id="submitBankBtn" class="btn-portal btn-update">बैंक विवरण अपडेट करें</button>
+                    </div>
+                `;
+            } catch (err) {
+                console.error(err);
+                updateArea.innerHTML = '<div style="color: #dc2626;">❌ सर्च करने में कोई तकनीकी त्रुटि आई।</div>';
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerText = "खोजें (Search)";
+            }
+        }
+
+        // 2. अपडेट सबमिट एक्शन
+        if (e.target.id === 'submitBankBtn') {
+            const submitBtn = e.target;
+            const studentId = document.getElementById('hiddenStudentId').value;
+            const session = document.getElementById('hiddenSession').value;
+            const bankName = document.getElementById('newBankName').value.trim();
+            const accountNo = document.getElementById('newAccountInput').value.trim();
+            const ifscCode = document.getElementById('newIfscInput').value.trim().toUpperCase();
+
+            // वैलिडेशन चेक्स
+            if (!accountNo || !ifscCode) {
+                return alert("कृपया खाता नंबर और IFSC कोड दोनों दर्ज करें!");
+            }
+
+            if (ifscCode.length !== 11) {
+                return alert("IFSC कोड ठीक 11 अंकों का होना चाहिए! (उदा. SBIN0001234)");
+            }
+
+            submitBtn.innerText = "UPDATING...";
+            submitBtn.disabled = true;
+
+            try {
+                const res = await fetch(sheetUrls.Database, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: "updateBankDetails",
+                        studentId: studentId,
+                        session: session,
+                        bank: bankName,
+                        accountnumber: accountNo,
+                        ifsc: ifscCode
+                    })
+                });
+                const result = await res.json();
+
+                if (result.status === "success") {
+                    alert("✅ बैंक खाता और IFSC कोड सफलतापूर्वक अपडेट कर दिया गया है!");
+                    document.getElementById('updateArea').innerHTML = '';
+                    document.getElementById('searchStudentId').value = '';
+                } else {
+                    alert("❌ त्रुटि: " + result.message);
+                    submitBtn.innerText = "बैंक विवरण अपडेट करें";
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                alert("अपडेट के दौरान सर्वर से संपर्क नहीं हो पाया।");
+                submitBtn.innerText = "बैंक विवरण अपडेट करें";
+                submitBtn.disabled = false;
+            }
+        }
+    };
 }
