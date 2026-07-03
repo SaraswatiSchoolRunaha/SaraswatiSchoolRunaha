@@ -53,56 +53,123 @@ export async function renderStudentList() {
 
     contentArea.innerHTML = `
     <style>
-        .promote-title { color: #2c3e50; margin-bottom: 15px; font-weight: bold; }
-        .filter-box { padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
-        .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .student-table th { background: #4a90e2; color: white; padding: 12px; text-align: left; }
-        .student-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .btn-primary { padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-promote { background: #27ae60; }
+        /* Shiksha Portal 3.0 Modern Theme CSS */
+        .portal-wrapper { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #f4f6f9; padding: 10px; border-radius: 12px; }
+        .promote-title { color: #0d3558; font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 3px solid #1a73e8; padding-bottom: 8px; }
+        
+        /* Filter Box Upgrade */
+        .filter-box { padding: 24px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-bottom: 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; align-items: flex-end; border: 1px solid #e2e8f0; }
+        .filter-field { display: flex; flex-direction: column; gap: 6px; }
+        .filter-field label { color: #4a5568; font-size: 14px; font-weight: 600; }
+        .filter-box select { padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 6px; background-color: #fff; color: #334155; font-size: 14px; outline: none; transition: all 0.2s ease; cursor: pointer; }
+        .filter-box select:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
+        
+        /* Buttons Design */
+        .btn-portal { padding: 11px 24px; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-load { background: #1a73e8; color: white; height: 42px; box-shadow: 0 2px 6px rgba(26,115,232,0.2); }
+        .btn-load:hover { background: #1557b0; transform: translateY(-1px); }
+        .btn-promote { background: #10b981; color: white; box-shadow: 0 2px 6px rgba(16,185,129,0.2); }
+        .btn-promote:hover { background: #059669; transform: translateY(-1px); }
+        
+        /* Table Upgrade 3.0 */
+        .table-responsive { overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; margin-top: 15px; }
+        .student-table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; }
+        .student-table th { background: #0d3558; color: white; padding: 14px 16px; font-size: 14px; font-weight: 600; letter-spacing: 0.5px; }
+        .student-table td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px; }
+        .student-table tr:hover { background-color: #f8fafc; }
+        .student-table input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #1a73e8; }
+        
+        /* Promotion Section Box */
+        .promotion-action-card { margin-top: 25px; padding: 20px; background: #f8fafc; border-radius: 10px; border: 1.5px dashed #cbd5e1; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+        .action-inputs { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .action-inputs select { padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: #fff; }
+        .action-inputs label { font-size: 14px; font-weight: 600; color: #4a5568; }
+        
+        /* Loader/Status Messages */
+        .status-msg { padding: 20px; font-size: 16px; text-align: center; color: #64748b; font-weight: 500; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; }
     </style>
 
-    <div class="promote-title">🎓 छात्रों को प्रमोट करें</div>
-    <div class="filter-box">
-        <label>Class:</label>
-        <select id="classSelect">${generateOptions(romanClasses)}</select>
-        <label>Medium:</label>
-        <select id="mediumSelect"> <option value="">Select Medium</option><option value="Hindi">Hindi</option><option value="English">English</option></select>
-        <label>Session:</label>
-            <select id="sessionSelect">
-                <option value="">Select Session</option>
-                <option value="2026-27">2026-27</option>
-                <option value="2027-28">2027-28</option>
-                <option value="2028-29">2028-29</option>
-                <option value="2029-30">2029-30</option>
-            </select>
-        <button id="loadListBtn" class="btn-primary">Load List</button>
-    </div>
-    <div id="studentDisplayArea"></div>`;
+    <div class="portal-wrapper">
+        <div class="promote-title">🎓 छात्र प्रमोशन मॉड्यूल (Shiksha Portal 3.0)</div>
+        <div class="filter-box">
+            <div class="filter-field">
+                <label>Class / कक्षा:</label>
+                <select id="classSelect">${generateOptions(romanClasses)}</select>
+            </div>
+            <div class="filter-field">
+                <label>Medium / माध्यम:</label>
+                <select id="mediumSelect">
+                    <option value="">Select Medium</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="English">English</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label>Current Session / शैक्षणिक सत्र:</label>
+                <select id="sessionSelect">
+                    <option value="">Select Session</option>
+                    <option value="2026-27">2026-27</option>
+                    <option value="2027-28">2027-28</option>
+                    <option value="2028-29">2028-29</option>
+                    <option value="2029-30">2029-30</option>
+                </select>
+            </div>
+            <button id="loadListBtn" class="btn-portal btn-load">सूची लोड करें (Load List)</button>
+        </div>
+        <div id="studentDisplayArea"></div>
+    </div>`;
+
     contentArea.onclick = async (e) => {
         // Load List
         if (e.target.id === 'loadListBtn') {
             const displayArea = document.getElementById('studentDisplayArea');
-            displayArea.innerHTML = "Loading...";
-            const students = await getStudentsByFilter(document.getElementById('classSelect').value, document.getElementById('mediumSelect').value,document.getElementById('sessionSelect').value);
+            displayArea.innerHTML = '<div class="status-msg">🔄 कृपया प्रतीक्षा करें, छात्रों की सूची लोड की जा रही है...</div>';
+            const students = await getStudentsByFilter(document.getElementById('classSelect').value, document.getElementById('mediumSelect').value, document.getElementById('sessionSelect').value);
             
-            if (!students || students.length === 0) return displayArea.innerHTML = "कोई रिकॉर्ड नहीं मिला!";
+            if (!students || students.length === 0) return displayArea.innerHTML = '<div class="status-msg" style="color: #ef4444;">⚠️ चयनित फ़िल्टर के अनुसार कोई छात्र रिकॉर्ड नहीं मिला!</div>';
 
-            let html = `<table class="student-table"><tr><th><input type="checkbox" id="selectAll"></th><th>App No</th><th>Student ID</th><th>Session</th><th>Name</th><th>Father's Name</th></tr>`;
+            let html = `
+            <div class="table-responsive">
+                <table class="student-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;"><input type="checkbox" id="selectAll"></th>
+                            <th>Application No</th>
+                            <th>Student ID</th>
+                            <th>Current Session</th>
+                            <th>Student Name</th>
+                            <th>Father's Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
             students.forEach(s => {
-                html += `<tr><td><input type="checkbox" class="studentCheck" value="${s.studentid}"></td><td>${s.appNo || 'N/A'}</td><td>${s.studentid}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td></tr>`;
+                html += `
+                    <tr>
+                        <td><input type="checkbox" class="studentCheck" value="${s.studentid}"></td>
+                        <td style="font-weight: 600; color: #1a73e8;">${s.appNo || 'N/A'}</td>
+                        <td style="color: #64748b;">${s.studentid}</td>
+                        <td>${s.session}</td>
+                        <td style="font-weight: 500; color: #1e293b;">${s.name}</td>
+                        <td>${s.father}</td>
+                    </tr>`;
             });
             
-            html += `</table>
-            <div style="margin-top:20px; padding:15px; background:#f9f9f9; border-radius:8px;">
-                <label>Promote to Class:</label>
-                <select id="targetClass">${generateOptions(romanClasses)}</select>
-                
-                <label style="margin-left: 15px;">Session:</label>
-                <select id="targetSession">${generateOptions(sessions)}</select>
-                
-                <button id="promoteBtn" class="btn-primary btn-promote" style="margin-left: 15px;">Promote Selected Students</button>
+            html += `
+                    </tbody>
+                </table>
+            </div>
+            <div class="promotion-action-card">
+                <div class="action-inputs">
+                    <label>Promote to Class (अगली कक्षा):</label>
+                    <select id="targetClass">${generateOptions(romanClasses)}</select>
+                    
+                    <label style="margin-left: 10px;">Target Session (आगामी सत्र):</label>
+                    <select id="targetSession">${generateOptions(sessions)}</select>
+                </div>
+                <button id="promoteBtn" class="btn-portal btn-promote">चुने गए छात्रों को प्रमोट करें</button>
             </div>`;
+            
             displayArea.innerHTML = html;
         }
 
@@ -117,23 +184,27 @@ export async function renderStudentList() {
             const targetClass = document.getElementById('targetClass').value;
             const targetSession = document.getElementById('targetSession').value;
             
-            if (ids.length === 0) return alert("कृपया छात्र चुनें!");
+            if (ids.length === 0) return alert("कृपया सूची से कम से कम एक छात्र को चुनें!");
             
-            if (confirm(`क्या आप ${ids.length} छात्रों को Class ${targetClass} (${targetSession}) में प्रमोट करना चाहते हैं?`)) {
-                e.target.innerText = "Processing...";
+            if (confirm(`क्या आप चुने गए ${ids.length} छात्रों को अगली कक्षा ${targetClass} (सत्र: ${targetSession}) में प्रमोट करना चाहते हैं?`)) {
+                e.target.innerText = "PROCESSING...";
+                e.target.disabled = true;
+                e.target.style.opacity = "0.7";
+                
                 const res = await promoteSelectedStudent(ids, targetClass, targetSession);
                 if (res.status === "success") {
-                    alert("सफलतापूर्वक प्रमोट किया गया!");
+                    alert("बधाई हो! छात्रों को सफलतापूर्वक प्रमोट कर दिया गया है।");
                     document.getElementById('loadListBtn').click(); 
                 } else {
-                    alert("Error: " + res.message);
-                    e.target.innerText = "Promote Selected Students";
+                    alert("त्रुटि: " + res.message);
+                    e.target.innerText = "चुने गए छात्रों को प्रमोट करें";
+                    e.target.disabled = false;
+                    e.target.style.opacity = "1";
                 }
             }
         }
     };
 }
-
 
 export async function renderSearchList() {
     const contentArea = document.getElementById('contentArea');
