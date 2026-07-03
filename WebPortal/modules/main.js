@@ -8,7 +8,7 @@ import {
 import { loadTeacherAttendance, loadTeacherAttendanceDashboard, loadAddNewTeacherForm, loadTeacherListWithActions } from './teacherAttendance.js';
 import { loadAdminAttendancePanel } from './adminAttendance.js';
 import { loadSalaryDashboard, loadSalaryReport, loadSalaryPayment, loadPayslip } from './salaryManagement.js';
-import { renderStudentList, renderSearchList , renderIdAssignment, renderAadharUpdate,renderSamagraUpdate } from './student.js';
+import { renderStudentList, renderSearchList , renderIdAssignment, renderAadharUpdate,renderSamagraUpdate,renderBankUpdate } from './student.js';
 
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
@@ -88,6 +88,9 @@ function executeModuleRouting(title) {
              break;  
         case 'छात्र आधार अपडेट':
           renderAadharUpdate();
+             break;
+      case 'छात्र आधार अपडेट':
+          renderBankUpdate();
              break;
         case 'उपस्थिति डैशबोर्ड':
             showAttendanceDashboard();
