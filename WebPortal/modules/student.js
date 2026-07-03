@@ -90,7 +90,7 @@ export async function renderStudentList() {
     </style>
 
     <div class="portal-wrapper">
-        <div class="promote-title">🎓 छात्र प्रमोशन मॉड्यूल (Shiksha Portal 3.0)</div>
+        <div class="promote-title">🎓 छात्र प्रमोशन मॉड्यूल (Student Promotion Portal)</div>
         <div class="filter-box">
             <div class="filter-field">
                 <label>Class / कक्षा:</label>
