@@ -74,7 +74,7 @@ function executeModuleRouting(title) {
     document.getElementById('pageTitle').innerText = translations[state.currentLang][title] || title;
 
     switch(title) {
-     case 'छात्र आईडी जोड़ें':
+         case 'छात्र आईडी जोड़ें':
             renderIdAssignment();
              break;
         case 'छात्र प्रमोट':
@@ -83,8 +83,8 @@ function executeModuleRouting(title) {
         case 'छात्र प्रोफ़ाइल':
            renderSearchList();
              break;
-        case 'छात्र प्रोफ़ाइल':
-           renderSearchList();
+        case 'छात्र आधार अपडेट':
+          renderAadharUpdate();
              break;
         case 'उपस्थिति डैशबोर्ड':
             showAttendanceDashboard();
