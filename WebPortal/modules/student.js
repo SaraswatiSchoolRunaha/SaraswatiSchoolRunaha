@@ -965,7 +965,7 @@ export async function renderAadharUpdate() {
                         
                         <div class="input-field" style="margin-top: 20px;">
                             <label>Aadhar Number (12 अंक):</label>
-                            <input type="text" id="newAadharInput" value="${student.aadhar || ''}" maxlength="12" placeholder="000011112222" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="text" id="newAadharInput" value="${student.aadhar || ''}" maxlength="12" placeholder="Enter Adhar Number" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
                         
                         <input type="hidden" id="hiddenStudentId" value="${student.studentid}">
