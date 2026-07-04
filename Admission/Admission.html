@@ -50,35 +50,27 @@ input, select, textarea{width:100%;padding:10px;margin-top:5px;border-radius:6px
 input:focus,select:focus,textarea:focus{border-color:#004080;box-shadow:0 0 8px rgba(0,64,128,0.3);outline:none;}
 textarea{resize:vertical; min-height:60px;}
 
-  /* 👇 इसे अपने CSS वाले हिस्से में अपडेट करें */
+ /* 🛠️ बॉक्सेज को चिपकने से रोकने के लिए इसे बदलें */
 .row {
   display: flex; 
-  gap: 20px;          /* यह बॉक्सेज के बीच 20px की दूरी बनाए रखेगा */
   flex-wrap: wrap;
-  margin-bottom: 15px; /* हर लाइन के नीचे थोड़ी जगह छोड़ेगा */
+  margin-bottom: 10px;
 }
 
 .row > div {
   flex: 1; 
-  min-width: calc(50% - 10px); /* यह दो बॉक्सेज को बराबर 50-50% की चौड़ाई देगा */
+  min-width: 200px; 
   box-sizing: border-box;
+  padding-right: 10px; /* लेफ्ट बॉक्स के राइट में जगह छोड़ेगा */
+  padding-left: 10px;  /* राइट बॉक्स के लेफ्ट में जगह छोड़ेगा */
 }
-/* Submit button normal (form ke andar) */
-button[type="submit"] {
-  width: 200px;
-  padding: 15px;
-  background: green;
-  color: white;
-  border: none;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
 
-  display: block;
-  margin: 20px auto;   /* center me */
-  border-radius: 8px;
-
- }
+/* रो के बाहरी किनारों को बराबर रखने के लिए */
+.row {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+  
   /* Photo Preview */
 .photo-preview {
   margin-top:10px;
