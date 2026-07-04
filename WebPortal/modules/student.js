@@ -415,7 +415,15 @@ function getProfileFormHTML(data) {
             <div class="field"><label>Mobile</label><input id="uMobile" class="portal-input" value="${data.mobile1 || ''}"></div>
             <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" class="portal-input" value="${data.subject || ''}"></div>
             <div class="field" style="grid-column: span 2;"><label>Address</label><input id="uAddress" class="portal-input" value="${data.address || ''}"></div>
-            
+            // इसे Medium वाले div के बाद पेस्ट करें
+            <div class="field">
+                <label>Type of Student</label>
+                <select id="uStudentType" class="portal-input">
+                <option value="Regular" ${data.studentType=='Regular'?'selected':''}>New</option>
+                <option value="Private" ${data.studentType=='Private'?'selected':''}>Old</option>
+                </select>
+                </div>
+                
             <div class="section-title">🏦 बैंक एवं सुरक्षा विवरण (Bank & Security)</div>
             <div class="field"><label>Aadhaar</label><input class="portal-input input-disabled" value="[Redacted]" disabled></div>
             <div class="field"><label>Bank Account</label><input id="uBank" class="portal-input" value="${data.accountnumber || ''}"></div>
