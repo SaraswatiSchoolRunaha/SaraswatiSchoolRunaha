@@ -465,7 +465,21 @@ button[type="submit"] {
       subjectBox.style.display = "none";
     }
   }
+  
+  // 2. एनरोलमेंट नंबर के लिए शर्त (केवल 9वीं, 10वीं, 11वीं, 12वीं के लिए)
+  if (cls === "X" || cls === "XI" || cls === "XII") {
+    enrollInput.setAttribute("required", "required");
+  } else {
+    enrollInput.removeAttribute("required");
+    enrollInput.classList.remove("error"); // अगर पहले लाल हुआ हो तो साफ कर दे
+  }
+}
 
+
+
+
+
+  
   // 4. फोटो प्रिव्यू
   document.getElementById('photoUpload').addEventListener('change', function() {
     const file = this.files[0];
