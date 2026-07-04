@@ -7,120 +7,225 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 <style>
+/* 🏛️ Shiksha Portal 3.0 Color Palette */
 body {
   font-family: 'Poppins', Arial, sans-serif;
-  background: #e6f0ff;
+  background: #f0f4f8; /* शिक्षा पोर्टल लाइट बैकग्राउंड */
   margin:0;
   padding:20px;
-}
-.form-container {
-  max-width:900px;
-  margin:20px auto;
-  background:#fff;
-  border-radius:15px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.2);
-  padding:30px;
-  border:2px solid #002366;
+  color: #333;
 }
 
+.form-container {
+  max-width:950px;
+  margin:20px auto;
+  background:#fff;
+  border-radius:8px; /* प्रोफेशनल और क्लीन कॉर्पोरेट लुक */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  padding:35px;
+  border-top: 6px solid #003366; /* शिक्षा पोर्टल डार्क ब्लू ब्रांड बॉर्डर */
+}
+
+/* 🎯 हेडिंग को शिक्षा पोर्टल थीम में री-डिजाइन किया गया (बिना टेक्स्ट हटाए) */
 h2 {
-  text-align: center;                       /* text center */
-  font-family: 'Luckiest Guy', cursive;    /* fun font */
-  font-size: 36px;                          /* बड़ा heading */
-  color: #ff0066;                           /* fallback color */
-  background: linear-gradient(45deg, #ffcc00, #ff0066, #00ccff); /* gradient */
+  text-align: center;
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 38px;
+  color: #003366; /* पोर्टल थीम नेवी ब्लू */
+  background: linear-gradient(45deg, #002366, #0056b3, #0088cc); 
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  padding: 20px 0;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-  transition: transform 0.3s, text-shadow 0.3s;
-
-  /* underline */
-  border-bottom: 4px solid #004080;  /* नीला underline */
-  display: inline-block;              /* underline text width तक ही */
-  margin: 0 auto;                     /* block को center में लाने के लिए */
+  padding-bottom: 15px;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  margin: 0 auto 25px auto;
+  border-bottom: 3px solid #ff9933; /* नेशनल/स्टेट पोर्टल केसरी रंग का अंडरलाइन */
+  display: block;
 }
 
+/* 🏛️ गवर्नमेंट सेक्शन सब-हेडिंग्स */
+h3 {
+  background: #003366; /* डार्क ब्लू यूटिलिटी बार */
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 4px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  border-left: 5px solid #ff9933; /* अट्रैक्टिव ब्रांड एक्सेंट */
+}
 
-h3{background:#002366;color:#fff;padding:10px;border-radius:8px;margin-top:20px;font-weight:600;}
-label{font-weight:500;margin-top:10px;display:block;}
-input, select, textarea{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid #ccc;font-family:'Poppins',Arial,sans-serif;transition:border 0.3s,box-shadow 0.3s;}
-input:focus,select:focus,textarea:focus{border-color:#004080;box-shadow:0 0 8px rgba(0,64,128,0.3);outline:none;}
-textarea{resize:vertical; min-height:60px;}
+label {
+  font-weight: 500;
+  margin-top: 12px;
+  display: block;
+  color: #444;
+  font-size: 14px;
+}
 
- /* 🛠️ बॉक्सेज को चिपकने से रोकने के लिए इसे बदलें */
+/* 💼 सरकारी फॉर्म्स जैसे क्लीन और रेस्पॉन्सिव इनपुट बॉक्स */
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border-radius: 4px;
+  border: 1px solid #b3c6ff; /* सॉफ्ट ब्लूश-ग्रे बॉर्डर */
+  font-family: 'Poppins', Arial, sans-serif;
+  box-sizing: border-box;
+  background-color: #fbfcfe;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.15);
+  background-color: #fff;
+  outline: none;
+}
+
+textarea {
+  resize: vertical; 
+  min-height: 70px;
+}
+
+/* 🛠️ ग्रिड लेआउट */
 .row {
   display: flex; 
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  margin-left: -10px;
+  margin-right: -10px;
 }
 
 .row > div {
   flex: 1; 
-  min-width: 200px; 
+  min-width: 220px; 
   box-sizing: border-box;
-  padding-right: 10px; /* लेफ्ट बॉक्स के राइट में जगह छोड़ेगा */
-  padding-left: 10px;  /* राइट बॉक्स के लेफ्ट में जगह छोड़ेगा */
+  padding-right: 10px; 
+  padding-left: 10px;  
 }
 
-/* रो के बाहरी किनारों को बराबर रखने के लिए */
-.row {
-  margin-left: -10px;
-  margin-right: -10px;
-}
-  
-  /* Photo Preview */
+/* Photo Preview */
 .photo-preview {
-  margin-top:10px;
-  width:150px;
-  height:150px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  object-fit:cover;
-  display:block;
+  margin-top: 12px;
+  width: 140px;
+  height: 140px;
+  border: 2px dashed #003366;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+  background: #f8fafc;
 }
-  .error {
-  border: 2px solid red !important;
-  background-color: #ffe6e6;
-} is code ki jaga
+
+.error {
+  border: 2px solid #d9534f !important;
+  background-color: #fdf2f2 !important;
+}
   
-/* 👇 ये code बस नीचे add करो */
+.declaration-box {
+  background: #f4f7fa;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid #0056b3;
+  margin-top: 15px;
+}
+
 .declaration-label {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
+  cursor: pointer;
 }
 
 .declaration-label input[type="checkbox"] {
   width: auto;
-  margin-top: 5px;
+  margin-top: 4px;
+  height: 16px;
+  width: 16px;
 }
 
-/* 👇 captcha button side me lane ke liye */
+.declaration-text {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* 🧩 कैप्चा ब्लॉक रो */
 .captcha-box {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 6px;
+  margin-bottom: 12px;
 }
 
 .captcha-code {
-  background: #eee;
-  padding: 10px 15px;
-  font-weight: bold;
-  border-radius: 6px;
+  background: #e2e8f0;
+  padding: 10px 20px;
+  font-weight: 700;
+  border-radius: 4px;
+  letter-spacing: 4px;
+  font-size: 18px;
+  color: #2d3748;
+  border: 1px dashed #a0aec0;
+  user-select: none;
 }
 
 .refresh-btn {
-  padding: 10px 15px;
-  background: #004080;
-  color: white;
-  border: none;
-  border-radius: 6px;
+  padding: 10px 18px;
+  background: #e2e8f0;
+  color: #003366;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s;
 }
-  
+
+.refresh-btn:hover {
+  background: #cbd5e0;
+}
+
+#captchaInput {
+  margin-bottom: 25px;
+}
+
+/* 🎯 पोर्टल स्टाइल सबमिट बटन रैपर */
+.center-btn-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-top: 20px !important;
+  padding-bottom: 15px !important;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #003366 0%, #0056b3 100%) !important;
+  color: white !important;
+  font-family: 'Poppins', Arial, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  padding: 12px 45px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 10px rgba(0, 51, 102, 0.2) !important;
+  transition: all 0.3s ease !important;
+  width: auto !important; 
+  display: inline-block !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #002244 0%, #004499 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 15px rgba(0, 51, 102, 0.3) !important;
+}
 </style>
 </head>
 <body>
@@ -223,10 +328,9 @@ textarea{resize:vertical; min-height:60px;}
 
   <div>
     <label>Enrollment Number</label>
-    <input type="text" name="enrollmentNo" oninput="this.value = this.value.toUpperCase()" placeholder="e.g., EN20261012" >
+    <input type="text" id="enrollmentNo" name="enrollmentNo" oninput="this.value = this.value.toUpperCase()" placeholder="e.g., EN20261012" >
   </div>
   <div>
-    
     <label>Type of Student</label>
     <select name="studentType" required>
       <option value="">Select Student Type</option>
@@ -257,7 +361,6 @@ textarea{resize:vertical; min-height:60px;}
   <option value="Haryana">Haryana</option>
   <option value="Delhi">Delhi</option>
   <option value="West Bengal">West Bengal</option>
-  <!-- बाकी states भी डाल सकते हो -->
 </select>
   </div>
   <div>
@@ -323,12 +426,8 @@ textarea{resize:vertical; min-height:60px;}
    <label>Tehsil</label>
 <select name="tehsil" id="tehsil" onchange="tehsilChange()" required>
   <option value="">Select Tehsil</option>
-  
-  <!-- Bhopal -->
   <option>Berasia</option>
   <option>Huzur</option>
-
-  <!-- Rajgarh -->
   <option>Rajgarh</option>
   <option>Biaora</option>
   <option>Narsinghgarh</option>
@@ -336,8 +435,6 @@ textarea{resize:vertical; min-height:60px;}
   <option>Khujner</option>
   <option>Pachore</option>
   <option>Jirapur</option>
-
-  <!-- Sehore -->
   <option>Sehore</option>
   <option>Ashta</option>
   <option>Ichhawar</option>
@@ -345,8 +442,6 @@ textarea{resize:vertical; min-height:60px;}
   <option>Budhni</option>
   <option>Shyampur</option>
   <option>Jawar</option>
-
-  <!-- Guna -->
   <option>Guna</option>
   <option>Aron</option>
   <option>Bamori</option>
@@ -360,7 +455,6 @@ textarea{resize:vertical; min-height:60px;}
   </div>
 </div>
 
-<!-- Full Address alag line me -->
 <div class="row">
   <div style="flex:1;">
     <label>Full Address</label>
@@ -425,29 +519,28 @@ textarea{resize:vertical; min-height:60px;}
   </label>
 </div>
 
-  
 <label>Captcha Code</label>
 <div class="captcha-box">
   <div class="captcha-code" id="captchaCode">XXXXXX</div>
-  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Referrec</button>
+  <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
 </div>
 
 <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
 
-<button type="submit">Submit Admission</button>
+<div class="center-btn-wrapper">
+  <button type="submit" class="submit-btn">Submit Admission</button>
+</div>
 
 </form>
-<!-- इसके बाद ही script आएगा -->
+</div>
   
 <script>
   const scriptURL = "https://script.google.com/macros/s/AKfycby3CDn1RnFNmns-aIU4HT14w5QmBnKSfU6Ymp26kBwnc7K0ysoKvsDYU1bw1Mx3VDkn/exec";
 
-  // 1. पेज लोड होने पर कैप्चा लोड करना
   window.onload = function() {
     generateCaptcha();
   };
 
-  // 2. कैप्चा जनरेट फंक्शन
   function generateCaptcha() {
     let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let captcha = "";
@@ -458,26 +551,29 @@ textarea{resize:vertical; min-height:60px;}
     window.currentCaptcha = captcha;
   }
 
-  // 3. क्लास के हिसाब से सब्जेक्ट दिखाना
+  // 🛠️ फिक्स: खुली छूटी हुई "if-condition" को फंक्शन के अंदर सही लॉजिक के साथ सुरक्षित कर दिया है।
   function toggleSubjects() {
     let cls = document.getElementById("classSelect").value;
     let subjectBox = document.getElementById("subjectSection");
+    let enrollInput = document.getElementById("enrollmentNo");
+
     if (cls === "XI" || cls === "XII") {
       subjectBox.style.display = "block";
     } else {
       subjectBox.style.display = "none";
     }
-  }
-  
-  // 2. एनरोलमेंट नंबर के लिए शर्त (केवल 9वीं, 10वीं, 11वीं, 12वीं के लिए)
-  if (cls === "X" || cls === "XI" || cls === "XII") {
-    enrollInput.setAttribute("required", "required");
-  } else {
-    enrollInput.removeAttribute("required");
-    enrollInput.classList.remove("error"); // अगर पहले लाल हुआ हो तो साफ कर दे
+    
+    // एनरोलमेंट नंबर के लिए शर्त (केवल 9वीं, 10वीं, 11वीं, 12वीं के लिए अनिवार्य)
+    if (cls === "X" || cls === "XI" || cls === "XII") {
+      if (enrollInput) enrollInput.setAttribute("required", "required");
+    } else {
+      if (enrollInput) {
+        enrollInput.removeAttribute("required");
+        enrollInput.classList.remove("error");
+      }
+    }
   }
 
-  // 4. फोटो प्रिव्यू
   document.getElementById('photoUpload').addEventListener('change', function() {
     const file = this.files[0];
     if (file) {
@@ -489,58 +585,47 @@ textarea{resize:vertical; min-height:60px;}
     }
   });
 
-  // 5. सर्वर पर डेटा भेजना और रिडायरेक्ट करना
   function sendToServer(obj) {
-  fetch(scriptURL, {
-  method: "POST",
-  body: JSON.stringify(obj),
-  headers: {
-    "Content-Type": "text/plain;charset=utf-8"
+    fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(obj),
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      }
+    })
+    .then(res => res.text())
+    .then(data => {
+      let students = JSON.parse(localStorage.getItem("students")) || [];
+      students.push({
+        appno: data, 
+        mobile1: obj.mobile1,
+        name: obj.studentName,
+        father: obj.fatherName,
+        mother: obj.motherName,
+        dob: obj.dob,
+        class: obj.class,
+        medium: obj.medium,
+        gender: obj.gender,
+        category: obj.category,
+      });
+
+      localStorage.setItem("students", JSON.stringify(students));
+
+      alert("📄 छात्र का आवेदन क्रमांक: " + data +
+        "\n\n✅ आपका आवेदन पत्र सफलतापूर्वक जमा हो चुका है।" +
+        "\nकृपया भविष्य के लिए इस क्रमांक को सुरक्षित रखें।");
+
+      let mobileValue = obj.mobile1;
+      window.location.href = "ReceiptSearch.html?appNo=" + data + "&mobile1=" + mobileValue;
+    })
+    .catch(err => {
+      alert("Error: " + err);
+    });
   }
-})
-.then(res => res.text())
-.then(data => {
-
-  // 🔥 server से मिला हुआ REAL appNo save करो
-  let students = JSON.parse(localStorage.getItem("students")) || [];
-
-  students.push({
-   appno: data, // ✅ FIX (Date.now हटाया)
-    mobile1: obj.mobile1,
-    name: obj.studentName,
-    father: obj.fatherName,
-    mother: obj.motherName,
-    dob: obj.dob,
-    class: obj.class,
-    medium: obj.medium,
-    gender: obj.gender,
-    category: obj.category,
-  });
-
-  localStorage.setItem("students", JSON.stringify(students));
-
-  alert("📄 छात्र का आवेदन क्रमांक: " + data +
-    "\n\n✅ आपका आवेदन पत्र सफलतापूर्वक जमा हो चुका है।" +
-    "\nकृपया भविष्य के लिए इस क्रमांक को सुरक्षित रखें।");
-
-  // 🔥 direct object से mobile लो (safe)
-  let mobileValue = obj.mobile1;
-
-  // 🔥 mobile1 same नाम से भेजो
-  window.location.href = "ReceiptSearch.html?appNo=" + data + "&mobile1=" + mobileValue;
-
- })
-  .catch(err => {
-    alert("Error: " + err);
-  });
-}
     
-    
-    // 6. फॉर्म सबमिट इवेंट
   document.getElementById('admissionForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // कैप्चा चेक
     let userCaptcha = document.getElementById('captchaInput').value;
     let actualCaptcha = document.getElementById('captchaCode').textContent;
 
@@ -559,7 +644,7 @@ textarea{resize:vertical; min-height:60px;}
       reader.onload = function() {
         formData.set("photo", reader.result);
         let obj = {};
-       formData.forEach((v, k) => {
+        formData.forEach((v, k) => {
           obj[k] = v; 
         });
         sendToServer(obj);
@@ -574,7 +659,6 @@ textarea{resize:vertical; min-height:60px;}
 </script>
   
 <script>
-// STATE → DISTRICT
 function stateChange() {
   let s = document.getElementById("state").value;
   let d = document.getElementById("district");
@@ -591,7 +675,6 @@ function stateChange() {
   }
 }
 
-// DISTRICT → TEHSIL
 function districtChange() {
   let d = document.getElementById("district").value;
   let t = document.getElementById("tehsil");
@@ -608,25 +691,20 @@ function districtChange() {
     t.innerHTML += `<option>Rajgarh</option><option>Biaora</option><option>Narsinghgarh</option>`;
   }
   if (d === "Guna") {
-  t.innerHTML += `<option>Guna</option><option>Raghogarh</option><option>Aron</option>`;
-}
+    t.innerHTML += `<option>Guna</option><option>Raghogarh</option><option>Aron</option>`;
+  }
 }
 </script>
   
 <script>
 function validateForm() {
   let isValid = true;
-
   let inputs = document.querySelectorAll("#admissionForm input, #admissionForm select, #admissionForm textarea");
 
   inputs.forEach(function(field) {
-
-    // पहले remove करो (reset)
     field.classList.remove("error");
-
-    // अगर required है और empty है
     if (field.hasAttribute("required") && field.value.trim() === "") {
-      field.classList.add("error"); // 🔴 highlight
+      field.classList.add("error"); 
       isValid = false;
     }
   });
@@ -635,7 +713,7 @@ function validateForm() {
     alert("⚠️ कृपया सभी जरूरी जानकारी भरें");
   }
 
-  return isValid; // false = submit बंद
+  return isValid;
 }
 </script>
 
