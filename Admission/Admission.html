@@ -49,9 +49,20 @@ label{font-weight:500;margin-top:10px;display:block;}
 input, select, textarea{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid #ccc;font-family:'Poppins',Arial,sans-serif;transition:border 0.3s,box-shadow 0.3s;}
 input:focus,select:focus,textarea:focus{border-color:#004080;box-shadow:0 0 8px rgba(0,64,128,0.3);outline:none;}
 textarea{resize:vertical; min-height:60px;}
-.row{display:flex; gap:20px; flex-wrap:wrap;}
-.row>div{flex:1; min-width: 200px; box-sizing: border-box;}
 
+  /* 👇 इसे अपने CSS वाले हिस्से में अपडेट करें */
+.row {
+  display: flex; 
+  gap: 20px;          /* यह बॉक्सेज के बीच 20px की दूरी बनाए रखेगा */
+  flex-wrap: wrap;
+  margin-bottom: 15px; /* हर लाइन के नीचे थोड़ी जगह छोड़ेगा */
+}
+
+.row > div {
+  flex: 1; 
+  min-width: calc(50% - 10px); /* यह दो बॉक्सेज को बराबर 50-50% की चौड़ाई देगा */
+  box-sizing: border-box;
+}
 /* Submit button normal (form ke andar) */
 button[type="submit"] {
   width: 200px;
