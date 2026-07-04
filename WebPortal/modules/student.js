@@ -721,6 +721,7 @@ export async function renderStudentProfile() {
                 class: document.getElementById('uClass').value,
                 medium: document.getElementById('uMedium').value,
                 enrolment: document.getElementById('uEnrol').value,
+                studentType: document.getElementById('uStudentType').value,
                 mobile1: document.getElementById('uMobile').value,
                 address: document.getElementById('uAddress').value,
                 subject: document.getElementById('uSubject')?.value || "",
