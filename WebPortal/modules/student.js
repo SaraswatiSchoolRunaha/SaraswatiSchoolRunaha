@@ -414,6 +414,26 @@ function getProfileFormHTML(data) {
             <div class="field"><label>Enrolment No</label><input id="uEnrol" class="portal-input" value="${data.enrolment || ''}"></div>
             <div class="field"><label>Mobile</label><input id="uMobile" class="portal-input" value="${data.mobile1 || ''}"></div>
             <div class="field" id="subField" style="display:${(data.class=='XI'||data.class=='XII')?'flex':'none'}"><label>Subject</label><input id="uSubject" class="portal-input" value="${data.subject || ''}"></div>
+           <div class="field" id="subField" style="display:${isHigherClass ? 'flex' : 'none'}">
+                <label>Subject Stream</label>
+                <select id="uSubject" class="portal-input">
+                    <option value="Science (Maths)" ${data.subject=='Science (Maths)'?'selected':''}>Science (Maths)</option>
+                    <option value="Science (Bio)" ${data.subject=='Science (Bio)'?'selected':''}>Science (Bio)</option>
+                    <option value="Commerce" ${data.subject=='Commerce'?'selected':''}>Commerce</option>
+                    <option value="Arts" ${data.subject=='Arts'?'selected':''}>Arts</option>
+                    <option value="Agriculture" ${data.subject=='Agriculture'?'selected':''}>Agriculture</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Type of Student</label>
+                <select id="uStudentType" class="portal-input">
+                    <option value="Regular" ${data.studentType=='Regular'?'selected':''}>Regular</option>
+                    <option value="Private" ${data.studentType=='Private'?'selected':''}>Private</option>
+                    <option value="New" ${data.studentType=='New'?'selected':''}>New Admission</option>
+                </select>
+            </div>
+            
             <div class="field" style="grid-column: span 2;"><label>Address</label><input id="uAddress" class="portal-input" value="${data.address || ''}"></div>
                 
                 
