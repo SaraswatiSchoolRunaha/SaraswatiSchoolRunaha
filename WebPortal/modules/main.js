@@ -92,7 +92,10 @@ function executeModuleRouting(title) {
         case 'छात्र फोटो अपडेट':
           renderPhotoUpload();
              break;  
-      case 'छात्र बैंक खाता':
+       case 'छात्र बैंक खाता':
+          renderBankUpdate();
+             break;
+       case 'नवीन छात्र सूची':
           renderBankUpdate();
              break;
         case 'उपस्थिति डैशबोर्ड':
