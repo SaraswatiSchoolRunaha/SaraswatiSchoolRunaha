@@ -1503,10 +1503,13 @@ export async function renderNewAdmissionList() {
             <select id="yearSelect">
                 <option value="2026-27">2026-27</option>
                 <option value="2027-28">2027-28</option>
+                <option value="2028-29">2028-29</option>
+                <option value="2029-30">2029-30</option>
+        
             </select>
             <select id="typeSelect">
                 <option value="New">New Admission</option>
-                <option value="Regular">Regular</option>
+                <option value="Old">Old Admission</option>
             </select>
             <button id="fetchListBtn" class="btn-portal btn-load">सूची लोड करें</button>
             <button onclick="window.print()" class="btn-portal btn-print" style="background:#27ae60;">🖨️ प्रिंट करें</button>
