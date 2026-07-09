@@ -1760,7 +1760,7 @@ window.fetchClassWiseData = async () => {
                 html += `<tr>
                     <td>${s.studentid}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
                     <td>${s.mother}</td><td>${s.class}</td><td>${s.medium}</td><td>${s.dob}</td>
-                    <td>${s.cast}</td><td>${s.gender}</td><td>${s.samagra}</td><td>[Redacted]</td>
+                    <td>${s.cast}</td><td>${s.gender}</td><td>${s.samagra}</td><td>${s.adhar}</td>
                     <td>${s.bank}</td><td>${s.ifsc}</td><td>${s.mobile}</td><td>${s.address}</td>
                 </tr>`;
             });
