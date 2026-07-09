@@ -1682,11 +1682,17 @@ function printStudentList() {
 export function showClassWiseStudentList() {
     const contentArea = document.getElementById('contentArea');
     
+    // सभी कक्षाएं और 2030 तक के सत्र
+    const classOptions = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const sessionOptions = ["2026-27", "2027-28", "2028-29", "2029-30", "2030-31"];
+    
+    const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
+
     contentArea.innerHTML = `
     <style>
         .portal-wrapper { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f8fafc; }
         .portal-title { color: #0d3558; font-size: 20px; font-weight: bold; margin-bottom: 20px; border-bottom: 3px solid #1a73e8; padding-bottom: 10px; }
-        .search-card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-end; }
+        .search-card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-end; flex-wrap: wrap; }
         .input-group { display: flex; flex-direction: column; gap: 5px; }
         .portal-select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
         .btn-action { padding: 8px 20px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
@@ -1705,9 +1711,21 @@ export function showClassWiseStudentList() {
     <div class="portal-wrapper">
         <div class="portal-title">📋 कक्षावार छात्र सूची</div>
         <div class="search-card no-print">
-            <div class="input-group"><label>सत्र:</label><select id="sYear" class="portal-select"><option value="2026-27">2026-27</option></select></div>
-            <div class="input-group"><label>कक्षा:</label><select id="sClass" class="portal-select"><option value="I">I</option><option value="II">II</option></select></div>
-            <div class="input-group"><label>माध्यम:</label><select id="sMedium" class="portal-select"><option value="Hindi">Hindi</option><option value="English">English</option></select></div>
+            <div class="input-group">
+                <label>सत्र:</label>
+                <select id="sYear" class="portal-select">${generateOptions(sessionOptions)}</select>
+            </div>
+            <div class="input-group">
+                <label>कक्षा:</label>
+                <select id="sClass" class="portal-select">${generateOptions(classOptions)}</select>
+            </div>
+            <div class="input-group">
+                <label>माध्यम:</label>
+                <select id="sMedium" class="portal-select">
+                    <option value="Hindi">Hindi</option>
+                    <option value="English">English</option>
+                </select>
+            </div>
             <button onclick="fetchClassWiseData()" class="btn-action">सूची देखें</button>
         </div>
         <div id="resultsArea"></div>
@@ -1728,7 +1746,7 @@ window.fetchClassWiseData = async () => {
         const res = await fetch(`${sheetUrls.Database}?action=searchStudents&year=${params.year}&class=${params.class}&medium=${params.medium}`);
         const data = await res.json();
 
-        if (data.length > 0) {
+        if (data && data.length > 0) {
             let html = `
             <table class="result-table">
                 <thead>
@@ -1742,7 +1760,7 @@ window.fetchClassWiseData = async () => {
                 html += `<tr>
                     <td>${s.studentid}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
                     <td>${s.mother}</td><td>${s.class}</td><td>${s.medium}</td><td>${s.dob}</td>
-                    <td>${s.cast}</td><td>${s.gender}</td><td>${s.samagra}</td><td>${s.aadhar}</td>
+                    <td>${s.cast}</td><td>${s.gender}</td><td>${s.samagra}</td><td>[Redacted]</td>
                     <td>${s.bank}</td><td>${s.ifsc}</td><td>${s.mobile}</td><td>${s.address}</td>
                 </tr>`;
             });
