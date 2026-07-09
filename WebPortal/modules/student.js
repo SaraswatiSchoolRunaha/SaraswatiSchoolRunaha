@@ -1491,93 +1491,76 @@ export function renderPhotoUpload() {
     };
 }
 
-export async function renderNewAdmissionList() {
+export function renderStudentSearch() {
     const contentArea = document.getElementById('contentArea');
-    
-    // UI स्ट्रक्चर
+
     contentArea.innerHTML = `
-    <div class="portal-container">
-        <div class="portal-header">
-            <h3><i class="fas fa-user-graduate"></i> छात्र सूची प्रबंधन (Shiksha Portal 3.0)</h3>
-            <p>सत्र और श्रेणी के आधार पर डेटा फ़िल्टर करें</p>
-        </div>
+    <div class="portal-wrapper">
+        <div class="portal-title">🔍 छात्र खोजें (Student Search)</div>
         
-        <div class="filter-card">
-            <div class="input-group">
+        <div class="upload-card">
+            <div class="input-field">
                 <label>शैक्षणिक सत्र:</label>
-                <select id="yearSelect" class="portal-select">
+                <select id="searchYear" class="portal-select">
                     <option value="2026-27">2026-27</option>
                     <option value="2027-28">2027-28</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label>प्रवेश प्रकार:</label>
-                <select id="typeSelect" class="portal-select">
-                    <option value="New">New </option>
-                    <option value="Old">Old </option>
+            <div class="input-field">
+                <label>कक्षा:</label>
+                <input type="text" id="searchClass" placeholder="उदा. 10th">
+            </div>
+            <div class="input-field">
+                <label>माध्यम (Medium):</label>
+                <select id="searchMedium" class="portal-select">
+                    <option value="Hindi">Hindi</option>
+                    <option value="English">English</option>
                 </select>
             </div>
-            <div class="btn-group">
-                <button id="fetchListBtn" class="btn-primary">खोजें (Search)</button>
-                <button onclick="window.print()" class="btn-secondary">प्रिंट करें</button>
+            <div class="input-field">
+                <label>प्रवेश प्रकार:</label>
+                <select id="searchType" class="portal-select">
+                    <option value="New">New</option>
+                    <option value="Old">Old</option>
+                </select>
             </div>
+            <button id="searchBtn" class="btn-upload">डेटा खोजें</button>
         </div>
 
-        <div id="studentListContainer" class="table-card">
-            <div class="empty-state">डेटा देखने के लिए सर्च बटन पर क्लिक करें।</div>
-        </div>
+        <div id="resultsContainer" style="margin-top: 20px;"></div>
     </div>`;
 
-    // बटन क्लिक इवेंट
-    document.getElementById('fetchListBtn').onclick = async () => {
-        const year = document.getElementById('yearSelect').value;
-        const type = document.getElementById('typeSelect').value;
-        const container = document.getElementById('studentListContainer');
-        
-        // लोडिंग स्टेट
-        container.innerHTML = `<div class="loader">डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...</div>`;
+    document.getElementById('searchBtn').onclick = async () => {
+        const filters = {
+            year: document.getElementById('searchYear').value,
+            class: document.getElementById('searchClass').value.trim(),
+            medium: document.getElementById('searchMedium').value,
+            type: document.getElementById('searchType').value
+        };
+
+        const container = document.getElementById('resultsContainer');
+        container.innerHTML = `<div class="loader">खोज जारी है...</div>`;
 
         try {
-            // API कॉल (यहाँ अपनी सही शीट URL का उपयोग करें)
-            const res = await fetch(`${sheetUrls['Database']}?action=filterByCriteria&year=${year}&type=${type}`);
+            // API कॉल - यहाँ अपनी API URL को फिल्टर पैरामीटर्स के साथ भेजें
+            const queryString = new URLSearchParams(filters).toString();
+            const res = await fetch(`${sheetUrls.Database}?action=searchStudents&${queryString}`);
             const students = await res.json();
 
-            if (!students || students.length === 0) {
-                container.innerHTML = `<div class="empty-state">⚠️ इस श्रेणी में कोई छात्र नहीं मिला।</div>`;
-                return;
+            if (students.length > 0) {
+                let tableHtml = `<table class="student-table">
+                    <thead><tr><th>ID</th><th>नाम</th><th>पिता</th><th>कक्षा</th></tr></thead>
+                    <tbody>`;
+                students.forEach(s => {
+                    tableHtml += `<tr><td>${s.studentid}</td><td>${s.name}</td><td>${s.father}</td><td>${s.class}</td></tr>`;
+                });
+                tableHtml += `</tbody></table>`;
+                container.innerHTML = tableHtml;
+            } else {
+                container.innerHTML = `<div class="empty-state">⚠️ कोई परिणाम नहीं मिला।</div>`;
             }
-
-            // टेबल रेंडरिंग
-            let html = `
-            <table class="student-table" id="printableTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>नाम</th>
-                        <th>पिता का नाम</th>
-                        <th>कक्षा</th>
-                        <th>प्रकार</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
-            students.forEach(s => {
-                html += `
-                    <tr>
-                        <td>${s.studentid || '-'}</td>
-                        <td>${s.name || '-'}</td>
-                        <td>${s.father || '-'}</td>
-                        <td>${s.class || '-'}</td>
-                        <td>${s.type || '-'}</td>
-                    </tr>`;
-            });
-            
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-
         } catch (err) {
-            console.error(err);
-            container.innerHTML = `<div class="error-state">❌ एरर: डेटा लोड नहीं हो सका। कृपया सर्वर चेक करें।</div>`;
+            container.innerHTML = `<div class="error-state">❌ एरर: डेटा लोड करने में समस्या आई।</div>`;
         }
     };
 }
