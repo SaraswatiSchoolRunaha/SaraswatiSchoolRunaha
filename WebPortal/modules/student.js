@@ -1491,7 +1491,7 @@ export function renderPhotoUpload() {
     };
 }
 
-export function renderStudentSearch() {
+export function renderNewAdmissionList() {
     const contentArea = document.getElementById('contentArea');
 
     contentArea.innerHTML = `
