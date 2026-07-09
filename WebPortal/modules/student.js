@@ -1495,7 +1495,7 @@ export function renderNewAdmissionList() {
     const contentArea = document.getElementById('contentArea');
 
     // कक्षा की लिस्ट
-    const classOptions = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const classOptions = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
 
     contentArea.innerHTML = `
@@ -1683,7 +1683,7 @@ export function showClassWiseStudentList() {
     const contentArea = document.getElementById('contentArea');
     
     // सभी कक्षाएं और 2030 तक के सत्र
-    const classOptions = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const classOptions = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const sessionOptions = ["2026-27", "2027-28", "2028-29", "2029-30", "2030-31"];
     
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
