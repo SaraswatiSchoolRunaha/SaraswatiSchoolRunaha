@@ -1615,3 +1615,34 @@ export function renderNewAdmissionList() {
         }
     };
 }
+function printStudentList() {
+    // 1. टेबल का हिस्सा चुनें
+    const tableContent = document.getElementById('resultsContainer').innerHTML;
+    
+    // 2. एक नई विंडो (Pop-up) खोलें
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    
+    // 3. नई विंडो में टेबल और स्टाइल डालें
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Student List</title>
+                <style>
+                    body { font-family: sans-serif; padding: 20px; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th { background: #0d3558; color: white; padding: 10px; border: 1px solid #000; }
+                    td { padding: 10px; border: 1px solid #000; text-align: center; }
+                    .btn-print { display: none; } /* प्रिंट में बटन न दिखे */
+                </style>
+            </head>
+            <body>
+                <h2>छात्र प्रवेश सूची</h2>
+                ${tableContent}
+            </body>
+        </html>
+    `);
+    
+    // 4. प्रिंट कमांड चलाएं
+    printWindow.document.close();
+    printWindow.print();
+}
