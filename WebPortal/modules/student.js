@@ -1678,3 +1678,81 @@ function printStudentList() {
         printWindow.close();
     };
 }
+
+export function showClassWiseStudentList() {
+    const contentArea = document.getElementById('contentArea');
+    
+    contentArea.innerHTML = `
+    <style>
+        .portal-wrapper { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f8fafc; }
+        .portal-title { color: #0d3558; font-size: 20px; font-weight: bold; margin-bottom: 20px; border-bottom: 3px solid #1a73e8; padding-bottom: 10px; }
+        .search-card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-end; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .portal-select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-action { padding: 8px 20px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        
+        /* टेबल और प्रिंट स्टाइल */
+        .result-table { width: 100%; border-collapse: collapse; font-size: 11px; background: #fff; }
+        .result-table th { background: #0d3558; color: white; padding: 8px; border: 1px solid #999; }
+        .result-table td { padding: 6px; border: 1px solid #999; text-align: center; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            .result-table { width: 100%; }
+        }
+    </style>
+
+    <div class="portal-wrapper">
+        <div class="portal-title">📋 कक्षावार छात्र सूची</div>
+        <div class="search-card no-print">
+            <div class="input-group"><label>सत्र:</label><select id="sYear" class="portal-select"><option value="2026-27">2026-27</option></select></div>
+            <div class="input-group"><label>कक्षा:</label><select id="sClass" class="portal-select"><option value="I">I</option><option value="II">II</option></select></div>
+            <div class="input-group"><label>माध्यम:</label><select id="sMedium" class="portal-select"><option value="Hindi">Hindi</option><option value="English">English</option></select></div>
+            <button onclick="fetchClassWiseData()" class="btn-action">सूची देखें</button>
+        </div>
+        <div id="resultsArea"></div>
+    </div>`;
+}
+
+// डेटा लोड करने का ग्लोबल फंक्शन
+window.fetchClassWiseData = async () => {
+    const container = document.getElementById('resultsArea');
+    const params = {
+        year: document.getElementById('sYear').value,
+        class: document.getElementById('sClass').value,
+        medium: document.getElementById('sMedium').value
+    };
+
+    container.innerHTML = "डेटा लोड हो रहा है...";
+    try {
+        const res = await fetch(`${sheetUrls.Database}?action=searchStudents&year=${params.year}&class=${params.class}&medium=${params.medium}`);
+        const data = await res.json();
+
+        if (data.length > 0) {
+            let html = `
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>सत्र</th><th>नाम</th><th>पिता</th><th>माता</th><th>कक्षा</th><th>माध्यम</th>
+                        <th>DOB</th><th>जाति</th><th>लिंग</th><th>समग्र ID</th><th>आधार</th><th>बैंक</th><th>IFSC</th><th>मोबाइल</th><th>पता</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            data.forEach(s => {
+                html += `<tr>
+                    <td>${s.studentid}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
+                    <td>${s.mother}</td><td>${s.class}</td><td>${s.medium}</td><td>${s.dob}</td>
+                    <td>${s.cast}</td><td>${s.gender}</td><td>${s.samagra}</td><td>${s.aadhar}</td>
+                    <td>${s.bank}</td><td>${s.ifsc}</td><td>${s.mobile}</td><td>${s.address}</td>
+                </tr>`;
+            });
+            html += `</tbody></table>
+            <button class="no-print" onclick="window.print()" style="margin-top:20px; padding:10px 20px; background:green; color:white; border:none; cursor:pointer;">🖨️ लिस्ट प्रिंट करें</button>`;
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = "कोई डेटा नहीं मिला।";
+        }
+    } catch (e) {
+        container.innerHTML = "एरर: सर्वर कनेक्ट नहीं हो पा रहा।";
+    }
+};
