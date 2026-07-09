@@ -1513,8 +1513,8 @@ export async function renderNewAdmissionList() {
             <div class="input-group">
                 <label>प्रवेश प्रकार:</label>
                 <select id="typeSelect" class="portal-select">
-                    <option value="New">New Admission</option>
-                    <option value="Old">Old Admission</option>
+                    <option value="New">New </option>
+                    <option value="Old">Old </option>
                 </select>
             </div>
             <div class="btn-group">
