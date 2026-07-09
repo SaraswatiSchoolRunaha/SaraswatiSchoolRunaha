@@ -1774,3 +1774,4 @@ window.fetchClassWiseData = async () => {
         container.innerHTML = "एरर: सर्वर कनेक्ट नहीं हो पा रहा।";
     }
 };
+
