@@ -1491,61 +1491,39 @@ export function renderPhotoUpload() {
     };
 }
 
-// नया सब-मेनू रेंडर करने का फंक्शन
 export async function renderNewAdmissionList() {
     const contentArea = document.getElementById('contentArea');
     
-    // UI: फ़िल्टर और टेबल का स्ट्रक्चर
+    // UI में क्लासेस और स्ट्रक्चर को बेहतर बनाया गया है
     contentArea.innerHTML = `
-    <div class="portal-wrapper">
-        <div class="promote-title">📝 छात्र सूची फ़िल्टर (Student Filter List)</div>
-        <div class="filter-box">
-            <select id="yearSelect">
-                <option value="2026-27">2026-27</option>
-                <option value="2027-28">2027-28</option>
-                <option value="2028-29">2028-29</option>
-                <option value="2029-30">2029-30</option>
-        
-            </select>
-            <select id="typeSelect">
-                <option value="New">New Admission</option>
-                <option value="Old">Old Admission</option>
-            </select>
-            <button id="fetchListBtn" class="btn-portal btn-load">सूची लोड करें</button>
-            <button onclick="window.print()" class="btn-portal btn-print" style="background:#27ae60;">🖨️ प्रिंट करें</button>
+    <div class="portal-container">
+        <div class="portal-header">
+            <h3><i class="fas fa-user-graduate"></i> छात्र सूची प्रबंधन (Shiksha Portal 3.0)</h3>
+            <p>सत्र और श्रेणी के आधार पर डेटा फ़िल्टर करें</p>
         </div>
-        <div id="studentListContainer"></div>
-    </div>`;
-
-    document.getElementById('fetchListBtn').onclick = async () => {
-        const year = document.getElementById('yearSelect').value;
-        const type = document.getElementById('typeSelect').value;
-        const container = document.getElementById('studentListContainer');
         
-        container.innerHTML = "🔄 डेटा लोड हो रहा है...";
+        <div class="filter-card">
+            <div class="input-group">
+                <label>शैक्षणिक सत्र:</label>
+                <select id="yearSelect" class="portal-select">
+                    <option value="2026-27">2026-27</option>
+                    <option value="2027-28">2027-28</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>प्रवेश प्रकार:</label>
+                <select id="typeSelect" class="portal-select">
+                    <option value="New">New Admission</option>
+                    <option value="Old">Old Admission</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button id="fetchListBtn" class="btn-primary">खोजें (Search)</button>
+                <button onclick="window.print()" class="btn-secondary">प्रिंट करें</button>
+            </div>
+        </div>
 
-        try {
-            // API से डेटा फ़ेच करें
-            const res = await fetch(`${sheetUrls['Database']}?action=filterByCriteria&year=${year}&type=${type}`);
-            const students = await res.json();
-
-            if (students.length === 0) {
-                container.innerHTML = "⚠️ इस श्रेणी में कोई छात्र नहीं मिला।";
-                return;
-            }
-
-            // टेबल बनाएँ
-            let html = `<table class="student-table" id="printableTable">
-                <thead><tr><th>ID</th><th>नाम</th><th>पिता का नाम</th><th>कक्षा</th><th>प्रकार</th></tr></thead><tbody>`;
-            
-            students.forEach(s => {
-                html += `<tr><td>${s.studentid}</td><td>${s.name}</td><td>${s.father}</td><td>${s.class}</td><td>${s.type}</td></tr>`;
-            });
-            
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        } catch (err) {
-            container.innerHTML = "❌ एरर: डेटा लोड नहीं हो सका।";
-        }
-    };
+        <div id="studentListContainer" class="table-card">
+            </div>
+    </div>`;
 }
