@@ -1564,4 +1564,4 @@ export function renderNewAdmissionList() {
         }
     };
 }
-}
+
