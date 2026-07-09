@@ -1494,11 +1494,35 @@ export function renderPhotoUpload() {
 export function renderNewAdmissionList() {
     const contentArea = document.getElementById('contentArea');
 
+    // कक्षा की लिस्ट
+    const classOptions = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
+
     contentArea.innerHTML = `
-    <div class="portal-wrapper">
-        <div class="portal-title">🔍 छात्र खोजें (Student Search)</div>
+    <style>
+        .portal-wrapper { font-family: 'Segoe UI', sans-serif; background: #f8fafc; padding: 20px; border-radius: 12px; }
+        .portal-title { color: #0d3558; font-size: 22px; font-weight: 700; margin-bottom: 20px; border-bottom: 3px solid #1a73e8; padding-bottom: 8px; }
         
-        <div class="upload-card">
+        /* Shiksha Portal 3.0 Card Style */
+        .search-card { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: flex-end; }
+        .input-field { display: flex; flex-direction: column; gap: 8px; }
+        .input-field label { font-weight: 600; color: #475569; font-size: 14px; }
+        .portal-select { padding: 10px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; cursor: pointer; }
+        .portal-select:focus { border-color: #1a73e8; }
+        
+        .btn-search { padding: 10px; background: #1a73e8; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-search:hover { background: #1557b0; }
+        
+        /* Table Design */
+        .student-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .student-table th { background: #0d3558; color: white; padding: 12px; text-align: left; }
+        .student-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+    </style>
+
+    <div class="portal-wrapper">
+        <div class="portal-title">🎓 छात्र प्रवेश सूची (New Admission Portal)</div>
+        
+        <div class="search-card">
             <div class="input-field">
                 <label>शैक्षणिक सत्र:</label>
                 <select id="searchYear" class="portal-select">
@@ -1508,7 +1532,9 @@ export function renderNewAdmissionList() {
             </div>
             <div class="input-field">
                 <label>कक्षा:</label>
-                <input type="text" id="searchClass" placeholder="उदा. 10th">
+                <select id="searchClass" class="portal-select">
+                    ${generateOptions(classOptions)}
+                </select>
             </div>
             <div class="input-field">
                 <label>माध्यम (Medium):</label>
@@ -1524,30 +1550,30 @@ export function renderNewAdmissionList() {
                     <option value="Old">Old</option>
                 </select>
             </div>
-            <button id="searchBtn" class="btn-upload">डेटा खोजें</button>
+            <button id="searchBtn" class="btn-search">डेटा खोजें</button>
         </div>
 
-        <div id="resultsContainer" style="margin-top: 20px;"></div>
+        <div id="resultsContainer"></div>
     </div>`;
 
+    // बटन इवेंट
     document.getElementById('searchBtn').onclick = async () => {
         const filters = {
             year: document.getElementById('searchYear').value,
-            class: document.getElementById('searchClass').value.trim(),
+            class: document.getElementById('searchClass').value,
             medium: document.getElementById('searchMedium').value,
             type: document.getElementById('searchType').value
         };
 
         const container = document.getElementById('resultsContainer');
-        container.innerHTML = `<div class="loader">खोज जारी है...</div>`;
+        container.innerHTML = `<div style="padding: 20px;">🔄 डेटा लोड हो रहा है...</div>`;
 
         try {
-            // API कॉल - यहाँ अपनी API URL को फिल्टर पैरामीटर्स के साथ भेजें
             const queryString = new URLSearchParams(filters).toString();
             const res = await fetch(`${sheetUrls.Database}?action=searchStudents&${queryString}`);
             const students = await res.json();
 
-            if (students.length > 0) {
+            if (students && students.length > 0) {
                 let tableHtml = `<table class="student-table">
                     <thead><tr><th>ID</th><th>नाम</th><th>पिता</th><th>कक्षा</th></tr></thead>
                     <tbody>`;
@@ -1557,11 +1583,10 @@ export function renderNewAdmissionList() {
                 tableHtml += `</tbody></table>`;
                 container.innerHTML = tableHtml;
             } else {
-                container.innerHTML = `<div class="empty-state">⚠️ कोई परिणाम नहीं मिला।</div>`;
+                container.innerHTML = `<div style="padding: 20px; color: red;">⚠️ कोई परिणाम नहीं मिला।</div>`;
             }
         } catch (err) {
-            container.innerHTML = `<div class="error-state">❌ एरर: डेटा लोड करने में समस्या आई।</div>`;
+            container.innerHTML = `<div style="padding: 20px; color: red;">❌ एरर: सर्वर से कनेक्ट नहीं हो पा रहा है।</div>`;
         }
     };
 }
-
