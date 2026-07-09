@@ -1564,3 +1564,4 @@ export function renderStudentSearch() {
         }
     };
 }
+}
