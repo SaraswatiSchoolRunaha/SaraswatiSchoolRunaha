@@ -1494,7 +1494,7 @@ export function renderPhotoUpload() {
 export async function renderNewAdmissionList() {
     const contentArea = document.getElementById('contentArea');
     
-    // UI में क्लासेस और स्ट्रक्चर को बेहतर बनाया गया है
+    // UI स्ट्रक्चर
     contentArea.innerHTML = `
     <div class="portal-container">
         <div class="portal-header">
@@ -1524,6 +1524,60 @@ export async function renderNewAdmissionList() {
         </div>
 
         <div id="studentListContainer" class="table-card">
-            </div>
+            <div class="empty-state">डेटा देखने के लिए सर्च बटन पर क्लिक करें।</div>
+        </div>
     </div>`;
+
+    // बटन क्लिक इवेंट
+    document.getElementById('fetchListBtn').onclick = async () => {
+        const year = document.getElementById('yearSelect').value;
+        const type = document.getElementById('typeSelect').value;
+        const container = document.getElementById('studentListContainer');
+        
+        // लोडिंग स्टेट
+        container.innerHTML = `<div class="loader">डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...</div>`;
+
+        try {
+            // API कॉल (यहाँ अपनी सही शीट URL का उपयोग करें)
+            const res = await fetch(`${sheetUrls['Database']}?action=filterByCriteria&year=${year}&type=${type}`);
+            const students = await res.json();
+
+            if (!students || students.length === 0) {
+                container.innerHTML = `<div class="empty-state">⚠️ इस श्रेणी में कोई छात्र नहीं मिला।</div>`;
+                return;
+            }
+
+            // टेबल रेंडरिंग
+            let html = `
+            <table class="student-table" id="printableTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>नाम</th>
+                        <th>पिता का नाम</th>
+                        <th>कक्षा</th>
+                        <th>प्रकार</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            students.forEach(s => {
+                html += `
+                    <tr>
+                        <td>${s.studentid || '-'}</td>
+                        <td>${s.name || '-'}</td>
+                        <td>${s.father || '-'}</td>
+                        <td>${s.class || '-'}</td>
+                        <td>${s.type || '-'}</td>
+                    </tr>`;
+            });
+            
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = `<div class="error-state">❌ एरर: डेटा लोड नहीं हो सका। कृपया सर्वर चेक करें।</div>`;
+        }
+    };
 }
