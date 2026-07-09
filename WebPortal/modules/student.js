@@ -1517,6 +1517,13 @@ export function renderNewAdmissionList() {
         .student-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .student-table th { background: #0d3558; color: white; padding: 12px; text-align: left; }
         .student-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+
+        /* Print Style */
+        @media print {
+            .search-card, .btn-search, .portal-title, .btn-print { display: none !important; }
+            .student-table { width: 100%; border: 1px solid #000; }
+            .student-table th, .student-table td { border: 1px solid #000; padding: 8px; }
+        }
     </style>
 
     <div class="portal-wrapper">
@@ -1556,7 +1563,6 @@ export function renderNewAdmissionList() {
         <div id="resultsContainer"></div>
     </div>`;
 
-    // बटन इवेंट
     document.getElementById('searchBtn').onclick = async () => {
         const filters = {
             year: document.getElementById('searchYear').value,
@@ -1574,12 +1580,31 @@ export function renderNewAdmissionList() {
             const students = await res.json();
 
             if (students && students.length > 0) {
-                let tableHtml = `<table class="student-table">
-                    <thead><tr><th>ID</th><th>नाम</th><th>पिता</th><th>कक्षा</th></tr></thead>
+                let tableHtml = `
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn-print" onclick="window.print()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        🖨️ प्रिंट करें
+                    </button>
+                </div>
+                <table class="student-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>नाम</th><th>पिता</th><th>कक्षा</th><th>माध्यम</th><th>सत्र</th>
+                        </tr>
+                    </thead>
                     <tbody>`;
+                
                 students.forEach(s => {
-                    tableHtml += `<tr><td>${s.studentid}</td><td>${s.name}</td><td>${s.father}</td><td>${s.class}</td></tr>`;
+                    tableHtml += `<tr>
+                        <td>${s.studentid}</td>
+                        <td>${s.name}</td>
+                        <td>${s.father}</td>
+                        <td>${s.class}</td>
+                        <td>${s.medium || '-'}</td>
+                        <td>${s.session || '-'}</td>
+                    </tr>`;
                 });
+                
                 tableHtml += `</tbody></table>`;
                 container.innerHTML = tableHtml;
             } else {
