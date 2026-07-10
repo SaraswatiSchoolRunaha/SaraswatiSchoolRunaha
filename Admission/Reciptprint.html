@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>आवेदन फॉर्म प्रिंट - SBVM Runaha</title>
    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <link href="[https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Poppins:wght@400;600&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Poppins:wght@400;600&display=swap)" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -389,7 +389,7 @@ window.onload = function () {
 
     const apiUrl = "https://script.google.com/macros/s/AKfycbxEQpFakRt3gJ5z8i1yQbGTfKTRUpRqc5xhJoviGiWhHFX3N3eIzviFQVEgaRNoxRhh/exec";
     
-    fetch(apiUrl + "?appNo=" + appNo + "&mobile=" + mobile)
+    fetch(apiUrl + "?action=getAdmission&appNo=" + appNo + "&mobile=" + mobile)
         .then(res => res.json())
         .then(data => {
             console.log("Data Received:", data);
