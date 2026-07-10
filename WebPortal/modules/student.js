@@ -401,7 +401,7 @@ function getProfileFormHTML(data) {
             <div class="field">
                 <label>Class</label>
                 <select id="uClass" class="portal-input" onchange="window.toggleSub()">
-                    ${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
+                    ${['Nursary','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
                 </select>
             </div>
             <div class="field">
