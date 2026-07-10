@@ -388,7 +388,7 @@ window.onload = function () {
     if(document.getElementById("slipDate")) document.getElementById("slipDate").innerText = now;
 
     const apiUrl = "https://script.google.com/macros/s/AKfycbxEQpFakRt3gJ5z8i1yQbGTfKTRUpRqc5xhJoviGiWhHFX3N3eIzviFQVEgaRNoxRhh/exec";
-
+    
     fetch(apiUrl + "?appNo=" + appNo + "&mobile=" + mobile)
         .then(res => res.json())
         .then(data => {
