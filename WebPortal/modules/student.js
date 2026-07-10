@@ -1601,7 +1601,7 @@ export function renderNewAdmissionList() {
                         <td>${s.name}</td>
                         <td>${s.father}</td>
                         <td>${s.class}</td>
-                        <td>${s.medium || '-'}</td>
+                        <td>${s.medium || s.Medium || '-'}</td>
                         <td>${s.session || '-'}</td>
                     </tr>`;
                 });
