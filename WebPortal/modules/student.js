@@ -1683,6 +1683,7 @@ function printStudentList() {
     }, 250);
 }
 
+
 export function showClassWiseStudentList() {
     const contentArea = document.getElementById('contentArea');
     
@@ -1745,37 +1746,92 @@ window.fetchClassWiseData = async () => {
         medium: document.getElementById('sMedium').value
     };
 
-    container.innerHTML = "डेटा लोड हो रहा है...";
+    container.innerHTML = "<div style='padding: 15px;'>⏳ डेटा लोड हो रहा है...</div>";
+    
     try {
         const res = await fetch(`${sheetUrls.Database}?action=searchStudents&year=${params.year}&class=${params.class}&medium=${params.medium}`);
         const data = await res.json();
 
         if (data && data.length > 0) {
             let html = `
-            <table class="result-table">
-                <thead>
-                    <tr>
-                        <th>ID</th><th>सत्र</th><th>नाम</th><th>पिता</th><th>माता</th><th>कक्षा</th><th>माध्यम</th>
-                        <th>DOB</th><th>जाति</th><th>लिंग</th><th>समग्र ID</th><th>आधार</th><th>बैंक</th><th>IFSC</th><th>मोबाइल</th><th>पता</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+            <div id="printTableContainer">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>सत्र</th><th>नाम</th><th>पिता</th><th>माता</th><th>कक्षा</th><th>माध्यम</th>
+                            <th>DOB</th><th>जाति</th><th>लिंग</th><th>समग्र ID</th><th>आधार</th><th>बैंक</th><th>IFSC</th><th>मोबाइल</th><th>पता</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
             data.forEach(s => {
+                // 'undefined' से बचने के लिए || '-' का इस्तेमाल किया है
                 html += `<tr>
-                    <td>${s.studentid}</td><td>${s.session}</td><td>${s.name}</td><td>${s.father}</td>
-                    <td>${s.mother}</td><td>${s.class}</td><td>${s.medium}</td><td>${s.dob}</td>
-                    <td>${s.cast}</td><td>${s.gender}</td><td>${s.samagra}</td><td>${s.aadhar}</td>
-                    <td>${s.bank}</td><td>${s.ifsc}</td><td>${s.mobile}</td><td>${s.address}</td>
+                    <td>${s.studentid || '-'}</td><td>${s.session || '-'}</td><td>${s.name || '-'}</td><td>${s.father || '-'}</td>
+                    <td>${s.mother || '-'}</td><td>${s.class || '-'}</td><td>${s.medium || '-'}</td><td>${s.dob || '-'}</td>
+                    <td>${s.cast || '-'}</td><td>${s.gender || '-'}</td><td>${s.samagra || '-'}</td><td>${s.aadhar || '-'}</td>
+                    <td>${s.bank || '-'}</td><td>${s.ifsc || '-'}</td><td>${s.mobile || '-'}</td><td>${s.address || '-'}</td>
                 </tr>`;
             });
-            html += `</tbody></table>
-            <button class="no-print" onclick="window.print()" style="margin-top:20px; padding:10px 20px; background:green; color:white; border:none; cursor:pointer;">🖨️ लिस्ट प्रिंट करें</button>`;
+            
+            html += `</tbody>
+                </table>
+            </div>
+            <button class="no-print" id="printClassBtn" style="margin-top:20px; padding:10px 20px; background:#28a745; color:white; border:none; border-radius: 4px; cursor:pointer;">
+                🖨️ लिस्ट प्रिंट करें
+            </button>`;
+            
             container.innerHTML = html;
+
+            // बटन पर कस्टम प्रिंट फंक्शन लगाना
+            document.getElementById('printClassBtn').onclick = printClassWiseList;
         } else {
-            container.innerHTML = "कोई डेटा नहीं मिला।";
+            container.innerHTML = "<div style='padding: 15px; color: red;'>⚠️ कोई डेटा नहीं मिला।</div>";
         }
     } catch (e) {
-        container.innerHTML = "एरर: सर्वर कनेक्ट नहीं हो पा रहा।";
+        container.innerHTML = "<div style='padding: 15px; color: red;'>❌ एरर: सर्वर कनेक्ट नहीं हो पा रहा।</div>";
     }
 };
 
+// नया कस्टम प्रिंट फंक्शन
+function printClassWiseList() {
+    const printContent = document.getElementById('printTableContainer').innerHTML;
+    
+    // एक नई विंडो खोलें
+    const printWindow = window.open("", "_blank", "width=1100,height=700");
+    
+    // नई विंडो में HTML और CSS डालें
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Class Wise Student List</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                h2 { text-align: center; color: #0d3558; margin-bottom: 20px; }
+                table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+                th { 
+                    background: #0d3558; 
+                    color: #fff; 
+                    -webkit-print-color-adjust: exact; 
+                    print-color-adjust: exact; 
+                }
+            </style>
+        </head>
+        <body>
+            <h2>कक्षावार छात्र सूची</h2>
+            ${printContent}
+        </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // CSS को रेंडर होने का समय देने के लिए setTimeout का इस्तेमाल
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
+}
