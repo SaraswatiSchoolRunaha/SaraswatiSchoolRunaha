@@ -1,7 +1,7 @@
 import { sheetUrls } from './config.js';
 
 // --- API Functions ---
-export async function getStudentsByFilter(className, medium, session, type) {
+export async function getStudentsByFilter(className, medium, session,) {
 
     const url =
         `${sheetUrls['Database']}?action=filter` +
