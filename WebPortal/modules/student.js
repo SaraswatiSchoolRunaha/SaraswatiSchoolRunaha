@@ -44,7 +44,7 @@ export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
     
     // डेटा सूचियाँ
-    const romanClasses = [ "Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const romanClasses = [ "Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const medium = ["Hindi", "English"];
     const sessions = ["2027-28", "2028-29", "2029-30"];
 
@@ -209,7 +209,7 @@ export async function renderStudentList() {
 export async function renderSearchList() {
     const contentArea = document.getElementById('contentArea');
 
-    const classes = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const classes = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const years = ["2026-27", "2027-28", "2028-29", "2029-30"];
 
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
@@ -401,7 +401,7 @@ function getProfileFormHTML(data) {
             <div class="field">
                 <label>Class</label>
                 <select id="uClass" class="portal-input" onchange="window.toggleSub()">
-                    ${['Nursary','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
+                    ${['Nursery','KG1','KG2','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'].map(c => `<option value="${c}" ${data.class == c ? 'selected' : ''}>${c}</option>`).join('')}
                 </select>
             </div>
             <div class="field">
@@ -1495,7 +1495,7 @@ export function renderNewAdmissionList() {
     const contentArea = document.getElementById('contentArea');
 
     // कक्षा की लिस्ट
-    const classOptions = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const classOptions = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
 
     contentArea.innerHTML = `
@@ -1688,7 +1688,7 @@ export function showClassWiseStudentList() {
     const contentArea = document.getElementById('contentArea');
     
     // सभी कक्षाएं और 2030 तक के सत्र
-    const classOptions = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const classOptions = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const sessionOptions = ["2026-27", "2027-28", "2028-29", "2029-30", "2030-31"];
     
     const generateOptions = (list) => list.map(item => `<option value="${item}">${item}</option>`).join('');
