@@ -44,7 +44,7 @@ export async function renderStudentList() {
     const contentArea = document.getElementById('contentArea');
     
     // डेटा सूचियाँ
-    const romanClasses = [ "Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const romanClasses = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const medium = ["Hindi", "English"];
     const sessions = ["2027-28", "2028-29", "2029-30"];
 
