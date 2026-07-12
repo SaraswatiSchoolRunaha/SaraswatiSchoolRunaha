@@ -7,7 +7,7 @@ import { showDashboard } from './dashboard.js';
 export function showAttendanceForm() {
     const today = new Date().toISOString().split('T')[0];
 
-    const allClasses = ["Nursary", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const allClasses = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
     const allMediums = ["Hindi", "English"];
 
     document.getElementById("contentArea").innerHTML = `
@@ -288,7 +288,7 @@ export function showCorrectionPortal() {
                         <label style="display:block; font-size:12px; font-weight:bold; color:#64748b; margin-bottom:5px;">कक्षा</label>
                         <select id="searchClass" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
                             <option value="">चुनें...</option>
-                            <option value="Nursary">Nursary</option><option value="KG1">KG1</option>
+                            <option value="Nursery">Nursery</option><option value="KG1">KG1</option>
                             <option value="KG2">KG2</option><option value="I">I</option>
                             <option value="II">II</option><option value="III">III</option>
                             <option value="IV">IV</option><option value="V">V</option>
@@ -434,7 +434,7 @@ export async function showAbsentReport() {
 
     // ✅ FIXED fallback lists
     const fallbackClasses = [
-        "Nursay","KG1","KG2","I","II","III","IV",
+        "Nursery","KG1","KG2","I","II","III","IV",
         "V","VI","VII","VIII","IX","X","XI","XII"
     ];
 
@@ -635,7 +635,7 @@ function printAbsentListWindow() {
 export async function showPresentReport() {
     const today = new Date().toISOString().split('T')[0];
 
-    const fallbackClasses = ["Nursary","KG1","KG2","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
+    const fallbackClasses = ["Nursery","KG1","KG2","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
     const fallbackMediums = ["Hindi", "English"];
 
     try {
@@ -867,7 +867,7 @@ export async function showDeleteStudentPortal() {
         state.studentDataList = await response.json();
         
         // कक्षा और माध्यम की लिस्ट
-        const allClasses = ["KG1", "KG2", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
+        const allClasses = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
         const allMediums = ["Hindi", "English"];
         
         document.getElementById('contentArea').innerHTML = `
