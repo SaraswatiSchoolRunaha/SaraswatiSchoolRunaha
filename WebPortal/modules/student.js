@@ -1571,7 +1571,7 @@ export function renderNewAdmissionList() {
 
     document.getElementById('searchBtn').onclick = async () => {
         const filters = {
-            year: document.getElementById('searchYear').value,
+            session : document.getElementById('searchYear').value,
             class: document.getElementById('searchClass').value,
             medium: document.getElementById('searchMedium').value,
             type: document.getElementById('searchType').value
