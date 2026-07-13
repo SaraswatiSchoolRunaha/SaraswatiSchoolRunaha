@@ -1754,7 +1754,7 @@ window.fetchClassWiseData = async () => {
     container.innerHTML = "<div style='padding: 15px;'>⏳ डेटा लोड हो रहा है...</div>";
     
     try {
-        const res = await fetch(`${sheetUrls.Database}?action=searchStudents&year=${params.year}&class=${params.class}&medium=${params.medium}`);
+        const res = await fetch(`${sheetUrls.Database}?action=searchStudents&session=${params.session}&class=${params.class}&medium=${params.medium}`);
         const data = await res.json();
 
         if (data && data.length > 0) {
