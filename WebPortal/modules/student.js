@@ -1746,7 +1746,7 @@ export function showClassWiseStudentList() {
 window.fetchClassWiseData = async () => {
     const container = document.getElementById('resultsArea');
     const params = {
-        year: document.getElementById('sYear').value,
+        session: document.getElementById('sYear').value,
         class: document.getElementById('sClass').value,
         medium: document.getElementById('sMedium').value
     };
