@@ -9,6 +9,10 @@ export async function getStudentsByFilter(className, medium, session,type = "") 
         `&medium=${encodeURIComponent(medium)}` +
         `&session=${encodeURIComponent(session)}`;
     
+    if (type) {
+        url += `&type=${encodeURIComponent(type)}`;
+    }
+    
     const response = await fetch(url);
 
     if (!response.ok) {
