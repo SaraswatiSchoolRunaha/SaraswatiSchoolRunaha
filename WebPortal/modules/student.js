@@ -1,14 +1,19 @@
 import { sheetUrls } from './config.js';
 
 // --- API Functions ---
-export async function getStudentsByFilter(className, medium, session,type = "") {
+export async function getStudentsByFilter(className, medium, session, type = "") {
 
-    const url =
-        `${sheetUrls['Database']}?action=filter` +
+    let url =
+        `${sheetUrls['Database']}?action=searchStudents` +
         `&class=${encodeURIComponent(className)}` +
         `&medium=${encodeURIComponent(medium)}` +
         `&session=${encodeURIComponent(session)}`;
-   
+
+    // केवल जब type दिया जाए तभी भेजो
+    if (type && type.trim() !== "") {
+        url += `&type=${encodeURIComponent(type)}`;
+    }
+
     const response = await fetch(url);
 
     if (!response.ok) {
