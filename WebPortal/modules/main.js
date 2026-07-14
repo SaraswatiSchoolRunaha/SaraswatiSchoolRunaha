@@ -10,6 +10,8 @@ import { loadAdminAttendancePanel } from './adminAttendance.js';
 import { loadSalaryDashboard, loadSalaryReport, loadSalaryPayment, loadPayslip } from './salaryManagement.js';
 import { renderStudentList, renderSearchList , renderIdAssignment, renderAadharUpdate,renderSamagraUpdate,renderBankUpdate, renderPhotoUpload, renderNewAdmissionList, showClassWiseStudentList } from './student.js';
 
+import { } from './exam.js';
+
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
     container.innerHTML = "";
