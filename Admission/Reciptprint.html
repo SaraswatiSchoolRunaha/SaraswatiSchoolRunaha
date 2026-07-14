@@ -447,6 +447,20 @@ window.onload = function () {
             alert("Data load नहीं हो रहा है। कृपया इंटरनेट चेक करें।");
         });
 };
+
+    function printAndRedirect() {
+    window.onafterprint = function() {
+        // प्रिंट विंडो बंद होने के बाद ऑपरेटर से पूछें
+        let confirmGoToHome = confirm("क्या रसीद सफलतापूर्वक प्रिंट हो गई है?\n(Home Page पर जाने के लिए OK दबाएं, दोबारा प्रिंट करने के लिए Cancel दबाएं)");
+        
+        if (confirmGoToHome) {
+            window.location.href = "index.html"; // OK दबाने पर होम पेज
+        }
+        // Cancel दबाने पर पेज वहीं रुका रहेगा और ऑपरेटर दोबारा प्रिंट कर सकेगा
+    };
+    
+    window.print();
+}
 </script>
 </body>
 </html>
