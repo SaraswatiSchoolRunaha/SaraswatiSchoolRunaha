@@ -157,8 +157,8 @@ function executeModuleRouting(title) {
         case 'अंक प्रविष्टि': 
            showExamMarksEntry('manual');
             break;
-        case 'अंक प्रविष्टि': 
-           showExamMarksEntry('manual');
+        case 'अंक सुधार': 
+           showExamMarksCorrection('manual');
             break;
         default:
             fetchSheetData(title);
