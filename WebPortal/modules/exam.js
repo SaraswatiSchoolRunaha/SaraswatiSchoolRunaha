@@ -1,9 +1,8 @@
-import { sheetUrls } from './config.js';
 import { sheetUrls, translations, state } from './config.js';
 import { showDashboard } from './dashboard.js';
 
 const EXAM_CLASSES = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-const EXAM_SESSIONS = ["2026-27", "2025-26", "2027-28", "2028-29", "2029-30"];
+const EXAM_SESSIONS = ["2026-27", "2025-26", "2027-28"];
 const EXAM_TYPES = [
     { value: "T", label: "Terminal (T)" },
     { value: "H", label: "Half-Yearly (H)" },
@@ -326,4 +325,53 @@ export function showExamMarksCorrection() {
                     </div>
 
                     <div style="flex:1 1 140px;">
-                        <label style="display:block; font
+                        <label style="display:block; font-size:12px; font-weight:bold; color:#475569; margin-bottom:4px;">परीक्षा</label>
+                        <select id="corrExam" style="width:100%; height:40px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            ${EXAM_TYPES.map(e => `<option value="${e.value}">${e.label}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:1 1 140px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; color:#475569; margin-bottom:4px;">विषय</label>
+                        <select id="corrSubject" style="width:100%; height:40px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            ${EXAM_SUBJECTS.map(sub => `<option value="${sub}">${sub}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:1 1 120px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; color:#475569; margin-bottom:4px;">अंक प्रकार</label>
+                        <select id="corrComponent" style="width:100%; height:40px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            <option value="TOTAL">TOTAL</option>
+                            <option value="TH">TH</option>
+                            <option value="PR">PR</option>
+                        </select>
+                    </div>
+
+                    <button id="btnSearchExamCorrection"
+                        style="height:40px; background:#1e3a8a; color:white; border:none; padding:0 20px; cursor:pointer; border-radius:6px; font-weight:bold;">
+                        🔍 खोजें
+                    </button>
+                </div>
+            </div>
+
+            <div id="examCorrectionTable"></div>
+        </div>
+    `;
+
+    document.getElementById("btnSearchExamCorrection").addEventListener("click", fetchExamMarksForCorrection);
+}
+
+async function fetchExamMarksForCorrection() {
+    const session = document.getElementById("corrSession").value;
+    const cls = document.getElementById("corrClass").value;
+    const exam = document.getElementById("corrExam").value;
+    const subject = document.getElementById("corrSubject").value;
+    const component = document.getElementById("corrComponent").value;
+    const container = document.getElementById("examCorrectionTable");
+
+    if (!cls) {
+        alert("कृपया कक्षा चुनें!");
+        return;
+    }
+
+    container.innerHTML = `<p style="text-align:center; padding:20
