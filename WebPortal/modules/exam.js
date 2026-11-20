@@ -374,4 +374,4 @@ async function fetchExamMarksForCorrection() {
         return;
     }
 
-    container.innerHTML = `<p style="text-align:center; padding:20
+
