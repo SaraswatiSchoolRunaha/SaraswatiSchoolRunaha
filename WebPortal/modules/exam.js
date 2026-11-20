@@ -42,7 +42,18 @@ function getRollNo(student) {
 
 function getSubjectValue(student, exam, component, subject) {
     const keys = [
-        normHeaderKey(`${exam}.${component}.${subject}`), normHeaderKey(`${exam}.${subject}`), normHeaderKey(`${exam}.TOTAL.${subject}`) ]; for (const k of keys) { if (student[k] !== undefined && student[k] !== "") return student[k]; } return ""; }  function getMaxValue(student, subject) { const val = student[normHeaderKey(`MAX.${subject}`)];
+        normHeaderKey(`${exam}.${component}.${subject}`),
+        normHeaderKey(`${exam}.${subject}`),
+        normHeaderKey(`${exam}.TOTAL.${subject}`)
+    ];
+    for (const k of keys) {
+        if (student[k] !== undefined && student[k] !== "") return student[k];
+    }
+    return "";
+}
+
+function getMaxValue(student, subject) {
+    const val = student[normHeaderKey(`MAX.${subject}`)];
     return val !== undefined && val !== "" ? Number(val) : null;
 }
 
@@ -123,7 +134,10 @@ async function loadStudentsForMarksEntry() {
         return;
     }
 
-    container.innerHTML = `<p style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> सत्र ${session} का डेटा लोड हो रहा है...</p>`;  try { const url = `${sheetUrls['Exam']}?action=getExamStudents&session=${encodeURIComponent(session)}&class=${encodeURIComponent(cls)}`;
+    container.innerHTML = `<p style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> सत्र ${session} का डेटा लोड हो रहा है...</p>`;
+
+    try {
+        const url = `${sheetUrls['Exam']}?action=getExamStudents&session=${encodeURIComponent(session)}&class=${encodeURIComponent(cls)}`;
         const res = await fetch(url);
         const data = await res.json();
         const students = Array.isArray(data) ? data : (data.students || []);
@@ -145,7 +159,7 @@ function renderMarksEntryGrid(students, meta) {
 
     let html = `
         <div style="background:#eff6ff; padding:10px 14px; border-radius:6px; margin-bottom:10px; font-size:13px; color:#1e3a8a; font-weight:600;">
-            सत्र: ${meta.session} | कक्षा: ${meta.cls} \vert{} परीक्षा: ${meta.exam} | विषय: ${meta.subject} (${meta.component})
+            सत्र: ${meta.session} | कक्षा: ${meta.cls} | परीक्षा: ${meta.exam} | विषय: ${meta.subject} (${meta.component})
         </div>
 
         <div style="overflow-x:auto; border-radius:8px; box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1);">
@@ -374,4 +388,303 @@ async function fetchExamMarksForCorrection() {
         return;
     }
 
-   }
+    container.innerHTML = `<p style="text-align:center; padding:20px;">रिकॉर्ड लोड हो रहा है...</p>`;
+
+    try {
+        const url = `${sheetUrls['Exam']}?action=getExamStudents&session=${encodeURIComponent(session)}&class=${encodeURIComponent(cls)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const students = Array.isArray(data) ? data : (data.students || []);
+
+        if (!students.length) {
+            container.innerHTML = `<p style="color:red; text-align:center;">कोई रिकॉर्ड नहीं मिला।</p>`;
+            return;
+        }
+
+        let html = `
+            <div style="background:white; border-radius:10px; overflow-x:auto; box-shadow:0 4px 6px rgba(0,0,0,0.08); border:1px solid #e2e8f0;">
+                <div style="padding:12px 15px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;">
+                    <span style="font-weight:bold; color:#1e3a8a;">सत्र: ${session} | कक्षा: ${cls} | ${exam} - ${subject} (${component})</span>
+                    <input type="text" id="corrTeacherName" placeholder="सुधार करने वाले शिक्षक का नाम"
+                        style="padding:7px 10px; border:1px solid #cbd5e1; border-radius:6px; min-width:220px;">
+                </div>
+                <table style="width:100%; border-collapse:collapse; text-align:left;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white;">
+                            <th style="padding:12px;">Scholar No</th>
+                            <th style="padding:12px;">छात्र का नाम</th>
+                            <th style="padding:12px;">पिता का नाम</th>
+                            <th style="padding:12px;">पुराने अंक</th>
+                            <th style="padding:12px;">MAX</th>
+                            <th style="padding:12px;">नया अंक</th>
+                            <th style="padding:12px;">सुधार का कारण (Reason)</th>
+                            <th style="padding:12px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        students.forEach((st, i) => {
+            const scholarNo = getScholarNo(st);
+            const oldMark = getSubjectValue(st, exam, component, subject);
+            const maxMark = getMaxValue(st, subject);
+            const locked = String(st["VERIFIED"] || st["Verified"] || "").trim().toUpperCase() === "YES";
+
+            html += `
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:12px;">${scholarNo}</td>
+                    <td style="padding:12px;"><strong>${getStudentName(st)}</strong></td>
+                    <td style="padding:12px;">${getFatherName(st)}</td>
+                    <td style="padding:12px; font-weight:bold;" id="old_mk_${i}">${oldMark === "" ? "-" : oldMark}</td>
+                    <td style="padding:12px;">${maxMark !== null ? maxMark : "-"}</td>
+                    <td style="padding:12px;">
+                        <input type="number" id="new_mk_${i}" value="${oldMark}" step="any" min="0"
+                            ${maxMark !== null ? `max="${maxMark}"` : ''}
+                            ${locked ? 'disabled' : ''}
+                            style="width:85px; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
+                    </td>
+                    <td style="padding:12px;">
+                        <input type="text" id="rsn_${i}" placeholder="सुधार का कारण लिखें"
+                            ${locked ? 'disabled' : ''}
+                            style="width:180px; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
+                    </td>
+                    <td style="padding:12px;">
+                        ${locked
+                            ? '<span style="color:#b91c1c; font-weight:bold;">Verified Lock</span>'
+                            : `<button class="btn-update-exam-mark" data-scholar="${scholarNo}" data-idx="${i}"
+                                style="background:#059669; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">
+                                Update
+                               </button>`}
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table></div>`;
+        container.innerHTML = html;
+
+        document.querySelectorAll(".btn-update-exam-mark").forEach(btn => {
+            btn.addEventListener("click", function () {
+                updateSingleExamMark(
+                    this.getAttribute("data-scholar"),
+                    this.getAttribute("data-idx"),
+                    { session, exam, subject, component },
+                    this
+                );
+            });
+        });
+    } catch (err) {
+        container.innerHTML = "<p style='color:red; text-align:center;'>त्रुटि: डेटा लोड करने में विफलता।</p>";
+    }
+}
+
+async function updateSingleExamMark(scholarNo, idx, meta, btn) {
+    const newMarksVal = document.getElementById(`new_mk_${idx}`).value.trim();
+    const reasonVal = document.getElementById(`rsn_${idx}`).value.trim();
+    const teacherName = document.getElementById("corrTeacherName").value.trim();
+
+    if (!teacherName) {
+        alert("⚠️ ऊपर शिक्षक का नाम लिखें!");
+        return;
+    }
+    if (newMarksVal === "" || isNaN(Number(newMarksVal)) || Number(newMarksVal) < 0) {
+        alert("⚠️ सही नया अंक दर्ज करें!");
+        return;
+    }
+    if (!reasonVal) {
+        alert("⚠️ अंक सुधार का कारण (Reason) लिखना अनिवार्य है!");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Saving...";
+
+    try {
+        const res = await fetch(sheetUrls['Exam'], {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+                action: "updateSingleMark",
+                session: meta.session,
+                regScholarNo: scholarNo,
+                exam: meta.exam,
+                subject: meta.subject,
+                component: meta.component,
+                newMarks: Number(newMarksVal),
+                reason: reasonVal,
+                changedBy: teacherName
+            })
+        });
+
+        const data = await res.json();
+        if (data.status === "ok" || data.status === "success") {
+            document.getElementById(`old_mk_${idx}`).innerText = data.newMarks;
+            document.getElementById(`rsn_${idx}`).value = "";
+            alert(`✔ अंक सफलतापूर्वक अपडेट हो गए! (Log ID: ${data.logId || 'Saved'})`);
+        } else {
+            alert("❌ अपडेट फेल: " + (data.message || "त्रुटि"));
+        }
+    } catch (err) {
+        alert("नेटवर्क / सर्वर त्रुटि: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Update";
+    }
+}
+
+// ==========================================
+// 3. EXAM RESULT / MARKS REPORT PRINT
+// ==========================================
+export function showExamReport() {
+    document.getElementById("contentArea").innerHTML = `
+        <div>
+            <h3 style="color:#1e3a8a; margin-top:0;">
+                <i class="fa-solid fa-print"></i> परीक्षा अंक तालिका रिपोर्ट (Exam Report)
+            </h3>
+
+            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                <div style="display:flex; flex-direction:column;">
+                    <label style="font-size:12px; font-weight:bold;">शैक्षणिक सत्र</label>
+                    <select id="repSession" style="height:38px; width:140px; border:1px solid #ccc; border-radius:6px;">
+                        ${EXAM_SESSIONS.map(s => `<option value="${s}">${s}</option>`).join('')}
+                    </select>
+                </div>
+
+                <div style="display:flex; flex-direction:column;">
+                    <label style="font-size:12px; font-weight:bold;">कक्षा</label>
+                    <select id="repClass" style="height:38px; width:150px; border:1px solid #ccc; border-radius:6px;">
+                        <option value="">-- कक्षा चुनें --</option>
+                        ${EXAM_CLASSES.map(c => `<option value="${c}">${c}</option>`).join('')}
+                    </select>
+                </div>
+
+                <div style="display:flex; flex-direction:column;">
+                    <label style="font-size:12px; font-weight:bold;">परीक्षा</label>
+                    <select id="repExam" style="height:38px; width:160px; border:1px solid #ccc; border-radius:6px;">
+                        ${EXAM_TYPES.map(e => `<option value="${e.value}">${e.label}</option>`).join('')}
+                    </select>
+                </div>
+
+                <button id="btnSearchExamReport"
+                    style="height:38px; padding:0 18px; background:#1e3a8a; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                    🔍 रिपोर्ट देखें
+                </button>
+
+                <button id="btnPrintExamReport"
+                    style="height:38px; padding:0 18px; background:#16a34a; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                    🖨 प्रिंट
+                </button>
+            </div>
+
+            <div id="examReportContainer" style="margin-top:15px;"></div>
+        </div>
+    `;
+
+    document.getElementById("btnSearchExamReport").addEventListener("click", loadExamReportTable);
+    document.getElementById("btnPrintExamReport").addEventListener("click", printExamReportWindow);
+}
+
+async function loadExamReportTable() {
+    const session = document.getElementById("repSession").value;
+    const cls = document.getElementById("repClass").value;
+    const exam = document.getElementById("repExam").value;
+    const container = document.getElementById("examReportContainer");
+
+    if (!cls) {
+        alert("कृपया कक्षा चुनें!");
+        return;
+    }
+
+    container.innerHTML = "<p style='font-weight:bold; color:#1e3a8a;'>⏳ परीक्षा सूची तैयार हो रही है...</p>";
+
+    try {
+        const url = `${sheetUrls['Exam']}?action=getExamStudents&session=${encodeURIComponent(session)}&class=${encodeURIComponent(cls)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const students = Array.isArray(data) ? data : (data.students || []);
+
+        if (!students.length) {
+            container.innerHTML = "<p style='color:#dc2626; font-weight:bold; background:#fee2e2; padding:15px; border-radius:6px; text-align:center;'>❌ इस कक्षा का कोई रिकॉर्ड नहीं मिला।</p>";
+            return;
+        }
+
+        container.innerHTML = `
+            <div style="width:100%; overflow-x:auto; margin-top:12px;">
+                <table style="width:100%; border-collapse:collapse; background:white; font-size:13px;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white; text-align:left;">
+                            <th style="padding:10px; border:1px solid #cbd5e1;">Scholar No</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">Roll No</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">छात्र का नाम</th>
+                            ${EXAM_SUBJECTS.map(sub => `<th style="padding:10px; border:1px solid #cbd5e1;">${sub}</th>`).join('')}
+                            <th style="padding:10px; border:1px solid #cbd5e1;">GRAND TOTAL</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">%</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">RESULT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${students.map(st => {
+                            const grandTotal = st[normHeaderKey(`${exam}.GRAND.TOTAL`)] || "-";
+                            const pct = st[normHeaderKey(`${exam}.PERCENTAGE`)] || "-";
+                            const resVal = st[normHeaderKey(`${exam}.RESULT`)] || "-";
+                            return `
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${getScholarNo(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${getRollNo(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1; font-weight:600;">${getStudentName(st)}</td>
+                                    ${EXAM_SUBJECTS.map(sub => {
+                                        const m = getSubjectValue(st, exam, "TOTAL", sub);
+                                        return `<td style="padding:8px 10px; border:1px solid #cbd5e1;">${m === "" ? "-" : m}</td>`;
+                                    }).join('')}
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1; font-weight:bold;">${grandTotal}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${pct}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1; font-weight:bold;">${resVal}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } catch (err) {
+        container.innerHTML = "<p style='color:red;'>त्रुटि: " + err.message + "</p>";
+    }
+}
+
+function printExamReportWindow() {
+    const content = document.getElementById("examReportContainer").innerHTML;
+    if (!content || content.includes("तैयार हो रही है") || content.includes("कोई रिकॉर्ड नहीं मिला")) {
+        alert("पहले रिपोर्ट देखें बटन दबाएँ!");
+        return;
+    }
+
+    const sessionVal = document.getElementById("repSession").value;
+    const classVal = document.getElementById("repClass").value;
+    const examVal = document.getElementById("repExam").value;
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Exam Report - ${classVal}</title>
+            <style>
+                @page { size: A4 landscape; margin: 12mm; }
+                body { font-family: sans-serif; padding: 10px; }
+                h2, h4 { margin: 4px 0; text-align: center; }
+                p { text-align: center; font-size: 13px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 12px; }
+                th, td { border: 1px solid #000; padding: 6px 8px; text-align: left; }
+                th { background: #f2f2f2; color: #000; }
+            </style>
+        </head>
+        <body>
+            <h2>सरस्वती बाल विद्या मंदिर हाई स्कूल, रुनाहा</h2>
+            <h4>परीक्षा अंक तालिका सूची (${examVal})</h4>
+            <p><strong>सत्र:</strong> ${sessionVal} | <strong>कक्षा:</strong> ${classVal}</p>
+            ${content}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
