@@ -374,4 +374,4 @@ async function fetchExamMarksForCorrection() {
         return;
     }
 
-
+   }
