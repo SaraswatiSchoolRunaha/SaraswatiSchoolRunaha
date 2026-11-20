@@ -688,3 +688,212 @@ function printExamReportWindow() {
     printWindow.document.close();
     printWindow.print();
 }
+
+export function showAddStudentToExam() {
+    document.getElementById("contentArea").innerHTML = `
+        <div style="max-width:950px; margin:10px auto; font-family:sans-serif;">
+            <div style="background:#ffffff; padding:18px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <h3 style="margin-top:0; color:#1e3a8a;">डेटाबेस से छात्र खोजें और Exam शीट में जोड़ें</h3>
+                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;">
+                    <div style="flex:1; min-width:140px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">सत्र</label>
+                        <select id="dbSearchSession" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            ${EXAM_SESSIONS.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="flex:2; min-width:200px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">Student ID / Scholar No</label>
+                        <input type="text" id="dbStudentId" placeholder="Student ID या Scholar No डालें"
+                            style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 10px; box-sizing:border-box;">
+                    </div>
+                    <button id="btnFindDbStudent"
+                        style="height:38px; padding:0 18px; background:#1e3a8a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                        🔍 खोजें
+                    </button>
+                </div>
+            </div>
+            <div id="dbStudentPreview"></div>
+        </div>
+    `;
+
+    document.getElementById("btnFindDbStudent").addEventListener("click", findStudentInDatabase);
+}
+
+async function findStudentInDatabase() {
+    const idVal = document.getElementById("dbStudentId").value.trim().toLowerCase();
+    const session = document.getElementById("dbSearchSession").value;
+    const box = document.getElementById("dbStudentPreview");
+
+    if (!idVal) {
+        alert("कृपया Student ID / Scholar No डालें!");
+        return;
+    }
+
+    box.innerHTML = `<p style="text-align:center; color:#1e3a8a; font-weight:bold;">⏳ डेटाबेस में खोजा जा रहा है...</p>`;
+
+    const dbUrl = getDbUrl();
+    const urls = [
+        `${dbUrl}?action=getStudentById&studentId=${encodeURIComponent(idVal)}&scholarNo=${encodeURIComponent(idVal)}&session=${encodeURIComponent(session)}`,
+        `${dbUrl}?action=getMasterStudents&session=${encodeURIComponent(session)}`,
+        `${dbUrl}?action=getAllStudents&session=${encodeURIComponent(session)}`
+    ];
+
+    let student = null;
+
+    for (const u of urls) {
+        try {
+            const res = await fetch(u);
+            if (!res.ok) continue;
+            const data = await res.json();
+            const list = Array.isArray(data)
+                ? data
+                : (data.student ? [data.student] : (data.students || data.data || []));
+
+            student = list.find(row => {
+                const map = {};
+                Object.keys(row || {}).forEach(k => { map[normKey(k)] = row[k]; });
+                const ids = [
+                    map["REG.SCHOLOR.NO"],
+                    map["REG.SCHOLOR.NO."],
+                    map["SCHOLAR.NO"],
+                    map["SCHOLAR.NO."],
+                    map["STUDENT.ID"],
+                    map["ID"],
+                    map["ADMISSION.NO"]
+                ].filter(Boolean).map(x => String(x).trim().toLowerCase());
+                return ids.includes(idVal);
+            });
+
+            if (student) break;
+        } catch (_) {}
+    }
+
+    if (!student) {
+        box.innerHTML = `<p style="color:#dc2626; font-weight:bold; text-align:center;">❌ डेटाबेस में यह Student ID नहीं मिला।</p>`;
+        return;
+    }
+
+    const map = {};
+    Object.keys(student).forEach(k => { map[normKey(k)] = student[k]; });
+
+    const scholarNo = map["REG.SCHOLOR.NO"] || map["REG.SCHOLOR.NO."] || map["SCHOLAR.NO"] || map["STUDENT.ID"] || idVal;
+    const rollNo = map["ROLL.NO."] || map["ROLL.NO"] || "";
+    const name = map["STUDENT.NAME"] || map["NAME"] || "";
+    const father = map["FATHER.NAME"] || "";
+    const cls = map["CLASS"] || "I";
+    const entries = Object.entries(student).filter(([k, v]) => k && v !== "");
+
+    box.innerHTML = `
+        <div style="background:#ffffff; padding:18px; border-radius:10px; border:1px solid #cbd5e1;">
+            <h4 style="margin-top:0; color:#1e3a8a;">डेटाबेस से मिला रिकॉर्ड (${entries.length} फ़ील्ड)</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:14px;">
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:bold;">Scholar / Student ID</label>
+                    <input id="addScholar" value="${scholarNo}" style="width:100%; height:36px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:bold;">Roll No</label>
+                    <input id="addRoll" value="${rollNo}" style="width:100%; height:36px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:bold;">छात्र का नाम</label>
+                    <input id="addName" value="${name}" style="width:100%; height:36px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:bold;">पिता का नाम</label>
+                    <input id="addFather" value="${father}" style="width:100%; height:36px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:bold;">कक्षा</label>
+                    <select id="addClass" style="width:100%; height:36px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                        ${EXAM_CLASSES.map(c => `<option value="${c}" ${c.toUpperCase() === String(cls).toUpperCase() ? 'selected' : ''}>${c}</option>`).join('')}
+                    </select>
+                </div>
+            </div>
+
+            <div style="max-height:220px; overflow:auto; border:1px solid #e2e8f0; border-radius:6px; margin-bottom:14px;">
+                <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                    <thead>
+                        <tr style="background:#f1f5f9; text-align:left;">
+                            <th style="padding:6px 10px; border-bottom:1px solid #cbd5e1;">कॉलम</th>
+                            <th style="padding:6px 10px; border-bottom:1px solid #cbd5e1;">मान</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${entries.map(([k, v]) => `
+                            <tr>
+                                <td style="padding:5px 10px; border-bottom:1px solid #f1f5f9; font-weight:600;">${k}</td>
+                                <td style="padding:5px 10px; border-bottom:1px solid #f1f5f9;">${v}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="btnConfirmAddExam"
+                style="height:40px; padding:0 22px; background:#059669; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                ➕ Exam शीट में जोड़ें
+            </button>
+        </div>
+    `;
+
+    document.getElementById("btnConfirmAddExam").addEventListener("click", () => addStudentToExamSheet(student, session));
+}
+
+async function addStudentToExamSheet(rawStudent, session) {
+    const scholarNo = document.getElementById("addScholar").value.trim();
+    const rollNo = document.getElementById("addRoll").value.trim();
+    const name = document.getElementById("addName").value.trim();
+    const father = document.getElementById("addFather").value.trim();
+    const cls = document.getElementById("addClass").value;
+
+    if (!scholarNo || !name || !cls) {
+        alert("Scholar / Student ID, छात्र का नाम और कक्षा भरें!");
+        return;
+    }
+
+    const btn = document.getElementById("btnConfirmAddExam");
+    btn.disabled = true;
+    btn.innerText = "⏳ जोड़ा जा रहा है...";
+
+    const fullRecord = {
+        ...rawStudent,
+        "REG.SCHOLOR.NO": scholarNo,
+        "STUDENT.ID": scholarNo,
+        "ROLL.NO.": rollNo,
+        "STUDENT.NAME": name,
+        "FATHER.NAME": father,
+        "CLASS": cls,
+        "SESSION": session
+    };
+
+    try {
+        const res = await fetch(sheetUrls["Exam"], {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+                action: "addStudentToExam",
+                session,
+                class: cls,
+                regScholarNo: scholarNo,
+                studentId: scholarNo,
+                rollNo,
+                studentName: name,
+                fatherName: father,
+                studentData: fullRecord
+            })
+        });
+
+        const result = await res.json();
+        if (result.status === "ok" || result.status === "success") {
+            alert(`✔ ${name} (${scholarNo}) Exam शीट में जुड़ गया!`);
+        } else {
+            alert("❌ नहीं जुड़ सका: " + (result.message || "त्रुटि"));
+        }
+    } catch (err) {
+        alert("त्रुटि: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "➕ Exam शीट में जोड़ें";
+    }
+}
