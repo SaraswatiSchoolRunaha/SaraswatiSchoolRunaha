@@ -897,3 +897,218 @@ async function addStudentToExamSheet(rawStudent, session) {
         btn.innerText = "➕ Exam शीट में जोड़ें";
     }
 }
+
+// ==========================================
+// 5. DELETE STUDENT FROM EXAM SHEET
+// ==========================================
+export function showDeleteExamStudent() {
+    document.getElementById("contentArea").innerHTML = `
+        <div style="max-width:950px; margin:10px auto; font-family:sans-serif;">
+            <div style="background:#ffffff; padding:18px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <h3 style="margin-top:0; color:#b91c1c;">
+                    <i class="fa-solid fa-user-minus"></i> Exam शीट से छात्र खोजें और Delete करें
+                </h3>
+
+                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;">
+                    <div style="flex:1; min-width:130px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">शैक्षणिक सत्र (Session)</label>
+                        <select id="delExamSession" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            ${EXAM_SESSIONS.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:1; min-width:120px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">वर्ष (Year)</label>
+                        <input type="text" id="delExamYear" value="2026" placeholder="जैसे: 2026"
+                            style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 10px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="flex:1; min-width:130px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">कक्षा (Class)</label>
+                        <select id="delExamClass" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            <option value="">-- सभी / कक्षा चुनें --</option>
+                            ${EXAM_CLASSES.map(c => `<option value="${c}">${c}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:2; min-width:190px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">Student ID / Scholar No</label>
+                        <input type="text" id="delExamStudentId" placeholder="Student ID या Scholar No डालें"
+                            style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 10px; box-sizing:border-box;">
+                    </div>
+
+                    <button id="btnSearchDeleteStudent"
+                        style="height:38px; padding:0 18px; background:#1e3a8a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                        🔍 छात्र खोजें
+                    </button>
+                </div>
+            </div>
+
+            <div id="deleteStudentResultBox"></div>
+        </div>
+    `;
+
+    document.getElementById("delExamSession").addEventListener("change", (e) => {
+        const firstYear = String(e.target.value || "").split("-")[0];
+        if (firstYear) document.getElementById("delExamYear").value = firstYear;
+    });
+
+    document.getElementById("btnSearchDeleteStudent").addEventListener("click", searchStudentToDeleteFromExam);
+}
+
+async function searchStudentToDeleteFromExam() {
+    const session = document.getElementById("delExamSession").value;
+    const year = document.getElementById("delExamYear").value.trim();
+    const cls = document.getElementById("delExamClass").value;
+    const studentId = document.getElementById("delExamStudentId").value.trim().toLowerCase();
+    const box = document.getElementById("deleteStudentResultBox");
+
+    if (!studentId) {
+        alert("⚠️ कृपया Student ID या Scholar No दर्ज करें!");
+        return;
+    }
+
+    box.innerHTML = `<p style="text-align:center; color:#1e3a8a; font-weight:bold;">⏳ Exam शीट में छात्र खोजा जा रहा है...</p>`;
+
+    try {
+        const url = `${sheetUrls['Exam']}?action=getExamStudents&session=${encodeURIComponent(session)}&year=${encodeURIComponent(year)}&class=${encodeURIComponent(cls)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const students = Array.isArray(data) ? data : (data.students || []);
+
+        const matched = students.filter(st => {
+            const map = {};
+            Object.keys(st || {}).forEach(k => { map[normHeaderKey(k)] = st[k]; });
+
+            const ids = [
+                getScholarNo(st),
+                map["REG.SCHOLOR.NO"],
+                map["REG.SCHOLOR.NO."],
+                map["SCHOLAR.NO"],
+                map["SCHOLAR.NO."],
+                map["STUDENT.ID"],
+                map["ID"]
+            ].filter(Boolean).map(v => String(v).trim().toLowerCase());
+
+            const stClass = String(map["CLASS"] || "").trim().toUpperCase();
+            const stYear = String(map["YEAR"] || map["EXAM.YEAR"] || "").trim();
+
+            const idMatch = ids.includes(studentId);
+            const classMatch = !cls || !stClass || stClass === cls.toUpperCase();
+            const yearMatch = !year || !stYear || stYear === year || session.startsWith(year);
+
+            return idMatch && classMatch && yearMatch;
+        });
+
+        if (!matched.length) {
+            box.innerHTML = `
+                <div style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:15px; border-radius:8px; text-align:center; font-weight:bold;">
+                    ❌ Session ${session}${year ? ` (${year})` : ''}${cls ? `, Class ${cls}` : ''} में Student ID "${studentId}" नहीं मिला।
+                </div>
+            `;
+            return;
+        }
+
+        box.innerHTML = matched.map((st, idx) => {
+            const scholarNo = getScholarNo(st) || studentId;
+            const rollNo = getRollNo(st);
+            const name = getStudentName(st);
+            const father = getFatherName(st);
+            const stClass = st["CLASS"] || st["Class"] || cls || "-";
+            const stSession = st["SESSION"] || st["Session"] || session;
+            const stYear = st["YEAR"] || st["Year"] || year || "-";
+            const isLocked = String(st["VERIFIED"] || st["Verified"] || "").trim().toUpperCase() === "YES";
+
+            return `
+                <div id="delCard_${idx}" style="background:#ffffff; padding:18px; border-radius:10px; border:1px solid #fca5a5; margin-bottom:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid #fee2e2; padding-bottom:10px; margin-bottom:12px;">
+                        <div>
+                            <h4 style="margin:0; color:#991b1b;">${name} (Scholar / ID: ${scholarNo})</h4>
+                            <small style="color:#475569;">Session: ${stSession} | Year: ${stYear} | Class: ${stClass} | Roll No: ${rollNo}</small>
+                        </div>
+                        ${isLocked
+                            ? `<span style="background:#fee2e2; color:#991b1b; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:bold;">Verified Locked</span>`
+                            : `<span style="background:#fef3c7; color:#92400e; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:bold;">Ready to Delete</span>`}
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px; font-size:13px; margin-bottom:14px;">
+                        <div><strong>Student ID / Scholar:</strong> ${scholarNo}</div>
+                        <div><strong>छात्र का नाम:</strong> ${name}</div>
+                        <div><strong>पिता का नाम:</strong> ${father}</div>
+                        <div><strong>कक्षा:</strong> ${stClass}</div>
+                        <div><strong>सत्र / वर्ष:</strong> ${stSession} / ${stYear}</div>
+                        <div><strong>Roll No:</strong> ${rollNo}</div>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end;">
+                        <button class="btn-confirm-delete-exam-student"
+                            data-card="delCard_${idx}"
+                            data-scholar="${scholarNo}"
+                            data-name="${name}"
+                            data-session="${stSession}"
+                            data-year="${stYear === '-' ? year : stYear}"
+                            data-class="${stClass === '-' ? cls : stClass}"
+                            ${isLocked ? 'disabled' : ''}
+                            style="height:40px; padding:0 22px; background:${isLocked ? '#94a3b8' : '#dc2626'}; color:#fff; border:none; border-radius:6px; cursor:${isLocked ? 'not-allowed' : 'pointer'}; font-weight:bold;">
+                            🗑️ Exam शीट से Delete करें
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        document.querySelectorAll(".btn-confirm-delete-exam-student").forEach(btn => {
+            btn.addEventListener("click", function () {
+                deleteStudentFromExamSheet(this);
+            });
+        });
+    } catch (err) {
+        console.error(err);
+        box.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">खोजने में त्रुटि: ${err.message}</p>`;
+    }
+}
+
+async function deleteStudentFromExamSheet(btn) {
+    const scholarNo = btn.getAttribute("data-scholar");
+    const name = btn.getAttribute("data-name");
+    const session = btn.getAttribute("data-session");
+    const year = btn.getAttribute("data-year");
+    const cls = btn.getAttribute("data-class");
+    const cardId = btn.getAttribute("data-card");
+
+    const ok = confirm(`क्या आप वाकई छात्र "${name}" (ID: ${scholarNo}, Session: ${session}, Class: ${cls}) को Exam शीट से हमेशा के लिए Delete करना चाहते हैं?`);
+    if (!ok) return;
+
+    btn.disabled = true;
+    btn.innerText = "⏳ Delete हो रहा है...";
+
+    try {
+        const res = await fetch(sheetUrls["Exam"], {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+                action: "deleteStudentFromExam",
+                session: session,
+                year: year,
+                class: cls,
+                regScholarNo: scholarNo,
+                studentId: scholarNo
+            })
+        });
+
+        const result = await res.json();
+        if (result.status === "ok" || result.status === "success") {
+            alert(`✔ छात्र "${name}" (${scholarNo}) Exam शीट से सफलतापूर्वक Delete हो गया!`);
+            const card = document.getElementById(cardId);
+            if (card) card.remove();
+        } else {
+            alert("❌ Delete विफल: " + (result.message || "रिकॉर्ड नहीं मिला"));
+            btn.disabled = false;
+            btn.innerText = "🗑️ Exam शीट से Delete करें";
+        }
+    } catch (err) {
+        alert("नेटवर्क त्रुटि: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "🗑️ Exam शीट से Delete करें";
+    }
+}
