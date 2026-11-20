@@ -160,7 +160,7 @@ function executeModuleRouting(title) {
         case 'अंक सुधार': 
            showExamMarksCorrection('manual');
             break;
-        case 'अंक सुधार': 
+        case 'परीक्षा रिपोर्ट': 
            showExamReport('manual');
             break;
         default:
