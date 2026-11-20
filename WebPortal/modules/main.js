@@ -163,7 +163,7 @@ function executeModuleRouting(title) {
         case 'परीक्षा रिपोर्ट': 
            showExamReport('manual'); 
             break;
-        case 'परीक्षा रिपोर्ट': 
+        case 'छात्र जोड़ें': 
            showAddStudentToExam('manual'); 
             break;
         default:
