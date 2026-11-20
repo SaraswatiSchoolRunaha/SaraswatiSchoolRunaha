@@ -3,7 +3,7 @@ import { sheetUrls, translations, state } from './config.js';
 import { showDashboard } from './dashboard.js';
 
 const EXAM_CLASSES = ["Nursery", "KG1", "KG2", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-const EXAM_SESSIONS = ["2026-27", "2025-26", "2027-28"];
+const EXAM_SESSIONS = ["2026-27", "2025-26", "2027-28", "2028-29", "2029-30"];
 const EXAM_TYPES = [
     { value: "T", label: "Terminal (T)" },
     { value: "H", label: "Half-Yearly (H)" },
