@@ -10,7 +10,7 @@ import { loadAdminAttendancePanel } from './adminAttendance.js';
 import { loadSalaryDashboard, loadSalaryReport, loadSalaryPayment, loadPayslip } from './salaryManagement.js';
 import { renderStudentList, renderSearchList , renderIdAssignment, renderAadharUpdate,renderSamagraUpdate,renderBankUpdate, renderPhotoUpload, renderNewAdmissionList, showClassWiseStudentList } from './student.js';
 
-import {showExamMarksEntry, showExamMarksCorrection, showExamReport } from './exam.js';
+import {showExamMarksEntry, showExamMarksCorrection, showExamReport, showAddStudentToExam } from './exam.js';
 
 function buildPortalMenu() {
     const container = document.getElementById('sideMenuContainer');
@@ -161,7 +161,10 @@ function executeModuleRouting(title) {
            showExamMarksCorrection('manual');
             break;
         case 'परीक्षा रिपोर्ट': 
-           showExamReport('manual');
+           showExamReport('manual'); 
+            break;
+        case 'परीक्षा रिपोर्ट': 
+           showAddStudentToExam('manual'); 
             break;
         default:
             fetchSheetData(title);
