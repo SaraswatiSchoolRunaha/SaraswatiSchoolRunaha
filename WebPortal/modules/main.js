@@ -100,7 +100,7 @@ function executeModuleRouting(title) {
        case 'नवीन छात्र सूची':
          renderNewAdmissionList();
              break;
-    case 'कक्षावार छात्र सूची':
+     case 'कक्षावार छात्र सूची':
         showClassWiseStudentList();
              break;
         case 'उपस्थिति डैशबोर्ड':
