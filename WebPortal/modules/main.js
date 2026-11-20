@@ -154,6 +154,9 @@ function executeModuleRouting(title) {
         case 'मैन्युअल उपस्थिति': 
             loadAdminAttendancePanel('manual');
             break;
+        case 'मैन्युअल उपस्थिति': 
+           showExamMarksEntry('manual');
+            break;
         default:
             fetchSheetData(title);
             break;
