@@ -1112,3 +1112,130 @@ async function deleteStudentFromExamSheet(btn) {
         btn.innerText = "🗑️ Exam शीट से Delete करें";
     }
 }
+
+// ==========================================
+// 6. SHOW STUDENT LIST (SESSION, CLASS, MEDIUM)
+// ==========================================
+const EXAM_MEDIUMS = ["Hindi", "English"];
+
+export function showExamStudentList() {
+    document.getElementById("contentArea").innerHTML = `
+        <div style="max-width:1050px; margin:10px auto; font-family:sans-serif;">
+            <div style="background:#ffffff; padding:18px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <h3 style="margin-top:0; color:#1e3a8a;">
+                    <i class="fa-solid fa-users"></i> छात्रों की सूची (Session, Class, Medium)
+                </h3>
+
+                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;">
+                    <div style="flex:1; min-width:140px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">शैक्षणिक सत्र (Session)</label>
+                        <select id="listExamSession" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            ${EXAM_SESSIONS.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:1; min-width:140px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">कक्षा (Class)</label>
+                        <select id="listExamClass" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            <option value="">-- सभी कक्षा --</option>
+                            ${EXAM_CLASSES.map(c => `<option value="${c}">${c}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:1; min-width:140px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">माध्यम (Medium)</label>
+                        <select id="listExamMedium" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            <option value="">-- सभी माध्यम --</option>
+                            ${EXAM_MEDIUMS.map(m => `<option value="${m}">${m}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <button id="btnSearchStudentList"
+                        style="height:38px; padding:0 20px; background:#1e3a8a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                        🔍 Search
+                    </button>
+
+                    <button id="btnPrintStudentList"
+                        style="height:38px; padding:0 18px; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                        🖨 प्रिंट
+                    </button>
+                </div>
+            </div>
+
+            <div id="examStudentListContainer">
+                <p style="text-align:center; color:#64748b;">कृपया Session, Class और Medium चुनकर Search दबाएँ।</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("btnSearchStudentList").addEventListener("click", loadExamStudentList);
+    document.getElementById("btnPrintStudentList").addEventListener("click", printExamStudentListWindow);
+}
+
+async function loadExamStudentList() {
+    const session = document.getElementById("listExamSession").value;
+    const cls = document.getElementById("listExamClass").value;
+    const medium = document.getElementById("listExamMedium").value;
+    const container = document.getElementById("examStudentListContainer");
+
+    container.innerHTML = `<p style="text-align:center; color:#1e3a8a; font-weight:bold;">⏳ छात्रों की सूची लोड हो रही है...</p>`;
+
+    try {
+        const url = `${sheetUrls['Exam']}?action=getExamStudents&session=${encodeURIComponent(session)}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const students = Array.isArray(data) ? data : (data.students || []);
+
+        const filtered = students.filter(st => {
+            const map = {};
+            Object.keys(st || {}).forEach(k => { map[normHeaderKey(k)] = st[k]; });
+
+            const stClass = String(map["CLASS"] || "").trim().toUpperCase();
+            const stMedium = String(map["MEDIUM"] || map["STUDY.MEDIUM"] || "").trim().toUpperCase();
+
+            const classOk = !cls || !stClass || stClass === cls.toUpperCase();
+            const mediumOk = !medium || !stMedium || stMedium.includes(medium.toUpperCase());
+            return classOk && mediumOk;
+        });
+
+        if (!filtered.length) {
+            container.innerHTML = `
+                <div style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:15px; border-radius:8px; text-align:center; font-weight:bold;">
+                    ❌ Session ${session}${cls ? `, Class ${cls}` : ''}${medium ? `, Medium ${medium}` : ''} में कोई छात्र नहीं मिला।
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div style="background:#eff6ff; padding:10px 14px; border-radius:6px; margin-bottom:10px; font-size:13px; color:#1e3a8a; font-weight:bold; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <span>सत्र: ${session} | कक्षा: ${cls || 'सभी'} | माध्यम: ${medium || 'सभी'}</span>
+                <span>कुल छात्र: ${filtered.length}</span>
+            </div>
+
+            <div style="overflow-x:auto; border-radius:8px; box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1);">
+                <table style="width:100%; border-collapse:collapse; background:white; font-size:13px;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white; text-align:left;">
+                            <th style="padding:10px; border:1px solid #cbd5e1;">क्र.</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">Scholar / Student ID</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">Roll No</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">छात्र का नाम</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">पिता का नाम</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">माता का नाम</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">कक्षा</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">माध्यम</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filtered.map((st, idx) => {
+                            const map = {};
+                            Object.keys(st || {}).forEach(k => { map[normHeaderKey(k)] = st[k]; });
+                            const mother = map["MOTHER.NAME"] || "-";
+                            const stCls = map["CLASS"] || cls || "-";
+                            const stMed = map["MEDIUM"] || map["STUDY.MEDIUM"] || medium || "-";
+
+                            return `
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${idx + 1}</td>
+                                    <td style="padding:8px 10px; border:1px solid #
