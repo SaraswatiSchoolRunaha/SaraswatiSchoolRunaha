@@ -1238,4 +1238,60 @@ async function loadExamStudentList() {
                             return `
                                 <tr style="border-bottom:1px solid #e2e8f0;">
                                     <td style="padding:8px 10px; border:1px solid #cbd5e1;">${idx + 1}</td>
-                                    <td style="padding:8px 10px; border:1px solid #
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${getScholarNo(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${getRollNo(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1; font-weight:600;">${getStudentName(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${getFatherName(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${mother}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${stCls}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${stMed}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">सूची लोड करने में त्रुटि: ${err.message}</p>`;
+    }
+}
+
+function printExamStudentListWindow() {
+    const content = document.getElementById("examStudentListContainer").innerHTML;
+    if (!content || content.includes("कृपया Session") || content.includes("लोड हो रही है") || content.includes("कोई छात्र नहीं मिला")) {
+        alert("पहले Search दबाकर सूची लोड करें!");
+        return;
+    }
+
+    const sessionVal = document.getElementById("listExamSession").value;
+    const classVal = document.getElementById("listExamClass").value || "सभी कक्षा";
+    const mediumVal = document.getElementById("listExamMedium").value || "सभी माध्यम";
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>छात्र सूची - ${classVal}</title>
+            <style>
+                @page { size: A4 landscape; margin: 12mm; }
+                body { font-family: sans-serif; padding: 10px; }
+                h2, h4 { margin: 4px 0; text-align: center; }
+                p { text-align: center; font-size: 13px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 12px; }
+                th, td { border: 1px solid #000; padding: 6px 8px; text-align: left; }
+                th { background: #f2f2f2; color: #000; }
+            </style>
+        </head>
+        <body>
+            <h2>सरस्वती बाल विद्या मंदिर हाई स्कूल, रुनाहा</h2>
+            <h4>परीक्षा छात्र सूची</h4>
+            <p><strong>सत्र:</strong> ${sessionVal} | <strong>कक्षा:</strong> ${classVal} | <strong>माध्यम:</strong> ${mediumVal}</p>
+            ${content}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
