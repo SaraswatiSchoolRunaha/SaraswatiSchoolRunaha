@@ -172,7 +172,7 @@ function executeModuleRouting(title) {
         case 'छात्रों की सूची': 
            showExamStudentList('manual'); 
             break;  
-        case 'परीक्षा रिपोर्ट': 
+        case 'परीक्षा सूची': 
            showParikshaSuchi('manual'); 
             break;  
         default:
