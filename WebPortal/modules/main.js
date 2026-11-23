@@ -166,7 +166,7 @@ function executeModuleRouting(title) {
         case 'छात्र जोड़ें': 
            showAddStudentToExam('manual'); 
             break;
-        case 'छात्र जोड़ें': 
+        case 'छात्र हटाएँ': 
            showDeleteExamStudent('manual'); 
             break;  
         default:
