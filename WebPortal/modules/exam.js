@@ -1113,6 +1113,7 @@ async function deleteStudentFromExamSheet(btn) {
     }
 }
 
+
 // ==========================================
 // 6. SHOW STUDENT LIST (SESSION, CLASS, MEDIUM)
 // ==========================================
@@ -1295,4 +1296,4 @@ function printExamStudentListWindow() {
     printWindow.document.close();
     printWindow.print();
 }
-}
+
