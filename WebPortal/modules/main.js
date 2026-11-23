@@ -169,7 +169,7 @@ function executeModuleRouting(title) {
         case 'छात्र हटाएँ': 
            showDeleteExamStudent('manual'); 
             break;  
-        case 'छात्र हटाएँ': 
+        case 'छात्रों की सूची': 
            showExamStudentList('manual'); 
             break;  
         default:
