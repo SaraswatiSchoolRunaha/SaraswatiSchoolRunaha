@@ -1296,4 +1296,217 @@ function printExamStudentListWindow() {
     printWindow.document.close();
     printWindow.print();
 }
+// ==========================================
+// 7. PARIKSHA SUCHI (ROOM NO & ROLL NO LIST)
+// ==========================================
+export function showParikshaSuchi() {
+    document.getElementById("contentArea").innerHTML = `
+        <div style="max-width:1050px; margin:10px auto; font-family:sans-serif;">
+            <div style="background:#ffffff; padding:18px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <h3 style="margin-top:0; color:#1e3a8a;">
+                    <i class="fa-solid fa-clipboard-list"></i> परीक्षा सूची (Room No व Roll No सहित)
+                </h3>
 
+                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;">
+                    <div style="flex:1; min-width:130px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">शैक्षणिक सत्र (Session)</label>
+                        <select id="psSession" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            ${EXAM_SESSIONS.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:1; min-width:130px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">कक्षा (Class)</label>
+                        <select id="psClass" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            <option value="">-- सभी कक्षा --</option>
+                            ${EXAM_CLASSES.map(c => `<option value="${c}">${c}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div style="flex:1; min-width:130px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">माध्यम (Medium)</label>
+                        <select id="psMedium" style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px;">
+                            <option value="">-- सभी माध्यम --</option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="English">English</option>
+                        </select>
+                    </div>
+
+                    <div style="flex:1; min-width:120px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">कक्ष क्र. (Room No)</label>
+                        <input type="text" id="psRoomNo" placeholder="जैसे: 1 या सभी"
+                            style="width:100%; height:38px; border:1px solid #cbd5e1; border-radius:6px; padding:0 10px; box-sizing:border-box;">
+                    </div>
+
+                    <button id="btnSearchParikshaSuchi"
+                        style="height:38px; padding:0 20px; background:#1e3a8a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                        🔍 Search
+                    </button>
+
+                    <button id="btnPrintParikshaSuchi"
+                        style="height:38px; padding:0 18px; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                        🖨 प्रिंट
+                    </button>
+                </div>
+            </div>
+
+            <div id="parikshaSuchiContainer">
+                <p style="text-align:center; color:#64748b;">कृपया Session, Class, Medium या Room No चुनकर Search दबाएँ।</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("btnSearchParikshaSuchi").addEventListener("click", loadParikshaSuchi);
+    document.getElementById("btnPrintParikshaSuchi").addEventListener("click", printParikshaSuchiWindow);
+}
+
+function getRoomNo(student) {
+    const map = {};
+    Object.keys(student || {}).forEach(k => { map[normHeaderKey(k)] = student[k]; });
+    return String(
+        map["ROOM.NO."] ||
+        map["ROOM.NO"] ||
+        map["ROOM"] ||
+        map["EXAM.ROOM"] ||
+        map["HALL.NO"] ||
+        map["HALL.NO."] ||
+        "-"
+    ).trim();
+}
+
+async function loadParikshaSuchi() {
+    const session = document.getElementById("psSession").value;
+    const cls = document.getElementById("psClass").value;
+    const medium = document.getElementById("psMedium").value;
+    const roomFilter = document.getElementById("psRoomNo").value.trim().toLowerCase();
+    const container = document.getElementById("parikshaSuchiContainer");
+
+    container.innerHTML = `<p style="text-align:center; color:#1e3a8a; font-weight:bold;">⏳ परीक्षा सूची लोड हो रही है...</p>`;
+
+    try {
+        const url = `${sheetUrls['Exam']}?action=getExamStudents&session=${encodeURIComponent(session)}&class=${encodeURIComponent(cls)}&medium=${encodeURIComponent(medium)}&roomNo=${encodeURIComponent(roomFilter)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const students = Array.isArray(data) ? data : (data.students || []);
+
+        const filtered = students.filter(st => {
+            const map = {};
+            Object.keys(st || {}).forEach(k => { map[normHeaderKey(k)] = st[k]; });
+
+            const stClass = String(map["CLASS"] || "").trim().toUpperCase();
+            const stMedium = String(map["MEDIUM"] || map["STUDY.MEDIUM"] || "").trim().toUpperCase();
+            const stRoom = getRoomNo(st).toLowerCase();
+
+            const classOk = !cls || !stClass || stClass === cls.toUpperCase();
+            const mediumOk = !medium || !stMedium || stMedium.includes(medium.toUpperCase());
+            const roomOk = !roomFilter || (stRoom !== "-" && stRoom === roomFilter);
+            return classOk && mediumOk && roomOk;
+        });
+
+        // Room No और Roll No के क्रम में व्यवस्थित करें
+        filtered.sort((a, b) => {
+            const rA = getRoomNo(a);
+            const rB = getRoomNo(b);
+            if (rA !== rB) return rA.localeCompare(rB, undefined, { numeric: true });
+            return String(getRollNo(a)).localeCompare(String(getRollNo(b)), undefined, { numeric: true });
+        });
+
+        if (!filtered.length) {
+            container.innerHTML = `
+                <div style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:15px; border-radius:8px; text-align:center; font-weight:bold;">
+                    ❌ दिए गए फ़िल्टर में कोई परीक्षार्थी नहीं मिला।
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div style="background:#eff6ff; padding:10px 14px; border-radius:6px; margin-bottom:10px; font-size:13px; color:#1e3a8a; font-weight:bold; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <span>सत्र: ${session} | कक्षा: ${cls || 'सभी'} | माध्यम: ${medium || 'सभी'} | कक्ष क्र.: ${roomFilter || 'सभी'}</span>
+                <span>कुल परीक्षार्थी: ${filtered.length}</span>
+            </div>
+
+            <div style="overflow-x:auto; border-radius:8px; box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1);">
+                <table style="width:100%; border-collapse:collapse; background:white; font-size:13px;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white; text-align:left;">
+                            <th style="padding:10px; border:1px solid #cbd5e1;">क्र.</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">Room No</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">Roll No</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">Scholar / Student ID</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">छात्र का नाम</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">पिता का नाम</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">कक्षा</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">माध्यम</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1; width:110px;">हस्ताक्षर</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filtered.map((st, idx) => {
+                            const map = {};
+                            Object.keys(st || {}).forEach(k => { map[normHeaderKey(k)] = st[k]; });
+                            const stCls = map["CLASS"] || cls || "-";
+                            const stMed = map["MEDIUM"] || map["STUDY.MEDIUM"] || medium || "-";
+
+                            return `
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${idx + 1}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1; font-weight:bold; color:#1e3a8a;">${getRoomNo(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1; font-weight:bold;">${getRollNo(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${getScholarNo(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1; font-weight:600;">${getStudentName(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${getFatherName(st)}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${stCls}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;">${stMed}</td>
+                                    <td style="padding:8px 10px; border:1px solid #cbd5e1;"></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">परीक्षा सूची लोड करने में त्रुटि: ${err.message}</p>`;
+    }
+}
+
+function printParikshaSuchiWindow() {
+    const content = document.getElementById("parikshaSuchiContainer").innerHTML;
+    if (!content || content.includes("कृपया Session") || content.includes("लोड हो रही है") || content.includes("कोई परीक्षार्थी नहीं मिला")) {
+        alert("पहले Search दबाकर परीक्षा सूची लोड करें!");
+        return;
+    }
+
+    const sessionVal = document.getElementById("psSession").value;
+    const classVal = document.getElementById("psClass").value || "सभी कक्षा";
+    const mediumVal = document.getElementById("psMedium").value || "सभी माध्यम";
+    const roomVal = document.getElementById("psRoomNo").value.trim() || "सभी कक्ष";
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>परीक्षा सूची - ${classVal}</title>
+            <style>
+                @page { size: A4 landscape; margin: 12mm; }
+                body { font-family: sans-serif; padding: 10px; }
+                h2, h4 { margin: 4px 0; text-align: center; }
+                p { text-align: center; font-size: 13px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 12px; }
+                th, td { border: 1px solid #000; padding: 6px 8px; text-align: left; }
+                th { background: #f2f2f2; color: #000; }
+            </style>
+        </head>
+        <body>
+            <h2>सरस्वती बाल विद्या मंदिर हाई स्कूल, रुनाहा</h2>
+            <h4>परीक्षा कक्ष एवं अनुक्रमांक सूची (Pariksha Suchi)</h4>
+            <p><strong>सत्र:</strong> ${sessionVal} | <strong>कक्षा:</strong> ${classVal} | <strong>माध्यम:</strong> ${mediumVal} | <strong>कक्ष क्र.:</strong> ${roomVal}</p>
+            ${content}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
